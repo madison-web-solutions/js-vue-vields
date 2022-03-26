@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "composite": true,
     "target": "es2016",
     "module": "commonjs",
     "declaration": true,
@@ -9,6 +10,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "**/__tests__/*"]
+  "include": ["src/**/*", "src/**/*.vue", "demo/**/*", "demo/**/*.vue"],
+  "exclude": ["src/**/__tests__/*"]
 }
