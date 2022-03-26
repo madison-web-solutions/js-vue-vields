@@ -1,0 +1,60 @@
+@use "sass:math";
+
+.repeater {
+    display: grid;
+    position: relative;
+    grid-template-columns: min-content 1fr;
+    border-top: 1px solid $border-color;
+    border-left: 1px solid $border-color;
+    margin-bottom: 1rem;
+
+    .repeater-item {
+        display: contents;
+    }
+
+    .repeater-item-control, .repeater-item-content {
+        padding: 1rem;
+        border-bottom: 1px solid $border-color;
+        border-right: 1px solid $border-color;
+    }
+    .repeater-item-control {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    // Repeater item moving
+    // When a row is being moved, divs are added to the dom to act as targets for dropping the row into a new position
+    // For each row, there's a move-before target, and a move-after target
+    // By using absolute position within the grid, we can use the grid lines to position the targets over the top of
+    // existing grid content without them taking up any 'slots' in the grid
+    // This works very nicely, but it does depend on the --row-num css val being set in the vue template
+    .repeater-item.is-moving {
+        .repeater-item-content {
+            opacity: 0.5;
+        }
+    }
+    .repeater-move-target {
+        position: absolute;
+        z-index: 1;
+        grid-row: var(--row-num) / span 1;
+        grid-column: 1 / span 2;
+        left: 0px;
+        right: 0px;
+        border: 0px dashed transparent;
+        &:hover {
+            border-color: red;
+        }
+        &.move-before {
+            top: - math.div($repeater-move-indicator-size, 2);
+            bottom: 50%;
+            border-top-width: $repeater-move-indicator-size;
+        }
+        &.move-after {
+            top: 50%;
+            bottom: - math.div($repeater-move-indicator-size, 2);
+            border-bottom-width: $repeater-move-indicator-size;
+        }
+    }
+}
