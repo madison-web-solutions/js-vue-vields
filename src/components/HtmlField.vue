@@ -82,11 +82,11 @@ const createEditor = () => {
 
 let timeoutId: number | undefined = undefined;
 const handleEditorDataChange = (evt: any) => {
-    clearTimeout(timeoutId);
+    window.clearTimeout(timeoutId);
     if (! editor || props.disabled) {
         return;
     }
-    timeoutId = setTimeout(() => {
+    timeoutId = window.setTimeout(() => {
         // Cache the last editor data.
         const data = editor.getData() || '';
         if (data != lastEditorData.value) {

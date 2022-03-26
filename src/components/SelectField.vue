@@ -3,7 +3,7 @@
         <template #input>
             <select class="form-select" :class="{'is-invalid': hasError}" :id="inputEleId" :disabled="disabled" @change="change">
                 <option ref="nullOption" :disabled="required" :selected="nullSelected">{{ nullLabel }}</option>
-                <option v-for="choice in choices" :selected="modelValue === choice.key">{{ choice.label }}</option>
+                <option v-for="choice in choicesNormalized" :selected="modelValue === choice.key">{{ choice.label }}</option>
             </select>
         </template>
         <template #viewMode>{{ displayValue }}</template>
@@ -68,7 +68,11 @@ watchEffect(() => {
     }
 });
 
-const choices = computed((): ChoiceList => {
+const isPartialChoosable = (obj: any): obj is {key: string, label?: unknown} => {
+    return typeof obj == 'object' && obj != null && 'key' in obj && typeof obj.key == 'string';
+};
+
+const choicesNormalized = computed((): ChoiceList => {
     if (props.directory != null) {
         // Directory is specified, so use the set of choices from the provider
         return directoryChoices.value;
@@ -81,18 +85,11 @@ const choices = computed((): ChoiceList => {
         for (const choice of props.choices) {
             if (typeof choice == 'string') {
                 out.push({key: choice, label: startCase(choice)});
-            } else if (choice != null && typeof choice == 'object') {
-                const key = choice.key;
-                const label = choice.label;
-                if (typeof key == 'string') {
-                    out.push({
-                        key: key,
-                        label: ((typeof label == 'string') ? label : startCase(key))
-                    });
-                } else {
-                    console.log(props.choices);
-                    throw "Invalid choice specification";
-                }
+            } else if (isPartialChoosable(choice)) {
+                out.push({
+                    key: choice.key,
+                    label: ((typeof choice.label == 'string') ? choice.label : startCase(choice.key))
+                });
             } else {
                 console.log(props.choices);
                 throw "Invalid choice specification";
@@ -115,7 +112,7 @@ const choices = computed((): ChoiceList => {
 });
 
 const currentChoice = computed((): Choosable | null => {
-    for (const choice of choices.value) {
+    for (const choice of choicesNormalized.value) {
         if (choice.key == modelValue.value) {
             return choice;
         }
@@ -124,7 +121,7 @@ const currentChoice = computed((): Choosable | null => {
 });
 
 const possibleValues = computed((): (string | number)[] => {
-    return choices.value.map(choice => choice.key);
+    return choicesNormalized.value.map(choice => choice.key);
 });
 
 const nullSelected = computed(() => {
@@ -142,7 +139,7 @@ const change = (e: Event) => {
     if (index === 0) {
         modelValue.value = undefined;
     } else {
-        modelValue.value = choices.value[index - 1].key;
+        modelValue.value = choicesNormalized.value[index - 1].key;
     }
 };
 

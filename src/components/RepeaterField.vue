@@ -2,7 +2,7 @@
     <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors">
         <template #input>
             <div class="repeater">
-                <div class="repeater-item" :class="{'is-moving': index === movingIndex}" :style="itemStyle(index)" v-for="(subVals, index) in modelValue">
+                <div class="repeater-item" :class="{'is-moving': index === movingIndex}" :style="itemStyle(index)" v-for="(rowVals, index) in modelValue">
                     <div class="repeater-item-control">
                         <div>{{ index }}</div>
                         <div v-if="editMode == 'edit'" class="btn-group">
@@ -11,8 +11,8 @@
                             <button class="btn btn-outline-danger" @click="deleteRowAt(index)"><i class="fas fa-trash"></i></button>
                         </div>
                     </div>
-                    <RepeaterRow class="repeater-item-content" :index="index" :subVals="subVals">
-                        <template v-slot="{ index, subVals }">
+                    <RepeaterRow class="repeater-item-content" :index="index" :subVals="rowVals">
+                        <template v-slot="{ subVals }">
                             <slot :index="index" :subVals="subVals"></slot>
                         </template>
                     </RepeaterRow>

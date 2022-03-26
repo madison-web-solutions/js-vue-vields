@@ -180,8 +180,8 @@ const openSearch = () => {
 let timeoutId: number | undefined = undefined;
 const searchDebounced = () => {
     fetchedPages.value = null;
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => {
+    window.clearTimeout(timeoutId);
+    timeoutId = window.setTimeout(() => {
         if (searchText.value.length > 2) {
             doSearch(searchText.value, 1);
         }

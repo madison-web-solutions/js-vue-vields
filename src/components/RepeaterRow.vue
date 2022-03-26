@@ -1,6 +1,6 @@
 <template>
     <div>
-        <slot :index="index" :subVals="modelValue"></slot>
+        <slot :subVals="modelValue"></slot>
         <div v-if="editMode == 'edit' && myErrors.length" class="invalid-feedback d-block">
             <div v-for="msg in myErrors">{{ msg }}</div>
         </div>
