@@ -1,13 +1,13 @@
-// vite.config.js
-const path = require('path');
-const { defineConfig } = require('vite');
+import { defineConfig } from "vite";
+import { fileURLToPath, URL } from "url";
+import path from "path";
 import vuePlugin from "@vitejs/plugin-vue";
 
 module.exports = defineConfig({
   plugins: [vuePlugin()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src'),
+      '@': fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
   build: {
