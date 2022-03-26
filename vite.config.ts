@@ -3,6 +3,8 @@ import { fileURLToPath, URL } from "url";
 import path from "path";
 import vuePlugin from "@vitejs/plugin-vue";
 
+console.log(fileURLToPath(new URL("./src", import.meta.url)));
+
 module.exports = defineConfig({
   plugins: [vuePlugin()],
   resolve: {
