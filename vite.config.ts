@@ -10,6 +10,7 @@ module.exports = defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL("./src", import.meta.url)),
+      'ckeditor': fileURLToPath(new URL("./ckeditor5/ckeditor.js", import.meta.url)),
     },
   },
   build: {

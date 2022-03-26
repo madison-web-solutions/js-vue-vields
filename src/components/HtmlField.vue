@@ -8,10 +8,14 @@
 </template>
 
 <script setup lang="ts">
-// Creates a global variable window.ClassicEditor
 // I got this file from making a 'custom build' here https://ckeditor.com/ckeditor-5/online-builder/
+// Then editing so that it creates and exports the ClassicEditor object
+// @todo, we really need to stop relying on these custom builds, they're a complete nuisance
+// CKEditor must be built using webpack so I don't think we can build it from source in this project (Vite/Rollup),
+// ...but perhaps we could make a separate ms-ckeditor package where we use webpack to build the editor for source according
+// to the spec that we want, then include it here? something like that?
 // @ts-ignore
-import { ClassicEditor } from '@/ckeditor5/ckeditor.js';
+import { ClassicEditor } from 'ckeditor';
 
 import type { MessageBag } from '@/main';
 import { ref, toRefs, watch, onMounted, onBeforeUnmount } from 'vue';
