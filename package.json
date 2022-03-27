@@ -31,5 +31,8 @@
   },
   "files": [
     "dist/**/*"
-  ]
+  ],
+  "dependencies": {
+    "date-format-ms": "^1.1.1"
+  }
 }
