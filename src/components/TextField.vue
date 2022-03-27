@@ -10,7 +10,7 @@
 <script setup lang="ts">
 import type { MessageBag } from '@/main';
 import { ref, toRefs } from 'vue';
-import { getUniqueKey, commonProps, useFormField } from '@/main';
+import { commonProps, useFormField } from '@/main';
 import { FieldWrapper } from '@/main';
 
 const props = defineProps(Object.assign({}, commonProps, {
@@ -19,8 +19,6 @@ const props = defineProps(Object.assign({}, commonProps, {
         default: 'text',
     }
 }));
-
-const inputEleId = ref(getUniqueKey());
 
 const emit = defineEmits<{
     (e: 'update:modelValue', value: string): void
@@ -33,6 +31,6 @@ const coerceToString = (value: any): string => {
     return value ? String(value) : '';
 };
 
-const { modelValue, myErrors, hasError } = useFormField<string>(coerceToString, emit, propRefs);
+const { inputEleId, modelValue, myErrors, hasError } = useFormField<string>(coerceToString, emit, propRefs);
 
 </script>

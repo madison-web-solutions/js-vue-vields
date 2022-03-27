@@ -42,8 +42,6 @@ import { RepeaterRow, FieldWrapper } from '@/main';
 
 const props = defineProps(Object.assign({}, commonProps, {}));
 
-const inputEleId = ref(getUniqueKey());
-
 const emit = defineEmits<{
     (e: 'update:modelValue', value: RepeaterFormValue): void
     (e: 'update:errors', value: MessageBag): void
@@ -51,7 +49,7 @@ const emit = defineEmits<{
 
 const propRefs = toRefs(props);
 
-const { modelValue, errors, myErrors, editMode } = useFormField<RepeaterFormValue>(coerceToRepeaterFormValue, emit, propRefs);
+const { inputEleId, modelValue, errors, myErrors, editMode } = useFormField<RepeaterFormValue>(coerceToRepeaterFormValue, emit, propRefs);
 
 // provide the setter
 const setter = ref((value: FormValue, key: string | number): void => {

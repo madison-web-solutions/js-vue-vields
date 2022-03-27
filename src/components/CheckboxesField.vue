@@ -20,9 +20,9 @@
 </template>
 
 <script setup lang="ts">
-import type { ChoiceList, MessageBag, FormValue } from '@/main';
-import { provide, computed, ref, toRefs, watchEffect, inject } from 'vue';
-import { coerceToBoolean, getUniqueKey, commonProps, useFormField, spliceMessageBag, reindexErrors, symbols } from '@/main';
+import type { ChoiceList, MessageBag } from '@/main';
+import { computed, ref, toRefs, watchEffect, inject } from 'vue';
+import { commonProps, useFormField, reindexErrors, symbols } from '@/main';
 import { FieldWrapper } from '@/main';
 
 type BooleansMap = {[key: string]: boolean};
@@ -45,7 +45,6 @@ const props = defineProps(Object.assign({}, commonProps, {
         default: 'No',
     },
 }));
-const inputEleId = ref(getUniqueKey());
 
 const emit = defineEmits<{
     (e: 'update:modelValue', value: KeysList): void
@@ -70,7 +69,7 @@ const coerceFn = (value: any): KeysList => {
     return out;
 };
 
-const { modelValue, myErrors, errors } = useFormField<KeysList>(coerceFn, emit, propRefs);
+const { inputEleId, modelValue, myErrors, errors } = useFormField<KeysList>(coerceFn, emit, propRefs);
 
 const provider = inject(symbols.choiceListProvider);
 

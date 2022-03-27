@@ -13,7 +13,7 @@
 <script setup lang="ts">
 import type { MessageBag } from '@/main';
 import { computed, ref, toRefs } from 'vue';
-import { getUniqueKey, commonProps, useFormField } from '@/main';
+import { commonProps, useFormField } from '@/main';
 import { FieldWrapper } from '@/main';
 
 const props = defineProps(Object.assign({}, commonProps, {
@@ -38,8 +38,6 @@ const props = defineProps(Object.assign({}, commonProps, {
 
 const inputEle = ref<HTMLInputElement | null>(null);
 
-const inputEleId = ref(getUniqueKey());
-
 const emit = defineEmits<{
     (e: 'update:modelValue', value: number | undefined): void
     (e: 'update:errors', value: MessageBag): void
@@ -58,7 +56,7 @@ const coerceToNumber = (value: unknown): number | undefined => {
     return undefined;
 };
 
-const { modelValue, myErrors, hasError } = useFormField<number | undefined>(coerceToNumber, emit, propRefs);
+const { inputEleId, modelValue, myErrors, hasError } = useFormField<number | undefined>(coerceToNumber, emit, propRefs);
 
 const focused = ref<boolean>(false);
 const onFocus = () => {

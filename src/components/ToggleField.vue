@@ -13,7 +13,7 @@
 <script setup lang="ts">
 import type { MessageBag } from '@/main';
 import { computed, ref, toRefs } from 'vue';
-import { getUniqueKey, commonProps, useFormField, coerceToBoolean } from '@/main';
+import { commonProps, useFormField, coerceToBoolean } from '@/main';
 import { FieldWrapper } from '@/main';
 
 const props = defineProps(Object.assign({}, commonProps, {
@@ -27,8 +27,6 @@ const props = defineProps(Object.assign({}, commonProps, {
     },
 }));
 
-const inputEleId = ref(getUniqueKey());
-
 const emit = defineEmits<{
     (e: 'update:modelValue', value: boolean | undefined): void
     (e: 'update:errors', value: MessageBag): void
@@ -36,7 +34,7 @@ const emit = defineEmits<{
 
 const propRefs = toRefs(props);
 
-const { modelValue, myErrors, hasError } = useFormField<boolean | undefined>(coerceToBoolean, emit, propRefs);
+const { inputEleId, modelValue, myErrors, hasError } = useFormField<boolean | undefined>(coerceToBoolean, emit, propRefs);
 
 const displayValue = computed((): string => {
     if (modelValue.value === true) {

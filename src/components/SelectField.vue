@@ -13,7 +13,7 @@
 <script setup lang="ts">
 import type { ChoiceList, Choosable, MessageBag } from '@/main';
 import { computed, ref, toRefs, watchEffect, inject, onBeforeUnmount } from 'vue';
-import { getUniqueKey, commonProps, useFormField, symbols } from '@/main';
+import { commonProps, useFormField, symbols } from '@/main';
 import { FieldWrapper } from '@/main';
 import { startCase } from '@/lib/util';
 
@@ -30,7 +30,6 @@ const props = defineProps(Object.assign({}, commonProps, {
         type: Object,
     },
 }));
-const inputEleId = ref(getUniqueKey());
 
 const emit = defineEmits<{
     (e: 'update:modelValue', value: IdType): void
@@ -49,7 +48,7 @@ const coerceFn = (value: any): IdType => {
     return undefined;
 };
 
-const { modelValue, myErrors, hasError } = useFormField<IdType>(coerceFn, emit, propRefs);
+const { inputEleId, modelValue, myErrors, hasError } = useFormField<IdType>(coerceFn, emit, propRefs);
 
 const provider = inject(symbols.choiceListProvider, undefined);
 

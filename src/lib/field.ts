@@ -1,7 +1,7 @@
 import type { Ref, PropType } from 'vue';
 import type { MessageBag, Path, FormValue } from '@/main';
 import { computed, provide, inject, ref } from 'vue';
-import { sliceMessageBag, symbols } from '@/main';
+import { getUniqueKey, sliceMessageBag, symbols } from '@/main';
 
 export const commonProps = {
     modelValue: {},
@@ -78,6 +78,8 @@ export function useFormField<ValueType extends FormValue> (valueCoerceFn: (val: 
 
     const { path, pathString } = useExtendsPath(propRefs.name);
 
+    const inputEleId = ref(getUniqueKey());
+
     const injectedModelValue = inject(symbols.modelValue, undefined);
 
     const rawValue = computed((): unknown => {
@@ -145,5 +147,5 @@ export function useFormField<ValueType extends FormValue> (valueCoerceFn: (val: 
 
     const editMode = inject(symbols.editMode, ref('edit'));
 
-    return { path, pathString, rawValue, modelValue, errors, myErrors, hasError, editMode };
+    return { inputEleId, path, pathString, rawValue, modelValue, errors, myErrors, hasError, editMode };
 };

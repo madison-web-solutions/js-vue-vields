@@ -10,7 +10,7 @@
 <script setup lang="ts">
 import type { MessageBag } from '@/main';
 import { computed, ref, toRefs } from 'vue';
-import { getUniqueKey, commonProps, useFormField } from '@/main';
+import { commonProps, useFormField } from '@/main';
 import { FieldWrapper } from '@/main';
 import { dateToUtcFormat, ymdToFormat } from 'date-format-ms';
 
@@ -28,7 +28,6 @@ const props = defineProps(Object.assign({}, commonProps, {
 }));
 
 const inputEle = ref<HTMLInputElement | null>(null);
-const inputEleId = ref(getUniqueKey());
 
 const emit = defineEmits<{
     (e: 'update:modelValue', value: string | undefined): void
@@ -41,7 +40,7 @@ const coerceFn = (value: any): string | undefined => {
     return ymdToFormat(String(value), 'Y-m-d') || undefined;
 };
 
-const { modelValue, myErrors, hasError } = useFormField<string | undefined>(coerceFn, emit, propRefs);
+const { inputEleId, modelValue, myErrors, hasError } = useFormField<string | undefined>(coerceFn, emit, propRefs);
 
 const todayUtc: Date = ((): Date => {
     const now: Date = new Date();
