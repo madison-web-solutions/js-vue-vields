@@ -14,13 +14,11 @@
                                 <SelectField label="Type" name="type" choices="cat,dog,fish" class="col-md-6" />
                             </div>
                         </RepeaterField>
-                        <NumberField label="Age" name="age" :min="0" class="col-md-6" />
-                        <CurrencyField label="Salary" name="salary" currencyCode="GBP" class="col-md-6" />
+                        <DateField label="Date of Birth" name="dob" max="today" class="col-md-4" />
+                        <NumberField label="Days Holiday" name="days_holiday" :min="0" class="col-md-4" />
+                        <CurrencyField label="Salary" name="salary" currencyCode="GBP" class="col-md-4" />
                         <hr />
-                        <p v-if="! showingDescription">
-                            <button type="button" class="btn btn-primary" @click="showingDescription = true">Show Description</button>
-                        </p>
-                        <HtmlField v-if="showingDescription" label="Description" name="description" class="col-12" />
+                        <HtmlField label="Description" name="description" class="col-12" />
                     </div>
                 </FieldGroup>
             </div>
@@ -33,7 +31,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { FieldGroup, CheckboxField, CheckboxesField, TextField, SelectField, HtmlField, CurrencyField, NumberField, ToggleField, RepeaterField, SearchField, RadioField } from "@/main";
+import { FieldGroup, CheckboxField, CheckboxesField, TextField, SelectField, HtmlField, CurrencyField, NumberField, ToggleField, RepeaterField, SearchField, RadioField, DateField } from "@/main";
 import TextAreaField from "@/components/TextAreaField.vue";
 
 const vals = ref({
@@ -44,11 +42,9 @@ const vals = ref({
         {name: 'Gary', type: 'cat'},
         {name: 'Waffles', type: 'cat'}
     ],
-    age: 40,
+    days_holiday: 20,
     salary: 4200000,
     description: '<h3>Hobbies</h3><ul><li>Trampolining</li><li>Knitting</li></ul>',
 });
-
-const showingDescription = ref<boolean>(false);
 
 </script>

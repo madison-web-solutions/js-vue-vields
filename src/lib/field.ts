@@ -79,15 +79,20 @@ export function useFormField<ValueType extends FormValue> (valueCoerceFn: (val: 
     const { path, pathString } = useExtendsPath(propRefs.name);
 
     const injectedModelValue = inject(symbols.modelValue, undefined);
+
+    const rawValue = computed((): unknown => {
+        if (name.value == null) {
+            return propRefs?.modelValue?.value;
+        } else {
+            return (injectedModelValue && injectedModelValue.value) ? (injectedModelValue.value as any)[name.value] : undefined;
+        }
+    });
+
     const setter = inject(symbols.setter, undefined);
 
     const modelValue = computed({
         get: (): ValueType => {
-            if (name.value == null) {
-                return valueCoerceFn(propRefs?.modelValue?.value);
-            } else {
-                return valueCoerceFn((injectedModelValue && injectedModelValue.value) ? (injectedModelValue.value as any)[name.value] : undefined);
-            }
+            return valueCoerceFn(rawValue.value);
         },
         set: (newValue: ValueType): void => {
             if (name.value == null) {
@@ -140,5 +145,5 @@ export function useFormField<ValueType extends FormValue> (valueCoerceFn: (val: 
 
     const editMode = inject(symbols.editMode, ref('edit'));
 
-    return { path, pathString, modelValue, errors, myErrors, hasError, editMode };
+    return { path, pathString, rawValue, modelValue, errors, myErrors, hasError, editMode };
 };
