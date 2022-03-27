@@ -14,7 +14,8 @@ module.exports = defineConfig({
   build: {
     lib: {
       entry: path.resolve(__dirname, 'src/main.ts'),
-      name: 'MS Vue Fields',
+      formats: ['es'],
+      name: 'MSVueFields',
       fileName: (format) => `ms-vue-fields.${format}.js`
     },
     rollupOptions: {

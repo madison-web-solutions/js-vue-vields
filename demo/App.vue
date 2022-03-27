@@ -16,6 +16,11 @@
                         </RepeaterField>
                         <NumberField label="Age" name="age" :min="0" class="col-md-6" />
                         <CurrencyField label="Salary" name="salary" currencyCode="GBP" class="col-md-6" />
+                        <hr />
+                        <p v-if="! showingDescription">
+                            <button type="button" class="btn btn-primary" @click="showingDescription = true">Show Description</button>
+                        </p>
+                        <HtmlField v-if="showingDescription" label="Description" name="description" class="col-12" />
                     </div>
                 </FieldGroup>
             </div>
@@ -41,6 +46,9 @@ const vals = ref({
     ],
     age: 40,
     salary: 4200000,
+    description: '<h3>Hobbies</h3><ul><li>Trampolining</li><li>Knitting</li></ul>',
 });
+
+const showingDescription = ref<boolean>(false);
 
 </script>

@@ -1,3 +1,5 @@
+import { defineAsyncComponent } from 'vue';
+
 import type { CompoundFormValue, RepeaterFormValue, FormValue, Path } from '@/lib/util';
 import type { MessageBag } from '@/lib/MessageBag';
 import type { Choosable, ChoiceList, ChoiceListProvider, SearchResultPage, SearchProvider } from '@/lib/search';
@@ -15,9 +17,10 @@ import RepeaterRow from "@/components/RepeaterRow.vue";
 import RadioField from '@/components/RadioField.vue';
 import SearchField from '@/components/SearchField.vue';
 import SelectField from '@/components/SelectField.vue';
-import HtmlField from '@/components/HtmlField.vue';
 import FieldWrapper from '@/components/FieldWrapper.vue';
 import FieldGroup from '@/components/FieldGroup.vue';
+
+const HtmlField = defineAsyncComponent(() => import('@/components/HtmlField.vue'));
 
 export type { CompoundFormValue, RepeaterFormValue, FormValue, MessageBag, Choosable, ChoiceList, SearchResultPage, SearchProvider, ChoiceListProvider, Path };
 export { commonProps, useFormField }
