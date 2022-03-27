@@ -2,7 +2,10 @@
     <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors">
         <template #input>
             <div class="input-group">
-                <input type="text" class="form-control" :class="{'is-invalid': hasError}" readonly :disabled="disabled" :placeholder="placeholder" :value="displayValue" @click="toggleOpenSearch"/>
+                <div class="form-control" :class="{'is-invalid': hasError}" :disabled="disabled" @click="toggleOpenSearch">
+                    <slot v-if="currentItem" name="suggestion" :suggestion="currentItem">{{ displayValue }}</slot>
+                    <span v-if="placeholder && ! currentItem">{{ placeholder }}</span>
+                </div>
                 <button class="btn btn-outline-primary" type="button" @click="toggleOpenSearch"><i class="fas fa-search"></i></button>
                 <button v-if="modelValue" class="btn btn-outline-danger" type="button" @click="chooseSuggestion(undefined)"><i class="fas fa-times"></i></button>
             </div>
@@ -13,7 +16,9 @@
                         <div class="form-text text-warning">No results</div>
                     </slot>
                     <div v-if="suggestions.length > 0" class="list-group">
-                        <button v-for="suggestion in suggestions" class="list-group-item list-group-item-action" type="button" @click="chooseSuggestion(suggestion)">{{ suggestion.label }}</button>
+                        <button v-for="suggestion in suggestions" class="list-group-item list-group-item-action" type="button" @click="chooseSuggestion(suggestion)">
+                            <slot name="suggestion" :suggestion="suggestion">{{ suggestion.label }}</slot>
+                        </button>
                     </div>
                     <div v-if="canFetchMore">
                         <button class="btn btn-link" type="button" @click="fetchNextPage">more</button>

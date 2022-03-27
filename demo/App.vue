@@ -19,6 +19,13 @@
                         <CurrencyField label="Salary" name="salary" currencyCode="GBP" class="col-md-4" />
                         <hr />
                         <HtmlField label="Description" name="description" class="col-12" />
+                        <hr />
+                        <SearchField label="Search Foo" name="foo" directory="cats" class="mb-3">
+                            <template #suggestion="{ suggestion }">
+                                {{ suggestion.label }}
+                                <span v-if="(suggestion as any).age">({{ (suggestion as any).age }})</span>
+                            </template>
+                        </SearchField>
                     </div>
                 </FieldGroup>
             </div>
@@ -30,7 +37,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import type { SearchProvider, Choosable, ChoiceList, SearchResultPage, ChoiceListProvider } from "@/main";
+import { ref, provide } from "vue";
+import { symbols } from '@/main';
 import { FieldGroup, CheckboxField, CheckboxesField, TextField, SelectField, HtmlField, CurrencyField, NumberField, ToggleField, RepeaterField, SearchField, RadioField, DateField } from "@/main";
 import TextAreaField from "@/components/TextAreaField.vue";
 
@@ -46,5 +55,67 @@ const vals = ref({
     salary: 4200000,
     description: '<h3>Hobbies</h3><ul><li>Trampolining</li><li>Knitting</li></ul>',
 });
+
+const cats = [
+    {key: 1, label: 'Gary', age: 5},
+    {key: 2, label: 'Waffles', age: 2},
+    {key: 3, label: 'Eggs'} ,
+    {key: 4, label: 'Bacon'} ,
+    {key: 5, label: 'Stop It', age: 3} ,
+    {key: 6, label: 'Barbera'},
+    {key: 7, label: 'Lloyd'},
+    {key: 8, label: 'Johnson', age: 16},
+    {key: 9, label: 'Butter'},
+    {key: 10, label: 'Dame Judy'},
+    {key: 11, label: 'Elton'},
+    {key: 12, label: 'Samuel L Jackson'},
+];
+
+const dummySearchProvider = ref<SearchProvider>({
+    lookup: (directory: string, id: string | number): Promise<Choosable | null> => {
+        return new Promise<Choosable | null>((resolve, reject) => {
+            window.setTimeout(() => {
+                for (const cat of cats) {
+                    if (cat.key == id) {
+                        resolve(cat);
+                    }
+                }
+                resolve(null);
+            });
+        });
+    },
+    search: (directory: string, searchText: string, page?: number): Promise<SearchResultPage> => {
+        return new Promise<SearchResultPage>((resolve, reject) => {
+            window.setTimeout(() => {
+                if (page == null) {
+                    page = 1;
+                }
+                const suggestions: ChoiceList = [];
+                const result: SearchResultPage = {page: page, hasMore: false, suggestions: suggestions};
+                if (page == 1) {
+                    result.suggestions = cats.slice(0, 10);
+                    result.hasMore = true;
+                } else if (page == 2) {
+                    result.suggestions = cats.slice(10, 20);
+                    result.hasMore = false;
+                }
+                resolve(result);
+            }, 1000);
+        });
+    },
+});
+
+const dummyChoiceListProvider = ref<ChoiceListProvider>({
+    get: (directory: string, extraParams?: object | undefined): Promise<ChoiceList> => {
+        return new Promise<ChoiceList>((resolve, reject) => {
+            window.setTimeout(() => {
+                resolve(cats);
+            }, 200);
+        });
+    }
+});
+
+provide(symbols.searchProvider, dummySearchProvider);
+provide(symbols.choiceListProvider, dummyChoiceListProvider);
 
 </script>
