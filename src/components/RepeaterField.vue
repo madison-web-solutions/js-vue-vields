@@ -25,7 +25,7 @@
                 </div>
             </div>
             <div v-if="editMode == 'edit'" class="repeater-append">
-                <button class="btn btn-primary" @click="appendRow"><i class="fas fa-plus"></i> Append Row</button>
+                <button class="btn btn-primary" @click="appendRow"><i class="fas fa-plus"></i> {{ appendLabel }}</button>
             </div>
         </template>
     </FieldWrapper>
@@ -40,7 +40,12 @@ import { RepeaterRow, FieldWrapper } from '@/main';
 
 // @todo min, max
 
-const props = defineProps(Object.assign({}, commonProps, {}));
+const props = defineProps(Object.assign({}, commonProps, {
+    appendLabel: {
+        type: String,
+        default: 'Add Row',
+    }
+}));
 
 const emit = defineEmits<{
     (e: 'update:modelValue', value: RepeaterFormValue): void

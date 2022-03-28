@@ -26,6 +26,19 @@
                                 <span v-if="(suggestion as any).age">({{ (suggestion as any).age }})</span>
                             </template>
                         </SearchField>
+                        <hr />
+                        <FlexibleContentField label="Page Sections" name="page_sections" :sectionChoices="[{key: 'banner', label: 'Banner'}, {key: 'promos', label: 'Promos'}]" class="col-12">
+                            <template #banner>
+                                <div class="row g-3">
+                                    <TextField label="Banner Heading" name="banner_heading" class="col-12" />
+                                </div>
+                            </template>
+                            <template #promos>
+                                <div class="row g-3">
+                                    <NumberField label="Num Promos" name="num_promos" :integersOnly="true" :min="2" :max="4" class="col-6" />
+                                </div>
+                            </template>
+                        </FlexibleContentField>
                     </div>
                 </FieldGroup>
             </div>
@@ -42,6 +55,7 @@ import { ref, provide } from "vue";
 import { symbols } from '@/main';
 import { FieldGroup, CheckboxField, CheckboxesField, TextField, SelectField, HtmlField, CurrencyField, NumberField, ToggleField, RepeaterField, SearchField, RadioField, DateField } from "@/main";
 import TextAreaField from "@/components/TextAreaField.vue";
+import FlexibleContentField from "@/components/FlexibleContentField.vue";
 
 const vals = ref({
     first_name: 'Jane',
@@ -54,6 +68,12 @@ const vals = ref({
     days_holiday: 20,
     salary: 4200000,
     description: '<h3>Hobbies</h3><ul><li>Trampolining</li><li>Knitting</li></ul>',
+    page_sections: [
+        {
+            content_type: 'banner',
+            banner_heading: 'About Us',
+        }
+    ]
 });
 
 const cats = [

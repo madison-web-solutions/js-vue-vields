@@ -18,6 +18,7 @@ import RepeaterRow from "@/components/RepeaterRow.vue";
 import RadioField from '@/components/RadioField.vue';
 import SearchField from '@/components/SearchField.vue';
 import SelectField from '@/components/SelectField.vue';
+import FlexibleContentField from '@/components/FlexibleContentField.vue';
 import FieldWrapper from '@/components/FieldWrapper.vue';
 import FieldGroup from '@/components/FieldGroup.vue';
 
@@ -27,4 +28,4 @@ export type { CompoundFormValue, RepeaterFormValue, FormValue, MessageBag, Choos
 export { commonProps, useFormField }
 export { sliceMessageBag, spliceMessageBag }
 export { getUniqueKey, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols };
-export { TextField, CheckboxField, CheckboxesField, CurrencyField, DateField, NumberField, ToggleField, RepeaterField, RepeaterRow, RadioField, SearchField, SelectField, HtmlField, FieldWrapper, FieldGroup };
+export { TextField, CheckboxField, CheckboxesField, CurrencyField, DateField, NumberField, ToggleField, RepeaterField, RepeaterRow, RadioField, SearchField, SelectField, HtmlField, FlexibleContentField, FieldWrapper, FieldGroup };
