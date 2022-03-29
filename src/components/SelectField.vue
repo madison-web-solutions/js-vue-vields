@@ -11,11 +11,11 @@
 </template>
 
 <script setup lang="ts">
-import type { ChoiceList, Choosable, MessageBag } from '@/main';
-import { computed, ref, toRefs, watchEffect, inject, onBeforeUnmount } from 'vue';
-import { commonProps, useFormField, symbols } from '@/main';
+import type { MessageBag } from '@/main';
+import { computed, toRefs } from 'vue';
+import { commonProps, useFormField } from '@/main';
 import { FieldWrapper } from '@/main';
-import { startCase } from '@/lib/util';
+import { useHasChoices } from '@/lib/field';
 
 type IdType = string | number | undefined;
 
@@ -50,81 +50,11 @@ const coerceFn = (value: any): IdType => {
 
 const { inputEleId, modelValue, myErrors, hasError } = useFormField<IdType>(coerceFn, emit, propRefs);
 
-const provider = inject(symbols.choiceListProvider, undefined);
-
-const directoryChoices = ref<ChoiceList>([]);
-
-watchEffect(() => {
-    if (props.directory != null) {
-        if (provider != null && provider.value != null) {
-            provider.value.get(props.directory, props.extraParams).then((choiceListResult) => {
-                directoryChoices.value = choiceListResult || [];
-            });
-        } else {
-            console.log("Warning, directory " + props.directory + " specified in field but there is no choice list provider");
-            directoryChoices.value = [];
-        }
-    }
-});
-
-const isPartialChoosable = (obj: any): obj is {key: string, label?: unknown} => {
-    return typeof obj == 'object' && obj != null && 'key' in obj && typeof obj.key == 'string';
-};
-
-const choicesNormalized = computed((): ChoiceList => {
-    if (props.directory != null) {
-        // Directory is specified, so use the set of choices from the provider
-        return directoryChoices.value;
-    }
-    // Directory is not specified, so the set of choices should be specified as a prop instead
-    const out: ChoiceList = [];
-    if (props.choices == null) {
-        // No options
-    } else if (Array.isArray(props.choices)) {
-        for (const choice of props.choices) {
-            if (typeof choice == 'string') {
-                out.push({key: choice, label: startCase(choice)});
-            } else if (isPartialChoosable(choice)) {
-                out.push({
-                    key: choice.key,
-                    label: ((typeof choice.label == 'string') ? choice.label : startCase(choice.key))
-                });
-            } else {
-                console.log(props.choices);
-                throw "Invalid choice specification";
-            }
-        }
-    } else if (typeof props.choices == 'object') {
-        // Assume object keys are option values and object values are option labels
-        for (const [key, label] of Object.entries(props.choices)) {
-            out.push({
-                key: String(key),
-                label: String(label)
-            });
-        }
-    } else if (typeof props.choices == 'string') {
-        props.choices.split(',').forEach((key) => {
-            out.push({key: key.trim(), label: startCase(key)});
-        });
-    }
-    return out;
-});
-
-const currentChoice = computed((): Choosable | null => {
-    for (const choice of choicesNormalized.value) {
-        if (choice.key == modelValue.value) {
-            return choice;
-        }
-    }
-    return null;
-});
-
-const possibleValues = computed((): (string | number)[] => {
-    return choicesNormalized.value.map(choice => choice.key);
-});
-
-const nullSelected = computed(() => {
-    return modelValue.value == null || possibleValues.value.includes(modelValue.value);
+const { choicesNormalized, currentChoice, possibleValues, nullSelected } = useHasChoices({
+    modelValue: modelValue,
+    directory: propRefs.directory,
+    choices: propRefs.choices,
+    extraParams: propRefs.extraParams,
 });
 
 const nullLabel = computed(() => {

@@ -1,7 +1,7 @@
 <template>
     <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors">
         <template #input>
-            <div v-for="choice in choices" class="form-check">
+            <div v-for="choice in choicesNormalized" class="form-check">
                 <input class="form-check-input" :class="{'is-invalid': hasError}" type="radio" :id="inputEleId + String(choice.key)" :checked="modelValue === choice.key" :disabled="disabled" @change="change(choice)">
                 <label class="form-check-label" :for="inputEleId + String(choice.key)">{{ choice.label }}</label>
             </div>
@@ -11,9 +11,9 @@
 </template>
 
 <script setup lang="ts">
-import type { ChoiceList, Choosable, MessageBag } from '@/main';
-import { computed, ref, toRefs, watchEffect, inject, onBeforeUnmount } from 'vue';
-import { commonProps, useFormField, symbols } from '@/main';
+import type { Choosable, MessageBag } from '@/main';
+import { computed, toRefs } from 'vue';
+import { commonProps, useFormField, useHasChoices } from '@/main';
 import { FieldWrapper } from '@/main';
 
 type IdType = string | number | undefined;
@@ -22,6 +22,9 @@ const props = defineProps(Object.assign({}, commonProps, {
     directory: {
         type: String,
         required: true,
+    },
+    choices: {
+        type: [String, Object, Array],
     },
     extraParams: {
         type: Object,
@@ -47,29 +50,11 @@ const coerceFn = (value: any): IdType => {
 
 const { inputEleId, modelValue, myErrors, hasError } = useFormField<IdType>(coerceFn, emit, propRefs);
 
-const provider = inject(symbols.choiceListProvider);
-
-const choices = ref<ChoiceList>([]);
-
-watchEffect(() => {
-    if (props.directory != null && provider != null && provider.value != null) {
-        provider.value.get(props.directory, props.extraParams).then((choiceListResult) => {
-            choices.value = choiceListResult || [];
-        });
-    }
-});
-
-const currentChoice = computed((): Choosable | null => {
-    for (const choice of choices.value) {
-        if (choice.key == modelValue.value) {
-            return choice;
-        }
-    }
-    return null;
-});
-
-const possibleValues = computed((): (string | number)[] => {
-    return choices.value.map(choice => choice.key);
+const { choicesNormalized, currentChoice, possibleValues, nullSelected } = useHasChoices({
+    modelValue: modelValue,
+    directory: propRefs.directory,
+    choices: propRefs.choices,
+    extraParams: propRefs.extraParams,
 });
 
 const nullLabel = computed(() => {

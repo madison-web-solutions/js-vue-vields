@@ -8,6 +8,7 @@
                         <TextField label="First Name" name="first_name" class="col-md-6" />
                         <TextField label="Last Name" name="last_name" class="col-md-6" />
                         <TextAreaField label="Summary" name="summary" :rows="3" class="col-12" />
+                        <RadioField label="Type" name="type" choices="new,existing" class="col-12" />
                         <RepeaterField label="Pets" name="pets" class="col-12">
                             <div class="row">
                                 <TextField label="Name" name="name" class="col-md-6" />

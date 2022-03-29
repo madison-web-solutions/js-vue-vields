@@ -5,7 +5,7 @@ import type { MessageBag } from '@/lib/MessageBag';
 import type { Choosable, ChoiceList, ChoiceListProvider, SearchResultPage, SearchProvider } from '@/lib/search';
 import { sliceMessageBag, spliceMessageBag } from '@/lib/MessageBag';
 import { getUniqueKey, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols } from '@/lib/util';
-import { commonProps, useFormField } from '@/lib/field';
+import { commonProps, useFormField, useHasChoices } from '@/lib/field';
 import TextField from "@/components/TextField.vue";
 import CheckboxField from "@/components/CheckboxField.vue";
 import CheckboxesField from "@/components/CheckboxesField.vue";
@@ -25,7 +25,7 @@ import FieldGroup from '@/components/FieldGroup.vue';
 const HtmlField = defineAsyncComponent(() => import('@/components/HtmlField.vue'));
 
 export type { CompoundFormValue, RepeaterFormValue, FormValue, MessageBag, Choosable, ChoiceList, SearchResultPage, SearchProvider, ChoiceListProvider, Path };
-export { commonProps, useFormField }
+export { commonProps, useFormField, useHasChoices }
 export { sliceMessageBag, spliceMessageBag }
 export { getUniqueKey, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols };
 export { TextField, CheckboxField, CheckboxesField, CurrencyField, DateField, NumberField, ToggleField, RepeaterField, RepeaterRow, RadioField, SearchField, SelectField, HtmlField, FlexibleContentField, FieldWrapper, FieldGroup };

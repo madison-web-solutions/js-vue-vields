@@ -1,7 +1,8 @@
 import type { Ref, PropType } from 'vue';
-import type { MessageBag, Path, FormValue } from '@/main';
-import { computed, provide, inject, ref } from 'vue';
+import type { MessageBag, Path, FormValue, ChoiceList, Choosable } from '@/main';
+import { computed, provide, inject, ref, watchEffect } from 'vue';
 import { getUniqueKey, sliceMessageBag, symbols } from '@/main';
+import { startCase } from '@/lib/util';
 
 export const commonProps = {
     modelValue: {},
@@ -59,7 +60,7 @@ export const useExtendsPath = (nameOrIndex: Ref<string | number | undefined> | u
     return { path, pathString };
 };
 
-type PropRefs<ValueType> = {
+type UseFormFieldPropRefs<ValueType> = {
     modelValue?: Ref<unknown>,
     errors?: Ref<MessageBag | undefined>,
     name?: Ref<string | number | undefined>,
@@ -70,7 +71,7 @@ type FieldEmitType<ValueType> = {
     (e: 'update:errors', value: MessageBag): void
 };
 
-export function useFormField<ValueType extends FormValue> (valueCoerceFn: (val: unknown) => ValueType, emit: FieldEmitType<ValueType>, propRefs: PropRefs<ValueType>) {
+export function useFormField<ValueType extends FormValue> (valueCoerceFn: (val: unknown) => ValueType, emit: FieldEmitType<ValueType>, propRefs: UseFormFieldPropRefs<ValueType>) {
 
     const name = computed((): (string | number | undefined) => {
         return propRefs?.name?.value;
@@ -148,4 +149,96 @@ export function useFormField<ValueType extends FormValue> (valueCoerceFn: (val: 
     const editMode = inject(symbols.editMode, ref('edit'));
 
     return { inputEleId, path, pathString, rawValue, modelValue, errors, myErrors, hasError, editMode };
+};
+
+
+type UseHasChoicePropRefs = {
+    modelValue: Ref<string | number | undefined>,
+    directory?: Ref<string | undefined>,
+    choices?: Ref<string | object | undefined>,
+    extraParams?: Ref<object | undefined>,
+};
+
+export const useHasChoices = (props: UseHasChoicePropRefs) => {
+
+    const { modelValue, directory, choices, extraParams } = props;
+
+    const provider = inject(symbols.choiceListProvider, undefined);
+
+    const directoryChoices = ref<ChoiceList>([]);
+    
+    watchEffect(() => {
+        if (directory != null && directory.value != null) {
+            if (provider != null && provider.value != null) {
+                provider.value.get(directory.value, extraParams?.value || {}).then((choiceListResult) => {
+                    directoryChoices.value = choiceListResult || [];
+                });
+            } else {
+                console.log("Warning, directory " + directory.value + " specified in field but there is no choice list provider");
+                directoryChoices.value = [];
+            }
+        }
+    });
+
+    const isPartialChoosable = (obj: any): obj is {key: string, label?: unknown} => {
+        return typeof obj == 'object' && obj != null && 'key' in obj && typeof obj.key == 'string';
+    };
+
+    const choicesNormalized = computed((): ChoiceList => {
+        if (directory != null && directory.value != null) {
+            // Directory is specified, so use the set of choices from the provider
+            return directoryChoices.value;
+        }
+        // Directory is not specified, so the set of choices should be specified as a prop instead
+        const out: ChoiceList = [];
+        if (choices == null || choices.value == null) {
+            // No options
+        } else if (Array.isArray(choices.value)) {
+            for (const choice of choices.value) {
+                if (typeof choice == 'string') {
+                    out.push({key: choice, label: startCase(choice)});
+                } else if (isPartialChoosable(choice)) {
+                    out.push({
+                        key: choice.key,
+                        label: ((typeof choice.label == 'string') ? choice.label : startCase(choice.key))
+                    });
+                } else {
+                    console.log(choices.value);
+                    throw "Invalid choice specification";
+                }
+            }
+        } else if (typeof choices.value == 'object') {
+            // Assume object keys are option values and object values are option labels
+            for (const [key, label] of Object.entries(choices.value)) {
+                out.push({
+                    key: String(key),
+                    label: String(label)
+                });
+            }
+        } else if (typeof choices.value == 'string') {
+            choices.value.split(',').forEach((key) => {
+                out.push({key: key.trim(), label: startCase(key)});
+            });
+        }
+        return out;
+    });
+
+    const currentChoice = computed((): Choosable | null => {
+        for (const choice of choicesNormalized.value) {
+            if (choice.key == modelValue.value) {
+                return choice;
+            }
+        }
+        return null;
+    });
+    
+    const possibleValues = computed((): (string | number)[] => {
+        return choicesNormalized.value.map(choice => choice.key);
+    });
+    
+    const nullSelected = computed(() => {
+        return modelValue.value == null || possibleValues.value.includes(modelValue.value);
+    });
+
+    return { choicesNormalized, currentChoice, possibleValues, nullSelected };
 };
