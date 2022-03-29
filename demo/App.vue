@@ -52,7 +52,7 @@
 
 <script setup lang="ts">
 import type { SearchProvider, Choosable, ChoiceList, SearchResultPage, ChoiceListProvider } from "@/main";
-import { ref, provide } from "vue";
+import { computed, ref, provide } from "vue";
 import { symbols } from '@/main';
 import { FieldGroup, CheckboxField, CheckboxesField, TextField, SelectField, HtmlField, CurrencyField, NumberField, ToggleField, RepeaterField, SearchField, RadioField, DateField } from "@/main";
 import TextAreaField from "@/components/TextAreaField.vue";

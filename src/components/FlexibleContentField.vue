@@ -1,11 +1,12 @@
 <template>
     <RepeaterField
+        :modelValue="modelValue"
+        :errors="errors"
         :label="label"
         :required="required"
         :disabled="disabled"
         :help="help"
         :placeholder="placeholder"
-        :errors="errors"
         :name="name"
         appendLabel="Add Section"
         @update:model-value="(newValue) => emit('update:modelValue', newValue)"
