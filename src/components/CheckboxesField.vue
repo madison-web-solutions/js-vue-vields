@@ -1,7 +1,7 @@
 <template>
     <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors">
         <template #input>
-            <div v-for="choice in choices" :key="choice.key">
+            <div v-for="choice in choicesNormalized" :key="choice.key">
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" :id="inputEleId + choice.key" :checked="subValues[choice.key]" @change="toggle(choice.key)" :class="{'is-invalid': hasSubErrors[choice.key]}" :disabled="disabled">
                     <label class="form-check-label" :for="inputEleId + choice.key">{{ choice.label }}</label>
@@ -12,7 +12,7 @@
             </div>
         </template>
         <template #viewMode>
-            <div v-for="choice in choices" :key="choice.key">
+            <div v-for="choice in choicesNormalized" :key="choice.key">
                 {{ choice.label }}: {{ subValues[choice.key] ? trueLabel : falseLabel }}
             </div>
         </template>
@@ -20,18 +20,17 @@
 </template>
 
 <script setup lang="ts">
-import type { ChoiceList, MessageBag } from '@/main';
-import { computed, ref, toRefs, watchEffect, inject } from 'vue';
-import { commonProps, useFormField, reindexErrors, symbols } from '@/main';
+import type { MessageBag, KeysList } from '@/main';
+import { toRefs } from 'vue';
+import { commonProps, useFormField, useHasChoicesMultiple } from '@/main';
 import { FieldWrapper } from '@/main';
-
-type BooleansMap = {[key: string]: boolean};
-type KeysList = (string | number)[];
 
 const props = defineProps(Object.assign({}, commonProps, {
     directory: {
         type: String,
-        required: true,
+    },
+    choices: {
+        type: [String, Object, Array],
     },
     extraParams: {
         type: Object,
@@ -71,73 +70,6 @@ const coerceFn = (value: any): KeysList => {
 
 const { inputEleId, modelValue, myErrors, errors } = useFormField<KeysList>(coerceFn, emit, propRefs);
 
-const provider = inject(symbols.choiceListProvider);
-
-const choices = ref<ChoiceList>([]);
-
-watchEffect(() => {
-    if (props.directory != null && provider != null && provider.value != null) {
-        provider.value.get(props.directory, props.extraParams).then((choiceListResult) => {
-            choices.value = choiceListResult || [];
-        });
-    }
-});
-
-const subValues = computed((): BooleansMap => {
-    const out: BooleansMap = {};
-    choices.value.forEach((choice) => {
-        out[String(choice.key)] = modelValue.value.includes(choice.key);
-    });
-    return out;
-});
-
-const toggle = (key: string | number): void => {
-    const newValue = modelValue.value.slice();
-    if (newValue.includes(key)) {
-        // This key is being turned off
-        const index = newValue.indexOf(key);
-        newValue.splice(index, 1);
-        // We'll also need to shift error message indexes
-        errors.value = reindexErrors(errors.value, (oldIndex) => {
-            if (oldIndex === index) {
-                // errors from the deleted key should be discarded
-                return undefined;
-            } else if (oldIndex > index) {
-                // errors from keys after the deleted one will shift backwards one position
-                return oldIndex - 1;
-            } else {
-                return oldIndex;
-            }
-        });
-    } else {
-        // This key is being turned on
-        newValue.push(key);
-    }
-    modelValue.value = newValue;
-};
-
-const subErrors = computed((): MessageBag => {
-    console.log('Recalculating sub errors');
-    console.log('modelValue', modelValue.value.join(','));
-    const out: MessageBag = {};
-    choices.value.forEach((choice) => {
-        const index = modelValue.value.indexOf(choice.key);
-        console.log(choice.key, index);
-        if (index == -1) {
-            out[choice.key] = [];
-        } else {
-            out[choice.key] = errors.value[String(index)] || [];
-        }
-    });
-    return out;
-});
-
-const hasSubErrors = computed((): BooleansMap => {
-    const out: BooleansMap = {};
-    choices.value.forEach((choice) => {
-        out[choice.key] = subErrors.value[choice.key].length > 0;
-    });
-    return out;
-});
+const { choicesNormalized, possibleValues, subValues, toggle, subErrors, hasSubErrors } = useHasChoicesMultiple(modelValue, errors, propRefs);
 
 </script>

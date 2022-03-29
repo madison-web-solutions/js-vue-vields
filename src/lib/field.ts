@@ -1,7 +1,7 @@
 import type { Ref, PropType } from 'vue';
 import type { MessageBag, Path, FormValue, ChoiceList, Choosable } from '@/main';
 import { computed, provide, inject, ref, watchEffect } from 'vue';
-import { getUniqueKey, sliceMessageBag, symbols } from '@/main';
+import { getUniqueKey, sliceMessageBag, reindexErrors, symbols } from '@/main';
 import { startCase } from '@/lib/util';
 
 export const commonProps = {
@@ -151,9 +151,10 @@ export function useFormField<ValueType extends FormValue> (valueCoerceFn: (val: 
     return { inputEleId, path, pathString, rawValue, modelValue, errors, myErrors, hasError, editMode };
 };
 
+export type BooleansMap = {[key: string]: boolean};
+export type KeysList = (string | number)[];
 
 type UseHasChoicePropRefs = {
-    modelValue: Ref<string | number | undefined>,
     directory?: Ref<string | undefined>,
     choices?: Ref<string | object | undefined>,
     extraParams?: Ref<object | undefined>,
@@ -161,7 +162,7 @@ type UseHasChoicePropRefs = {
 
 export const useHasChoices = (props: UseHasChoicePropRefs) => {
 
-    const { modelValue, directory, choices, extraParams } = props;
+    const { directory, choices, extraParams } = props;
 
     const provider = inject(symbols.choiceListProvider, undefined);
 
@@ -222,6 +223,18 @@ export const useHasChoices = (props: UseHasChoicePropRefs) => {
         }
         return out;
     });
+    
+    const possibleValues = computed((): (string | number)[] => {
+        return choicesNormalized.value.map(choice => choice.key);
+    });
+
+    return { choicesNormalized, possibleValues };
+};
+
+
+export const useHasChoicesSingle = (modelValue: Ref<string | number | undefined>, props: UseHasChoicePropRefs) => {
+
+    const { choicesNormalized, possibleValues } = useHasChoices(props);
 
     const currentChoice = computed((): Choosable | null => {
         for (const choice of choicesNormalized.value) {
@@ -232,13 +245,71 @@ export const useHasChoices = (props: UseHasChoicePropRefs) => {
         return null;
     });
     
-    const possibleValues = computed((): (string | number)[] => {
-        return choicesNormalized.value.map(choice => choice.key);
-    });
-    
     const nullSelected = computed(() => {
         return modelValue.value == null || possibleValues.value.includes(modelValue.value);
     });
 
     return { choicesNormalized, currentChoice, possibleValues, nullSelected };
+};
+
+
+export const useHasChoicesMultiple = (modelValue: Ref<KeysList>, errors: Ref<MessageBag>, props: UseHasChoicePropRefs) => {
+
+    const { choicesNormalized, possibleValues } = useHasChoices(props);
+
+    const subValues = computed((): BooleansMap => {
+        const out: BooleansMap = {};
+        choicesNormalized.value.forEach((choice) => {
+            out[String(choice.key)] = modelValue.value.includes(choice.key);
+        });
+        return out;
+    });
+
+    const toggle = (key: string | number): void => {
+        const newValue = modelValue.value.slice();
+        if (newValue.includes(key)) {
+            // This key is being turned off
+            const index = newValue.indexOf(key);
+            newValue.splice(index, 1);
+            // We'll also need to shift error message indexes
+            errors.value = reindexErrors(errors.value, (oldIndex) => {
+                if (oldIndex === index) {
+                    // errors from the deleted key should be discarded
+                    return undefined;
+                } else if (oldIndex > index) {
+                    // errors from keys after the deleted one will shift backwards one position
+                    return oldIndex - 1;
+                } else {
+                    return oldIndex;
+                }
+            });
+        } else {
+            // This key is being turned on
+            newValue.push(key);
+        }
+        modelValue.value = newValue;
+    };
+    
+    const subErrors = computed((): MessageBag => {
+        const out: MessageBag = {};
+        choicesNormalized.value.forEach((choice) => {
+            const index = modelValue.value.indexOf(choice.key);
+            if (index == -1) {
+                out[choice.key] = [];
+            } else {
+                out[choice.key] = errors.value[String(index)] || [];
+            }
+        });
+        return out;
+    });
+    
+    const hasSubErrors = computed((): BooleansMap => {
+        const out: BooleansMap = {};
+        choicesNormalized.value.forEach((choice) => {
+            out[choice.key] = subErrors.value[choice.key].length > 0;
+        });
+        return out;
+    });
+
+    return { choicesNormalized, possibleValues, subValues, toggle, subErrors, hasSubErrors };
 };

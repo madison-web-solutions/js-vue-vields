@@ -13,9 +13,8 @@
 <script setup lang="ts">
 import type { MessageBag } from '@/main';
 import { computed, toRefs } from 'vue';
-import { commonProps, useFormField } from '@/main';
+import { commonProps, useFormField, useHasChoicesSingle } from '@/main';
 import { FieldWrapper } from '@/main';
-import { useHasChoices } from '@/lib/field';
 
 type IdType = string | number | undefined;
 
@@ -50,12 +49,7 @@ const coerceFn = (value: any): IdType => {
 
 const { inputEleId, modelValue, myErrors, hasError } = useFormField<IdType>(coerceFn, emit, propRefs);
 
-const { choicesNormalized, currentChoice, possibleValues, nullSelected } = useHasChoices({
-    modelValue: modelValue,
-    directory: propRefs.directory,
-    choices: propRefs.choices,
-    extraParams: propRefs.extraParams,
-});
+const { choicesNormalized, currentChoice, nullSelected } = useHasChoicesSingle(modelValue, propRefs);
 
 const nullLabel = computed(() => {
     return props.placeholder || (props.required ? 'Select' : '');

@@ -11,8 +11,9 @@
                         <RadioField label="Type" name="type" choices="new,existing" class="col-12" />
                         <RepeaterField label="Pets" name="pets" class="col-12">
                             <div class="row">
-                                <TextField label="Name" name="name" class="col-md-6" />
-                                <SelectField label="Type" name="type" choices="cat,dog,fish" class="col-md-6" />
+                                <TextField label="Name" name="name" class="col-md-4" />
+                                <SelectField label="Type" name="type" choices="cat,dog,fish" class="col-md-4" />
+                                <CheckboxesField label="Attributes" name="attributes" choices="cute,stupid,fat" class="col-md-4" />
                             </div>
                         </RepeaterField>
                         <DateField label="Date of Birth" name="dob" max="today" class="col-md-4" />
