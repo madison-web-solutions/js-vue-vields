@@ -2,7 +2,7 @@ import { defineAsyncComponent } from 'vue';
 
 import type { CompoundFormValue, RepeaterFormValue, FormValue, Path } from '@/lib/util';
 import type { MessageBag } from '@/lib/MessageBag';
-import type { Choosable, ChoiceList, ChoiceListProvider, SearchResultPage, SearchProvider } from '@/lib/search';
+import type { Choosable, ChoicesProvider, SearchResultPage } from '@/lib/search';
 import type { BooleansMap, KeysList } from '@/lib/field';
 import { sliceMessageBag, spliceMessageBag } from '@/lib/MessageBag';
 import { getUniqueKey, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols } from '@/lib/util';
@@ -25,7 +25,7 @@ import FieldGroup from '@/components/FieldGroup.vue';
 
 const HtmlField = defineAsyncComponent(() => import('@/components/HtmlField.vue'));
 
-export type { CompoundFormValue, RepeaterFormValue, FormValue, MessageBag, BooleansMap, KeysList, Choosable, ChoiceList, SearchResultPage, SearchProvider, ChoiceListProvider, Path };
+export type { CompoundFormValue, RepeaterFormValue, FormValue, MessageBag, BooleansMap, KeysList, Choosable, SearchResultPage, ChoicesProvider, Path };
 export { commonProps, useFormField, useHasChoices, useHasChoicesSingle, useHasChoicesMultiple }
 export { sliceMessageBag, spliceMessageBag }
 export { getUniqueKey, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols };

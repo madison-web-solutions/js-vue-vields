@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag, Choosable, ChoiceList, SearchResultPage } from '@/main';
+import type { MessageBag, Choosable, SearchResultPage } from '@/main';
 import { computed, ref, toRefs, watchEffect, inject, onBeforeUnmount } from 'vue';
 import { commonProps, useFormField, symbols } from '@/main';
 import { FieldWrapper } from '@/main';
@@ -68,7 +68,7 @@ const coerceFn = (value: any): IdType => {
 
 const { inputEleId, modelValue, myErrors, hasError } = useFormField<IdType>(coerceFn, emit, propRefs);
 
-const provider = inject(symbols.searchProvider);
+const provider = inject(symbols.choicesProvider);
 
 const currentItem = ref<Choosable | null>(null);
 
@@ -91,11 +91,11 @@ const searchOpen = ref(false);
 const searchText = ref<string>('');
 
 // Array of search result pages fetched so far.  Null means we haven't searched for anything.
-const fetchedPages = ref<SearchResultPage[] | null>(null);
+const fetchedPages = ref<SearchResultPage<Choosable>[] | null>(null);
 
 // Array of all the suggestions fetched so for.
-const suggestions = computed((): ChoiceList => {
-    const out: ChoiceList = [];
+const suggestions = computed((): Choosable[] => {
+    const out: Choosable[] = [];
     if (fetchedPages.value != null) {
         for (const result of fetchedPages.value) {
             out.push(...result.suggestions);

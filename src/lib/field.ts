@@ -1,5 +1,5 @@
 import type { Ref, PropType } from 'vue';
-import type { MessageBag, Path, FormValue, ChoiceList, Choosable } from '@/main';
+import type { MessageBag, Path, FormValue, Choosable } from '@/main';
 import { computed, provide, inject, ref, watchEffect } from 'vue';
 import { getUniqueKey, sliceMessageBag, reindexErrors, symbols } from '@/main';
 import { startCase } from '@/lib/util';
@@ -164,14 +164,14 @@ export const useHasChoices = (props: UseHasChoicePropRefs) => {
 
     const { directory, choices, extraParams } = props;
 
-    const provider = inject(symbols.choiceListProvider, undefined);
+    const provider = inject(symbols.choicesProvider, undefined);
 
-    const directoryChoices = ref<ChoiceList>([]);
+    const directoryChoices = ref<Choosable[]>([]);
     
     watchEffect(() => {
         if (directory != null && directory.value != null) {
             if (provider != null && provider.value != null) {
-                provider.value.get(directory.value, extraParams?.value || {}).then((choiceListResult) => {
+                provider.value.getAll(directory.value, extraParams?.value || {}).then((choiceListResult) => {
                     directoryChoices.value = choiceListResult || [];
                 });
             } else {
@@ -185,13 +185,13 @@ export const useHasChoices = (props: UseHasChoicePropRefs) => {
         return typeof obj == 'object' && obj != null && 'key' in obj && typeof obj.key == 'string';
     };
 
-    const choicesNormalized = computed((): ChoiceList => {
+    const choicesNormalized = computed((): Choosable[] => {
         if (directory != null && directory.value != null) {
             // Directory is specified, so use the set of choices from the provider
             return directoryChoices.value;
         }
         // Directory is not specified, so the set of choices should be specified as a prop instead
-        const out: ChoiceList = [];
+        const out: Choosable[] = [];
         if (choices == null || choices.value == null) {
             // No options
         } else if (Array.isArray(choices.value)) {

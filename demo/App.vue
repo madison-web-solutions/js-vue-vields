@@ -22,13 +22,6 @@
                         <hr />
                         <HtmlField label="Description" name="description" class="col-12" />
                         <hr />
-                        <SearchField label="Search Foo" name="foo" directory="cats" class="mb-3">
-                            <template #suggestion="{ suggestion }">
-                                {{ suggestion.label }}
-                                <span v-if="(suggestion as any).age">({{ (suggestion as any).age }})</span>
-                            </template>
-                        </SearchField>
-                        <hr />
                         <FlexibleContentField label="Page Sections" name="page_sections" :sectionChoices="[{key: 'banner', label: 'Banner'}, {key: 'promos', label: 'Promos'}]" class="col-12">
                             <template #banner>
                                 <div class="row g-3">
@@ -41,6 +34,16 @@
                                 </div>
                             </template>
                         </FlexibleContentField>
+                        <hr />
+                        <SearchField label="Search Cats" name="cat" directory="cats" class="col-6">
+                            <template #suggestion="{ suggestion }">
+                                {{ suggestion.label }}
+                                <span v-if="(suggestion as any).age">({{ (suggestion as any).age }})</span>
+                            </template>
+                        </SearchField>
+                        <SelectField label="Select Cat" name="cat" directory="cats" class="col-6" />
+                        <RadioField label="Select Cat" name="cat" directory="cats" class="col-6" />
+                        <CheckboxesField label="Select Cats" name="cats" directory="cats" class="col-6" />
                     </div>
                 </FieldGroup>
             </div>
@@ -52,7 +55,7 @@
 </template>
 
 <script setup lang="ts">
-import type { SearchProvider, Choosable, ChoiceList, SearchResultPage, ChoiceListProvider } from "@/main";
+import type { Choosable, SearchResultPage, ChoicesProvider } from "@/main";
 import { computed, ref, provide } from "vue";
 import { symbols } from '@/main';
 import { FieldGroup, CheckboxField, CheckboxesField, TextField, SelectField, HtmlField, CurrencyField, NumberField, ToggleField, RepeaterField, SearchField, RadioField, DateField } from "@/main";
@@ -93,7 +96,14 @@ const cats = [
     {key: 12, label: 'Samuel L Jackson'},
 ];
 
-const dummySearchProvider = ref<SearchProvider>({
+const dummyChoicesProvider = ref<ChoicesProvider>({
+    getAll: (directory: string, extraParams?: object | undefined): Promise<Choosable[]> => {
+        return new Promise<Choosable[]>((resolve, reject) => {
+            window.setTimeout(() => {
+                resolve(cats);
+            }, 200);
+        });
+    },
     lookup: (directory: string, id: string | number): Promise<Choosable | null> => {
         return new Promise<Choosable | null>((resolve, reject) => {
             window.setTimeout(() => {
@@ -106,14 +116,14 @@ const dummySearchProvider = ref<SearchProvider>({
             });
         });
     },
-    search: (directory: string, searchText: string, page?: number): Promise<SearchResultPage> => {
-        return new Promise<SearchResultPage>((resolve, reject) => {
+    search: (directory: string, searchText: string, page?: number): Promise<SearchResultPage<Choosable>> => {
+        return new Promise<SearchResultPage<Choosable>>((resolve, reject) => {
             window.setTimeout(() => {
                 if (page == null) {
                     page = 1;
                 }
-                const suggestions: ChoiceList = [];
-                const result: SearchResultPage = {page: page, hasMore: false, suggestions: suggestions};
+                const suggestions: Choosable[] = [];
+                const result: SearchResultPage<Choosable> = {page: page, hasMore: false, suggestions: suggestions};
                 if (page == 1) {
                     result.suggestions = cats.slice(0, 10);
                     result.hasMore = true;
@@ -127,17 +137,7 @@ const dummySearchProvider = ref<SearchProvider>({
     },
 });
 
-const dummyChoiceListProvider = ref<ChoiceListProvider>({
-    get: (directory: string, extraParams?: object | undefined): Promise<ChoiceList> => {
-        return new Promise<ChoiceList>((resolve, reject) => {
-            window.setTimeout(() => {
-                resolve(cats);
-            }, 200);
-        });
-    }
-});
 
-provide(symbols.searchProvider, dummySearchProvider);
-provide(symbols.choiceListProvider, dummyChoiceListProvider);
+provide(symbols.choicesProvider, dummyChoicesProvider);
 
 </script>

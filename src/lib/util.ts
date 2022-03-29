@@ -1,6 +1,6 @@
 import type { Ref, InjectionKey } from 'vue';
 import type { MessageBag } from '@/lib/MessageBag';
-import type { ChoiceListProvider, SearchProvider } from './search';
+import type { ChoicesProvider, LinksProvider } from './search';
 
 let uniqueKeyCounter: number = 1;
 export const getUniqueKey = function(): string {
@@ -338,8 +338,8 @@ const symbols = {
     errors: Symbol() as InjectionKey<Ref<MessageBag> | undefined>,
     setter: Symbol() as InjectionKey<Ref<(value: FormValue, key: string | number) => void> | undefined>,
     errorsSetter: Symbol() as InjectionKey<Ref<(newSubErrors: MessageBag, key: string | number) => void> | undefined>,
-    choiceListProvider: Symbol() as InjectionKey<Ref<ChoiceListProvider> | undefined>,
-    searchProvider: Symbol() as InjectionKey<Ref<SearchProvider> | undefined>,
+    choicesProvider: Symbol() as InjectionKey<Ref<ChoicesProvider> | undefined>,
+    linksProvider: Symbol() as InjectionKey<Ref<LinksProvider> | undefined>,
 };
 Object.freeze(symbols);
 export { symbols };
