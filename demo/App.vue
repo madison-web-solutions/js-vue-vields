@@ -3,7 +3,7 @@
         <h1>Demo App</h1>
         <div class="row">
             <div class="col-8">
-                <FieldGroup v-model="vals">
+                <FieldGroup v-model="vals" v-model:errors="errors">
                     <div class="row g-3">
                         <TextField label="First Name" name="first_name" class="col-md-6" />
                         <TextField label="Last Name" name="last_name" class="col-md-6" />
@@ -88,6 +88,12 @@ type Cat = {
     label: string,
     age?: number,
 };
+
+const errors = ref({
+    'first_name': ['Some kind of error here'],
+    'summary': ['Some kind of error here'],
+    'description': ['Some kind of error here'],
+});
 
 const cats: Cat[] = [
     {key: 1, label: 'Gary', age: 5},
