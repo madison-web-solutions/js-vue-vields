@@ -11,7 +11,7 @@
                         <TextField label="Last Name" name="last_name" class="col-md-6" />
                         <TextAreaField label="Summary" name="summary" :rows="3" class="col-12" />
                         <RadioField label="Type" name="type" choices="new,existing" class="col-12" />
-                        <RepeaterField label="Pets" name="pets" class="col-12">
+                        <RepeaterField label="Pets" name="pets" :min="3" :max="5" class="col-12">
                             <div class="row">
                                 <TextField label="Name" name="name" class="col-md-4" />
                                 <SelectField label="Type" name="type" choices="cat,dog,fish" class="col-md-4" />

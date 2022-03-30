@@ -9,7 +9,7 @@
                             <span v-if="editMode != 'edit'">{{ index + 1 }}</span>
                         </div>
                         <div v-if="editMode == 'edit'" class="btn-group mt-2">
-                            <button class="btn btn-sm btn-outline-primary" @click="insertRowAt(index)"><i class="fas fa-plus"></i></button>
+                            <button v-if="canAddRow" class="btn btn-sm btn-outline-primary" @click="insertRowAt(index)"><i class="fas fa-plus"></i></button>
                             <button class="btn btn-sm btn-outline-danger" @click="deleteRowAt(index)"><i class="fas fa-times"></i></button>
                         </div>
                     </div>
@@ -26,7 +26,7 @@
                     </template>
                 </div>
             </div>
-            <div v-if="editMode == 'edit'" class="repeater-append">
+            <div v-if="editMode == 'edit' && canAddRow" class="repeater-append">
                 <button class="btn btn-primary" @click="appendRow"><i class="fas fa-plus"></i> {{ appendLabel }}</button>
             </div>
         </template>
@@ -40,12 +40,16 @@ import { computed, provide, ref, toRefs, onBeforeUnmount } from 'vue';
 import { commonProps, useFormField, spliceMessageBag, getUniqueKey, coerceToCompoundFormValue, coerceToRepeaterFormValue, copyRepeaterFormValue, coerceToArrayKey, reindexErrors, symbols } from '@/main';
 import { RepeaterRow, FieldWrapper } from '@/main';
 
-// @todo min, max
-
 const props = defineProps(Object.assign({}, commonProps, {
     appendLabel: {
         type: String,
         default: 'Add Row',
+    },
+    min: {
+        type: Number,
+    },
+    max: {
+        type: Number,
     }
 }));
 
@@ -56,7 +60,21 @@ const emit = defineEmits<{
 
 const propRefs = toRefs(props);
 
-const { inputEleId, modelValue, errors, myErrors, editMode } = useFormField<RepeaterFormValue>(coerceToRepeaterFormValue, emit, propRefs);
+const addEnoughRows = (value: RepeaterFormValue) => {
+    if (props.min != null) {
+        while (value.length < props.min) {
+            value.push({});
+        }
+    }
+};
+
+const coerceFn = (value: unknown): RepeaterFormValue => {
+    const out = coerceToRepeaterFormValue(value);
+    addEnoughRows(out);
+    return out;
+};
+
+const { inputEleId, modelValue, errors, myErrors, editMode } = useFormField<RepeaterFormValue>(coerceFn, emit, propRefs);
 
 // provide the setter
 const setter = ref((value: FormValue, key: string | number): void => {
@@ -78,6 +96,10 @@ const errorsSetter = ref((newSubErrors: MessageBag, key: string | number): void 
 
 provide(symbols.errorsSetter, errorsSetter);
 
+const canAddRow = computed((): boolean => {
+    return props.max == null || modelValue.value.length < props.max;
+});
+
 const appendRow = (): void => {
     // make a copy of our array
     const modelValueCopy: RepeaterFormValue = copyRepeaterFormValue(modelValue.value);
@@ -92,6 +114,8 @@ const deleteRowAt = (index: number): void => {
     const modelValueCopy: RepeaterFormValue = copyRepeaterFormValue(modelValue.value);
     // remove the row at index
     modelValueCopy.splice(index, 1);
+    // add rows if necessary to meet minimum requirement
+    addEnoughRows(modelValueCopy);
     // set our new value
     modelValue.value = modelValueCopy;
 
