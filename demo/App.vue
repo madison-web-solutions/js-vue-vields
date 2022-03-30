@@ -44,6 +44,8 @@
                         <SelectField label="Select Cat" name="cat" directory="cats" class="col-6" />
                         <RadioField label="Select Cat" name="cat" directory="cats" class="col-6" />
                         <CheckboxesField label="Select Cats" name="cats" directory="cats" class="col-6" />
+                        <hr />
+                        <LinkField label="Link" name="link" class="col-6" />
                     </div>
                 </FieldGroup>
             </div>
@@ -55,10 +57,10 @@
 </template>
 
 <script setup lang="ts">
-import type { Choosable, SearchResultPage, ChoicesProvider } from "@/main";
+import type { Choosable, LinkAlias, SearchResultPage, ChoicesProvider, LinksProvider } from "@/main";
 import { computed, ref, provide } from "vue";
 import { symbols } from '@/main';
-import { FieldGroup, CheckboxField, CheckboxesField, TextField, SelectField, HtmlField, CurrencyField, NumberField, ToggleField, RepeaterField, SearchField, RadioField, DateField } from "@/main";
+import { FieldGroup, CheckboxField, CheckboxesField, TextField, SelectField, HtmlField, CurrencyField, NumberField, ToggleField, RepeaterField, SearchField, RadioField, DateField, LinkField } from "@/main";
 import TextAreaField from "@/components/TextAreaField.vue";
 import FlexibleContentField from "@/components/FlexibleContentField.vue";
 
@@ -81,7 +83,13 @@ const vals = ref({
     ]
 });
 
-const cats = [
+type Cat = {
+    key: number,
+    label: string,
+    age?: number,
+};
+
+const cats: Cat[] = [
     {key: 1, label: 'Gary', age: 5},
     {key: 2, label: 'Waffles', age: 2},
     {key: 3, label: 'Eggs'} ,
@@ -137,7 +145,57 @@ const dummyChoicesProvider = ref<ChoicesProvider>({
     },
 });
 
-
 provide(symbols.choicesProvider, dummyChoicesProvider);
+
+const catToLink = (cat: Cat): LinkAlias => {
+    return {
+        scheme: 'cat',
+        key: String(cat.key),
+        label: cat.label,
+        url: 'https://www.cats.com/' + String(cat.key)
+    };
+};
+
+const dummyLinksProvider = ref<LinksProvider>({
+    lookup: (scheme: string, key: string): Promise<LinkAlias | null> => {
+        return new Promise<LinkAlias | null>((resolve, reject) => {
+            window.setTimeout(() => {
+                for (const cat of cats) {
+                    if (scheme === 'cat' && String(cat.key) === key) {
+                        resolve(catToLink(cat));
+                    }
+                }
+                resolve(null);
+            });
+        });
+    },
+    search: (scheme: string, searchText: string, page?: number): Promise<SearchResultPage<LinkAlias>> => {
+        return new Promise<SearchResultPage<LinkAlias>>((resolve, reject) => {
+            window.setTimeout(() => {
+                if (page == null) {
+                    page = 1;
+                }
+                const suggestions: LinkAlias[] = [];
+                const result: SearchResultPage<LinkAlias> = {page: page, hasMore: false, suggestions: suggestions};
+                if (scheme === 'cat') {
+                    if (page == 1) {
+                        result.suggestions = cats.slice(0, 10).map(catToLink);
+                        result.hasMore = true;
+                    } else if (page == 2) {
+                        result.suggestions = cats.slice(10, 20).map(catToLink);
+                        result.hasMore = false;
+                    }
+                }
+                resolve(result);
+            }, 1000);
+        });
+    },
+    schemes: [
+        {key: 'cat', label: 'Cat'},
+        {key: 'product', label: 'Product'},
+    ],
+});
+
+provide(symbols.linksProvider, dummyLinksProvider);
 
 </script>

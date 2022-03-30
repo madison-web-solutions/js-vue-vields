@@ -2,7 +2,7 @@ import { defineAsyncComponent } from 'vue';
 
 import type { CompoundFormValue, RepeaterFormValue, FormValue, Path } from '@/lib/util';
 import type { MessageBag } from '@/lib/MessageBag';
-import type { Choosable, ChoicesProvider, SearchResultPage } from '@/lib/search';
+import type { Choosable, LinkAlias, SearchResultPage, ChoicesProvider, LinksProvider } from '@/lib/search';
 import type { BooleansMap, KeysList } from '@/lib/field';
 import { sliceMessageBag, spliceMessageBag } from '@/lib/MessageBag';
 import { getUniqueKey, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols } from '@/lib/util';
@@ -20,13 +20,14 @@ import RadioField from '@/components/RadioField.vue';
 import SearchField from '@/components/SearchField.vue';
 import SelectField from '@/components/SelectField.vue';
 import FlexibleContentField from '@/components/FlexibleContentField.vue';
+import LinkField from "@/components/LinkField.vue";
 import FieldWrapper from '@/components/FieldWrapper.vue';
 import FieldGroup from '@/components/FieldGroup.vue';
 
 const HtmlField = defineAsyncComponent(() => import('@/components/HtmlField.vue'));
 
-export type { CompoundFormValue, RepeaterFormValue, FormValue, MessageBag, BooleansMap, KeysList, Choosable, SearchResultPage, ChoicesProvider, Path };
+export type { CompoundFormValue, RepeaterFormValue, FormValue, MessageBag, BooleansMap, KeysList, Choosable, LinkAlias, SearchResultPage, ChoicesProvider, LinksProvider, Path };
 export { commonProps, useFormField, useHasChoices, useHasChoicesSingle, useHasChoicesMultiple }
 export { sliceMessageBag, spliceMessageBag }
 export { getUniqueKey, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols };
-export { TextField, CheckboxField, CheckboxesField, CurrencyField, DateField, NumberField, ToggleField, RepeaterField, RepeaterRow, RadioField, SearchField, SelectField, HtmlField, FlexibleContentField, FieldWrapper, FieldGroup };
+export { TextField, CheckboxField, CheckboxesField, CurrencyField, DateField, NumberField, ToggleField, RepeaterField, RepeaterRow, RadioField, SearchField, SelectField, HtmlField, FlexibleContentField, LinkField, FieldWrapper, FieldGroup };
