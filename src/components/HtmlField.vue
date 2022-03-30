@@ -1,7 +1,7 @@
 <template>
     <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors">
         <template #input>
-            <div ref="editorContainerEle" class="html-field"></div>
+            <div ref="editorContainerEle" class="html-field" :class="{'is-invalid': hasError}"></div>
         </template>
         <template #viewMode>{{ modelValue }}</template>
     </FieldWrapper>

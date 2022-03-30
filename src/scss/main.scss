@@ -1,0 +1,24 @@
+
+// Add invalid style to the ckeditor instance
+.html-field.is-invalid {
+    .ck.ck-editor__main > .ck-editor__editable:not(.ck-focused) {
+        border-color: $form-feedback-invalid-color;
+    }
+    .ck.ck-editor__editable {
+        // copied from bootstap mixins->forms
+        @if $enable-validation-icons {
+            padding-right: $input-height-inner;
+            background-image: escape-svg($form-feedback-icon-invalid);
+            background-repeat: no-repeat;
+            background-position: top $input-height-inner-quarter right $input-height-inner-quarter;
+            background-size: $input-height-inner-half $input-height-inner-half;
+          }
+    }
+}
+
+.search-field-results {
+    max-height: 16rem;
+    overflow-y: auto;
+}
+
+@import "./repeater.scss";
