@@ -2,13 +2,17 @@
     <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors">
         <template #input>
             <div class="input-group">
-                <select v-if="availableSchemes.length > 0" class="form-control flex-grow-0 w-auto">
+                <select v-if="availableSchemes.length > 0" class="form-control flex-grow-0 w-auto" v-model="schemeKey">
                     <option v-for="scheme in availableSchemes" :value="scheme.key">{{ scheme.label }}</option>
                 </select>
-                <input type="text" class="form-control" />
-                <button v-if="modelValueParts.custom" class="btn btn-outline-primary" type="button"><i class="fas fa-search"></i></button>
-                <button v-if="modelValue" class="btn btn-outline-danger" type="button"><i class="fas fa-times"></i></button>
+                <div v-if="schemeKey != 'url'" class="form-control" :class="{'is-invalid': hasError}" :disabled="disabled" @click="toggleOpenSearch">
+                    {{ displayValue }}
+                </div>
+                <input v-if="schemeKey == 'url'" type="text" class="form-control" :class="{'is-invalid': hasError}" :disabled="disabled" placeholder="https://" v-model="aliasKey" />
+                <button v-if="schemeKey != 'url'" class="btn btn-outline-primary" type="button" @click="toggleOpenSearch"><i class="fas fa-search"></i></button>
+                <button v-if="aliasKey" class="btn btn-outline-danger" type="button" @click="clearValue"><i class="fas fa-times"></i></button>
             </div>
+            <SearchInterface v-if="searchOpen" :searchFn="searchFn" @close="closeSearch" @selected="chooseSuggestion" />
         </template>
         <template #viewMode>{{ displayValue }}</template>
     </FieldWrapper>
@@ -19,30 +23,13 @@ import { Choosable, LinkAlias, MessageBag, symbols } from '@/main';
 import { computed, ref, inject, toRefs, watchEffect } from 'vue';
 import { commonProps, useFormField } from '@/main';
 import { FieldWrapper } from '@/main';
-/*
-Maybe there should be a provider saying what custom types of thing you can link to
-eg product, page, category etc
-In the database we can treat these things as custom url schemes, so we'll have things like
-https://www.google.co.uk
-product://234
-category://spoons
-If the URL scheme is one of the things the provider said we could link to, then we can look up
-the actual URL of the item using the search provider perhaps
-eg product://234 -> https://somesite.co.uk/p/a-nice-product
-If the URL scheme is not in the list from the provider, then we just show the raw text in an input
-We can have a dropdown with 'Product', 'Page', 'Category', 'URL'
-When editing the value, if one of the linkable types is chosen, we can give them a search
-interface, and search for things to link to..
-what directory should we use? Always use 'link' perhaps, and supply the scheme as a parameter?
-directory=link extraParams={scheme:product}
-Or maybe we require a different provider for link searches? Seems a bit pointless though as the
-methods are bound to be very similar...
-although, when you're creating your provider implementation you can just use the same function for
-both implementations.
-*/
+import SearchInterface from './SearchInterface.vue';
 
-
-const props = defineProps(Object.assign({}, commonProps, {}));
+const props = defineProps(Object.assign({}, commonProps, {
+    extraParams: {
+        type: Object,
+    },
+}));
 
 const emit = defineEmits<{
     (e: 'update:modelValue', value: string | undefined): void
@@ -55,31 +42,32 @@ const coerceFn = (value: unknown): string => {
     return value ? String(value) : '';
 };
 
-const { inputEleId, modelValue, myErrors, hasError } = useFormField<string>(coerceFn, emit, propRefs);
+const { inputEleId, modelValue, myErrors, hasError } = useFormField<string | undefined>(coerceFn, emit, propRefs);
 
 const provider = inject(symbols.linksProvider);
+
+const urlScheme = {key: 'url', label: 'URL'};
 
 const availableSchemes = computed((): Choosable[] => {
     if (provider == null || provider.value == null) {
         return [];
     } else {
-        return provider.value.schemes;
+        return provider.value.schemes.concat(urlScheme);
     }
 });
 
 const modelValueParts = computed(() => {
-    if (provider == null || provider.value == null) {
+    if (provider == null || provider.value == null || modelValue.value == null) {
         return {
-            custom: true,
-            url: modelValue.value,
+            scheme: urlScheme,
+            key: '',
         };
     }
-    const parts = modelValue.value.split('://', 2);
+    const parts = modelValue.value.split(':', 2);
     if (parts.length == 2) {
-        for (const scheme of provider.value.schemes) {
+        for (const scheme of availableSchemes.value) {
             if (scheme.key == parts[0]) {
                 return {
-                    custom: false,
                     scheme: scheme,
                     key: parts[1],
                 };
@@ -87,27 +75,95 @@ const modelValueParts = computed(() => {
         }
     }
     return {
-        custom: true,
-        url: modelValue.value,
+        scheme: urlScheme,
+        key: modelValue.value,
     };
 });
+
+const schemeKey = computed({
+    get: (): string => {
+        return String(modelValueParts.value.scheme.key);
+    },
+    set: (newSchemeKey: string) => {
+        modelValue.value = newSchemeKey + ':'; 
+    }
+});
+
+const aliasKey = computed({
+    get: (): string => {
+        return modelValueParts.value.key;
+    },
+    set: (newAliasKey: string) => {
+        modelValue.value = schemeKey.value + ':' + newAliasKey; 
+    }
+});
+
+const clearValue = () => {
+    if (modelValueParts.value.scheme == null) {
+        modelValue.value = '';
+    } else {
+        modelValue.value = schemeKey.value + ':';
+    }
+};
 
 const currentLinkAlias = ref<LinkAlias | null>(null);
 
 watchEffect(() => {
     currentLinkAlias.value = null;
     if (provider != null && modelValueParts.value.scheme != null) {
-        provider.value.lookup(modelValueParts.value.scheme.key, modelValueParts.value.key).then((result) => {
+        provider.value.lookup(schemeKey.value, modelValueParts.value.key).then((result) => {
             currentLinkAlias.value = result;
         });
     }
 });
 
+const searchFn = (searchTextValue: string, page: number) => {
+    if (modelValueParts.value.scheme == null || provider == null) {
+        return null;
+    }
+    if (searchTextValue.length < 3) {
+        return null;
+    }
+    return provider.value.search(schemeKey.value, searchTextValue, page, props.extraParams);
+};
+
+// Is the search interface open or not?
+const searchOpen = ref(false);
+
+const toggleOpenSearch = () => {
+    if (searchOpen.value) {
+        closeSearch();
+    } else {
+        openSearch();
+    }
+};
+
+const closeSearch = () => {
+    searchOpen.value = false;
+};
+
+const openSearch = () => {
+    if (props.disabled) {
+        return;
+    }
+    searchOpen.value = true;
+};
+
+const chooseSuggestion = (suggestion: Choosable | undefined) => {
+    if (props.disabled) {
+        return;
+    }
+    closeSearch();
+    modelValue.value = (suggestion == null ? undefined : (suggestion as LinkAlias).scheme + ':' + suggestion.key);
+};
+
 const displayValue = computed((): string => {
-    if (currentLinkAlias.value) {
+    if (schemeKey.value == 'url') {
+        return modelValue.value || '';
+    } else if (currentLinkAlias.value) {
         return currentLinkAlias.value.label;
     } else {
-        return modelValue.value;
+        return modelValueParts.value.key || '';
     }
 });
 

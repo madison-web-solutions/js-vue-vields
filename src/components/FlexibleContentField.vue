@@ -23,14 +23,14 @@
 
 <script setup lang="ts">
 import type { PropType } from 'vue';
-import type { ChoiceList, MessageBag, RepeaterFormValue } from '@/main';
+import type { Choosable, MessageBag, RepeaterFormValue } from '@/main';
 import { commonProps } from '@/main';
 import { RepeaterField } from '@/main';
 import SelectField from './SelectField.vue';
 
 const props = defineProps(Object.assign({}, commonProps, {
     sectionChoices: {
-        type: Object as PropType<ChoiceList>,
+        type: Object as PropType<Choosable[]>,
         default: [],
     }
 }));

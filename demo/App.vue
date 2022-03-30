@@ -5,6 +5,8 @@
             <div class="col-8">
                 <FieldGroup v-model="vals" v-model:errors="errors">
                     <div class="row g-3">
+                        <LinkField label="Link" name="link" class="col-12" />
+                        <hr />
                         <TextField label="First Name" name="first_name" class="col-md-6" />
                         <TextField label="Last Name" name="last_name" class="col-md-6" />
                         <TextAreaField label="Summary" name="summary" :rows="3" class="col-12" />
@@ -44,8 +46,6 @@
                         <SelectField label="Select Cat" name="cat" directory="cats" class="col-6" />
                         <RadioField label="Select Cat" name="cat" directory="cats" class="col-6" />
                         <CheckboxesField label="Select Cats" name="cats" directory="cats" class="col-6" />
-                        <hr />
-                        <LinkField label="Link" name="link" class="col-6" />
                     </div>
                 </FieldGroup>
             </div>
