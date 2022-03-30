@@ -24,6 +24,13 @@
         justify-content: center;
     }
 
+    .btn-repeater-move {
+        cursor: move;
+        &:hover {
+            border: 1px dashed $border-color;
+        }
+    }
+
     // Repeater item moving
     // When a row is being moved, divs are added to the dom to act as targets for dropping the row into a new position
     // For each row, there's a move-before target, and a move-after target

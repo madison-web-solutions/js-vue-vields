@@ -4,11 +4,13 @@
             <div class="repeater">
                 <div class="repeater-item" :class="{'is-moving': index === movingIndex}" :style="itemStyle(index)" v-for="(rowVals, index) in modelValue">
                     <div class="repeater-item-control">
-                        <div>{{ index }}</div>
-                        <div v-if="editMode == 'edit'" class="btn-group">
-                            <button class="btn btn-outline-primary" @click="insertRowAt(index)"><i class="fas fa-plus"></i></button>
-                            <button class="btn btn-outline-primary" @click="startMove(index)"><i class="fas fa-arrows-alt"></i></button>
-                            <button class="btn btn-outline-danger" @click="deleteRowAt(index)"><i class="fas fa-trash"></i></button>
+                        <div>
+                            <button v-if="editMode == 'edit'" class="btn btn-repeater-move" @click="startMove(index)">{{ index + 1 }}</button>
+                            <span v-if="editMode != 'edit'">{{ index + 1 }}</span>
+                        </div>
+                        <div v-if="editMode == 'edit'" class="btn-group mt-2">
+                            <button class="btn btn-sm btn-outline-primary" @click="insertRowAt(index)"><i class="fas fa-plus"></i></button>
+                            <button class="btn btn-sm btn-outline-danger" @click="deleteRowAt(index)"><i class="fas fa-times"></i></button>
                         </div>
                     </div>
                     <RepeaterRow class="repeater-item-content" :index="index" :subVals="rowVals">
