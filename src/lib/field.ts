@@ -172,7 +172,11 @@ export const useHasChoices = (props: UseHasChoicePropRefs) => {
         if (directory != null && directory.value != null) {
             if (provider != null && provider.value != null) {
                 provider.value.getAll(directory.value, extraParams?.value || {}).then((choiceListResult) => {
-                    directoryChoices.value = choiceListResult || [];
+                    if (choiceListResult.status == 'found') {
+                        directoryChoices.value = choiceListResult.resource;
+                    } else {
+                        directoryChoices.value = [];
+                    }
                 });
             } else {
                 console.log("Warning, directory " + directory.value + " specified in field but there is no choice list provider");

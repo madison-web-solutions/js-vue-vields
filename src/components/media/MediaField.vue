@@ -59,7 +59,9 @@ watchEffect(() => {
     currentItem.value = null;
     if (provider != null && modelValue.value != null) {
         provider.value.lookup(modelValue.value).then((searchResult) => {
-            currentItem.value = searchResult;
+            if (searchResult.status == 'found') {
+                currentItem.value = searchResult.resource;
+            }
         });
     }
 });

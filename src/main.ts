@@ -4,13 +4,20 @@ export type UpdateOk<T> = {
     status: 'ok',
     resource: T
 };
-
 export type UpdateFailed = {
     status: 'fail',
     errors: MessageBag,
 }
-
 export type UpdateResult<T> = UpdateOk<T> | UpdateFailed;
+
+export type LookupFound<T> = {
+    status: 'found',
+    resource: T,
+};
+export type LookupNotFound = {
+    status: 'not-found',
+};
+export type LookupResult<T> = LookupFound<T> | LookupNotFound;
 
 import type { CompoundFormValue, RepeaterFormValue, FormValue, Path } from '@/lib/util';
 import type { MessageBag } from '@/lib/MessageBag';

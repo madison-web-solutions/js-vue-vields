@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import type { MediaItem, MessageBag, UpdateResult } from '@/main';
+import type { MediaItem, MessageBag, LookupResult, UpdateResult } from '@/main';
 import { computed, ref, inject, watchEffect } from 'vue';
 import { getIconCssClass } from '@/lib/media';
 import { symbols, FieldGroup, TextField } from '@/main';
@@ -78,13 +78,13 @@ watchEffect(() => {
     item.value = null;
     loadStatus.value = 'loading';
     if (provider != null) {
-        provider.value.lookup(props.itemId).then((result: MediaItem | null) => {
-            if (result == null) {
-                loadStatus.value = 'missing';
-            } else {
-                item.value = result;
+        provider.value.lookup(props.itemId).then((result: LookupResult<MediaItem>) => {
+            if (result.status == 'found') {
+                item.value = result.resource;
                 loadStatus.value = 'loaded';
                 reset();
+            } else {
+                loadStatus.value = 'missing';
             }
         });
     }

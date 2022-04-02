@@ -59,7 +59,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Choosable, LinkAlias, MediaItem, ResizableMediaItem, SearchResultPage, ChoicesProvider, LinksProvider, MediaProvider, UpdateResult } from "@/main";
+import type { Choosable, LinkAlias, MediaItem, ResizableMediaItem, SearchResultPage, ChoicesProvider, LinksProvider, MediaProvider, LookupResult, UpdateResult } from "@/main";
 import { computed, ref, provide } from "vue";
 import { symbols } from '@/main';
 import { FieldGroup, CheckboxField, CheckboxesField, TextField, SelectField, HtmlField, CurrencyField, NumberField, ToggleField, RepeaterField, SearchField, RadioField, DateField, LinkField, MediaField } from "@/main";
@@ -114,22 +114,22 @@ const cats: Cat[] = [
 ];
 
 const dummyChoicesProvider = ref<ChoicesProvider>({
-    getAll: (directory: string, extraParams?: object | undefined): Promise<Choosable[]> => {
-        return new Promise<Choosable[]>((resolve, reject) => {
+    getAll: (directory: string, extraParams?: object | undefined): Promise<LookupResult<Choosable[]>> => {
+        return new Promise<LookupResult<Choosable[]>>((resolve, reject) => {
             window.setTimeout(() => {
-                resolve(cats);
+                resolve({status: 'found', resource: cats});
             }, 200);
         });
     },
-    lookup: (directory: string, id: string | number): Promise<Choosable | null> => {
-        return new Promise<Choosable | null>((resolve, reject) => {
+    lookup: (directory: string, id: string | number): Promise<LookupResult<Choosable>> => {
+        return new Promise<LookupResult<Choosable>>((resolve, reject) => {
             window.setTimeout(() => {
                 for (const cat of cats) {
                     if (cat.key == id) {
-                        resolve(cat);
+                        resolve({status: 'found', resource: cat});
                     }
                 }
-                resolve(null);
+                resolve({status: 'not-found'});
             });
         });
     },
@@ -166,15 +166,15 @@ const catToLink = (cat: Cat): LinkAlias => {
 };
 
 const dummyLinksProvider = ref<LinksProvider>({
-    lookup: (scheme: string, key: string): Promise<LinkAlias | null> => {
-        return new Promise<LinkAlias | null>((resolve, reject) => {
+    lookup: (scheme: string, key: string): Promise<LookupResult<LinkAlias>> => {
+        return new Promise<LookupResult<LinkAlias>>((resolve, reject) => {
             window.setTimeout(() => {
                 for (const cat of cats) {
                     if (scheme === 'cat' && String(cat.key) === key) {
-                        resolve(catToLink(cat));
+                        resolve({status: 'found', resource: catToLink(cat)});
                     }
                 }
-                resolve(null);
+                resolve({status: 'not-found'});
             });
         });
     },
@@ -235,9 +235,9 @@ const dummyMediaProvider = ref<MediaProvider>({
             window.setTimeout(() => resolve(result), 600);
         });
     },
-    lookup: (key: number | string): Promise<MediaItem | null> => {
-        return new Promise<MediaItem | null>((resolve, reject) => {
-            window.setTimeout(() => resolve(generateFakeMediaItem()), 600);
+    lookup: (key: number | string): Promise<LookupResult<MediaItem>> => {
+        return new Promise<LookupResult<MediaItem>>((resolve, reject) => {
+            window.setTimeout(() => resolve({status: 'found', resource: generateFakeMediaItem()}), 600);
         });
     },
     upload: (data: FormData, progressCallback: (loaded: number, total: number) => void): Promise<UpdateResult<MediaItem>> => {
@@ -248,9 +248,9 @@ const dummyMediaProvider = ref<MediaProvider>({
             window.setTimeout(() => resolve({status: 'ok', resource: generateFakeMediaItem()}), 3000);
         });
     },
-    delete: (key: number | string): Promise<void> => {
-        return new Promise<void>((resolve, reject) => {
-            window.setTimeout(() => resolve(), 3000);
+    delete: (key: number | string): Promise<boolean> => {
+        return new Promise<boolean>((resolve, reject) => {
+            window.setTimeout(() => resolve(true), 3000);
         });
     },
     update: (key: number | string, data: object): Promise<UpdateResult<MediaItem>> => {

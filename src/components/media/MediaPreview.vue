@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import type { MediaItem, ResizableMediaItem } from '@/lib/media';
+import type { MediaItem, LookupResult } from '@/main';
 import { ref, computed, inject, watchEffect } from 'vue';
 import { symbols } from '@/main';
 import { isMediaItemResizable, getIconCssClass } from '@/lib/media';
@@ -54,12 +54,12 @@ watchEffect(() => {
     item.value = null;
     loadStatus.value = 'loading';
     if (provider != null) {
-        provider.value.lookup(props.itemId).then((result: MediaItem | null) => {
-            if (result == null) {
-                loadStatus.value = 'missing';
-            } else {
-                item.value = result;
+        provider.value.lookup(props.itemId).then((result: LookupResult<MediaItem>) => {
+            if (result.status == 'found') {
+                item.value = result.resource;
                 loadStatus.value = 'loaded';
+            } else {
+                loadStatus.value = 'missing';
             }
         });
     }

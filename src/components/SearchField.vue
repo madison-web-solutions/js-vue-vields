@@ -70,7 +70,9 @@ watchEffect(() => {
     currentItem.value = null;
     if (props.directory != null && provider != null && modelValue.value != null) {
         provider.value.lookup(props.directory, modelValue.value, props.extraParams).then((searchResult) => {
-            currentItem.value = searchResult;
+            if (searchResult.status == 'found') {
+                currentItem.value = searchResult.resource;
+            }
         });
     }
 });

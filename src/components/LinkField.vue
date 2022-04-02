@@ -19,6 +19,7 @@
 </template>
 
 <script setup lang="ts">
+import type { LookupResult } from '@/main';
 import { Choosable, LinkAlias, MessageBag, symbols } from '@/main';
 import { computed, ref, inject, toRefs, watchEffect } from 'vue';
 import { commonProps, useFormField } from '@/main';
@@ -111,8 +112,10 @@ const currentLinkAlias = ref<LinkAlias | null>(null);
 watchEffect(() => {
     currentLinkAlias.value = null;
     if (provider != null && modelValueParts.value.scheme != null) {
-        provider.value.lookup(schemeKey.value, modelValueParts.value.key).then((result) => {
-            currentLinkAlias.value = result;
+        provider.value.lookup(schemeKey.value, modelValueParts.value.key).then((result: LookupResult<LinkAlias>) => {
+            if (result.status == 'found') {
+                currentLinkAlias.value = result.resource;
+            }
         });
     }
 });
