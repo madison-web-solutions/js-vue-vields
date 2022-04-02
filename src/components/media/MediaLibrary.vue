@@ -27,7 +27,7 @@
 <script setup lang="ts">
 import type { MessageBag, MediaItem, SearchResultPage, UpdateResult } from '@/main';
 import { computed, inject, ref } from 'vue';
-import { MediaPreview, MediaDetails, messageBagToString, symbols } from '@/main';
+import { MediaPreview, MediaDetails, messageBagToString, useSearches, symbols } from '@/main';
 
 const props = defineProps({
     standalone: {
@@ -62,64 +62,26 @@ const fileInput = ref<HTMLInputElement | null>(null);
 
 const mode = ref<'library' | 'details'>('library');
 const loading = ref<boolean>(true);
-const itemIds = ref<(string | number)[]>([1,2,3,4,5,6,7,8]);
+const itemIds = ref<(string | number)[]>([1,2,3,4,5,6,7,8]); // @todo fix this nonsense
+// I think perhaps we should pass the MediaItem object to MediaPreview instead of the id
+// then it can be used directly with the search suggestions
 const selectedItemId = ref<string | number | undefined>(undefined);
 const uploading = ref<boolean>(false);
 const uploads = ref<UploadAttempt[]>([]);
 const uploadsCount = ref<number>(0);
 
 
-
-
-
-
-
-
-
-// Array of search result pages fetched so far.  Null means we haven't searched for anything.
-const fetchedPages = ref<SearchResultPage<MediaItem>[] | null>(null);
-
-// Array of all the suggestions fetched so for.
-const suggestions = computed((): MediaItem[] => {
-    const out: MediaItem[] = [];
-    if (fetchedPages.value != null) {
-        for (const result of fetchedPages.value) {
-            out.push(...result.suggestions);
-        }
-    }
-    return out;
-});
-
-// Page number of the most recently fetched page of search results, or zero if we haven't searched for anything
-const lastPage = computed((): number => {
-    if (fetchedPages.value == null) {
-        return 0;
+const searchFn = (page: number): Promise<SearchResultPage<MediaItem>> => {
+    if (provider) {
+        return provider.value.search('', page, {});
     } else {
-        return fetchedPages.value[fetchedPages.value.length - 1].page;
+        return new Promise((resolve, reject) => {
+            resolve({page: page, hasMore: false, suggestions: []});
+        });
     }
-});
+};
 
-// Are there more results available for the current search (or false if we haven't searched for anything)
-const hasMore = computed((): boolean => {
-    if (fetchedPages.value == null) {
-        return false;
-    } else {
-        return fetchedPages.value[fetchedPages.value.length - 1].hasMore;
-    }
-});
-
-// Unique id number of the search request that we are currently waiting for (or null if we are not searching at the moment)
-const searchingId = ref<number | null>(null);
-
-// Should we show the 'no results' message?  This should be shown, if we have done a search and received the results, and the results were empty
-const noResults = computed((): boolean => {
-    return fetchedPages.value != null && suggestions.value.length == 0;
-});
-
-// Can we fetch additional results for the current search text?  True if the previous results page says there are more available, and we are not already searching
-const canFetchMore = computed((): boolean => {
-    return hasMore.value && searchingId.value == null;
-});
+const { fetchedPages, suggestions, lastPage, hasMore, searchingId, noResults, canFetchMore, doSearch, fetchFirstPage, fetchNextPage } = useSearches<MediaItem>(searchFn);
 
 // Fetch the next page of results when the user scrolls to the bottom of the search results
 const handleScroll = (e: Event) => {
@@ -131,32 +93,6 @@ const handleScroll = (e: Event) => {
         }
     }
 };
-
-const fetchNextPage = () => {
-    doSearch('' /* searchText.value */, lastPage.value + 1);
-};
-
-let searchCount: number = 1;
-const doSearch = (searchTextValue: string, page: number) => {
-    if (! provider) {
-        return;
-    }
-    const searchId = searchCount++;
-    searchingId.value = searchId;
-    provider.value.search('' /* searchtext */, 1 /* page */, props.extraParams).then((searchResultPage: SearchResultPage<MediaItem>) => {
-        if (searchingId.value === searchId) {
-            // only act on the results if this is still the most recent search operation
-            if (fetchedPages.value == null) {
-                fetchedPages.value = [];
-            }
-            fetchedPages.value.push(searchResultPage);
-            searchingId.value = null;
-        }
-    });
-};
-doSearch('', 1);
-
-
 
 
 const selectAttachment = (mediaId: number | string) => {
