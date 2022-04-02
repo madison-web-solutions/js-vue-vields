@@ -42,3 +42,9 @@ export const spliceMessageBag = (bag: MessageBag, prefix: string, newSubBag: Mes
     }
     return bagCopy;
 };
+
+export const messageBagToString = (bag: MessageBag): string => {
+    return Object.entries(bag).map(([key, msgs]) => {
+        return key + ': ' + msgs.join(', ');
+    }).join("\n");
+};

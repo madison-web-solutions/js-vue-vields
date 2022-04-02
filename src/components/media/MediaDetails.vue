@@ -4,7 +4,7 @@
             <div class="col-12" data-name="back">
                 <a href="#" @click.prevent="emit('close')"><i class="fas fa-long-arrow-alt-left"></i> Back</a>
             </div>
-            <div class="col-8" data-name="preview">
+            <div class="media-details-preview col-8">
                 <img v-if="imageSrc" :src="imageSrc" />
                 <div v-if="iconCssClass" class="media-details-overlay">
                     <i class="media-details-icon" :class="iconCssClass"></i>
@@ -21,7 +21,7 @@
                     <button v-if="deletable" type="button" class="btn btn-link text-danger" @click.stop="emit('delete')">Delete</button>
                 </div>
                 <div class="mb-2">
-                    <button v-if="editable && isDirty" type="button" @click.stop="saveUpdates" class="btn btn-progress">Save Changes</button>
+                    <button v-if="editable && isDirty" type="button" @click.stop="saveUpdates" class="btn btn-primary">Save Changes</button>
                 </div>
             </div>
             <div class="col-12" data-name="url">
@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import type { MediaItem } from '@/main';
+import type { MediaItem, MessageBag, UpdateResult } from '@/main';
 import { computed, ref, inject, watchEffect } from 'vue';
 import { getIconCssClass } from '@/lib/media';
 import { symbols, FieldGroup, TextField } from '@/main';
@@ -86,10 +86,7 @@ watchEffect(() => {
                 loadStatus.value = 'loaded';
                 reset();
             }
-        }, (error) => {
-            console.log(error);
-            loadStatus.value = 'error';
-        })
+        });
     }
 });
 
@@ -167,11 +164,13 @@ watchEffect(() => {
 const saveUpdates = () => {
     errors.value = {};
     if (provider != null) {
-        provider.value.update(props.itemId, vals.value).then((result: MediaItem) => {
-            item.value = result;
-            reset();
-        }, (errors) => {
-            errors.value = errors;
+        provider.value.update(props.itemId, vals.value).then((result: UpdateResult<MediaItem>) => {
+            if (result.status == 'ok') {
+                item.value = result.resource;
+                reset();
+            } else {
+                errors.value = result.errors;
+            }  
         })
     }
 };

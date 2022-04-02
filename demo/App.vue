@@ -59,7 +59,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Choosable, LinkAlias, MediaItem, ResizableMediaItem, SearchResultPage, ChoicesProvider, LinksProvider, MediaProvider } from "@/main";
+import type { Choosable, LinkAlias, MediaItem, ResizableMediaItem, SearchResultPage, ChoicesProvider, LinksProvider, MediaProvider, UpdateResult } from "@/main";
 import { computed, ref, provide } from "vue";
 import { symbols } from '@/main';
 import { FieldGroup, CheckboxField, CheckboxesField, TextField, SelectField, HtmlField, CurrencyField, NumberField, ToggleField, RepeaterField, SearchField, RadioField, DateField, LinkField, MediaField } from "@/main";
@@ -240,12 +240,12 @@ const dummyMediaProvider = ref<MediaProvider>({
             window.setTimeout(() => resolve(generateFakeMediaItem()), 600);
         });
     },
-    upload: (data: FormData, progressCallback: (loaded: number, total: number) => void): Promise<MediaItem> => {
+    upload: (data: FormData, progressCallback: (loaded: number, total: number) => void): Promise<UpdateResult<MediaItem>> => {
         for (let i = 1; i < 10; i++) {
             window.setTimeout(() => progressCallback(i * 500, 5000), i * 300);
         }
-        return new Promise<MediaItem>((resolve, reject) => {
-            window.setTimeout(() => resolve(generateFakeMediaItem()), 3000);
+        return new Promise<UpdateResult<MediaItem>>((resolve, reject) => {
+            window.setTimeout(() => resolve({status: 'ok', resource: generateFakeMediaItem()}), 3000);
         });
     },
     delete: (key: number | string): Promise<void> => {
@@ -253,9 +253,9 @@ const dummyMediaProvider = ref<MediaProvider>({
             window.setTimeout(() => resolve(), 3000);
         });
     },
-    update: (key: number | string, data: object): Promise<MediaItem> => {
-        return new Promise<MediaItem>((resolve, reject) => {
-            window.setTimeout(() => resolve(generateFakeMediaItem()), 3000);
+    update: (key: number | string, data: object): Promise<UpdateResult<MediaItem>> => {
+        return new Promise<UpdateResult<MediaItem>>((resolve, reject) => {
+            window.setTimeout(() => resolve({status: 'ok', resource: generateFakeMediaItem()}), 3000);
         });
     },
 });

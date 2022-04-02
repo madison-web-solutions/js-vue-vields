@@ -61,10 +61,7 @@ watchEffect(() => {
                 item.value = result;
                 loadStatus.value = 'loaded';
             }
-        }, (error) => {
-            console.log(error);
-            loadStatus.value = 'error';
-        })
+        });
     }
 });
 

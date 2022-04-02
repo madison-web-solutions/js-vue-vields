@@ -1,24 +1,23 @@
 <template>
     <div>
         <div v-if="mode == 'library'">
-            <div class="attachment-upload-form mb-3">
+            <div class="media-upload-form mb-3">
                 <label class="btn btn-progress">
                     <input ref="fileInput" type="file" multiple @change="fileSelected" />
-                    Upload Public Files
+                    Upload Files
                 </label>
             </div>
-            <div v-if="hasUploadValidationErrors" class="invalid-feedback d-block">
-                <template v-for="msgs, key in uploadValidationErrors">
-                    <div class="error" v-for="msg in msgs">{{ key }}: {{ msg }}</div>
-                </template>
-            </div>
-            <div class="attachment-list">
-                <div v-for="upload in uploads" class="attachment-preview" :data-upload-status="upload.status">
-                    <p v-if="upload.status == 'new'" class="upload-status">Queued</p>
-                    <p v-if="upload.status == 'uploading'" class="upload-status">{{ upload.progress }}%</p>
-                    <p v-if="upload.status == 'error'" class="upload-status">Error: {{ upload.error }}</p>
+            <div class="media-preview-list row g-2">
+                <div v-for="upload in uploads" class="col-auto">
+                    <div class="media-preview" :data-upload-status="upload.status">
+                        <p v-if="upload.status == 'new'" class="upload-status">Queued</p>
+                        <p v-if="upload.status == 'uploading'" class="upload-status">{{ upload.progress }}%</p>
+                        <p v-if="upload.status == 'error'" class="upload-status">{{ messageBagToString(upload.errors) }}</p>
+                    </div>
                 </div>
-                <MediaPreview v-for="itemId in itemIds" :key="itemId" :itemId="itemId" @select="selectAttachment(itemId)" />
+                <div v-for="itemId in itemIds" :key="itemId" class="col-auto">
+                    <MediaPreview :itemId="itemId" @select="selectAttachment(itemId)" />
+                </div>
             </div>
         </div>
         <MediaDetails v-if="mode == 'details' && selectedItemId" :itemId="selectedItemId" :editable="true" :deletable="true" @close="deselectAttachment" @delete="deleteSelectedAttachment" />
@@ -26,9 +25,9 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag, MediaItem, SearchResultPage } from '@/main';
+import type { MessageBag, MediaItem, SearchResultPage, UpdateResult } from '@/main';
 import { computed, inject, ref } from 'vue';
-import { MediaPreview, MediaDetails, symbols } from '@/main';
+import { MediaPreview, MediaDetails, messageBagToString, symbols } from '@/main';
 
 const props = defineProps({
     standalone: {
@@ -54,7 +53,7 @@ type UploadAttempt = {
     title: string,
     status: 'new' | 'uploading' | 'error',
     progress: number,
-    error?: string,
+    errors: MessageBag,
 };
 
 const provider = inject(symbols.mediaProvider);
@@ -68,16 +67,7 @@ const selectedItemId = ref<string | number | undefined>(undefined);
 const uploading = ref<boolean>(false);
 const uploads = ref<UploadAttempt[]>([]);
 const uploadsCount = ref<number>(0);
-const uploadValidationErrors = ref<MessageBag>({});
 
-const hasUploadValidationErrors = computed((): boolean => {
-    for (const [key, msgs] of Object.entries(uploadValidationErrors.value)) {
-        if (msgs.length > 0) {
-            return true;
-        }
-    }
-    return false;
-});
 
 
 
@@ -162,8 +152,6 @@ const doSearch = (searchTextValue: string, page: number) => {
             fetchedPages.value.push(searchResultPage);
             searchingId.value = null;
         }
-    }, (error) => {
-        console.log(error);
     });
 };
 doSearch('', 1);
@@ -196,8 +184,6 @@ const deleteSelectedAttachment = () => {
                 itemIds.value.splice(index, 1);
             }
             // refresh(); // @todo not sure about this?
-        }, (error) => {
-            // @todo what?
         });
     }
 };
@@ -211,6 +197,7 @@ const fileSelected = () => {
                 title: file.name.split('.').slice(0, -1).join('.').substring(0, 64),
                 status: 'new',
                 progress: 0,
+                errors: {},
             });
             uploadsCount.value++;
         }
@@ -244,27 +231,12 @@ const createFile = (upload: UploadAttempt) => {
 
     provider.value.upload(data, (loaded: number, total: number) => {
         upload.progress = Math.round(100 * loaded / total);
-    }).then((item: MediaItem) => {
-        uploadComplete(upload, item);
-    }, (error) => {
-        /* @todo
-        console.log(err);
-        var msg = 'Upload error';
-        if (err.response.status == 422) {
-            msg = 'Invalid upload';
-            var validationErrors = util.get(err, 'response.data.errors');
-            if (validationErrors) {
-                this.uploadValidationErrors.push(validationErrors);
-            }
+    }).then((result: UpdateResult<MediaItem>) => {
+        if (result.status == 'ok') {
+            uploadComplete(upload, result.resource);
+        } else {
+            uploadFailed(upload, result.errors);
         }
-        if (err.response.status == 403) {
-            msg = 'Permission Denied';
-        }
-        if (err.response.status == 413) {
-            msg = 'File too large';
-        }
-        */
-        uploadFailed(upload, error);
     });
     upload.status = 'uploading';
 };
@@ -285,9 +257,9 @@ const uploadComplete = (upload: UploadAttempt, item: MediaItem) => {
 };
 
 
-const uploadFailed = (upload: UploadAttempt, errorMsg: string) => {
+const uploadFailed = (upload: UploadAttempt, errors: MessageBag) => {
     upload.status = 'error';
-    upload.error = errorMsg;
+    upload.errors = errors;
     uploading.value = false;
     next();
 };
