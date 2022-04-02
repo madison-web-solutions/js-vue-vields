@@ -29,3 +29,12 @@ export type LinksProvider = {
     schemes: {key: string, label: string}[],
 };
 
+import type { MediaItem } from "@/lib/media";
+
+export type MediaProvider = {
+    search: (searchText?: string, page?: number, extraParams?: object) => Promise<SearchResultPage<MediaItem>>,
+    lookup: (key: number | string) => Promise<MediaItem | null>,
+    upload: (data: FormData, progressCallback: (loaded: number, total: number) => void) => Promise<MediaItem>,
+    delete: (key: number | string) => Promise<void>,
+    update: (key: number | string, data: object) => Promise<MediaItem>,
+};

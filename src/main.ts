@@ -2,7 +2,8 @@ import { defineAsyncComponent } from 'vue';
 
 import type { CompoundFormValue, RepeaterFormValue, FormValue, Path } from '@/lib/util';
 import type { MessageBag } from '@/lib/MessageBag';
-import type { Choosable, LinkAlias, SearchResultPage, ChoicesProvider, LinksProvider } from '@/lib/search';
+import type { Choosable, LinkAlias, SearchResultPage, ChoicesProvider, LinksProvider, MediaProvider } from '@/lib/search';
+import type { MediaItem, ResizableMediaItem } from '@/lib/media';
 import type { BooleansMap, KeysList } from '@/lib/field';
 import { sliceMessageBag, spliceMessageBag } from '@/lib/MessageBag';
 import { getUniqueKey, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols } from '@/lib/util';
@@ -23,11 +24,16 @@ import FlexibleContentField from '@/components/FlexibleContentField.vue';
 import LinkField from "@/components/LinkField.vue";
 import FieldWrapper from '@/components/FieldWrapper.vue';
 import FieldGroup from '@/components/FieldGroup.vue';
+import MediaPreview from '@/components/media/MediaPreview.vue';
+import MediaLibrary from '@/components/media/MediaLibrary.vue';
+import MediaDetails from '@/components/media/MediaDetails.vue';
+import MediaField from '@/components/media/MediaField.vue';
 
 const HtmlField = defineAsyncComponent(() => import('@/components/HtmlField.vue'));
 
-export type { CompoundFormValue, RepeaterFormValue, FormValue, MessageBag, BooleansMap, KeysList, Choosable, LinkAlias, SearchResultPage, ChoicesProvider, LinksProvider, Path };
+export type { CompoundFormValue, RepeaterFormValue, FormValue, MessageBag, BooleansMap, KeysList, MediaItem, ResizableMediaItem, Choosable, LinkAlias, SearchResultPage, ChoicesProvider, LinksProvider, MediaProvider, Path };
 export { commonProps, useFormField, useHasChoices, useHasChoicesSingle, useHasChoicesMultiple }
 export { sliceMessageBag, spliceMessageBag }
 export { getUniqueKey, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols };
 export { TextField, CheckboxField, CheckboxesField, CurrencyField, DateField, NumberField, ToggleField, RepeaterField, RepeaterRow, RadioField, SearchField, SelectField, HtmlField, FlexibleContentField, LinkField, FieldWrapper, FieldGroup };
+export { MediaPreview, MediaLibrary, MediaDetails, MediaField };

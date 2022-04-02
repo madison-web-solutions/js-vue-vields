@@ -5,6 +5,8 @@
             <div class="col-8">
                 <FieldGroup v-model="vals" v-model:errors="errors">
                     <div class="row g-3">
+                        <MediaField label="Image" name="image" class="col-12" />
+                        <hr />
                         <LinkField label="Link" name="link" class="col-12" />
                         <hr />
                         <TextField label="First Name" name="first_name" class="col-md-6" />
@@ -57,12 +59,13 @@
 </template>
 
 <script setup lang="ts">
-import type { Choosable, LinkAlias, SearchResultPage, ChoicesProvider, LinksProvider } from "@/main";
+import type { Choosable, LinkAlias, MediaItem, ResizableMediaItem, SearchResultPage, ChoicesProvider, LinksProvider, MediaProvider } from "@/main";
 import { computed, ref, provide } from "vue";
 import { symbols } from '@/main';
-import { FieldGroup, CheckboxField, CheckboxesField, TextField, SelectField, HtmlField, CurrencyField, NumberField, ToggleField, RepeaterField, SearchField, RadioField, DateField, LinkField } from "@/main";
+import { FieldGroup, CheckboxField, CheckboxesField, TextField, SelectField, HtmlField, CurrencyField, NumberField, ToggleField, RepeaterField, SearchField, RadioField, DateField, LinkField, MediaField } from "@/main";
 import TextAreaField from "@/components/TextAreaField.vue";
 import FlexibleContentField from "@/components/FlexibleContentField.vue";
+import faker from '@faker-js/faker';
 
 const vals = ref({
     first_name: 'Jane',
@@ -203,5 +206,61 @@ const dummyLinksProvider = ref<LinksProvider>({
 });
 
 provide(symbols.linksProvider, dummyLinksProvider);
+
+
+let fakeMediaItemCounter: number = 1;
+const generateFakeMediaItem = (): MediaItem | ResizableMediaItem => {
+    return {
+        id: fakeMediaItemCounter++,
+        status: Math.random() < 0.05 ? 'missing' : 'available',
+        title: faker.lorem.words(1 + Math.floor(Math.random() * 5)),
+        extension: faker.random.arrayElement<string>(['jpg', 'png']),
+        src: faker.image.animals(),
+        src_icon: faker.image.animals(),
+        alt: Math.random() < 0.5 ? faker.lorem.sentence() : null,
+    };
+};
+
+const dummyMediaProvider = ref<MediaProvider>({
+    search: (searchText?: string, page?: number, extraParams?: object): Promise<SearchResultPage<MediaItem>> => {
+        return new Promise<SearchResultPage<MediaItem>>((resolve, reject) => {
+            if (page == null) {
+                page = 1;
+            }
+            const suggestions: MediaItem[] = [];
+            const result: SearchResultPage<MediaItem> = {page: page, hasMore: false, suggestions: suggestions};
+            for (let i = 0; i < 10; i++) {
+                suggestions.push(generateFakeMediaItem());
+            }
+            window.setTimeout(() => resolve(result), 600);
+        });
+    },
+    lookup: (key: number | string): Promise<MediaItem | null> => {
+        return new Promise<MediaItem | null>((resolve, reject) => {
+            window.setTimeout(() => resolve(generateFakeMediaItem()), 600);
+        });
+    },
+    upload: (data: FormData, progressCallback: (loaded: number, total: number) => void): Promise<MediaItem> => {
+        for (let i = 1; i < 10; i++) {
+            window.setTimeout(() => progressCallback(i * 500, 5000), i * 300);
+        }
+        return new Promise<MediaItem>((resolve, reject) => {
+            window.setTimeout(() => resolve(generateFakeMediaItem()), 3000);
+        });
+    },
+    delete: (key: number | string): Promise<void> => {
+        return new Promise<void>((resolve, reject) => {
+            window.setTimeout(() => resolve(), 3000);
+        });
+    },
+    update: (key: number | string, data: object): Promise<MediaItem> => {
+        return new Promise<MediaItem>((resolve, reject) => {
+            window.setTimeout(() => resolve(generateFakeMediaItem()), 3000);
+        });
+    },
+});
+
+provide(symbols.mediaProvider, dummyMediaProvider);
+
 
 </script>

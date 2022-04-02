@@ -1,6 +1,6 @@
 import type { Ref, InjectionKey } from 'vue';
 import type { MessageBag } from '@/lib/MessageBag';
-import type { ChoicesProvider, LinksProvider } from './search';
+import type { ChoicesProvider, LinksProvider, MediaProvider } from './search';
 
 let uniqueKeyCounter: number = 1;
 export const getUniqueKey = function(): string {
@@ -269,6 +269,7 @@ const symbols = {
     errorsSetter: Symbol() as InjectionKey<Ref<(newSubErrors: MessageBag, key: string | number) => void> | undefined>,
     choicesProvider: Symbol() as InjectionKey<Ref<ChoicesProvider> | undefined>,
     linksProvider: Symbol() as InjectionKey<Ref<LinksProvider> | undefined>,
+    mediaProvider: Symbol() as InjectionKey<Ref<MediaProvider> | undefined>,
 };
 Object.freeze(symbols);
 export { symbols };
