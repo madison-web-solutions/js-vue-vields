@@ -1,25 +1,30 @@
 <template>
     <div>
-        <div v-if="mode == 'library'">
-            <div class="media-upload-form mb-3">
-                <label class="btn btn-progress">
+        <div v-if="mode == 'library'" class="row g-3">
+            <div v-if="! standalone" class="col-12" data-name="back">
+                <a href="#" @click.prevent="emit('close')"><i class="fas fa-long-arrow-alt-left"></i> Back</a>
+            </div>
+            <div class="col-6">
+                <input class="form-control" type="text" placeholder="Search" v-model="searchText" />
+            </div>
+            <div class="media-upload-form col-6">
+                <label class="btn btn-primary w-100">
                     <input ref="fileInput" type="file" multiple @change="fileSelected" />
-                    Upload Files
+                    <i class="fas fa-upload me-2"></i> Upload Files
                 </label>
             </div>
-            <div class="row mb-3">
-                <input class="form-control col-12" type="text" placeholder="Search" v-model="searchText" @input="searchDebounced" @keydown.enter.prevent="searchDebounced" />
-            </div>
-            <div class="media-preview-list row g-2" @scroll="handleScroll">
-                <div v-for="upload in uploads" class="col-auto">
-                    <div class="media-preview" :data-upload-status="upload.status">
-                        <p v-if="upload.status == 'new'" class="upload-status">Queued</p>
-                        <p v-if="upload.status == 'uploading'" class="upload-status">{{ upload.progress }}%</p>
-                        <p v-if="upload.status == 'error'" class="upload-status">{{ messageBagToString(upload.errors) }}</p>
+            <div class="col-12">
+                <div class="media-preview-list row g-2" @scroll="handleScroll">
+                    <div v-for="upload in uploads" class="col-auto">
+                        <div class="media-preview" :data-upload-status="upload.status">
+                            <p v-if="upload.status == 'new'" class="upload-status">Queued</p>
+                            <p v-if="upload.status == 'uploading'" class="upload-status">{{ upload.progress }}%</p>
+                            <p v-if="upload.status == 'error'" class="upload-status">{{ messageBagToString(upload.errors) }}</p>
+                        </div>
                     </div>
-                </div>
-                <div v-for="item in itemsToShow" :key="item.id" class="col-auto">
-                    <MediaPreview :item="item" @select="selectAttachment(item.id)" />
+                    <div v-for="item in itemsToShow" :key="item.id" class="col-auto">
+                        <MediaPreview :item="item" @select="selectAttachment(item.id)" />
+                    </div>
                 </div>
             </div>
         </div>
@@ -46,9 +51,7 @@ const props = defineProps({
 const emit = defineEmits<{
     (e: 'select', mediaId: number | string): void,
     (e: 'remove'): void,
-    (e: 'moveLeft'): void,
-    (e: 'moveRight'): void,
-    (e: 'select'): void,
+    (e: 'close'): void,
 }>();
 
 type UploadAttempt = {
@@ -69,8 +72,6 @@ const uploading = ref<boolean>(false);
 const uploads = ref<UploadAttempt[]>([]);
 const uploadsCount = ref<number>(0);
 
-const searchText = ref<string>('');
-
 const searchFn = (page: number): Promise<SearchResultPage<MediaItem>> | null => {
     if (! provider) {
         return null;
@@ -78,7 +79,7 @@ const searchFn = (page: number): Promise<SearchResultPage<MediaItem>> | null => 
     return provider.value.search(searchText.value, page, {});
 };
 
-const { fetchedPages, suggestions, lastPage, hasMore, noResults, canFetchMore, searchDebounced, fetchFirstPage, fetchNextPage } = useSearches<MediaItem>(searchFn);
+const { searchText, suggestions, canFetchMore, fetchFirstPage, fetchNextPage } = useSearches<MediaItem>(searchFn);
 
 // Fetch first page immediately
 fetchFirstPage();

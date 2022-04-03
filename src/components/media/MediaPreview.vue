@@ -5,10 +5,8 @@
             <div v-if="item != null && backgroundImage == null" class="media-preview-title">{{ item.title }}</div>
             <div v-if="status != 'available'" class="media-preview-status">{{ status }}</div>
         </div>
-        <button v-if="inspectable" type="button" class="media-preview-inspect" @click.stop="emit('inspect')"><i class="fas fa-search"></i></button>
-        <button v-if="removable" type="button" class="media-preview-remove" @click.stop="emit('remove')"><i class="fas fa-times"></i></button>
-        <button v-if="movable" type="button" class="media-preview-move-left" @click.stop="emit('moveLeft')"><i class="fas fa-angle-left"></i></button>
-        <button v-if="movable" type="button" class="media-preview-move-right" @click.stop="emit('moveRight')"><i class="fas fa-angle-right"></i></button>
+        <button v-if="inspectable" type="button" class="media-preview-inspect btn btn-sm btn-secondary" @click.stop="emit('inspect')"><i class="fas fa-search"></i></button>
+        <button v-if="removable" type="button" class="media-preview-remove btn btn-sm btn-danger" @click.stop="emit('remove')"><i class="fas fa-times"></i></button>
     </div>
 </template>
 
@@ -28,10 +26,6 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
-    movable: {
-        type: Boolean,
-        default: false,
-    },
     removable: {
         type: Boolean,
         default: false,
@@ -43,8 +37,6 @@ const item = toRef(props, 'item');
 const emit = defineEmits<{
     (e: 'inspect'): void,
     (e: 'remove'): void,
-    (e: 'moveLeft'): void,
-    (e: 'moveRight'): void,
     (e: 'select'): void,
 }>();
 

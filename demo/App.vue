@@ -41,8 +41,8 @@
                         <hr />
                         <SearchField label="Search Cats" name="cat" directory="cats" class="col-6">
                             <template #suggestion="{ suggestion }">
-                                {{ suggestion.label }}
-                                <span v-if="(suggestion as any).age">({{ (suggestion as any).age }})</span>
+                                {{ (suggestion as Cat).label }}
+                                <span v-if="(suggestion as Cat).age">({{ (suggestion as Cat).age }})</span>
                             </template>
                         </SearchField>
                         <SelectField label="Select Cat" name="cat" directory="cats" class="col-6" />
@@ -210,34 +210,69 @@ provide(symbols.linksProvider, dummyLinksProvider);
 
 let fakeMediaItemCounter: number = 1;
 const generateFakeMediaItem = (): MediaItem | ResizableMediaItem => {
-    return {
-        id: fakeMediaItemCounter++,
-        status: Math.random() < 0.05 ? 'missing' : 'available',
-        title: faker.lorem.words(1 + Math.floor(Math.random() * 5)),
-        extension: faker.random.arrayElement<string>(['jpg', 'png']),
-        src: faker.image.animals(),
-        src_icon: faker.image.animals(),
-        alt: Math.random() < 0.5 ? faker.lorem.sentence() : null,
-    };
+    const id = fakeMediaItemCounter++;
+    if (Math.random() < 0.2) {
+        const extension = faker.random.arrayElement<string>(['docx', 'pdf', 'xlsx']);
+        return {
+            id: id,
+            status: Math.random() < 0.05 ? 'missing' : 'available',
+            title: faker.lorem.words(1 + Math.floor(Math.random() * 5)),
+            extension: extension,
+            src: 'https://www.example.com/fake-doc.' + extension,
+            alt: null,
+        };
+    } else {
+        return {
+            id: id,
+            status: Math.random() < 0.05 ? 'missing' : 'available',
+            title: faker.lorem.words(1 + Math.floor(Math.random() * 5)),
+            extension: 'png',
+            src: "https://loremflickr.com/500/300?lock=" + id,
+            src_icon: "https://loremflickr.com/100/100?lock=" + id,
+            alt: Math.random() < 0.5 ? faker.lorem.sentence() : null,
+        };
+    }
 };
+
+const mediaStore: MediaItem[] = [];
+for (let i = 0; i < 95; i++) {
+    mediaStore.push(generateFakeMediaItem());
+}
 
 const dummyMediaProvider = ref<MediaProvider>({
     search: (searchText?: string, page?: number, extraParams?: object): Promise<SearchResultPage<MediaItem>> => {
         return new Promise<SearchResultPage<MediaItem>>((resolve, reject) => {
-            if (page == null) {
-                page = 1;
+            page = Math.max(1, Math.floor(page == null ? 1 : page));
+            let filteredMediaStore: MediaItem[];
+            if (searchText) {
+                filteredMediaStore = mediaStore.filter((item) => {
+                    return item.title.includes(searchText);
+                });
+            } else {
+                filteredMediaStore = mediaStore;
             }
-            const suggestions: MediaItem[] = [];
-            const result: SearchResultPage<MediaItem> = {page: page, hasMore: false, suggestions: suggestions};
-            for (let i = 0; i < 10; i++) {
-                suggestions.push(generateFakeMediaItem());
-            }
+            const numPerPage = 25;
+            const start: number = (page - 1) * numPerPage;
+            const end = start + numPerPage;
+            const result: SearchResultPage<MediaItem> = {
+                page: page,
+                hasMore: (filteredMediaStore.length > end),
+                suggestions: filteredMediaStore.slice(start, end),
+            };
             window.setTimeout(() => resolve(result), 600);
         });
     },
     lookup: (key: number | string): Promise<LookupResult<MediaItem>> => {
         return new Promise<LookupResult<MediaItem>>((resolve, reject) => {
-            window.setTimeout(() => resolve({status: 'found', resource: generateFakeMediaItem()}), 600);
+            window.setTimeout(() => {
+                for (const item of mediaStore) {
+                    if (item.id == key) {
+                        resolve({status: 'found', resource: item});
+                        return;
+                    }
+                }
+                resolve({status: 'not-found'});
+            }, 600);
         });
     },
     upload: (data: FormData, progressCallback: (loaded: number, total: number) => void): Promise<UpdateResult<MediaItem>> => {

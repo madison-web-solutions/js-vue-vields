@@ -1,12 +1,12 @@
 <template>
     <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors">
         <template #input>
-            <div class="attachment-list">
+            <div v-if="! inspecting && ! choosing" class="media-preview-list">
                 <MediaPreview v-if="modelValue != null" :item="currentItem" :removable="true" :inspectable="true" @remove="remove" @select="choosing = true" @inspect="inspecting = true" />
-                <button v-if="modelValue == null" type="button" @click="choosing = true"><i class="fas fa-plus"></i></button>
+                <button v-if="modelValue == null" type="button" class="media-add-button" @click="choosing = true"><i class="fas fa-plus"></i></button>
             </div>
             <div v-if="choosing" @close="choosing = false" title="Media Library">
-                <MediaLibrary :standalone="false" @select="updateValue" />
+                <MediaLibrary :standalone="false" @select="updateValue" @close="choosing = false" />
             </div>
             <div v-if="currentItem && inspecting" @close="inspecting = false" title="Inspect File">
                 <MediaDetails :itemId="currentItem.id" :editable="true" :deletable="false" @close="inspecting = false" />
@@ -21,9 +21,8 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag } from '@/main';
-import type { MediaItem, ResizableMediaItem } from '@/lib/media';
-import { computed, ref, toRefs, watchEffect, inject, onBeforeUnmount } from 'vue';
+import type { MediaItem, MessageBag, LookupResult } from '@/main';
+import { computed, ref, toRefs, watchEffect, inject } from 'vue';
 import { commonProps, useFormField, symbols } from '@/main';
 import { FieldWrapper, MediaPreview, MediaLibrary, MediaDetails } from '@/main';
 

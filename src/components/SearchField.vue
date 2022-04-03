@@ -36,7 +36,7 @@
 
 <script setup lang="ts">
 import type { MessageBag, Choosable, SearchResultPage } from '@/main';
-import { computed, ref, toRefs, watchEffect, inject, onBeforeUnmount, watch } from 'vue';
+import { computed, ref, toRefs, watchEffect, inject } from 'vue';
 import { commonProps, useFormField, useSearches, symbols } from '@/main';
 import { FieldWrapper } from '@/main';
 import SearchInterface from './SearchInterface.vue';
@@ -87,9 +87,6 @@ watchEffect(() => {
     }
 });
 
-// 2 way binding to the search input box
-const searchText = ref<string>('');
-
 const searchFn = (page: number): Promise<SearchResultPage<Choosable>> | null => {
     if (props.directory == null || provider == null) {
         console.log("Cannot perform search - directory or provider are not set", props.directory, provider);
@@ -101,32 +98,7 @@ const searchFn = (page: number): Promise<SearchResultPage<Choosable>> | null => 
     return provider.value.search(props.directory, searchText.value, page, props.extraParams);
 };
 
-const { suggestions, noResults, canFetchMore, isSearching, fetchNextPage, searchDebounced } = useSearches<Choosable>(searchFn);
-
-watch(searchText, searchDebounced);
-
-// Is the search interface open or not?
-const searchOpen = ref(false);
-
-const toggleOpenSearch = () => {
-    if (searchOpen.value) {
-        closeSearch();
-    } else {
-        openSearch();
-    }
-};
-
-const closeSearch = () => {
-    searchOpen.value = false;
-};
-
-const openSearch = () => {
-    if (props.disabled) {
-        return;
-    }
-    searchText.value = '';
-    searchOpen.value = true;
-};
+const { searchText, suggestions, noResults, canFetchMore, isSearching, fetchNextPage, searchDebounced, searchOpen, toggleOpenSearch, closeSearch } = useSearches<Choosable>(searchFn);
 
 const chooseSuggestion = (index: number) => {
     const suggestion = suggestions.value[index];

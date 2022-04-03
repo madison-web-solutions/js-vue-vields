@@ -1,6 +1,6 @@
 import type { Ref } from 'vue';
 import type { MediaItem, LookupResult, UpdateResult } from "@/main";
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { MessageBag } from './MessageBag';
 
 export type Choosable = {
@@ -42,6 +42,8 @@ export type MediaProvider = {
 };
 
 export function useSearches<T>(searchFn: (page: number) => Promise<SearchResultPage<T>> | null) {
+
+    const searchText = ref<string>('');
 
     // Array of search result pages fetched so far.  Null means we haven't searched for anything.
     //const fetchedPages = ref<SearchResultPage<Tp>[] | null>(null);
@@ -131,6 +133,43 @@ export function useSearches<T>(searchFn: (page: number) => Promise<SearchResultP
         timeoutId = window.setTimeout(() => doSearch(1), 300);
     };
 
-    return { fetchedPages, suggestions, lastPage, hasMore, noResults, canFetchMore, isSearching, fetchFirstPage, fetchNextPage, searchDebounced };
+    watch(searchText, searchDebounced);
 
+    // Is the search interface open or not?
+    const searchOpen = ref(false);
+
+    const toggleOpenSearch = () => {
+        if (searchOpen.value) {
+            closeSearch();
+        } else {
+            openSearch();
+        }
+    };
+
+    const closeSearch = () => {
+        searchOpen.value = false;
+    };
+
+    const openSearch = () => {
+        searchText.value = '';
+        searchOpen.value = true;
+    };
+
+    return {
+        searchText,
+        fetchedPages,
+        suggestions,
+        lastPage,
+        hasMore,
+        noResults,
+        canFetchMore,
+        isSearching,
+        fetchFirstPage,
+        fetchNextPage,
+        searchDebounced,
+        searchOpen,
+        toggleOpenSearch,
+        closeSearch,
+        openSearch,
+    };
 };

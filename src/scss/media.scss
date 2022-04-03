@@ -1,7 +1,107 @@
-.media-preview {
+.media-add-button, .media-preview {
     width: $media-preview-width;
     height: $media-preview-height;
-    background-size: cover;
+    background: no-repeat center / cover;
+    position: relative;
+    border: $input-border-width solid $input-border-color;
+    border-radius: $media-preview-border-radius;
+    cursor: pointer;
+}
+
+.media-add-button {
+    background-color: $input-bg;
+    transition: background-color .2s ease-in-out;
+    &:hover, &:focus {
+        background-color: darken($input-bg, 10%);
+    }
+    color: $input-placeholder-color;
+    i {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 2.6rem;
+    }
+}
+
+.media-preview-list {
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.media-preview-icon {
+    font-size: 2rem;
+}
+
+.media-preview {
+    overflow: hidden;
+
+    .media-preview-overlay, .upload-status {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .media-preview-overlay {
+        text-align: center;
+    }
+
+    .media-preview-title {
+        color: $body-color;
+        overflow-wrap: break-word;
+        font-size: $media-preview-font-size;
+    }
+
+    .media-preview-status {
+        color: $red;
+        overflow-wrap: break-word;
+        font-size: $media-preview-font-size;
+    }
+
+    &.has-thumb {
+        .media-preview-overlay {
+            color: $white;
+            background-color: $black;
+            padding: .4rem .8rem;
+            opacity: .6;
+        }
+
+        .media-preview-title {
+            display: none;
+        }
+    }
+
+    .media-preview-inspect, .media-preview-remove {
+        display: none;
+        position: absolute;
+    }
+    &:hover, &:focus {
+        .media-preview-inspect, .media-preview-remove {
+            display: inline-block;
+        }
+    }
+    .media-preview-inspect {
+        top: 5%;
+        left: 5%;
+    }
+    .media-preview-remove {
+        top: 5%;
+        right: 5%;
+    }
+
+    &[data-upload-status=error] {
+        color: $danger;
+    }
+}
+
+.media-upload-form {
+    label {
+        display: inline-block;
+        input {
+            @include visually-hidden;
+        }
+    }
 }
 
 .media-details-preview {
@@ -10,5 +110,14 @@
         margin: auto;
         max-width: 100%;
         max-height: 20rem;
+    }
+    .media-details-overlay {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    .media-details-icon {
+        font-size: 46px;
     }
 }
