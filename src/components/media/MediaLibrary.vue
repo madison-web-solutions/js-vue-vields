@@ -7,7 +7,10 @@
                     Upload Files
                 </label>
             </div>
-            <div class="media-preview-list row g-2">
+            <div class="row mb-3">
+                <input class="form-control col-12" type="text" placeholder="Search" v-model="searchText" @input="searchDebounced" @keydown.enter.prevent="searchDebounced" />
+            </div>
+            <div class="media-preview-list row g-2" @scroll="handleScroll">
                 <div v-for="upload in uploads" class="col-auto">
                     <div class="media-preview" :data-upload-status="upload.status">
                         <p v-if="upload.status == 'new'" class="upload-status">Queued</p>
@@ -15,8 +18,8 @@
                         <p v-if="upload.status == 'error'" class="upload-status">{{ messageBagToString(upload.errors) }}</p>
                     </div>
                 </div>
-                <div v-for="itemId in itemIds" :key="itemId" class="col-auto">
-                    <MediaPreview :itemId="itemId" @select="selectAttachment(itemId)" />
+                <div v-for="item in itemsToShow" :key="item.id" class="col-auto">
+                    <MediaPreview :item="item" @select="selectAttachment(item.id)" />
                 </div>
             </div>
         </div>
@@ -61,27 +64,24 @@ const provider = inject(symbols.mediaProvider);
 const fileInput = ref<HTMLInputElement | null>(null);
 
 const mode = ref<'library' | 'details'>('library');
-const loading = ref<boolean>(true);
-const itemIds = ref<(string | number)[]>([1,2,3,4,5,6,7,8]); // @todo fix this nonsense
-// I think perhaps we should pass the MediaItem object to MediaPreview instead of the id
-// then it can be used directly with the search suggestions
 const selectedItemId = ref<string | number | undefined>(undefined);
 const uploading = ref<boolean>(false);
 const uploads = ref<UploadAttempt[]>([]);
 const uploadsCount = ref<number>(0);
 
+const searchText = ref<string>('');
 
-const searchFn = (page: number): Promise<SearchResultPage<MediaItem>> => {
-    if (provider) {
-        return provider.value.search('', page, {});
-    } else {
-        return new Promise((resolve, reject) => {
-            resolve({page: page, hasMore: false, suggestions: []});
-        });
+const searchFn = (page: number): Promise<SearchResultPage<MediaItem>> | null => {
+    if (! provider) {
+        return null;
     }
+    return provider.value.search(searchText.value, page, {});
 };
 
-const { fetchedPages, suggestions, lastPage, hasMore, searchingId, noResults, canFetchMore, doSearch, fetchFirstPage, fetchNextPage } = useSearches<MediaItem>(searchFn);
+const { fetchedPages, suggestions, lastPage, hasMore, noResults, canFetchMore, searchDebounced, fetchFirstPage, fetchNextPage } = useSearches<MediaItem>(searchFn);
+
+// Fetch first page immediately
+fetchFirstPage();
 
 // Fetch the next page of results when the user scrolls to the bottom of the search results
 const handleScroll = (e: Event) => {
@@ -93,7 +93,6 @@ const handleScroll = (e: Event) => {
         }
     }
 };
-
 
 const selectAttachment = (mediaId: number | string) => {
     if (props.standalone) {
@@ -109,17 +108,27 @@ const deselectAttachment = () => {
     selectedItemId.value = undefined;
 };
 
+const uploadedItems = ref<MediaItem[]>([]);
+const deletedItemIds = ref<(string | number)[]>([]);
+
+const itemsToShow = computed((): MediaItem[] => {
+    return uploadedItems.value
+        .concat(suggestions.value)
+        .filter((item) => ! deletedItemIds.value.includes(item.id));
+});
+
 const deleteSelectedAttachment = () => {
     if (provider && provider.value && selectedItemId.value != null) {
         const itemIdToDelete: number | string = selectedItemId.value;
-        provider.value.delete(itemIdToDelete).then(() => {
-            selectedItemId.value = undefined;
-            mode.value = 'library';
-            const index = itemIds.value.indexOf(itemIdToDelete);
-            if (index > -1) {
-                itemIds.value.splice(index, 1);
+        provider.value.delete(itemIdToDelete).then((result: boolean) => {
+            if (result) {
+                deletedItemIds.value.push(itemIdToDelete);
+                mode.value = 'library';
+                selectedItemId.value = undefined;
+            } else {
+                // delete failed for some reason
+                // not sure what to do here
             }
-            // refresh(); // @todo not sure about this?
         });
     }
 };
@@ -178,8 +187,7 @@ const createFile = (upload: UploadAttempt) => {
 };
 
 const uploadComplete = (upload: UploadAttempt, item: MediaItem) => {
-    //this.$hub.cacheResources(attachment);
-    itemIds.value.unshift(item.id);
+    uploadedItems.value.push(item);
     const index = uploads.value.indexOf(upload);
     uploads.value.splice(index, 1);
     uploading.value = false;
@@ -191,7 +199,6 @@ const uploadComplete = (upload: UploadAttempt, item: MediaItem) => {
         next();
     }
 };
-
 
 const uploadFailed = (upload: UploadAttempt, errors: MessageBag) => {
     upload.status = 'error';

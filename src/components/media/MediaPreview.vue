@@ -13,15 +13,16 @@
 </template>
 
 <script setup lang="ts">
+import type { PropType } from 'vue';
 import type { MediaItem, LookupResult } from '@/main';
-import { ref, computed, inject, watchEffect } from 'vue';
+import { ref, computed, inject, watchEffect, toRef } from 'vue';
 import { symbols } from '@/main';
 import { isMediaItemResizable, getIconCssClass } from '@/lib/media';
 
 const props = defineProps({
-    itemId: {
-        type: [Number, String],
-        required: true
+    item: {
+        type: Object as PropType<MediaItem>,
+        required: false
     },
     inspectable: {
         type: Boolean,
@@ -37,6 +38,8 @@ const props = defineProps({
     },
 });
 
+const item = toRef(props, 'item');
+
 const emit = defineEmits<{
     (e: 'inspect'): void,
     (e: 'remove'): void,
@@ -47,9 +50,9 @@ const emit = defineEmits<{
 
 const provider = inject(symbols.mediaProvider);
 
-const loadStatus = ref<'loading' | 'missing' | 'error' | 'loaded'>('loading');
-const item = ref<MediaItem | null>();
+//const loadStatus = ref<'loading' | 'missing' | 'error' | 'loaded'>('loading');
 
+/*
 watchEffect(() => {
     item.value = null;
     loadStatus.value = 'loading';
@@ -64,10 +67,11 @@ watchEffect(() => {
         });
     }
 });
+*/
 
 const status = computed((): 'loading' | 'missing' | 'error' | 'loaded' | 'uploading' | 'available' => {
     if (item.value == null) {
-        return loadStatus.value;
+        return 'loading'; // loadStatus.value;
     } else {
         return item.value.status;
     }

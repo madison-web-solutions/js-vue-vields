@@ -2,20 +2,19 @@
     <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors">
         <template #input>
             <div class="attachment-list">
-                <MediaPreview v-if="currentItem" :itemId="currentItem.id" :removable="true" :inspectable="true" @remove="remove" @select="choosing = true" @inspect="inspecting = true" />
-                <span v-if="modelValue != null && currentItem == null">loading - TODO</span>
+                <MediaPreview v-if="modelValue != null" :item="currentItem" :removable="true" :inspectable="true" @remove="remove" @select="choosing = true" @inspect="inspecting = true" />
                 <button v-if="modelValue == null" type="button" @click="choosing = true"><i class="fas fa-plus"></i></button>
             </div>
             <div v-if="choosing" @close="choosing = false" title="Media Library">
                 <MediaLibrary :standalone="false" @select="updateValue" />
             </div>
             <div v-if="currentItem && inspecting" @close="inspecting = false" title="Inspect File">
-                <MediaDetails :itemId="currentItem.id" :editable="true" :deletable="false" />
+                <MediaDetails :itemId="currentItem.id" :editable="true" :deletable="false" @close="inspecting = false" />
             </div>
         </template>
         <template #readonly>
             <div class="attachment-list">
-                <MediaPreview v-if="currentItem" :itemId="currentItem.id" :removable="false" :inspectable="false" />
+                <MediaPreview v-if="modelValue != null" :item="currentItem" :removable="false" :inspectable="false" />
             </div>
         </template>
     </FieldWrapper>
@@ -53,10 +52,10 @@ const { inputEleId, modelValue, myErrors, hasError } = useFormField<IdType>(coer
 
 const provider = inject(symbols.mediaProvider);
 
-const currentItem = ref<MediaItem | null>(null);
+const currentItem = ref<MediaItem | undefined>(undefined);
 
 watchEffect(() => {
-    currentItem.value = null;
+    currentItem.value = undefined;
     if (provider != null && modelValue.value != null) {
         provider.value.lookup(modelValue.value).then((searchResult) => {
             if (searchResult.status == 'found') {

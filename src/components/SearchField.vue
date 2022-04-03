@@ -7,16 +7,26 @@
                     <span v-if="placeholder && ! currentItem">{{ placeholder }}</span>
                 </div>
                 <button class="btn btn-outline-primary" type="button" @click="toggleOpenSearch"><i class="fas fa-search"></i></button>
-                <button v-if="modelValue" class="btn btn-outline-danger" type="button" @click="chooseSuggestion(undefined)"><i class="fas fa-times"></i></button>
+                <button v-if="modelValue" class="btn btn-outline-danger" type="button" @click="clearValue"><i class="fas fa-times"></i></button>
             </div>
-            <SearchInterface v-if="searchOpen" :searchFn="searchFn" @close="closeSearch" @selected="chooseSuggestion">
-                <template #noResults="{ searchText }">
+            <SearchInterface v-if="searchOpen"
+                v-model="searchText"
+                :suggestions="suggestions"
+                :isSearching="isSearching"
+                :noResults="noResults"
+                :canFetchMore="canFetchMore"
+                @enterPress="searchDebounced"
+                @fetchNextPage="fetchNextPage"
+                @close="closeSearch"
+                @selected="chooseSuggestion"
+            >
+                <template #noResults>
                     <slot name="noResults" :searchText="searchText">
                         <div class="form-text text-warning">No results</div>
                     </slot>
                 </template>
                 <template #suggestion="{ suggestion }">
-                    <slot name="suggestion" :suggestion="suggestion">{{ suggestion.label }}</slot>
+                    <slot name="suggestion" :suggestion="suggestion">{{ (suggestion as Choosable).label }}</slot>
                 </template>
             </SearchInterface>
         </template>
@@ -26,8 +36,8 @@
 
 <script setup lang="ts">
 import type { MessageBag, Choosable, SearchResultPage } from '@/main';
-import { computed, ref, toRefs, watchEffect, inject, onBeforeUnmount } from 'vue';
-import { commonProps, useFormField, symbols } from '@/main';
+import { computed, ref, toRefs, watchEffect, inject, onBeforeUnmount, watch } from 'vue';
+import { commonProps, useFormField, useSearches, symbols } from '@/main';
 import { FieldWrapper } from '@/main';
 import SearchInterface from './SearchInterface.vue';
 
@@ -77,16 +87,23 @@ watchEffect(() => {
     }
 });
 
-const searchFn = (searchTextValue: string, page: number) => {
+// 2 way binding to the search input box
+const searchText = ref<string>('');
+
+const searchFn = (page: number): Promise<SearchResultPage<Choosable>> | null => {
     if (props.directory == null || provider == null) {
         console.log("Cannot perform search - directory or provider are not set", props.directory, provider);
         return null;
     }
-    if (searchTextValue.length < 3) {
+    if (searchText.value.length < 3) {
         return null;
     }
-    return provider.value.search(props.directory, searchTextValue, page, props.extraParams);
+    return provider.value.search(props.directory, searchText.value, page, props.extraParams);
 };
+
+const { suggestions, noResults, canFetchMore, isSearching, fetchNextPage, searchDebounced } = useSearches<Choosable>(searchFn);
+
+watch(searchText, searchDebounced);
 
 // Is the search interface open or not?
 const searchOpen = ref(false);
@@ -107,16 +124,26 @@ const openSearch = () => {
     if (props.disabled) {
         return;
     }
+    searchText.value = '';
     searchOpen.value = true;
 };
 
-const chooseSuggestion = (suggestion: Choosable | undefined) => {
+const chooseSuggestion = (index: number) => {
+    const suggestion = suggestions.value[index];
+    if (props.disabled || suggestion == null) {
+        return;
+    }
+    closeSearch();
+    modelValue.value = suggestion.key;
+};
+
+const clearValue = () => {
     if (props.disabled) {
         return;
     }
     closeSearch();
-    modelValue.value = (suggestion == null ? undefined : suggestion.key);
-};
+    modelValue.value = undefined;
+}
 
 const displayValue = computed((): string => {
     if (currentItem.value) {

@@ -1,6 +1,7 @@
 import type { Ref } from 'vue';
 import type { MediaItem, LookupResult, UpdateResult } from "@/main";
 import { computed, ref } from 'vue';
+import { MessageBag } from './MessageBag';
 
 export type Choosable = {
     key: number | string,
@@ -40,7 +41,7 @@ export type MediaProvider = {
     update: (key: number | string, data: object) => Promise<UpdateResult<MediaItem>>,
 };
 
-export function useSearches<T>(searchFn: (page: number) => Promise<SearchResultPage<T>>) {
+export function useSearches<T>(searchFn: (page: number) => Promise<SearchResultPage<T>> | null) {
 
     // Array of search result pages fetched so far.  Null means we haven't searched for anything.
     //const fetchedPages = ref<SearchResultPage<Tp>[] | null>(null);
@@ -93,17 +94,26 @@ export function useSearches<T>(searchFn: (page: number) => Promise<SearchResultP
     const doSearch = (page: number) => {
         const searchId = searchCount++;
         searchingId.value = searchId;
-        searchFn(page).then((result: SearchResultPage<T>) => {
-            if (searchingId.value === searchId) {
-                // only act on the results if this is still the most recent search operation
-                if (fetchedPages.value == null) {
-                    fetchedPages.value = [];
+        const promise = searchFn(page);
+        if (promise == null) {
+            // search was not attempted - for example if search string is too short
+        } else {
+            promise.then((result: SearchResultPage<T>) => {
+                if (searchingId.value === searchId) {
+                    // only act on the results if this is still the most recent search operation
+                    if (fetchedPages.value == null) {
+                        fetchedPages.value = [];
+                    }
+                    fetchedPages.value.push(result);
+                    searchingId.value = null;
                 }
-                fetchedPages.value.push(result);
-                searchingId.value = null;
-            }
-        });
+            });
+        }
     };
+
+    const isSearching = computed((): boolean => {
+        return searchingId.value != null;
+    });
 
     const fetchFirstPage = () => {
         fetchedPages.value = null;
@@ -114,10 +124,13 @@ export function useSearches<T>(searchFn: (page: number) => Promise<SearchResultP
         doSearch(lastPage.value + 1);
     };
 
+    let timeoutId: number | undefined = undefined;
+    const searchDebounced = () => {
+        fetchedPages.value = null;
+        window.clearTimeout(timeoutId);
+        timeoutId = window.setTimeout(() => doSearch(1), 300);
+    };
 
-    return { fetchedPages, suggestions, lastPage, hasMore, searchingId, noResults, canFetchMore, doSearch, fetchFirstPage, fetchNextPage };
+    return { fetchedPages, suggestions, lastPage, hasMore, noResults, canFetchMore, isSearching, fetchFirstPage, fetchNextPage, searchDebounced };
 
 };
-
-
-

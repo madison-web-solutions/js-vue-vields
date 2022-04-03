@@ -12,17 +12,30 @@
                 <button v-if="schemeKey != 'url'" class="btn btn-outline-primary" type="button" @click="toggleOpenSearch"><i class="fas fa-search"></i></button>
                 <button v-if="aliasKey" class="btn btn-outline-danger" type="button" @click="clearValue"><i class="fas fa-times"></i></button>
             </div>
-            <SearchInterface v-if="searchOpen" :searchFn="searchFn" @close="closeSearch" @selected="chooseSuggestion" />
+            <SearchInterface v-if="searchOpen"
+                v-model="searchText"
+                :suggestions="suggestions"
+                :isSearching="isSearching"
+                :noResults="noResults"
+                :canFetchMore="canFetchMore"
+                @enterPress="searchDebounced"
+                @fetchNextPage="fetchNextPage"
+                @close="closeSearch"
+                @selected="chooseSuggestion"
+            >
+                <template #suggestion="{ suggestion }">
+                    <slot name="suggestion" :suggestion="suggestion">{{ (suggestion as LinkAlias).label }}</slot>
+                </template>
+            </SearchInterface>
         </template>
         <template #viewMode>{{ displayValue }}</template>
     </FieldWrapper>
 </template>
 
 <script setup lang="ts">
-import type { LookupResult } from '@/main';
-import { Choosable, LinkAlias, MessageBag, symbols } from '@/main';
-import { computed, ref, inject, toRefs, watchEffect } from 'vue';
-import { commonProps, useFormField } from '@/main';
+import type { Choosable, LinkAlias, MessageBag, LookupResult, SearchResultPage } from '@/main';
+import { computed, ref, inject, toRefs, watchEffect, watch } from 'vue';
+import { commonProps, useFormField, useSearches, symbols } from '@/main';
 import { FieldWrapper } from '@/main';
 import SearchInterface from './SearchInterface.vue';
 
@@ -99,14 +112,6 @@ const aliasKey = computed({
     }
 });
 
-const clearValue = () => {
-    if (modelValueParts.value.scheme == null) {
-        modelValue.value = '';
-    } else {
-        modelValue.value = schemeKey.value + ':';
-    }
-};
-
 const currentLinkAlias = ref<LinkAlias | null>(null);
 
 watchEffect(() => {
@@ -120,15 +125,22 @@ watchEffect(() => {
     }
 });
 
-const searchFn = (searchTextValue: string, page: number) => {
+// 2 way binding to the search input box
+const searchText = ref<string>('');
+
+const searchFn = (page: number): Promise<SearchResultPage<LinkAlias>> | null => {
     if (modelValueParts.value.scheme == null || provider == null) {
         return null;
     }
-    if (searchTextValue.length < 3) {
+    if (searchText.value.length < 3) {
         return null;
     }
-    return provider.value.search(schemeKey.value, searchTextValue, page, props.extraParams);
+    return provider.value.search(schemeKey.value, searchText.value, page, props.extraParams);
 };
+
+const { suggestions, noResults, canFetchMore, isSearching, fetchNextPage, searchDebounced } = useSearches<LinkAlias>(searchFn);
+
+watch(searchText, searchDebounced);
 
 // Is the search interface open or not?
 const searchOpen = ref(false);
@@ -149,15 +161,25 @@ const openSearch = () => {
     if (props.disabled) {
         return;
     }
+    searchText.value = '';
     searchOpen.value = true;
 };
 
-const chooseSuggestion = (suggestion: Choosable | undefined) => {
-    if (props.disabled) {
+const chooseSuggestion = (index: number) => {
+    const suggestion = suggestions.value[index];
+    if (props.disabled || suggestion == null) {
         return;
     }
     closeSearch();
-    modelValue.value = (suggestion == null ? undefined : (suggestion as LinkAlias).scheme + ':' + suggestion.key);
+    modelValue.value = suggestion.scheme + ':' + suggestion.key;
+};
+
+const clearValue = () => {
+    if (modelValueParts.value.scheme == null) {
+        modelValue.value = '';
+    } else {
+        modelValue.value = schemeKey.value + ':';
+    }
 };
 
 const displayValue = computed((): string => {
