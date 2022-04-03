@@ -23,10 +23,10 @@ import type { CompoundFormValue, RepeaterFormValue, FormValue, Path } from '@/li
 import type { MessageBag } from '@/lib/MessageBag';
 import type { Choosable, LinkAlias, SearchResultPage, ChoicesProvider, LinksProvider, MediaProvider, PasswordStrengthProvider } from '@/lib/search';
 import type { MediaItem, ResizableMediaItem } from '@/lib/media';
-import type { BooleansMap, KeysList } from '@/lib/field';
+import type { BooleansMap, KeysList, ParsesTextFieldOptions } from '@/lib/field';
 import { sliceMessageBag, spliceMessageBag, messageBagToString } from '@/lib/MessageBag';
 import { getUniqueKey, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols } from '@/lib/util';
-import { commonProps, useFormField, useHasChoices, useHasChoicesSingle, useHasChoicesMultiple } from '@/lib/field';
+import { commonProps, useFormField, useHasChoices, useHasChoicesSingle, useHasChoicesMultiple, useParsesTextField } from '@/lib/field';
 import { useSearches } from '@/lib/search';
 import TextField from "@/components/TextField.vue";
 import CheckboxField from "@/components/CheckboxField.vue";
@@ -53,8 +53,8 @@ import PasswordField from '@/components/PasswordField.vue';
 
 const HtmlField = defineAsyncComponent(() => import('@/components/HtmlField.vue'));
 
-export type { CompoundFormValue, RepeaterFormValue, FormValue, MessageBag, BooleansMap, KeysList, MediaItem, ResizableMediaItem, Choosable, LinkAlias, SearchResultPage, ChoicesProvider, LinksProvider, MediaProvider, PasswordStrengthProvider, Path };
-export { commonProps, useFormField, useHasChoices, useHasChoicesSingle, useHasChoicesMultiple, useSearches }
+export type { CompoundFormValue, RepeaterFormValue, FormValue, MessageBag, BooleansMap, KeysList, MediaItem, ResizableMediaItem, Choosable, LinkAlias, SearchResultPage, ChoicesProvider, LinksProvider, MediaProvider, PasswordStrengthProvider, Path, ParsesTextFieldOptions };
+export { commonProps, useFormField, useHasChoices, useHasChoicesSingle, useHasChoicesMultiple, useParsesTextField, useSearches }
 export { sliceMessageBag, spliceMessageBag, messageBagToString }
 export { getUniqueKey, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols };
 export { TextField, CheckboxField, CheckboxesField, CurrencyField, DateField, NumberField, ToggleField, RepeaterField, RepeaterRow, RadioField, SearchField, SelectField, HtmlField, FlexibleContentField, LinkField, FieldWrapper, FieldGroup };

@@ -317,3 +317,69 @@ export const useHasChoicesMultiple = (modelValue: Ref<KeysList>, errors: Ref<Mes
 
     return { choicesNormalized, possibleValues, subValues, toggle, subErrors, hasSubErrors };
 };
+
+
+export type ParsesTextFieldOptions<T> = {
+    coerceNotEmpty: (val: string) => T | undefined,
+    isValid?: (val: T) => boolean,
+    clamp?: (val: T) => T,
+    formatForReading?: (val: T) => string,
+    formatForEditing?: (val: T) => string,
+};
+
+export function useParsesTextField<T>(modelValue: Ref<T | undefined>, inputEle: Ref<HTMLInputElement | null>, opts: ParsesTextFieldOptions<T>) {
+
+    const tempClear = ref<boolean>(false);
+    const focused = ref<boolean>(false);
+    const onFocus = () => {
+        focused.value = true;
+    };
+    const onBlur = () => {
+        focused.value = false;
+    };
+
+    const updateAfterClearing = (value: any) => {
+        tempClear.value = true;
+        modelValue.value = value;
+        tempClear.value = false;
+    };
+
+    const change = () => {
+        if (inputEle.value == null) {
+            return;
+        }
+        const inputTextValue: string = inputEle.value.value.replace(/\s/g, '');
+        if (inputTextValue == '') {
+            // No value
+            updateAfterClearing(undefined);
+        } else {
+            const coercedValue: T | undefined = opts.coerceNotEmpty(inputTextValue);
+            if (coercedValue == null) {
+                updateAfterClearing(undefined);
+                return;
+            }
+            const clampedValue: T = opts.clamp ? opts.clamp(coercedValue) : coercedValue;
+            if (opts.isValid && !opts.isValid(clampedValue)) {
+                updateAfterClearing(undefined);
+                return;
+            }
+            updateAfterClearing(clampedValue);
+        }
+    };
+
+    const displayValue = computed((): string => {
+        if (tempClear.value || modelValue.value == null) {
+            return '';
+        }
+        if (focused.value && opts.formatForEditing) {
+            return opts.formatForEditing(modelValue.value);
+        }
+        if (opts.formatForReading) {
+            return opts.formatForReading(modelValue.value);
+        }
+        return String(modelValue.value);
+    });
+
+    return { focused, onFocus, onBlur, change, updateAfterClearing, displayValue };
+};
+
