@@ -41,6 +41,11 @@ export type MediaProvider = {
     update: (key: number | string, data: object) => Promise<UpdateResult<MediaItem>>,
 };
 
+export type PasswordStrengthProvider = {
+    check: (password: string) => Promise<number>,
+    maxStrength: number,
+};
+
 export function useSearches<T>(searchFn: (page: number) => Promise<SearchResultPage<T>> | null) {
 
     const searchText = ref<string>('');

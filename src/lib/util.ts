@@ -1,6 +1,6 @@
 import type { Ref, InjectionKey } from 'vue';
-import type { MessageBag } from '@/lib/MessageBag';
-import type { ChoicesProvider, LinksProvider, MediaProvider } from './search';
+import type { MessageBag } from '@/main';
+import type { ChoicesProvider, LinksProvider, MediaProvider, PasswordStrengthProvider } from '@/main';
 
 let uniqueKeyCounter: number = 1;
 export const getUniqueKey = function(): string {
@@ -270,6 +270,7 @@ const symbols = {
     choicesProvider: Symbol() as InjectionKey<Ref<ChoicesProvider> | undefined>,
     linksProvider: Symbol() as InjectionKey<Ref<LinksProvider> | undefined>,
     mediaProvider: Symbol() as InjectionKey<Ref<MediaProvider> | undefined>,
+    passwordStrengthProvider: Symbol() as InjectionKey<Ref<PasswordStrengthProvider> | undefined>,
 };
 Object.freeze(symbols);
 export { symbols };

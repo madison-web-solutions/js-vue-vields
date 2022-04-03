@@ -21,7 +21,7 @@ export type LookupResult<T> = LookupFound<T> | LookupNotFound;
 
 import type { CompoundFormValue, RepeaterFormValue, FormValue, Path } from '@/lib/util';
 import type { MessageBag } from '@/lib/MessageBag';
-import type { Choosable, LinkAlias, SearchResultPage, ChoicesProvider, LinksProvider, MediaProvider } from '@/lib/search';
+import type { Choosable, LinkAlias, SearchResultPage, ChoicesProvider, LinksProvider, MediaProvider, PasswordStrengthProvider } from '@/lib/search';
 import type { MediaItem, ResizableMediaItem } from '@/lib/media';
 import type { BooleansMap, KeysList } from '@/lib/field';
 import { sliceMessageBag, spliceMessageBag, messageBagToString } from '@/lib/MessageBag';
@@ -48,12 +48,15 @@ import MediaPreview from '@/components/media/MediaPreview.vue';
 import MediaLibrary from '@/components/media/MediaLibrary.vue';
 import MediaDetails from '@/components/media/MediaDetails.vue';
 import MediaField from '@/components/media/MediaField.vue';
+import PasswordStrengthMeter from '@/components/PasswordStrengthMeter.vue';
+import PasswordField from '@/components/PasswordField.vue';
 
 const HtmlField = defineAsyncComponent(() => import('@/components/HtmlField.vue'));
 
-export type { CompoundFormValue, RepeaterFormValue, FormValue, MessageBag, BooleansMap, KeysList, MediaItem, ResizableMediaItem, Choosable, LinkAlias, SearchResultPage, ChoicesProvider, LinksProvider, MediaProvider, Path };
+export type { CompoundFormValue, RepeaterFormValue, FormValue, MessageBag, BooleansMap, KeysList, MediaItem, ResizableMediaItem, Choosable, LinkAlias, SearchResultPage, ChoicesProvider, LinksProvider, MediaProvider, PasswordStrengthProvider, Path };
 export { commonProps, useFormField, useHasChoices, useHasChoicesSingle, useHasChoicesMultiple, useSearches }
 export { sliceMessageBag, spliceMessageBag, messageBagToString }
 export { getUniqueKey, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols };
 export { TextField, CheckboxField, CheckboxesField, CurrencyField, DateField, NumberField, ToggleField, RepeaterField, RepeaterRow, RadioField, SearchField, SelectField, HtmlField, FlexibleContentField, LinkField, FieldWrapper, FieldGroup };
 export { MediaPreview, MediaLibrary, MediaDetails, MediaField };
+export { PasswordStrengthMeter, PasswordField };

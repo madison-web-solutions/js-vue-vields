@@ -11,6 +11,7 @@
                         <hr />
                         <TextField label="First Name" name="first_name" class="col-md-6" />
                         <TextField label="Last Name" name="last_name" class="col-md-6" />
+                        <PasswordField label="Password" name="password" :minStrength="3" class="col-12" />
                         <TextAreaField label="Summary" name="summary" :rows="3" class="col-12" />
                         <RadioField label="Type" name="type" choices="new,existing" class="col-12" />
                         <RepeaterField label="Pets" name="pets" :min="3" :max="5" class="col-12">
@@ -59,10 +60,10 @@
 </template>
 
 <script setup lang="ts">
-import type { Choosable, LinkAlias, MediaItem, ResizableMediaItem, SearchResultPage, ChoicesProvider, LinksProvider, MediaProvider, LookupResult, UpdateResult } from "@/main";
+import type { Choosable, LinkAlias, MediaItem, ResizableMediaItem, SearchResultPage, ChoicesProvider, LinksProvider, MediaProvider, PasswordStrengthProvider, LookupResult, UpdateResult } from "@/main";
 import { computed, ref, provide } from "vue";
 import { symbols } from '@/main';
-import { FieldGroup, CheckboxField, CheckboxesField, TextField, SelectField, HtmlField, CurrencyField, NumberField, ToggleField, RepeaterField, SearchField, RadioField, DateField, LinkField, MediaField } from "@/main";
+import { FieldGroup, CheckboxField, CheckboxesField, TextField, SelectField, HtmlField, CurrencyField, NumberField, ToggleField, RepeaterField, SearchField, RadioField, DateField, LinkField, MediaField, PasswordField } from "@/main";
 import TextAreaField from "@/components/TextAreaField.vue";
 import FlexibleContentField from "@/components/FlexibleContentField.vue";
 import faker from '@faker-js/faker';
@@ -296,6 +297,19 @@ const dummyMediaProvider = ref<MediaProvider>({
 });
 
 provide(symbols.mediaProvider, dummyMediaProvider);
+
+
+const dummyPasswordStrengthProvider = ref<PasswordStrengthProvider>({
+    check: (password: string): Promise<number> => {
+        return new Promise<number>((resolve, reject) => {
+            resolve(Math.pow(2, password.length) / Math.pow(2, 6));
+        });
+    },
+    maxStrength: 5,
+});
+
+provide(symbols.passwordStrengthProvider, dummyPasswordStrengthProvider);
+
 
 
 </script>
