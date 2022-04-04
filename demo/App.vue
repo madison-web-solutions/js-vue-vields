@@ -21,9 +21,10 @@
                                 <CheckboxesField label="Attributes" name="attributes" choices="cute,stupid,fat" class="col-md-4" />
                             </div>
                         </RepeaterField>
-                        <DateField label="Date of Birth" name="dob" max="today" class="col-md-4" />
-                        <NumberField label="Days Holiday" name="days_holiday" :min="0" class="col-md-4" />
-                        <CurrencyField label="Salary" name="salary" currencyCode="GBP" class="col-md-4" />
+                        <TimeField label="Opening Time" name="opening_time" min="06:30" max="19:00" class="col-md-6" />
+                        <DateField label="Date of Birth" name="dob" max="today" class="col-md-6" />
+                        <NumberField label="Days Holiday" name="days_holiday" :min="0" class="col-md-6" />
+                        <CurrencyField label="Salary" name="salary" currencyCode="GBP" class="col-md-6" />
                         <hr />
                         <HtmlField label="Description" name="description" class="col-12" />
                         <hr />
@@ -63,7 +64,7 @@
 import type { Choosable, LinkAlias, MediaItem, ResizableMediaItem, SearchResultPage, ChoicesProvider, LinksProvider, MediaProvider, PasswordStrengthProvider, LookupResult, UpdateResult } from "@/main";
 import { computed, ref, provide } from "vue";
 import { symbols } from '@/main';
-import { FieldGroup, CheckboxField, CheckboxesField, TextField, SelectField, HtmlField, CurrencyField, NumberField, ToggleField, RepeaterField, SearchField, RadioField, DateField, LinkField, MediaField, PasswordField } from "@/main";
+import { FieldGroup, CheckboxField, CheckboxesField, TextField, SelectField, HtmlField, CurrencyField, NumberField, ToggleField, RepeaterField, SearchField, RadioField, DateField, LinkField, MediaField, PasswordField, TimeField } from "@/main";
 import TextAreaField from "@/components/TextAreaField.vue";
 import FlexibleContentField from "@/components/FlexibleContentField.vue";
 import faker from '@faker-js/faker';
