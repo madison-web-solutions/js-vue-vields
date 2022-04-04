@@ -9,11 +9,11 @@ export type MediaItem = {
 };
 
 export type ResizableMediaItem = MediaItem & {
-    src_icon: string,
+    src_thumb: string,
 };
 
 export const isMediaItemResizable = (item: MediaItem): item is ResizableMediaItem => {
-    return 'src_icon' in item;
+    return 'src_thumb' in item;
 };
 
 export const getIconCssClass = function(item: MediaItem): string | null {

@@ -55,7 +55,7 @@
             <div class="col-4">
                 <pre>{{ vals }}</pre>
             </div>
-        </div>        
+        </div>
     </div>
 </template>
 
@@ -229,7 +229,7 @@ const generateFakeMediaItem = (): MediaItem | ResizableMediaItem => {
             title: faker.lorem.words(1 + Math.floor(Math.random() * 5)),
             extension: 'png',
             src: "https://loremflickr.com/500/300?lock=" + id,
-            src_icon: "https://loremflickr.com/100/100?lock=" + id,
+            src_thumb: "https://loremflickr.com/120/120?lock=" + id,
             alt: Math.random() < 0.5 ? faker.lorem.sentence() : null,
         };
     }

@@ -73,9 +73,9 @@ const backgroundImage = computed((): string | null => {
     if (item.value == null) {
         return null;
     } else if (isMediaItemResizable(item.value)) {
-        return item.value.src_icon;
+        return item.value.src_thumb;
     } else if (item.value.extension == 'svg' && item.value.src != null) {
-        return item.value.src
+        return item.value.src;
     } else {
         return null;
     }
