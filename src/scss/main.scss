@@ -21,5 +21,10 @@
     overflow-y: auto;
 }
 
+.link-field-scheme-select, .input-group > .link-field-scheme-select {
+    flex-grow: 0;
+    width: auto;
+}
+
 @import "./repeater.scss";
 @import "./media.scss";

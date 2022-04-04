@@ -2,7 +2,7 @@
     <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors">
         <template #input>
             <div class="input-group">
-                <select v-if="availableSchemes.length > 0" class="form-control flex-grow-0 w-auto" v-model="schemeKey">
+                <select v-if="availableSchemes.length > 0" class="form-select link-field-scheme-select" v-model="schemeKey">
                     <option v-for="scheme in availableSchemes" :value="scheme.key">{{ scheme.label }}</option>
                 </select>
                 <div v-if="schemeKey != 'url'" class="form-control" :class="{'is-invalid': hasError}" :disabled="disabled" @click="toggleOpenSearch">
@@ -77,13 +77,13 @@ const modelValueParts = computed(() => {
             key: '',
         };
     }
-    const parts = modelValue.value.split(':', 2);
-    if (parts.length == 2) {
+    const parts = modelValue.value.split(':');
+    if (parts.length > 1) {
         for (const scheme of availableSchemes.value) {
             if (scheme.key == parts[0]) {
                 return {
                     scheme: scheme,
-                    key: parts[1],
+                    key: parts.slice(1).join(':'),
                 };
             }
         }
@@ -99,7 +99,7 @@ const schemeKey = computed({
         return String(modelValueParts.value.scheme.key);
     },
     set: (newSchemeKey: string) => {
-        modelValue.value = newSchemeKey + ':'; 
+        modelValue.value = newSchemeKey + ':';
     }
 });
 
@@ -108,7 +108,7 @@ const aliasKey = computed({
         return modelValueParts.value.key;
     },
     set: (newAliasKey: string) => {
-        modelValue.value = schemeKey.value + ':' + newAliasKey; 
+        modelValue.value = schemeKey.value + ':' + newAliasKey;
     }
 });
 
@@ -116,8 +116,8 @@ const currentLinkAlias = ref<LinkAlias | null>(null);
 
 watchEffect(() => {
     currentLinkAlias.value = null;
-    if (provider != null && modelValueParts.value.scheme != null) {
-        provider.value.lookup(schemeKey.value, modelValueParts.value.key).then((result: LookupResult<LinkAlias>) => {
+    if (provider != null && schemeKey.value != '' && schemeKey.value != 'url' && aliasKey.value != '') {
+        provider.value.lookup(schemeKey.value, aliasKey.value).then((result: LookupResult<LinkAlias>) => {
             if (result.status == 'found') {
                 currentLinkAlias.value = result.resource;
             }
@@ -160,7 +160,7 @@ const displayValue = computed((): string => {
     } else if (currentLinkAlias.value) {
         return currentLinkAlias.value.label;
     } else {
-        return modelValueParts.value.key || '';
+        return aliasKey.value;
     }
 });
 
