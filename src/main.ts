@@ -52,6 +52,7 @@ import MediaField from '@/components/media/MediaField.vue';
 import PasswordStrengthMeter from '@/components/PasswordStrengthMeter.vue';
 import PasswordField from '@/components/PasswordField.vue';
 import TimeField from '@/components/TimeField.vue';
+import CompoundField from '@/components/CompoundField.vue';
 
 const HtmlField = defineAsyncComponent(() => import('@/components/HtmlField.vue'));
 
@@ -61,4 +62,4 @@ export { sliceMessageBag, spliceMessageBag, messageBagToString }
 export { getUniqueKey, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols };
 export { TextField, TextAreaField, CheckboxField, CheckboxesField, CurrencyField, DateField, NumberField, ToggleField, RepeaterField, RepeaterRow, RadioField, SearchField, SelectField, HtmlField, FlexibleContentField, LinkField, FieldWrapper, FieldGroup };
 export { MediaPreview, MediaLibrary, MediaDetails, MediaField };
-export { PasswordStrengthMeter, PasswordField, TimeField };
+export { PasswordStrengthMeter, PasswordField, TimeField, CompoundField };

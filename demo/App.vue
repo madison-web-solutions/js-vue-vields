@@ -4,7 +4,7 @@
         <div class="row">
             <div class="col-8">
                 <FieldGroup v-model="vals" v-model:errors="errors">
-                    <div class="row g-3">
+                    <div class="row g-3 mb-4">
                         <MediaField label="Image" name="image" class="col-12" />
                         <hr />
                         <LinkField label="Link" name="link" class="col-12" />
@@ -50,6 +50,18 @@
                         <SelectField label="Select Cat" name="cat" directory="cats" class="col-6" />
                         <RadioField label="Select Cat" name="cat" directory="cats" class="col-6" />
                         <CheckboxesField label="Select Cats" name="cats" directory="cats" class="col-6" />
+                        <CompoundField label="Address" name="address" class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <TextField label="Line 1" name="line1" class="col-md-6" />
+                                        <TextField label="Line 2" name="line2" class="col-md-6" />
+                                        <TextField label="City" name="city" class="col-md-6" />
+                                        <TextField label="Postcode" name="postcode" class="col-md-6" />
+                                    </div>
+                                </div>
+                            </div>
+                        </CompoundField>
                     </div>
                 </FieldGroup>
             </div>
@@ -64,7 +76,7 @@
 import type { Choosable, LinkAlias, MediaItem, ResizableMediaItem, SearchResultPage, ChoicesProvider, LinksProvider, MediaProvider, PasswordStrengthProvider, LookupResult, UpdateResult } from "@/main";
 import { computed, ref, provide } from "vue";
 import { symbols } from '@/main';
-import { FieldGroup, CheckboxField, CheckboxesField, TextField, SelectField, HtmlField, CurrencyField, NumberField, ToggleField, RepeaterField, SearchField, RadioField, DateField, LinkField, MediaField, PasswordField, TimeField } from "@/main";
+import { FieldGroup, CheckboxField, CheckboxesField, TextField, SelectField, HtmlField, CurrencyField, NumberField, ToggleField, RepeaterField, SearchField, RadioField, DateField, LinkField, MediaField, PasswordField, TimeField, CompoundField } from "@/main";
 import TextAreaField from "@/components/TextAreaField.vue";
 import FlexibleContentField from "@/components/FlexibleContentField.vue";
 import faker from '@faker-js/faker';
