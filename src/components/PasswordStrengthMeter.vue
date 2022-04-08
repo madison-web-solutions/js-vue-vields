@@ -33,7 +33,6 @@ const strength = ref<number | undefined>(undefined);
 watchEffect(() => {
     if (provider && provider.value && props.password) {
         provider.value.check(props.password).then((newStrength: number) => {
-            console.log(props.password, newStrength);
             strength.value = newStrength;
         })
     } else {

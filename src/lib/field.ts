@@ -167,7 +167,7 @@ export const useHasChoices = (props: UseHasChoicePropRefs) => {
     const provider = inject(symbols.choicesProvider, undefined);
 
     const directoryChoices = ref<Choosable[]>([]);
-    
+
     watchEffect(() => {
         if (directory != null && directory.value != null) {
             if (provider != null && provider.value != null) {
@@ -185,8 +185,8 @@ export const useHasChoices = (props: UseHasChoicePropRefs) => {
         }
     });
 
-    const isPartialChoosable = (obj: any): obj is {key: string, label?: unknown} => {
-        return typeof obj == 'object' && obj != null && 'key' in obj && typeof obj.key == 'string';
+    const isPartialChoosable = (obj: any): obj is {key: string | number, label?: unknown} => {
+        return typeof obj == 'object' && obj != null && 'key' in obj && (typeof obj.key == 'string' || typeof obj.key == 'number');
     };
 
     const choicesNormalized = computed((): Choosable[] => {
@@ -227,7 +227,7 @@ export const useHasChoices = (props: UseHasChoicePropRefs) => {
         }
         return out;
     });
-    
+
     const possibleValues = computed((): (string | number)[] => {
         return choicesNormalized.value.map(choice => choice.key);
     });
@@ -248,7 +248,7 @@ export const useHasChoicesSingle = (modelValue: Ref<string | number | undefined>
         }
         return null;
     });
-    
+
     const nullSelected = computed(() => {
         return modelValue.value == null || possibleValues.value.includes(modelValue.value);
     });
@@ -293,7 +293,7 @@ export const useHasChoicesMultiple = (modelValue: Ref<KeysList>, errors: Ref<Mes
         }
         modelValue.value = newValue;
     };
-    
+
     const subErrors = computed((): MessageBag => {
         const out: MessageBag = {};
         choicesNormalized.value.forEach((choice) => {
@@ -306,7 +306,7 @@ export const useHasChoicesMultiple = (modelValue: Ref<KeysList>, errors: Ref<Mes
         });
         return out;
     });
-    
+
     const hasSubErrors = computed((): BooleansMap => {
         const out: BooleansMap = {};
         choicesNormalized.value.forEach((choice) => {
@@ -382,4 +382,3 @@ export function useParsesTextField<T>(modelValue: Ref<T | undefined>, inputEle: 
 
     return { focused, onFocus, onBlur, change, updateAfterClearing, displayValue };
 };
-

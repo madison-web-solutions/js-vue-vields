@@ -29,6 +29,7 @@ import { getUniqueKey, coerceToCompoundFormValue, coerceToRepeaterFormValue, coe
 import { commonProps, useFormField, useHasChoices, useHasChoicesSingle, useHasChoicesMultiple, useParsesTextField } from '@/lib/field';
 import { useSearches } from '@/lib/search';
 import TextField from "@/components/TextField.vue";
+import TextAreaField from "@/components/TextAreaField.vue";
 import CheckboxField from "@/components/CheckboxField.vue";
 import CheckboxesField from "@/components/CheckboxesField.vue";
 import CurrencyField from '@/components/CurrencyField.vue';
@@ -57,6 +58,6 @@ export type { CompoundFormValue, RepeaterFormValue, FormValue, MessageBag, Boole
 export { commonProps, useFormField, useHasChoices, useHasChoicesSingle, useHasChoicesMultiple, useParsesTextField, useSearches }
 export { sliceMessageBag, spliceMessageBag, messageBagToString }
 export { getUniqueKey, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols };
-export { TextField, CheckboxField, CheckboxesField, CurrencyField, DateField, NumberField, ToggleField, RepeaterField, RepeaterRow, RadioField, SearchField, SelectField, HtmlField, FlexibleContentField, LinkField, FieldWrapper, FieldGroup };
+export { TextField, TextAreaField, CheckboxField, CheckboxesField, CurrencyField, DateField, NumberField, ToggleField, RepeaterField, RepeaterRow, RadioField, SearchField, SelectField, HtmlField, FlexibleContentField, LinkField, FieldWrapper, FieldGroup };
 export { MediaPreview, MediaLibrary, MediaDetails, MediaField };
 export { PasswordStrengthMeter, PasswordField };
