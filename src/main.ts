@@ -25,9 +25,10 @@ import type { Choosable, LinkAlias, SearchResultPage, ChoicesProvider, LinksProv
 import type { MediaItem, ResizableMediaItem } from '@/lib/media';
 import type { BooleansMap, KeysList, ParsesTextFieldOptions } from '@/lib/field';
 import { sliceMessageBag, spliceMessageBag, messageBagToString } from '@/lib/MessageBag';
-import { getUniqueKey, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols } from '@/lib/util';
+import { startCase, getUniqueKey, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols } from '@/lib/util';
 import { commonProps, useFormField, useHasChoices, useHasChoicesSingle, useHasChoicesMultiple, useParsesTextField } from '@/lib/field';
 import { useSearches } from '@/lib/search';
+import { useRepeaterField } from '@/lib/repeater';
 import TextField from "@/components/TextField.vue";
 import TextAreaField from "@/components/TextAreaField.vue";
 import CheckboxField from "@/components/CheckboxField.vue";
@@ -53,13 +54,15 @@ import PasswordStrengthMeter from '@/components/PasswordStrengthMeter.vue';
 import PasswordField from '@/components/PasswordField.vue';
 import TimeField from '@/components/TimeField.vue';
 import CompoundField from '@/components/CompoundField.vue';
+import RepeaterTableField from "@/components/RepeaterTableField.vue";
+import RepeaterTableRow from "@/components/RepeaterTableRow.vue";
 
 const HtmlField = defineAsyncComponent(() => import('@/components/HtmlField.vue'));
 
 export type { CompoundFormValue, RepeaterFormValue, FormValue, MessageBag, BooleansMap, KeysList, MediaItem, ResizableMediaItem, Choosable, LinkAlias, SearchResultPage, ChoicesProvider, LinksProvider, MediaProvider, PasswordStrengthProvider, Path, ParsesTextFieldOptions };
-export { commonProps, useFormField, useHasChoices, useHasChoicesSingle, useHasChoicesMultiple, useParsesTextField, useSearches }
+export { commonProps, useFormField, useHasChoices, useHasChoicesSingle, useHasChoicesMultiple, useParsesTextField, useSearches, useRepeaterField }
 export { sliceMessageBag, spliceMessageBag, messageBagToString }
-export { getUniqueKey, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols };
+export { startCase, getUniqueKey, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols };
 export { TextField, TextAreaField, CheckboxField, CheckboxesField, CurrencyField, DateField, NumberField, ToggleField, RepeaterField, RepeaterRow, RadioField, SearchField, SelectField, HtmlField, FlexibleContentField, LinkField, FieldWrapper, FieldGroup };
 export { MediaPreview, MediaLibrary, MediaDetails, MediaField };
-export { PasswordStrengthMeter, PasswordField, TimeField, CompoundField };
+export { PasswordStrengthMeter, PasswordField, TimeField, CompoundField, RepeaterTableField, RepeaterTableRow };

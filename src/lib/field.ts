@@ -60,13 +60,13 @@ export const useExtendsPath = (nameOrIndex: Ref<string | number | undefined> | u
     return { path, pathString };
 };
 
-type UseFormFieldPropRefs<ValueType> = {
+export type UseFormFieldPropRefs<ValueType> = {
     modelValue?: Ref<unknown>,
     errors?: Ref<MessageBag | undefined>,
     name?: Ref<string | number | undefined>,
 };
 
-type FieldEmitType<ValueType> = {
+export type FieldEmitType<ValueType> = {
     (e: 'update:modelValue', value: ValueType): void
     (e: 'update:errors', value: MessageBag): void
 };
