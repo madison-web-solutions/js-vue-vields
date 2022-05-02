@@ -36,6 +36,8 @@ const vals = ref({
     ],
 });
 
-const errors = ref({});
+const errors = ref({
+    "pets.0": ['Cats should not be called Gary'],
+});
 
 </script>

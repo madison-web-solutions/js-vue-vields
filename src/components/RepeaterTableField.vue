@@ -1,50 +1,34 @@
 <template>
     <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors">
         <template #input>
-            <table class="table repeater-table">
-                <thead>
-                    <tr>
-                        <th>&nbsp;</th>
-                        <th v-for="col in myCols">
-                            <slot name="th" :col="col">{{ col.label }}</slot>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <template v-for="(rowVals, index) in modelValue">
-                        <RepeaterTableRow 
-                            class="repeater-item"
-                            :class="{'is-moving': index === movingIndex}"
-                            :style="itemStyle(index)"
-                            :cols="myCols"
-                            :index="index"
-                            :subVals="rowVals"
-                            @startMove="startMove"
-                            @insertRowAt="insertRowAt"
-                            @deleteRowAt="deleteRowAt"
-                        >
-                            <template v-slot="{ subVals }">
-                                <td v-for="col in cols">
-                                    <slot :name="col.name" :index="index" :subVals="subVals"></slot>
-                                </td>
-                            </template>
-                        </RepeaterTableRow>
-                            <!--template v-if="editMode == 'edit' && movingIndex != null">
-                                <div v-if="movingIndex - index >= 0" class="repeater-move-target move-before" @click="completeMoveTo(index)"></div>
-                                <div v-if="movingIndex - index > 0" class="repeater-move-target move-after" @click="completeMoveTo(index + 1)"></div>
-                                <div v-if="index - movingIndex > 0" class="repeater-move-target move-before" @click="completeMoveTo(index - 1)"></div>
-                                <div v-if="index - movingIndex >= 0" class="repeater-move-target move-after" @click="completeMoveTo(index)"></div>
-                            </template-->
+            <div class="repeater-table" :style="repeaterStyle">
+                <div class="repeater-table-header">
+                    <div v-for="col in myCols">
+                        <slot name="th" :col="col">{{ col.label }}</slot>
+                    </div>
+                </div>
+                <RepeaterTableRow v-for="(rowVals, index) in modelValue"
+                    :class="{'is-moving': index === movingIndex}"                        
+                    :cols="myCols"
+                    :index="index"
+                    :subVals="rowVals"
+                    :movingIndex="movingIndex"
+                    @startMove="startMove"
+                    @insertRowAt="insertRowAt"
+                    @deleteRowAt="deleteRowAt"
+                    @completeMoveTo="completeMoveTo"
+                >
+                    <template v-slot="{ subVals }">
+                        <div v-for="col in cols">
+                            <slot :name="col.name" :index="index" :subVals="subVals"></slot>
+                        </div>
                     </template>
-                </tbody>
-                <tfoot v-if="editMode == 'edit' && canAddRow">
-                    <tr>
-                        <td :colspan="myCols.length" class="repeater-append">
-                            <button class="btn btn-primary" @click="appendRow"><i class="fas fa-plus"></i> {{ appendLabel }}</button>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
+                </RepeaterTableRow>
+
+                <div v-if="editMode == 'edit' && canAddRow" class="repeater-table-append">
+                    <button class="btn btn-primary" @click="appendRow"><i class="fas fa-plus"></i> {{ appendLabel }}</button>
+                </div>
+            </div>
         </template>
     </FieldWrapper>
 </template>
@@ -107,10 +91,11 @@ const myCols = computed((): RepeaterTableCol[] => {
     });
 });
 
-const itemStyle = (index: number) => {
+const repeaterStyle = computed(() => {
     // TypeScript doesn't know that CSS custom variable names are valid in a Style object
     // So we have to 'trick' the compiler and explicitly cast to StyleValue
-    return {'--row-num': (index + 1)} as StyleValue;
-};
+    return {'--num-cols': myCols.value.length} as StyleValue;
+});
+
 
 </script>

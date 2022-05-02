@@ -1,5 +1,104 @@
 @use "sass:math";
 
+.repeater-table {
+    display: grid;
+    position: relative;
+    grid-template-columns: min-content repeat(var(--num-cols), 1fr);
+
+
+
+    .btn-repeater-move {
+        cursor: move;
+        &:hover {
+            border: 1px dashed $border-color;
+        }
+    }
+
+    // Repeater item moving
+    // When a row is being moved, divs are added to the dom to act as targets for dropping the row into a new position
+    // For each row, there's a move-before target, and a move-after target
+    // By using absolute position within the grid, we can use the grid lines to position the targets over the top of
+    // existing grid content without them taking up any 'slots' in the grid
+    // This works very nicely, but it does depend on the --row-num css val being set in the vue template
+    .repeater-table-item.is-moving {
+        opacity: 0.5;
+    }
+
+    .repeater-table-item .repeater-move-target {
+        position: absolute;
+        z-index: 1;
+        grid-row: var(--row-num) / span 2;
+        grid-column: 1 / -1;
+        left: 0px;
+        right: 0px;
+        border: 0px dashed transparent;
+        &:hover {
+            border-color: red;
+        }
+        &.move-before {
+            top: - math.div($repeater-move-indicator-size, 2);
+            bottom: 50%;
+            border-top-width: $repeater-move-indicator-size;
+        }
+        &.move-after {
+            top: 50%;
+            bottom: - math.div($repeater-move-indicator-size, 2);
+            border-bottom-width: $repeater-move-indicator-size;
+        }
+    }
+}
+
+.repeater-table-header, .repeater-table-item {
+    display: contents;
+    > div {
+        padding: 6px;
+    }
+}
+
+.repeater-table-header :first-child {
+    grid-column-start: 2;
+}
+
+.repeater-table-item-errors {
+    grid-column: 2 / -1;
+}
+
+.repeater-table-append {
+    grid-column: 1 / -1;
+}
+
+
+.repeater-table-item {
+    > div {
+        // if the item is valid, then there will be no item errors
+        // so each field should span both of this item's grid rows
+        grid-row-end: span 2; 
+    }
+    &.is-invalid {
+        // If the item is not valid, then the fields should only use one of the grid rows
+        // and the errors will go into the second
+        > div {
+            grid-row-end: span 1;
+        }
+        &::after {
+            display: block;
+            content: "";
+            position: absolute;
+            grid-row: var(--row-num) / span 2;
+            grid-column: 1 / -1;
+            outline: 1px solid red;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+        }
+    }
+}
+
+
+
+
 .repeater {
     display: grid;
     position: relative;
