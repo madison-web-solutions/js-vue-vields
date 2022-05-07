@@ -3,11 +3,12 @@
         <template #input>
             <div class="repeater-table" :style="repeaterStyle">
                 <div class="repeater-table-header">
-                    <div v-for="col in myCols">
+                    <div v-for="col in myCols" class="repeater-table-cell">
                         <slot name="th" :col="col">{{ col.label }}</slot>
                     </div>
                 </div>
                 <RepeaterTableRow v-for="(rowVals, index) in modelValue"
+                    class="repeater-item"
                     :class="{'is-moving': index === movingIndex}"                        
                     :cols="myCols"
                     :index="index"
@@ -19,13 +20,13 @@
                     @completeMoveTo="completeMoveTo"
                 >
                     <template v-slot="{ subVals }">
-                        <div v-for="col in cols">
+                        <div v-for="col in cols" class="repeater-table-cell">
                             <slot :name="col.name" :index="index" :subVals="subVals"></slot>
                         </div>
                     </template>
                 </RepeaterTableRow>
 
-                <div v-if="editMode == 'edit' && canAddRow" class="repeater-table-append">
+                <div v-if="editMode == 'edit' && canAddRow" class="repeater-append">
                     <button class="btn btn-primary" @click="appendRow"><i class="fas fa-plus"></i> {{ appendLabel }}</button>
                 </div>
             </div>

@@ -1,6 +1,6 @@
 <template>
-    <div class="repeater-table-item" :style="itemStyle(index)" :class="{'is-invalid': showRowErrors, 'is-moving': index === movingIndex}">
-        <div class="repeater-table-item-control" :rowspan="showRowErrors ? 2: 1">
+    <div :style="itemStyle(index)" :class="{'is-invalid': showRowErrors, 'is-moving': index === movingIndex}">
+        <div class="repeater-table-cell repeater-item-control" :rowspan="showRowErrors ? 2: 1">
             <div>
                 <button v-if="editMode == 'edit'" class="btn btn-repeater-move" @click="emit('startMove', index)">{{ index + 1 }}</button>
                 <span v-if="editMode != 'edit'">{{ index + 1 }}</span>

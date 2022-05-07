@@ -15,6 +15,14 @@
                                 <CheckboxesField name="attributes" choices="cute,stupid,fat" />
                             </template>
                         </RepeaterTableField>
+
+                        <RepeaterField label="Pets" name="pets" class="col-12">
+                            <div class="row">
+                                <TextField label="Name" name="name" class="col-md-4" />
+                                <SelectField label="Type" name="type" choices="cat,dog,fish" class="col-md-4" />
+                                <CheckboxesField label="Attributes" name="attributes" choices="cute,stupid,fat" class="col-md-4" />
+                            </div>
+                        </RepeaterField>
                     </div>
                 </FieldGroup>
             </div>
@@ -27,7 +35,7 @@
 
 <script setup lang="ts">
 import { computed, ref, provide } from "vue";
-import { FieldGroup, CheckboxesField, TextField, SelectField, RepeaterTableField } from "@/main";
+import { FieldGroup, CheckboxesField, TextField, SelectField, RepeaterField, RepeaterTableField } from "@/main";
 
 const vals = ref({
     pets: [

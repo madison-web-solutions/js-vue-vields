@@ -25,9 +25,9 @@
                         <div v-if="index - movingIndex >= 0" class="repeater-move-target move-after" @click="completeMoveTo(index)"></div>
                     </template>
                 </div>
-            </div>
-            <div v-if="editMode == 'edit' && canAddRow" class="repeater-append">
-                <button class="btn btn-primary" @click="appendRow"><i class="fas fa-plus"></i> {{ appendLabel }}</button>
+                <div v-if="editMode == 'edit' && canAddRow" class="repeater-append">
+                    <button class="btn btn-primary" @click="appendRow"><i class="fas fa-plus"></i> {{ appendLabel }}</button>
+                </div>
             </div>
         </template>
     </FieldWrapper>

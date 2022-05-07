@@ -1,7 +1,7 @@
 <template>
-    <div>
+    <div :class="{'is-invalid': showRowErrors}">
         <slot :subVals="modelValue"></slot>
-        <div v-if="editMode == 'edit' && myErrors.length" class="invalid-feedback d-block">
+        <div v-if="showRowErrors" class="invalid-feedback d-block">
             <div v-for="msg in myErrors">{{ msg }}</div>
         </div>
     </div>
@@ -10,7 +10,7 @@
 
 <script setup lang="ts">
 import type { MessageBag, FormValue, CompoundFormValue } from '@/main';
-import { ref, toRef, provide } from 'vue';
+import { computed, ref, toRef, provide } from 'vue';
 import { useFormField, spliceMessageBag, coerceToCompoundFormValue, copyCompoundFormValue, symbols } from '@/main';
 
 const props = defineProps<{
@@ -47,5 +47,9 @@ const errorsSetter = ref((newSubErrors: MessageBag, key: string | number): void 
 });
 
 provide(symbols.errorsSetter, errorsSetter);
+
+const showRowErrors = computed((): boolean => {
+    return editMode.value == 'edit' && myErrors.value.length > 0;
+});
 
 </script>
