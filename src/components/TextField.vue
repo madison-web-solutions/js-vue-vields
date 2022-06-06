@@ -1,7 +1,7 @@
 <template>
     <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors">
         <template #input>
-            <input :id="inputEleId" :type="inputType" class="form-control" :class="{'is-invalid': hasError}" :disabled="disabled" :placeholder="placeholder" v-model="modelValue" />
+            <input :id="inputEleId" :type="inputType" class="form-control" :class="{'is-invalid': hasError}" :disabled="disabled" :placeholder="placeholder" v-model="modelValue" @keydown.enter="emit('enterPress')" />
         </template>
         <template #viewMode>{{ modelValue }}</template>
     </FieldWrapper>
@@ -23,6 +23,7 @@ const props = defineProps(Object.assign({}, commonProps, {
 const emit = defineEmits<{
     (e: 'update:modelValue', value: string): void
     (e: 'update:errors', value: MessageBag): void
+    (e: 'enterPress'): void
 }>();
 
 const propRefs = toRefs(props);
