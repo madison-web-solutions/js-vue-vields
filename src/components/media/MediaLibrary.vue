@@ -25,6 +25,9 @@
                     <div v-for="item in itemsToShow" :key="item.id" class="col-auto">
                         <MediaPreview :item="item" @select="selectAttachment(item.id)" />
                     </div>
+                    <div v-if="canFetchMore" class="col-auto">
+                        <button class="btn btn-link" @click="fetchNextPage">more...</button>
+                    </div>
                 </div>
             </div>
         </div>
