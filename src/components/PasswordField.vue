@@ -2,7 +2,7 @@
     <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors">
         <template #input>
             <input :id="inputEleId" type="password" class="form-control" :class="{'is-invalid': hasError}" :disabled="disabled" :placeholder="placeholder" v-model="modelValue" />
-            <PasswordStrengthMeter v-if="minStrength != null" class="mt-2" :password="modelValue" />
+            <PasswordStrengthMeter v-if="minStrength != null" class="mt-2" :password="modelValue" :okStrength="minStrength" />
         </template>
         <template #viewMode>********</template>
     </FieldWrapper>
