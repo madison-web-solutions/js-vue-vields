@@ -2,6 +2,7 @@
     <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors">
         <template #input>
             <div v-if="! inspecting && ! choosing" class="media-preview-list">
+                <pre>{{ modelValue }}</pre>
                 <MediaPreview v-if="modelValue != null" :item="currentItem" :removable="true" :inspectable="true" @remove="remove" @select="choosing = true" @inspect="inspecting = true" />
                 <button v-if="modelValue == null" type="button" class="media-add-button" @click="choosing = true"><i class="fas fa-plus"></i></button>
             </div>
@@ -53,7 +54,12 @@ const provider = inject(symbols.mediaProvider);
 
 const currentItem = ref<MediaItem | undefined>(undefined);
 
+// Watch the modelValue and load up the correct MediaItem when it changes
 watchEffect(() => {
+    if (currentItem.value && currentItem.value.id === modelValue.value) {
+        // We already have the correct item loaded
+        return;
+    }
     currentItem.value = undefined;
     if (provider != null && modelValue.value != null) {
         provider.value.lookup(modelValue.value).then((searchResult) => {
