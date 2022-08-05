@@ -61,7 +61,7 @@
 
 // Styles that apply to repeater fields but not to repeater-table fields
 .repeater {
-    grid-template-columns: min-content 1fr;
+    grid-template-columns: min-content minmax(0, 1fr);
 
     border-top: 1px solid $border-color;
     border-left: 1px solid $border-color;
@@ -83,7 +83,7 @@
 
 // Styles that apply to repeater table fields but not to repeater fields
 .repeater-table {
-    grid-template-columns: min-content repeat(var(--num-cols), 1fr);
+    grid-template-columns: min-content repeat(var(--num-cols), minmax(0, 1fr));
 
     .repeater-table-cell {
         padding: $table-cell-padding-y $table-cell-padding-x;
@@ -115,7 +115,7 @@
             z-index: -2;
         }
     }
-    
+
     .repeater-table-item-errors {
         grid-column: 2 / -1;
     }
@@ -124,7 +124,7 @@
         > .repeater-table-cell {
             // if the item is valid, then there will be no item errors
             // so each field should span both of this item's grid rows
-            grid-row-end: span 2; 
+            grid-row-end: span 2;
         }
         &.is-invalid > .repeater-table-cell:not(.repeater-item-control) {
             // If the item is not valid, then the errors will go into the second row,
@@ -145,9 +145,8 @@
             z-index: -1; // Higher z-index than the valid rows so the invalid state is on top
         }
     }
-    
+
     .repeater-item .repeater-move-target {
         grid-row: var(--row-num) / span 2;
     }
 }
-
