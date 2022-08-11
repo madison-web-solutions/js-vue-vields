@@ -2,7 +2,7 @@
     <FieldWrapper :inputEleId="inputEleId" :label="inlineLabel ? undefined : label" :required="required" :help="help" :errors="myErrors">
         <template #input>
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" :id="inputEleId" v-model="modelValue" :class="{'is-invalid': hasError}" :disabled="disabled">
+                <input class="form-check-input" type="checkbox" :id="inputEleId" :name="pathString" v-model="modelValue" :class="{'is-invalid': hasError}" :disabled="disabled">
                 <label v-if="label && inlineLabel" class="form-check-label" :for="inputEleId">{{ label }}</label>
             </div>
         </template>
@@ -42,7 +42,7 @@ const coerceFn = (value: unknown): boolean => {
     return coerceToBoolean(value) === true;
 };
 
-const { inputEleId, modelValue, myErrors, hasError } = useFormField<boolean>(coerceFn, emit, propRefs);
+const { inputEleId, pathString, modelValue, myErrors, hasError } = useFormField<boolean>(coerceFn, emit, propRefs);
 
 const displayValue = computed((): string => {
     if (modelValue.value === true) {

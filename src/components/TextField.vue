@@ -1,7 +1,7 @@
 <template>
     <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors">
         <template #input>
-            <input :id="inputEleId" :type="inputType" class="form-control" :class="{'is-invalid': hasError}" :disabled="disabled" :placeholder="placeholder" v-model="modelValue" @keydown.enter="emit('enterPress')" />
+            <input :id="inputEleId" :type="inputType" :name="pathString" class="form-control" :class="{'is-invalid': hasError}" :disabled="disabled" :placeholder="placeholder" v-model="modelValue" @keydown.enter="emit('enterPress')" />
         </template>
         <template #viewMode>{{ modelValue }}</template>
     </FieldWrapper>
@@ -32,6 +32,6 @@ const coerceToString = (value: any): string => {
     return value ? String(value) : '';
 };
 
-const { inputEleId, modelValue, myErrors, hasError } = useFormField<string>(coerceToString, emit, propRefs);
+const { inputEleId, pathString, modelValue, myErrors, hasError } = useFormField<string>(coerceToString, emit, propRefs);
 
 </script>

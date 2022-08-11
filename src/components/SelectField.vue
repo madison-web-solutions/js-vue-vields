@@ -1,7 +1,7 @@
 <template>
     <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors">
         <template #input>
-            <select class="form-select" :class="{'is-invalid': hasError}" :id="inputEleId" :disabled="disabled" @change="change">
+            <select class="form-select" :class="{'is-invalid': hasError}" :id="inputEleId" :name="pathString" :disabled="disabled" @change="change">
                 <option ref="nullOption" :disabled="required" :selected="nullSelected">{{ nullLabel }}</option>
                 <option v-for="choice in choicesNormalized" :selected="modelValue === choice.key">{{ choice.label }}</option>
             </select>
@@ -47,7 +47,7 @@ const coerceFn = (value: any): IdType => {
     return undefined;
 };
 
-const { inputEleId, modelValue, myErrors, hasError } = useFormField<IdType>(coerceFn, emit, propRefs);
+const { inputEleId, pathString, modelValue, myErrors, hasError } = useFormField<IdType>(coerceFn, emit, propRefs);
 
 const { choicesNormalized, currentChoice, nullSelected } = useHasChoicesSingle(modelValue, propRefs);
 

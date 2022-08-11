@@ -3,7 +3,7 @@
         <template #input>
             <div v-for="choice in choicesNormalized" :key="choice.key">
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" :id="inputEleId + choice.key" :checked="subValues[choice.key]" @change="toggle(choice.key)" :class="{'is-invalid': hasSubErrors[choice.key]}" :disabled="disabled">
+                    <input class="form-check-input" type="checkbox" :id="inputEleId + choice.key" :name="pathString + '.' + choice.key" :checked="subValues[choice.key]" @change="toggle(choice.key)" :class="{'is-invalid': hasSubErrors[choice.key]}" :disabled="disabled">
                     <label class="form-check-label" :for="inputEleId + choice.key">{{ choice.label }}</label>
                 </div>
                 <div v-if="hasSubErrors[choice.key]" class="invalid-feedback d-block">
@@ -68,7 +68,7 @@ const coerceFn = (value: any): KeysList => {
     return out;
 };
 
-const { inputEleId, modelValue, myErrors, errors } = useFormField<KeysList>(coerceFn, emit, propRefs);
+const { inputEleId, pathString, modelValue, myErrors, errors } = useFormField<KeysList>(coerceFn, emit, propRefs);
 
 const { choicesNormalized, possibleValues, subValues, toggle, subErrors, hasSubErrors } = useHasChoicesMultiple(modelValue, errors, propRefs);
 

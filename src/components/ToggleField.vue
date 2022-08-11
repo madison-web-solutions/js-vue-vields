@@ -2,7 +2,7 @@
     <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors">
         <template #input>
             <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" :id="inputEleId" v-model="modelValue" :class="{'is-invalid': hasError}" :disabled="disabled" >
+                <input class="form-check-input" type="checkbox" :id="inputEleId" :name="pathString" v-model="modelValue" :class="{'is-invalid': hasError}" :disabled="disabled" >
                 <label class="form-check-label" :for="inputEleId">{{ displayValue }}</label>
             </div>
         </template>
@@ -34,7 +34,7 @@ const emit = defineEmits<{
 
 const propRefs = toRefs(props);
 
-const { inputEleId, modelValue, myErrors, hasError } = useFormField<boolean | undefined>(coerceToBoolean, emit, propRefs);
+const { inputEleId, pathString, modelValue, myErrors, hasError } = useFormField<boolean | undefined>(coerceToBoolean, emit, propRefs);
 
 const displayValue = computed((): string => {
     if (modelValue.value === true) {

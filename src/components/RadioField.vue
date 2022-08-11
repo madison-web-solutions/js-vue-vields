@@ -2,7 +2,7 @@
     <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors">
         <template #input>
             <div v-for="choice in choicesNormalized" class="form-check">
-                <input class="form-check-input" :class="{'is-invalid': hasError}" type="radio" :id="inputEleId + String(choice.key)" :checked="modelValue === choice.key" :disabled="disabled" @change="change(choice)">
+                <input class="form-check-input" :class="{'is-invalid': hasError}" type="radio" :id="inputEleId + String(choice.key)" :name="pathString" :checked="modelValue === choice.key" :disabled="disabled" @change="change(choice)">
                 <label class="form-check-label" :for="inputEleId + String(choice.key)">{{ choice.label }}</label>
             </div>
         </template>
@@ -47,7 +47,7 @@ const coerceFn = (value: any): IdType => {
     return undefined;
 };
 
-const { inputEleId, modelValue, myErrors, hasError } = useFormField<IdType>(coerceFn, emit, propRefs);
+const { inputEleId, pathString, modelValue, myErrors, hasError } = useFormField<IdType>(coerceFn, emit, propRefs);
 
 const { choicesNormalized, currentChoice } = useHasChoicesSingle(modelValue, propRefs);
 
