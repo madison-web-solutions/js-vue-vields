@@ -6,8 +6,8 @@
                     <slot v-if="currentItem" name="suggestion" :suggestion="currentItem">{{ displayValue }}</slot>
                     <span v-if="placeholder && ! currentItem">{{ placeholder }}</span>
                 </div>
-                <button class="btn btn-outline-primary" type="button" @click="toggleOpenSearch"><i class="fas fa-search"></i></button>
-                <button v-if="modelValue" class="btn btn-outline-danger" type="button" @click="clearValue"><i class="fas fa-times"></i></button>
+                <button v-if="! disabled" class="btn btn-outline-primary" type="button" @click="toggleOpenSearch"><i class="fas fa-search"></i></button>
+                <button v-if="! disabled && modelValue" class="btn btn-outline-danger" type="button" @click="clearValue"><i class="fas fa-times"></i></button>
             </div>
             <SearchInterface v-if="searchOpen"
                 v-model="searchText"
