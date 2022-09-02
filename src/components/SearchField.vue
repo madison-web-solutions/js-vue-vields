@@ -2,7 +2,7 @@
     <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors">
         <template #input>
             <div class="input-group">
-                <div class="form-control" :class="{'is-invalid': hasError}" :disabled="disabled" @click="toggleOpenSearch">
+                <div class="form-control" :class="{'is-invalid': hasError}" :disabled="disabled" @click="maybeToggleOpenSearch">
                     <slot v-if="currentItem" name="suggestion" :suggestion="currentItem">{{ displayValue }}</slot>
                     <span v-if="placeholder && ! currentItem">{{ placeholder }}</span>
                 </div>
@@ -99,6 +99,12 @@ const searchFn = (page: number): Promise<SearchResultPage<Choosable>> | null => 
 };
 
 const { searchText, suggestions, noResults, canFetchMore, isSearching, fetchNextPage, searchDebounced, searchOpen, toggleOpenSearch, closeSearch } = useSearches<Choosable>(searchFn);
+
+const maybeToggleOpenSearch = () => {
+    if (! props.disabled) {
+        toggleOpenSearch();
+    }
+};
 
 const chooseSuggestion = (index: number) => {
     const suggestion = suggestions.value[index];
