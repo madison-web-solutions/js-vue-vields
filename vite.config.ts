@@ -15,8 +15,8 @@ module.exports = defineConfig({
     lib: {
       entry: path.resolve(__dirname, 'src/main.ts'),
       formats: ['es'],
-      name: 'MSVueFields',
-      fileName: (format) => `ms-vue-fields.${format}.js`
+      name: 'VueFieldsMs',
+      fileName: (format) => `vue-fields-ms.${format}.js`
     },
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled

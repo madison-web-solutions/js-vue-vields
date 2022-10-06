@@ -11,7 +11,7 @@
 import type { Choosable, LinkAlias, MediaItem, ResizableMediaItem, SearchResultPage, ChoicesProvider, LinksProvider, MediaProvider, PasswordStrengthProvider, LookupResult, UpdateResult } from "@/main";
 import { computed, ref, provide } from "vue";
 import { symbols } from '@/main';
-import faker from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 
 type Cat = {
     key: number,
@@ -133,7 +133,7 @@ let fakeMediaItemCounter: number = 1;
 const generateFakeMediaItem = (): MediaItem | ResizableMediaItem => {
     const id = fakeMediaItemCounter++;
     if (Math.random() < 0.2) {
-        const extension = faker.random.arrayElement<string>(['docx', 'pdf', 'xlsx']);
+        const extension = faker.helpers.arrayElement<string>(['docx', 'pdf', 'xlsx']);
         return {
             id: id,
             status: Math.random() < 0.05 ? 'missing' : 'available',
