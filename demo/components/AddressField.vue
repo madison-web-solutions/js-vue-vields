@@ -18,7 +18,7 @@
 <script setup lang="ts">
 import type { MessageBag, CompoundFormValue } from '@/main';
 import { computed, ref } from 'vue';
-import { commonProps } from '@/main';
+import { commonProps, coerceToCompoundFormValue } from '@/main';
 import { CompoundField, TextField } from '@/main';
 import CountryField from './CountryField.vue';
 
@@ -41,13 +41,13 @@ const emit = defineEmits<{
 }>();
 
 const modelValue = computed({
-    get: () => props.modelValue,
-    set: (newValue) => emit('update:modelValue', newValue)
+    get: (): CompoundFormValue => coerceToCompoundFormValue(props.modelValue),
+    set: (newValue: CompoundFormValue) => emit('update:modelValue', newValue)
 });
 
 const errors = computed({
-    get: () => props.errors,
-    set: (newErrors) => emit('update:errors', newErrors)
+    get: (): MessageBag => props.errors || {},
+    set: (newErrors: MessageBag) => emit('update:errors', newErrors)
 });
 
 </script>

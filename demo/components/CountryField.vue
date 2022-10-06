@@ -8,7 +8,7 @@ import { computed } from 'vue';
 import { commonProps } from '@/main';
 import { SelectField } from '@/main';
 
-type IdType = string | number | undefined;
+type IdType = string | undefined;
 
 const props = defineProps(commonProps);
 
@@ -29,13 +29,13 @@ const fieldProps = computed(() => {
 });
 
 const modelValue = computed({
-    get: () => props.modelValue,
-    set: (newValue) => emit('update:modelValue', newValue)
+    get: (): IdType => props.modelValue ? String(props.modelValue) : undefined,
+    set: (newValue: IdType) => emit('update:modelValue', newValue)
 });
 
 const errors = computed({
-    get: () => props.errors,
-    set: (newErrors) => emit('update:errors', newErrors)
+    get: (): MessageBag => props.errors || {},
+    set: (newErrors: MessageBag) => emit('update:errors', newErrors)
 });
 
 const countries = [

@@ -348,7 +348,7 @@ export function useParsesTextField<T>(modelValue: Ref<T | undefined>, inputEle: 
         if (inputEle.value == null) {
             return;
         }
-        const inputTextValue: string = inputEle.value.value.replace(/\s/g, '');
+        const inputTextValue: string = (inputEle.value.value || '').replace(/\s/g, '');
         if (inputTextValue == '') {
             // No value
             updateAfterClearing(undefined);

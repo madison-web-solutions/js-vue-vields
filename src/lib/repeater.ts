@@ -142,7 +142,7 @@ export function useRepeaterField(emit: FieldEmitType<RepeaterFormValue>, propRef
 
 
 
-    const movingIndex = ref<number | null>(null);
+    const movingIndex = ref<number | undefined>(undefined);
     const isMoving = computed((): boolean => {
         return movingIndex.value != null;
     });
@@ -162,7 +162,7 @@ export function useRepeaterField(emit: FieldEmitType<RepeaterFormValue>, propRef
         }
     };
     const cancelMove = () => {
-        movingIndex.value = null;
+        movingIndex.value = undefined;
         document.removeEventListener('keydown', handleMoveEscape);
     };
     onBeforeUnmount(cancelMove);
