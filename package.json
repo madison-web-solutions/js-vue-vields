@@ -1,6 +1,6 @@
 {
   "name": "vue-fields-ms",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "dist/vue-fields-ms.es.js",
   "scripts": {
     "dev": "vite",
