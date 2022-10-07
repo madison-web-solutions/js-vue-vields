@@ -1,8 +1,7 @@
 {
   "name": "vue-fields-ms",
   "version": "1.0.0",
-  "main": "dist/main.js",
-  "types": "dist/main.d.ts",
+  "main": "dist/vue-fields-ms.es.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -34,7 +33,8 @@
     "vue-tsc": "^0.40.13"
   },
   "files": [
-    "dist/**/*"
+    "dist/**/*",
+    "scss/**/*"
   ],
   "dependencies": {
     "date-format-ms": "^1.2.1"
