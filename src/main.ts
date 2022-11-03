@@ -27,6 +27,7 @@ import type { BooleansMap, KeysList, ParsesTextFieldOptions } from '@/lib/field'
 import { sliceMessageBag, spliceMessageBag, messageBagToString } from '@/lib/MessageBag';
 import { startCase, getUniqueKey, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols } from '@/lib/util';
 import { commonProps, useFormField, useHasChoices, useHasChoicesSingle, useHasChoicesMultiple, useParsesTextField } from '@/lib/field';
+import { useHasMaxChars } from '@/lib/text';
 import { useSearches } from '@/lib/search';
 import { useRepeaterField } from '@/lib/repeater';
 import TextField from "@/components/TextField.vue";
@@ -60,7 +61,7 @@ import RepeaterTableRow from "@/components/RepeaterTableRow.vue";
 const HtmlField = defineAsyncComponent(() => import('@/components/HtmlField.vue'));
 
 export type { CompoundFormValue, RepeaterFormValue, FormValue, MessageBag, BooleansMap, KeysList, MediaItem, ResizableMediaItem, Choosable, LinkAlias, SearchResultPage, ChoicesProvider, LinksProvider, MediaProvider, PasswordStrengthProvider, Path, ParsesTextFieldOptions };
-export { commonProps, useFormField, useHasChoices, useHasChoicesSingle, useHasChoicesMultiple, useParsesTextField, useSearches, useRepeaterField }
+export { commonProps, useFormField, useHasChoices, useHasChoicesSingle, useHasChoicesMultiple, useParsesTextField, useHasMaxChars, useSearches, useRepeaterField }
 export { sliceMessageBag, spliceMessageBag, messageBagToString }
 export { startCase, getUniqueKey, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols };
 export { TextField, TextAreaField, CheckboxField, CheckboxesField, CurrencyField, DateField, NumberField, ToggleField, RepeaterField, RepeaterRow, RadioField, SearchField, SelectField, HtmlField, FlexibleContentField, LinkField, FieldWrapper, FieldGroup };

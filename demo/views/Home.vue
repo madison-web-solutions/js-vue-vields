@@ -13,7 +13,7 @@
                         <TextField label="First Name" name="first_name" class="col-md-6" />
                         <TextField label="Last Name" name="last_name" class="col-md-6" />
                         <PasswordField label="Password" name="password" :minStrength="3" class="col-12" />
-                        <TextAreaField label="Summary" name="summary" :rows="3" class="col-12" />
+                        <TextAreaField label="Summary" name="summary" :rows="3" :max="155" class="col-12" />
                         <RadioField label="Type" name="type" choices="new,existing" class="col-12" />
                         <RepeaterField label="Pets" name="pets" :min="3" :max="5" class="col-12">
                             <div class="row">
@@ -27,6 +27,7 @@
                         <NumberField label="Days Holiday" name="days_holiday" :min="0" class="col-md-6" />
                         <CurrencyField label="Salary" name="salary" currencyCode="GBP" class="col-md-6" />
                         <hr />
+                        <TextField label="Short Description" name="short_description" :max="20" class="col-md-6" />
                         <HtmlField label="Description" name="description" class="col-12" />
                         <hr />
                         <FlexibleContentField label="Page Sections" name="page_sections" :sectionChoices="[{key: 'banner', label: 'Banner'}, {key: 'promos', label: 'Promos'}]" class="col-12">

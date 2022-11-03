@@ -4,7 +4,7 @@
             <label v-if="label" :for="inputEleId" class="form-label">{{ label }}<span v-if="required">*</span></label>
         </slot>
         <slot name="preinput"></slot>
-        <div v-if="editMode == 'edit'">
+        <div v-if="editMode == 'edit'" class="position-relative">
             <slot name="input"></slot>
         </div>
         <slot v-if="editMode == 'edit'" name="errors">
