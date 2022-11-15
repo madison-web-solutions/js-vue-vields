@@ -31,7 +31,7 @@ const props = withDefaults(defineProps<{
     help?: string,
     errors?: string[],
     inputEleId?: string,
-    inputWrapperCssClass: string | string[] | object
+    inputWrapperCssClass?: string | string[] | object
 }>(), {
     required: false,
     inputWrapperCssClass: 'position-relative'

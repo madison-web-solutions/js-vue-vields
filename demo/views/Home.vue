@@ -5,7 +5,13 @@
             <div class="col-8">
                 <FieldGroup v-model="vals" v-model:errors="errors">
                     <div class="row g-3 mb-4">
-                        <MediaField label="Image" name="image" class="col-12" />
+                        <MediaField label="Image" name="image" class="col-6" />
+                        <CustomSelectField label="Color" name="color" directory="colors" class="col-6">
+                            <template v-slot="{ choice }">
+                                <div :style="{display: 'inline-block', width: '10px', height: '10px', 'background-color': '#' + choice.hex}" class="me-2"></div>
+                                {{ choice.label }}
+                            </template>
+                        </CustomSelectField>
 
                         <hr />
                         <LinkField label="Link" name="link" class="col-12" />
@@ -77,7 +83,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { FieldGroup, CheckboxField, CheckboxesField, TextField, SelectField, HtmlField, CurrencyField, NumberField, ToggleField, RepeaterField, SearchField, RadioField, DateField, LinkField, MediaField, PasswordField, TimeField, CompoundField, RepeaterTableField } from "@/main";
+import { FieldGroup, CheckboxField, CheckboxesField, TextField, SelectField, CustomSelectField, HtmlField, CurrencyField, NumberField, ToggleField, RepeaterField, SearchField, RadioField, DateField, LinkField, MediaField, PasswordField, TimeField, CompoundField, RepeaterTableField } from "@/main";
 import TextAreaField from "@/components/TextAreaField.vue";
 import FlexibleContentField from "@/components/FlexibleContentField.vue";
 
