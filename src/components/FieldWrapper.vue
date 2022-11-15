@@ -4,7 +4,7 @@
             <label v-if="label" :for="inputEleId" class="form-label">{{ label }}<span v-if="required">*</span></label>
         </slot>
         <slot name="preinput"></slot>
-        <div v-if="editMode == 'edit'" class="position-relative">
+        <div v-if="editMode == 'edit'" :class="inputWrapperCssClass">
             <slot name="input"></slot>
         </div>
         <slot v-if="editMode == 'edit'" name="errors">
@@ -30,9 +30,11 @@ const props = withDefaults(defineProps<{
     required: boolean,
     help?: string,
     errors?: string[],
-    inputEleId?: string
+    inputEleId?: string,
+    inputWrapperCssClass: string | string[] | object
 }>(), {
-    required: false
+    required: false,
+    inputWrapperCssClass: 'position-relative'
 });
 
 const editMode = inject(symbols.editMode, ref('edit'));

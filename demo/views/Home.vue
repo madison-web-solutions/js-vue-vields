@@ -50,8 +50,9 @@
                             </template>
                         </SearchField>
                         <SelectField label="Select Cat" name="cat" directory="cats" class="col-6" />
-                        <RadioField label="Select Cat" name="cat" directory="cats" class="col-6" />
-                        <CheckboxesField label="Select Cats" name="cats" directory="cats" class="col-6" />
+                        <ToggleField label="Inline Checks" name="inline_checks" class="col-12" />
+                        <RadioField label="Select Cat" name="cat" directory="cats" :inline="!!vals.inline_checks" :class="vals.inline_checks ? 'col-12' : 'col-6'" />
+                        <CheckboxesField label="Select Cats" name="cats" directory="cats" :inline="!!vals.inline_checks" :class="vals.inline_checks ? 'col-12' : 'col-6'" />
                         <CompoundField label="Address" name="address" class="col-12">
                             <div class="card">
                                 <div class="card-body">
@@ -96,7 +97,8 @@ const vals = ref({
             content_type: 'banner',
             banner_heading: 'About Us',
         }
-    ]
+    ],
+    inline_checks: false,
 });
 
 type Cat = {
