@@ -75,6 +75,7 @@
                 </FieldGroup>
             </div>
             <div class="col-4">
+                <p><button type="button" class="btn btn-primary" @click="toggleEditMode">{{ editMode == 'edit' ? 'Stop Editing' : 'Edit' }}</button></p>
                 <pre>{{ vals }}</pre>
             </div>
         </div>
@@ -82,10 +83,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import { FieldGroup, CheckboxField, CheckboxesField, TextField, SelectField, CustomSelectField, HtmlField, CurrencyField, NumberField, ToggleField, RepeaterField, SearchField, RadioField, DateField, LinkField, MediaField, PasswordField, TimeField, CompoundField, RepeaterTableField } from "@/main";
-import TextAreaField from "@/components/TextAreaField.vue";
-import FlexibleContentField from "@/components/FlexibleContentField.vue";
+import { computed, ref, provide } from "vue";
+import { FieldGroup, CheckboxField, CheckboxesField, TextField, TextAreaField, SelectField, CustomSelectField, HtmlField, CurrencyField, NumberField, ToggleField, RepeaterField, SearchField, RadioField, DateField, LinkField, MediaField, PasswordField, TimeField, CompoundField, FlexibleContentField, RepeaterTableField } from "@/main";
+import { symbols } from '@/main';
+
+const editMode = ref('edit');
+const toggleEditMode = () => {
+    editMode.value = (editMode.value == 'edit' ? 'view' : 'edit');
+};
+provide(symbols.editMode, editMode);
 
 const vals = ref({
     first_name: 'Jane',

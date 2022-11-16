@@ -5,25 +5,28 @@
                 <div class="input-group" @click="toggleDropdown">
                     <div class="form-control">
                         <slot v-if="currentChoice" :choice="currentChoice">{{ currentChoice.label }}</slot>
-                        <slot v-if="nullSelected" name="nullOption">{{ nullLabel }}</slot>
+                        <slot v-if="nullSelected" name="nullSelected">{{ placeholder }}</slot>
                     </div>
                     <button class="btn btn-outline-primary dropdown-toggle" type="button"></button>
                 </div>
                 <ul class="dropdown-menu" :class="showDropdown ? 'show' : ''">
                     <li v-if="nullSelected || ! required">
-                        <button class="dropdown-item" @click="selectNull()">
-                            <slot name="nullOption">{{ nullLabel }}</slot>
+                        <button type="button" class="dropdown-item" @click="selectNull()">
+                            <slot name="nullOption"><span class="text-muted">(None)</span></slot>
                         </button>
                     </li>
                     <li v-for="choice in choicesNormalized">
-                        <button class="dropdown-item" @click="selectOption(choice)">
+                        <button type="button" class="dropdown-item" @click="selectOption(choice)">
                             <slot :choice="choice">{{ choice.label }}</slot>
                         </button>
                     </li>
                 </ul>
             </div>
         </template>
-        <template #viewMode>{{ displayValue }}</template>
+        <template #viewMode>
+            <template v-if="modelValue != null">{{ displayValue }}</template>
+            <span v-if="modelValue == null" class="text-muted">(None)</span>
+        </template>
     </FieldWrapper>
 </template>
 
@@ -68,10 +71,6 @@ const { inputEleId, pathString, modelValue, myErrors, hasError } = useFormField<
 
 const { choicesNormalized, currentChoice, nullSelected } = useHasChoicesSingle(modelValue, propRefs);
 
-const nullLabel = computed(() => {
-    return props.placeholder || 'Select';
-});
-
 const showDropdown = ref(false);
 
 const openDropdown = () => {
@@ -112,8 +111,6 @@ const selectOption = (choice: Choosable) => {
 const displayValue = computed((): string => {
     if (currentChoice.value) {
         return currentChoice.value.label;
-    } else if (modelValue.value == null) {
-        return nullLabel.value;
     } else {
         return String(modelValue.value);
     }

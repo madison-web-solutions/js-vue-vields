@@ -3,7 +3,11 @@
         <template #input>
             <div ref="editorContainerEle" class="html-field" :class="{'is-invalid': hasError}"></div>
         </template>
-        <template #viewMode>{{ modelValue }}</template>
+        <template #viewMode>
+            <div class="card">
+                <div v-html="modelValue" class="card-body"></div>
+            </div>
+        </template>
     </FieldWrapper>
 </template>
 
@@ -12,7 +16,7 @@
 // Then editing so that it creates and exports the ClassicEditor object
 // @todo, we really need to stop relying on these custom builds, they're a complete nuisance
 // CKEditor must be built using webpack so I don't think we can build it from source in this project (Vite/Rollup),
-// ...but perhaps we could make a separate ms-ckeditor package where we use webpack to build the editor for source according
+// ...but perhaps we could make a separate ms-ckeditor package where we use webpack to build the editor according
 // to the spec that we want, then include it here? something like that?
 // @ts-ignore
 import { ClassicEditor } from 'ckeditor';
@@ -65,9 +69,9 @@ const ckEditorConfig = () => {
 
 const createEditor = () => {
     if (editor == null && editorContainerEle.value != null) {
-    const config = ckEditorConfig();
-    const editorEle = document.createElement('div');
-    editorContainerEle.value.appendChild(editorEle);
+        const config = ckEditorConfig();
+        const editorEle = document.createElement('div');
+        editorContainerEle.value.appendChild(editorEle);
         ClassicEditor.create(editorEle, config).then((newEditor: any) => {
             // Save the reference to the instance for further use.
             editor = newEditor;
@@ -79,6 +83,13 @@ const createEditor = () => {
         }).catch((error: any) => {
             console.error(error.stack);
         });
+    }
+};
+
+const destroyEditor = () => {
+    if (editor) {
+        editor.destroy();
+        editor = null;
     }
 };
 
@@ -104,16 +115,14 @@ watch(modelValue, () => {
     }
 });
 
-onMounted(() => {
-    editor = null
-    createEditor();
-});
-
-onBeforeUnmount(() => {
-    if (editor) {
-        editor.destroy();
-        editor = null;
+watch(editorContainerEle, () => {
+    if (editorContainerEle.value) {
+        createEditor();
+    } else {
+        destroyEditor();
     }
 });
+
+onBeforeUnmount(destroyEditor);
 
 </script>

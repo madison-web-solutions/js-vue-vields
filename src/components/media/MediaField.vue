@@ -2,7 +2,6 @@
     <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors">
         <template #input>
             <div v-if="! inspecting && ! choosing" class="media-preview-list">
-                <pre>{{ modelValue }}</pre>
                 <MediaPreview v-if="modelValue != null" :item="currentItem" :removable="true" :inspectable="true" @remove="remove" @select="choosing = true" @inspect="inspecting = true" />
                 <button v-if="modelValue == null" type="button" class="media-add-button" @click="choosing = true"><i class="fas fa-plus"></i></button>
             </div>
@@ -13,9 +12,10 @@
                 <MediaDetails :itemId="currentItem.id" :editable="true" :deletable="false" @close="inspecting = false" />
             </div>
         </template>
-        <template #readonly>
+        <template #viewMode>
             <div class="attachment-list">
                 <MediaPreview v-if="modelValue != null" :item="currentItem" :removable="false" :inspectable="false" />
+                <span v-if="modelValue == null" class="text-muted">(None)</span>
             </div>
         </template>
     </FieldWrapper>
