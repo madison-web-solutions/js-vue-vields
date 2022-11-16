@@ -6,7 +6,7 @@
                 <button v-if="modelValue == null" type="button" class="media-add-button" @click="choosing = true"><i class="fas fa-plus"></i></button>
             </div>
             <div v-if="choosing" @close="choosing = false" title="Media Library">
-                <MediaLibrary :standalone="false" @select="updateValue" @close="choosing = false" />
+                <MediaLibrary :standalone="false" :extraParams="extraParams" @select="updateValue" @close="choosing = false" />
             </div>
             <div v-if="currentItem && inspecting" @close="inspecting = false" title="Inspect File">
                 <MediaDetails :itemId="currentItem.id" :editable="true" :deletable="false" @close="inspecting = false" />
@@ -28,7 +28,11 @@ import { FieldWrapper, MediaPreview, MediaLibrary, MediaDetails } from '@/main';
 
 type IdType = string | number | undefined;
 
-const props = defineProps(Object.assign({}, commonProps, {}));
+const props = defineProps(Object.assign({}, commonProps, {
+    extraParams: {
+        type: Object,
+    },
+}));
 
 const emit = defineEmits<{
     (e: 'update:modelValue', value: IdType): void

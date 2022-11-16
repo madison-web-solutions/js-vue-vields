@@ -79,7 +79,7 @@ const searchFn = (page: number): Promise<SearchResultPage<MediaItem>> | null => 
     if (! provider) {
         return null;
     }
-    return provider.value.search(searchText.value, page, {});
+    return provider.value.search(searchText.value, page, props.extraParams || {});
 };
 
 const { searchText, suggestions, canFetchMore, fetchFirstPage, fetchNextPage } = useSearches<MediaItem>(searchFn);
