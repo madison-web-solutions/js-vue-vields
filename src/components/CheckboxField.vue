@@ -6,7 +6,7 @@
                 <label v-if="label && inlineLabel" class="form-check-label" :for="inputEleId">{{ label }}</label>
             </div>
         </template>
-        <template #viewMode>{{ displayValue }}</template>
+        <template #viewMode><template v-if="inlineLabel">{{ label }}: </template>{{ displayValue }}</template>
     </FieldWrapper>
 </template>
 
