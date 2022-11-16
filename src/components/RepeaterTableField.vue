@@ -1,5 +1,5 @@
 <template>
-    <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors">
+    <FieldWrapper v-bind="standardWrapperProps">
         <template #input>
             <div class="repeater-table" :style="repeaterStyle">
                 <div class="repeater-table-header">
@@ -37,8 +37,8 @@
 <script setup lang="ts">
 import type { PropType, StyleValue } from 'vue';
 import type { RepeaterFormValue, MessageBag } from '@/main';
-import { computed, ref, toRefs, onBeforeUnmount } from 'vue';
-import { commonProps, useRepeaterField, spliceMessageBag, startCase, coerceToRepeaterFormValue, copyRepeaterFormValue, coerceToArrayKey, reindexErrors, symbols } from '@/main';
+import { computed, toRefs } from 'vue';
+import { commonProps, useRepeaterField, startCase } from '@/main';
 import { RepeaterTableRow, FieldWrapper } from '@/main';
 import { RepeaterTableCol, RepeaterTableColOpts } from '@/lib/repeater';
 
@@ -67,20 +67,16 @@ const emit = defineEmits<{
 const propRefs = toRefs(props);
 
 const {
-    inputEleId,
     modelValue,
-    myErrors,
     editMode,
+    standardWrapperProps,
     canAddRow,
     appendRow,
     insertRowAt,
     deleteRowAt,
-    move,
     movingIndex,
-    isMoving,
     startMove,
     completeMoveTo,
-    cancelMove,
 } = useRepeaterField(emit, propRefs);
 
 const myCols = computed((): RepeaterTableCol[] => {

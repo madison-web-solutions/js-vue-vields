@@ -1,5 +1,5 @@
 <template>
-    <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors">
+    <FieldWrapper v-bind="standardWrapperProps">
         <template #input>
             <div class="input-group">
                 <span v-if="showCurrency" class="input-group-text">{{ currencyCode }}</span>
@@ -56,7 +56,7 @@ const coerceToNumber = (value: unknown): number | undefined => {
     return undefined;
 };
 
-const { inputEleId, pathString, modelValue, myErrors, hasError } = useFormField<number | undefined>(coerceToNumber, emit, propRefs);
+const { inputEleId, pathString, modelValue, hasError, standardWrapperProps } = useFormField<number | undefined>(coerceToNumber, emit, propRefs);
 
 const numberFormatter = computed((): Intl.NumberFormat => {
     return new Intl.NumberFormat(undefined, {

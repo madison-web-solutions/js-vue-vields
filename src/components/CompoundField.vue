@@ -1,5 +1,5 @@
 <template>
-    <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors">
+    <FieldWrapper v-bind="standardWrapperProps">
         <template #input>
             <slot></slot>
         </template>
@@ -22,7 +22,7 @@ const emit = defineEmits<{
 
 const propRefs = toRefs(props);
 
-const { inputEleId, modelValue, errors, myErrors, editMode } = useFormField<CompoundFormValue>(coerceToCompoundFormValue, emit, propRefs);
+const { modelValue, errors, standardWrapperProps } = useFormField<CompoundFormValue>(coerceToCompoundFormValue, emit, propRefs);
 
 // provide the setter
 const setter = ref((value: FormValue, key: string | number): void => {

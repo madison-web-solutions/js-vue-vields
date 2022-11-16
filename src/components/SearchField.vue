@@ -1,5 +1,5 @@
 <template>
-    <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors">
+    <FieldWrapper v-bind="standardWrapperProps">
         <template #input>
             <div class="input-group">
                 <div class="form-control" :class="{'is-invalid': hasError}" :disabled="disabled" @click="maybeToggleOpenSearch">
@@ -70,7 +70,7 @@ const coerceFn = (value: any): IdType => {
     return undefined;
 };
 
-const { inputEleId, modelValue, myErrors, hasError } = useFormField<IdType>(coerceFn, emit, propRefs);
+const { modelValue, hasError, standardWrapperProps } = useFormField<IdType>(coerceFn, emit, propRefs);
 
 const provider = inject(symbols.choicesProvider);
 

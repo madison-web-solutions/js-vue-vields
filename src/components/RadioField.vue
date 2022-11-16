@@ -1,5 +1,5 @@
 <template>
-    <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors">
+    <FieldWrapper v-bind="standardWrapperProps">
         <template #input>
             <div v-for="choice in choicesNormalized" :class="{'form-check': true, 'form-check-inline': inline}">
                 <input class="form-check-input" :class="{'is-invalid': hasError}" type="radio" :id="inputEleId + String(choice.key)" :name="pathString" :checked="modelValue === choice.key" :disabled="disabled" @change="change(choice)">
@@ -51,7 +51,7 @@ const coerceFn = (value: any): IdType => {
     return undefined;
 };
 
-const { inputEleId, pathString, modelValue, myErrors, hasError } = useFormField<IdType>(coerceFn, emit, propRefs);
+const { inputEleId, pathString, modelValue, hasError, standardWrapperProps } = useFormField<IdType>(coerceFn, emit, propRefs);
 
 const { choicesNormalized, currentChoice } = useHasChoicesSingle(modelValue, propRefs);
 

@@ -1,5 +1,5 @@
 <template>
-    <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors">
+    <FieldWrapper v-bind="standardWrapperProps">
         <template #input>
             <input ref="inputEle" :id="inputEleId" :name="pathString" type="text" class="form-control" :class="{'is-invalid': hasError}" :disabled="disabled" :placeholder="placeholder" :value="displayValue" @change="change" @focus="onFocus" @blur="onBlur" />
         </template>
@@ -46,7 +46,7 @@ const coerceFn = (value: unknown): string | undefined => {
     return (value == null || value === '') ? undefined : String(value);
 };
 
-const { inputEleId, pathString, modelValue, myErrors, hasError } = useFormField<string | undefined>(coerceFn, emit, propRefs);
+const { inputEleId, pathString, modelValue, hasError, standardWrapperProps } = useFormField<string | undefined>(coerceFn, emit, propRefs);
 
 const stepSeconds = computed((): number | undefined => {
     return props.step == null ? undefined : timeParse(props.step);

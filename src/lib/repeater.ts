@@ -32,7 +32,7 @@ export function useRepeaterField(emit: FieldEmitType<RepeaterFormValue>, propRef
         return out;
     };
 
-    const { inputEleId, modelValue, errors, myErrors, editMode } = useFormField<RepeaterFormValue>(coerceFn, emit, propRefs);
+    const { inputEleId, modelValue, errors, myErrors, editMode, standardWrapperProps } = useFormField<RepeaterFormValue>(coerceFn, emit, propRefs);
 
     const addEnoughRows = (value: RepeaterFormValue) => {
         if (propRefs.min?.value != null) {
@@ -174,6 +174,7 @@ export function useRepeaterField(emit: FieldEmitType<RepeaterFormValue>, propRef
         errors,
         myErrors,
         editMode,
+        standardWrapperProps,
         canAddRow,
         appendRow,
         insertRowAt,

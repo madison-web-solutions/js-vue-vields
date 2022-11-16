@@ -1,5 +1,5 @@
 <template>
-    <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors">
+    <FieldWrapper v-bind="standardWrapperProps">
         <template #input>
             <input ref="inputEle" :id="inputEleId" :name="pathString" type="text" class="form-control" :class="{'is-invalid': hasError}" :disabled="disabled" :placeholder="placeholder" :value="displayValue" @change="change" @focus="onFocus" @blur="onBlur" />
         </template>
@@ -55,7 +55,7 @@ const coerceToNumber = (value: unknown): number | undefined => {
     return undefined;
 };
 
-const { inputEleId, pathString, modelValue, myErrors, hasError } = useFormField<number | undefined>(coerceToNumber, emit, propRefs);
+const { inputEleId, pathString, modelValue, hasError, standardWrapperProps } = useFormField<number | undefined>(coerceToNumber, emit, propRefs);
 
 const myStep = computed((): number | undefined => {
     if (props.step == null) {

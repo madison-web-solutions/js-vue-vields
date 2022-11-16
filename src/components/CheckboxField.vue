@@ -1,5 +1,5 @@
 <template>
-    <FieldWrapper :inputEleId="inputEleId" :label="inlineLabel ? undefined : label" :required="required" :help="help" :errors="myErrors">
+    <FieldWrapper v-bind="standardWrapperProps" :label="inlineLabel ? undefined : label">
         <template #input>
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" :id="inputEleId" :name="pathString" v-model="modelValue" :class="{'is-invalid': hasError}" :disabled="disabled">
@@ -12,7 +12,7 @@
 
 <script setup lang="ts">
 import type { MessageBag } from '@/main';
-import { computed, ref, toRefs } from 'vue';
+import { computed, toRefs } from 'vue';
 import { commonProps, useFormField, coerceToBoolean } from '@/main';
 import { FieldWrapper } from '@/main';
 
@@ -42,7 +42,7 @@ const coerceFn = (value: unknown): boolean => {
     return coerceToBoolean(value) === true;
 };
 
-const { inputEleId, pathString, modelValue, myErrors, hasError } = useFormField<boolean>(coerceFn, emit, propRefs);
+const { inputEleId, pathString, modelValue, hasError, standardWrapperProps } = useFormField<boolean>(coerceFn, emit, propRefs);
 
 const displayValue = computed((): string => {
     if (modelValue.value === true) {

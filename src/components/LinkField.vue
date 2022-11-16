@@ -1,5 +1,5 @@
 <template>
-    <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors">
+    <FieldWrapper v-bind="standardWrapperProps">
         <template #input>
             <div class="input-group">
                 <select v-if="availableSchemes.length > 0" class="form-select link-field-scheme-select" v-model="schemeKey">
@@ -56,7 +56,7 @@ const coerceFn = (value: unknown): string => {
     return value ? String(value) : '';
 };
 
-const { inputEleId, modelValue, myErrors, hasError } = useFormField<string | undefined>(coerceFn, emit, propRefs);
+const { modelValue, hasError, standardWrapperProps } = useFormField<string | undefined>(coerceFn, emit, propRefs);
 
 const provider = inject(symbols.linksProvider);
 

@@ -1,5 +1,5 @@
 <template>
-    <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors">
+    <FieldWrapper v-bind="standardWrapperProps">
         <template #input>
             <input :id="inputEleId" :name="pathString" type="password" class="form-control" :class="{'is-invalid': hasError}" :disabled="disabled" :placeholder="placeholder" v-model="modelValue" />
             <PasswordStrengthMeter v-if="minStrength != null" class="mt-2" :password="modelValue" :okStrength="minStrength" />
@@ -10,7 +10,7 @@
 
 <script setup lang="ts">
 import type { MessageBag } from '@/main';
-import { ref, toRefs } from 'vue';
+import { toRefs } from 'vue';
 import { commonProps, useFormField } from '@/main';
 import { FieldWrapper, PasswordStrengthMeter } from '@/main';
 
@@ -35,6 +35,6 @@ const coerceToString = (value: any): string => {
     return value ? String(value) : '';
 };
 
-const { inputEleId, pathString, modelValue, myErrors, hasError } = useFormField<string>(coerceToString, emit, propRefs);
+const { inputEleId, pathString, modelValue, hasError, standardWrapperProps } = useFormField<string>(coerceToString, emit, propRefs);
 
 </script>

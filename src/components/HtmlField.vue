@@ -1,5 +1,5 @@
 <template>
-    <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors">
+    <FieldWrapper v-bind="standardWrapperProps">
         <template #input>
             <div ref="editorContainerEle" class="html-field" :class="{'is-invalid': hasError}"></div>
         </template>
@@ -22,7 +22,7 @@
 import { ClassicEditor } from 'ckeditor';
 
 import type { MessageBag } from '@/main';
-import { ref, toRefs, watch, onMounted, onBeforeUnmount } from 'vue';
+import { ref, toRefs, watch, onBeforeUnmount } from 'vue';
 import { commonProps, useFormField } from '@/main';
 import { FieldWrapper } from '@/main';
 
@@ -39,7 +39,7 @@ const coerceToString = (value: any): string => {
     return value ? String(value) : '';
 };
 
-const { inputEleId, modelValue, myErrors, hasError } = useFormField<string>(coerceToString, emit, propRefs);
+const { modelValue, hasError, standardWrapperProps } = useFormField<string>(coerceToString, emit, propRefs);
 
 const INPUT_DEBOUNCE_WAIT: number = 300;
 

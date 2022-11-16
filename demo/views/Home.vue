@@ -8,11 +8,12 @@
                         <MediaField label="Image" name="image" class="col-6" />
                         <CustomSelectField label="Color" name="color" directory="colors" class="col-6">
                             <template v-slot="{ choice }">
-                                <div :style="{display: 'inline-block', width: '10px', height: '10px', 'background-color': '#' + choice.hex}" class="me-2"></div>
+                                <div :style="{display: 'inline-block', width: '10px', height: '10px', 'background-color': '#' + (choice as Color).hex}" class="me-2"></div>
                                 {{ choice.label }}
                             </template>
                         </CustomSelectField>
-
+                        <CheckboxField label="Very Derris" name="derris" :inlineLabel="true" class="col-6" />
+                        <CheckboxField label="Derrisson" name="derrisson" :inlineLabel="false" class="col-6" />
                         <hr />
                         <LinkField label="Link" name="link" class="col-12" />
                         <hr />
@@ -33,7 +34,7 @@
                         <NumberField label="Days Holiday" name="days_holiday" :min="0" class="col-md-6" />
                         <CurrencyField label="Salary" name="salary" currencyCode="GBP" class="col-md-6" />
                         <hr />
-                        <TextField label="Short Description" name="short_description" :max="20" class="col-md-6" />
+                        <TextField label="Short Description" name="short_description" :max="20" class="col-md-6" help="20 character max" />
                         <HtmlField label="Description" name="description" class="col-12" />
                         <hr />
                         <FlexibleContentField label="Page Sections" name="page_sections" :sectionChoices="[{key: 'banner', label: 'Banner'}, {key: 'promos', label: 'Promos'}]" class="col-12">
@@ -117,6 +118,12 @@ type Cat = {
     key: number,
     label: string,
     age?: number,
+};
+
+type Color = {
+    key: string,
+    label: string,
+    hex: string,
 };
 
 const errors = ref({

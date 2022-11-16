@@ -1,5 +1,5 @@
 <template>
-    <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors" :inputWrapperCssClass="inline ? 'd-flex flex-wrap' : ''">
+    <FieldWrapper v-bind="standardWrapperProps" :inputWrapperCssClass="inline ? 'd-flex flex-wrap' : ''">
         <template #input>
             <div v-for="choice in choicesNormalized" :key="choice.key" :class="inline ? 'me-3' : ''">
                 <div class="form-check">
@@ -69,8 +69,8 @@ const coerceFn = (value: any): KeysList => {
     return out;
 };
 
-const { inputEleId, pathString, modelValue, myErrors, errors } = useFormField<KeysList>(coerceFn, emit, propRefs);
+const { inputEleId, pathString, modelValue, errors, standardWrapperProps } = useFormField<KeysList>(coerceFn, emit, propRefs);
 
-const { choicesNormalized, possibleValues, subValues, toggle, subErrors, hasSubErrors } = useHasChoicesMultiple(modelValue, errors, propRefs);
+const { choicesNormalized, subValues, toggle, subErrors, hasSubErrors } = useHasChoicesMultiple(modelValue, errors, propRefs);
 
 </script>

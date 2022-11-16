@@ -1,5 +1,5 @@
 <template>
-    <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors">
+    <FieldWrapper v-bind="standardWrapperProps">
         <template #input>
             <div class="dropdown" ref="container">
                 <div class="input-group" @click="toggleDropdown">
@@ -67,7 +67,7 @@ const coerceFn = (value: any): IdType => {
     return undefined;
 };
 
-const { inputEleId, pathString, modelValue, myErrors, hasError } = useFormField<IdType>(coerceFn, emit, propRefs);
+const { modelValue, standardWrapperProps } = useFormField<IdType>(coerceFn, emit, propRefs);
 
 const { choicesNormalized, currentChoice, nullSelected } = useHasChoicesSingle(modelValue, propRefs);
 

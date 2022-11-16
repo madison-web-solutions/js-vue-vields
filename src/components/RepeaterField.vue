@@ -1,5 +1,5 @@
 <template>
-    <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors">
+    <FieldWrapper v-bind="standardWrapperProps">
         <template #input>
             <div class="repeater">
                 <div class="repeater-item" :class="{'is-moving': index === movingIndex}" :style="itemStyle(index)" v-for="(rowVals, index) in modelValue">
@@ -36,7 +36,7 @@
 <script setup lang="ts">
 import type { StyleValue } from 'vue';
 import type { RepeaterFormValue, MessageBag } from '@/main';
-import { computed, ref, toRefs, onBeforeUnmount } from 'vue';
+import { toRefs } from 'vue';
 import { commonProps, useRepeaterField } from '@/main';
 import { RepeaterRow, FieldWrapper } from '@/main';
 
@@ -61,20 +61,16 @@ const emit = defineEmits<{
 const propRefs = toRefs(props);
 
 const {
-    inputEleId,
     modelValue,
-    myErrors,
     editMode,
+    standardWrapperProps,
     canAddRow,
     appendRow,
     insertRowAt,
     deleteRowAt,
-    move,
     movingIndex,
-    isMoving,
     startMove,
     completeMoveTo,
-    cancelMove,
 } = useRepeaterField(emit, propRefs);
 
 const itemStyle = (index: number) => {

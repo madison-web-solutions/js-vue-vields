@@ -1,5 +1,5 @@
 <template>
-    <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors">
+    <FieldWrapper v-bind="standardWrapperProps">
         <template #input>
             <input :id="inputEleId" :type="inputType" :name="pathString" class="form-control" :class="{'is-invalid': hasError}" :disabled="disabled" :placeholder="placeholder" :maxlength="max" v-model="modelValue" @keydown.enter="emit('enterPress')" />
             <span v-if="showRemainingChars" class="position-absolute bottom-0 end-0 p-1 small text-muted">{{ remainingChars }}</span>
@@ -10,7 +10,7 @@
 
 <script setup lang="ts">
 import type { MessageBag } from '@/main';
-import { computed, ref, toRefs, watch } from 'vue';
+import { toRefs } from 'vue';
 import { commonProps, useFormField, useHasMaxChars } from '@/main';
 import { FieldWrapper } from '@/main';
 
@@ -37,7 +37,7 @@ const coerceToString = (value: any): string => {
     return value ? String(value) : '';
 };
 
-const { inputEleId, pathString, modelValue, myErrors, hasError } = useFormField<string>(coerceToString, emit, propRefs);
+const { inputEleId, pathString, modelValue, hasError, standardWrapperProps } = useFormField<string>(coerceToString, emit, propRefs);
 
 const { remainingChars, showRemainingChars } = useHasMaxChars(modelValue, propRefs);
 

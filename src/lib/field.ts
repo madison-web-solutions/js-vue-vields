@@ -64,6 +64,9 @@ export type UseFormFieldPropRefs<ValueType> = {
     modelValue?: Ref<unknown>,
     errors?: Ref<MessageBag | undefined>,
     name?: Ref<string | number | undefined>,
+    label?: Ref<string | undefined>,
+    required?: Ref<boolean | undefined>,
+    help?: Ref<string | undefined>,
 };
 
 export type FieldEmitType<ValueType> = {
@@ -148,7 +151,15 @@ export function useFormField<ValueType extends FormValue> (valueCoerceFn: (val: 
 
     const editMode = inject(symbols.editMode, ref('edit'));
 
-    return { inputEleId, path, pathString, rawValue, modelValue, errors, myErrors, hasError, editMode };
+    const standardWrapperProps = {
+        inputEleId: inputEleId.value,
+        label: propRefs?.label?.value,
+        required: propRefs?.required?.value,
+        help: propRefs?.help?.value,
+        errors: myErrors.value,
+    };
+
+    return { inputEleId, path, pathString, rawValue, modelValue, errors, myErrors, hasError, editMode, standardWrapperProps };
 };
 
 export type BooleansMap = {[key: string]: boolean};

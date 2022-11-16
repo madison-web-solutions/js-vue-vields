@@ -1,5 +1,5 @@
 <template>
-    <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors">
+    <FieldWrapper v-bind="standardWrapperProps">
         <template #input>
             <input :id="inputEleId" :name="pathString" ref="inputEle" type="date" class="form-control" :class="{'is-invalid': hasError}" :disabled="disabled" :placeholder="myPlaceholder" :value="modelValue" @change="onChange" @keydown.enter="onEnterPress" @blur="onBlur" />
         </template>
@@ -40,7 +40,7 @@ const coerceFn = (value: any): string | undefined => {
     return ymdToFormat(String(value), 'Y-m-d') || undefined;
 };
 
-const { inputEleId, pathString, modelValue, myErrors, hasError } = useFormField<string | undefined>(coerceFn, emit, propRefs);
+const { inputEleId, pathString, modelValue, hasError, standardWrapperProps } = useFormField<string | undefined>(coerceFn, emit, propRefs);
 
 const todayUtc: Date = ((): Date => {
     const now: Date = new Date();
