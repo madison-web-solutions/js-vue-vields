@@ -12,7 +12,7 @@
                 <ul class="dropdown-menu" :class="showDropdown ? 'show' : ''">
                     <li v-if="nullSelected || ! required">
                         <button type="button" class="dropdown-item" @click="selectNull()">
-                            <slot name="nullOption"><span class="text-muted">(None)</span></slot>
+                            <slot name="nullOption"><span class="text-muted">{{ noValueLabel }}</span></slot>
                         </button>
                     </li>
                     <li v-for="choice in choicesNormalized">
@@ -24,16 +24,15 @@
             </div>
         </template>
         <template #viewMode>
-            <template v-if="modelValue != null">{{ displayValue }}</template>
-            <span v-if="modelValue == null" class="text-muted">(None)</span>
+            <template>{{ displayValue }}</template>
         </template>
     </FieldWrapper>
 </template>
 
 <script setup lang="ts">
 import type { MessageBag, Choosable } from '@/main';
-import { computed, onMounted, onBeforeUnmount, ref, toRefs } from 'vue';
-import { commonProps, useFormField, useHasChoicesSingle } from '@/main';
+import { computed, onMounted, onBeforeUnmount, ref, toRefs, inject } from 'vue';
+import { commonProps, useFormField, useHasChoicesSingle, symbols } from '@/main';
 import { FieldWrapper } from '@/main';
 
 type IdType = string | number | undefined;
@@ -107,6 +106,8 @@ const selectOption = (choice: Choosable) => {
     modelValue.value = choice.key;
     closeDropdown();
 };
+
+const noValueLabel = inject(symbols.noValueLabel, ref('(None)'));
 
 const displayValue = computed((): string => {
     if (currentChoice.value) {

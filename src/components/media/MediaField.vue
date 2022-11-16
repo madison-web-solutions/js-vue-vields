@@ -1,5 +1,5 @@
 <template>
-    <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors">
+    <FieldWrapper v-bind="standardWrapperProps">
         <template #input>
             <div v-if="! inspecting && ! choosing" class="media-preview-list">
                 <MediaPreview v-if="modelValue != null" :item="currentItem" :removable="true" :inspectable="true" @remove="remove" @select="choosing = true" @inspect="inspecting = true" />
@@ -14,8 +14,7 @@
         </template>
         <template #viewMode>
             <div class="attachment-list">
-                <MediaPreview v-if="modelValue != null" :item="currentItem" :removable="false" :inspectable="false" />
-                <span v-if="modelValue == null" class="text-muted">(None)</span>
+                <MediaPreview :item="currentItem" :removable="false" :inspectable="false" />
             </div>
         </template>
     </FieldWrapper>
@@ -48,7 +47,7 @@ const coerceFn = (value: any): IdType => {
     return undefined;
 };
 
-const { inputEleId, modelValue, myErrors, hasError } = useFormField<IdType>(coerceFn, emit, propRefs);
+const { modelValue, standardWrapperProps } = useFormField<IdType>(coerceFn, emit, propRefs);
 
 const provider = inject(symbols.mediaProvider);
 

@@ -262,6 +262,7 @@ export const startCase = (s: unknown): string => {
 
 const symbols = {
     editMode: Symbol() as InjectionKey<Ref<"edit" | "view">>,
+    noValueLabel: Symbol() as InjectionKey<Ref<string>>,
     path: Symbol() as InjectionKey<Ref<Path> | undefined>,
     modelValue: Symbol() as InjectionKey<Ref<FormValue> | undefined>,
     errors: Symbol() as InjectionKey<Ref<MessageBag> | undefined>,

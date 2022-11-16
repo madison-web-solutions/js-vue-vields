@@ -151,13 +151,16 @@ export function useFormField<ValueType extends FormValue> (valueCoerceFn: (val: 
 
     const editMode = inject(symbols.editMode, ref('edit'));
 
-    const standardWrapperProps = {
-        inputEleId: inputEleId.value,
-        label: propRefs?.label?.value,
-        required: propRefs?.required?.value,
-        help: propRefs?.help?.value,
-        errors: myErrors.value,
-    };
+    const standardWrapperProps = computed(() => {
+        return {
+            inputEleId: inputEleId.value,
+            label: propRefs?.label?.value,
+            required: propRefs?.required?.value,
+            help: propRefs?.help?.value,
+            errors: myErrors.value,
+            modelValue: modelValue.value,
+        };
+    });
 
     return { inputEleId, path, pathString, rawValue, modelValue, errors, myErrors, hasError, editMode, standardWrapperProps };
 };

@@ -2,7 +2,7 @@
     <FieldWrapper v-bind="standardWrapperProps">
         <template #input>
             <select class="form-select" :class="{'is-invalid': hasError}" :id="inputEleId" :name="pathString" :disabled="disabled" @change="change">
-                <option ref="nullOption" :disabled="required" :selected="nullSelected">{{ nullLabel }}</option>
+                <option ref="nullOption" :disabled="required" :selected="nullSelected">{{ nullOptionLabel }}</option>
                 <option v-for="choice in choicesNormalized" :selected="modelValue === choice.key">{{ choice.label }}</option>
             </select>
         </template>
@@ -51,7 +51,7 @@ const { inputEleId, pathString, modelValue, hasError, standardWrapperProps } = u
 
 const { choicesNormalized, currentChoice, nullSelected } = useHasChoicesSingle(modelValue, propRefs);
 
-const nullLabel = computed(() => {
+const nullOptionLabel = computed(() => {
     return props.placeholder || (props.required ? 'Select' : '');
 });
 
@@ -69,8 +69,6 @@ const change = (e: Event) => {
 const displayValue = computed((): string => {
     if (currentChoice.value) {
         return currentChoice.value.label;
-    } else if (modelValue.value == null) {
-        return nullLabel.value;
     } else {
         return String(modelValue.value);
     }

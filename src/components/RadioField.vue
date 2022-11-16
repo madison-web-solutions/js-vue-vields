@@ -55,10 +55,6 @@ const { inputEleId, pathString, modelValue, hasError, standardWrapperProps } = u
 
 const { choicesNormalized, currentChoice } = useHasChoicesSingle(modelValue, propRefs);
 
-const nullLabel = computed(() => {
-    return props.placeholder || '';
-});
-
 const change = (newChoice: Choosable) => {
     if (props.disabled) {return;}
     modelValue.value = newChoice.key;
@@ -67,8 +63,6 @@ const change = (newChoice: Choosable) => {
 const displayValue = computed((): string => {
     if (currentChoice.value) {
         return currentChoice.value.label;
-    } else if (modelValue.value == null) {
-        return nullLabel.value;
     } else {
         return String(modelValue.value);
     }

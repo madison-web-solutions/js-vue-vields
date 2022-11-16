@@ -13,8 +13,11 @@
             </div>
         </slot>
         <div v-if="editMode == 'view'">
-            <slot name="viewMode">
+            <slot v-if="! hasNoValue" name="viewMode">
                 <slot name="input"></slot>
+            </slot>
+            <slot v-if="hasNoValue" name="viewModeNoValue">
+                <span class="text-muted">{{ noValueLabel }}</span>
             </slot>
         </div>
         <small v-if="help" class="form-text text-muted">{{ help }}</small>
@@ -31,13 +34,19 @@ const props = withDefaults(defineProps<{
     help?: string,
     errors?: string[],
     inputEleId?: string,
-    inputWrapperCssClass?: string | string[] | object
+    inputWrapperCssClass?: string | string[] | object,
+    modelValue?: any,
 }>(), {
     required: false,
     inputWrapperCssClass: 'position-relative'
 });
 
 const editMode = inject(symbols.editMode, ref('edit'));
+
+const hasNoValue = computed(() => {
+    return props.modelValue == null || props.modelValue === '';
+});
+const noValueLabel = inject(symbols.noValueLabel, ref('(None)'));
 
 const { errors } = toRefs(props);
 
