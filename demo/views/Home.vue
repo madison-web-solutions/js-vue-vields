@@ -5,7 +5,13 @@
             <div class="col-8">
                 <FieldGroup v-model="vals" v-model:errors="errors">
                     <div class="row g-3 mb-4">
-                        <MediaField label="Image" name="image" class="col-12" />
+                        <MediaField label="Image" name="image" class="col-6" />
+                        <CustomSelectField label="Color" name="color" directory="colors" class="col-6">
+                            <template v-slot="{ choice }">
+                                <div :style="{display: 'inline-block', width: '10px', height: '10px', 'background-color': '#' + choice.hex}" class="me-2"></div>
+                                {{ choice.label }}
+                            </template>
+                        </CustomSelectField>
 
                         <hr />
                         <LinkField label="Link" name="link" class="col-12" />
@@ -50,8 +56,9 @@
                             </template>
                         </SearchField>
                         <SelectField label="Select Cat" name="cat" directory="cats" class="col-6" />
-                        <RadioField label="Select Cat" name="cat" directory="cats" class="col-6" />
-                        <CheckboxesField label="Select Cats" name="cats" directory="cats" class="col-6" />
+                        <ToggleField label="Inline Checks" name="inline_checks" class="col-12" />
+                        <RadioField label="Select Cat" name="cat" directory="cats" :inline="!!vals.inline_checks" :class="vals.inline_checks ? 'col-12' : 'col-6'" />
+                        <CheckboxesField label="Select Cats" name="cats" directory="cats" :inline="!!vals.inline_checks" :class="vals.inline_checks ? 'col-12' : 'col-6'" />
                         <CompoundField label="Address" name="address" class="col-12">
                             <div class="card">
                                 <div class="card-body">
@@ -76,7 +83,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { FieldGroup, CheckboxField, CheckboxesField, TextField, SelectField, HtmlField, CurrencyField, NumberField, ToggleField, RepeaterField, SearchField, RadioField, DateField, LinkField, MediaField, PasswordField, TimeField, CompoundField, RepeaterTableField } from "@/main";
+import { FieldGroup, CheckboxField, CheckboxesField, TextField, SelectField, CustomSelectField, HtmlField, CurrencyField, NumberField, ToggleField, RepeaterField, SearchField, RadioField, DateField, LinkField, MediaField, PasswordField, TimeField, CompoundField, RepeaterTableField } from "@/main";
 import TextAreaField from "@/components/TextAreaField.vue";
 import FlexibleContentField from "@/components/FlexibleContentField.vue";
 
@@ -96,7 +103,8 @@ const vals = ref({
             content_type: 'banner',
             banner_heading: 'About Us',
         }
-    ]
+    ],
+    inline_checks: false,
 });
 
 type Cat = {

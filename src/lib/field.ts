@@ -250,7 +250,7 @@ export const useHasChoicesSingle = (modelValue: Ref<string | number | undefined>
     });
 
     const nullSelected = computed(() => {
-        return modelValue.value == null || possibleValues.value.includes(modelValue.value);
+        return modelValue.value == null || ! possibleValues.value.includes(modelValue.value);
     });
 
     return { choicesNormalized, currentChoice, possibleValues, nullSelected };

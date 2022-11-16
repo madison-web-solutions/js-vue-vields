@@ -34,20 +34,37 @@ const cats: Cat[] = [
     {key: 12, label: 'Samuel L Jackson'},
 ];
 
+type Color = {
+    key: string,
+    label: string,
+    hex: string,
+};
+
+const colors: Color[] = [
+    {key: 'red', label: 'Red', hex: 'ff0000'},
+    {key: 'green', label: 'Green', hex: '00ff00'},
+    {key: 'blue', label: 'Blue', hex: '0000ff'},
+];
+
 const dummyChoicesProvider = ref<ChoicesProvider>({
     getAll: (directory: string, extraParams?: object | undefined): Promise<LookupResult<Choosable[]>> => {
         return new Promise<LookupResult<Choosable[]>>((resolve, reject) => {
             window.setTimeout(() => {
-                resolve({status: 'found', resource: cats});
+                if (directory == 'colors') {
+                    resolve({status: 'found', resource: colors});
+                } else {
+                    resolve({status: 'found', resource: cats});
+                }
             }, 200);
         });
     },
     lookup: (directory: string, id: string | number): Promise<LookupResult<Choosable>> => {
         return new Promise<LookupResult<Choosable>>((resolve, reject) => {
             window.setTimeout(() => {
-                for (const cat of cats) {
-                    if (cat.key == id) {
-                        resolve({status: 'found', resource: cat});
+                const list = (directory == 'colors' ? colors : cats);
+                for (const item of list) {
+                    if (item.key == id) {
+                        resolve({status: 'found', resource: item});
                     }
                 }
                 resolve({status: 'not-found'});
@@ -60,13 +77,14 @@ const dummyChoicesProvider = ref<ChoicesProvider>({
                 if (page == null) {
                     page = 1;
                 }
+                const list = (directory == 'colors' ? colors : cats);
                 const suggestions: Choosable[] = [];
                 const result: SearchResultPage<Choosable> = {page: page, hasMore: false, suggestions: suggestions};
                 if (page == 1) {
-                    result.suggestions = cats.slice(0, 10);
+                    result.suggestions = list.slice(0, 10);
                     result.hasMore = true;
                 } else if (page == 2) {
-                    result.suggestions = cats.slice(10, 20);
+                    result.suggestions = list.slice(10, 20);
                     result.hasMore = false;
                 }
                 resolve(result);

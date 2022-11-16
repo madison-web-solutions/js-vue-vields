@@ -1,7 +1,7 @@
 <template>
-    <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors">
+    <FieldWrapper :inputEleId="inputEleId" :label="label" :required="required" :help="help" :errors="myErrors" :inputWrapperCssClass="inline ? 'd-flex flex-wrap' : ''">
         <template #input>
-            <div v-for="choice in choicesNormalized" :key="choice.key">
+            <div v-for="choice in choicesNormalized" :key="choice.key" :class="inline ? 'me-3' : ''">
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" :id="inputEleId + choice.key" :name="pathString + '.' + choice.key" :checked="subValues[choice.key]" @change="toggle(choice.key)" :class="{'is-invalid': hasSubErrors[choice.key]}" :disabled="disabled">
                     <label class="form-check-label" :for="inputEleId + choice.key">{{ choice.label }}</label>
@@ -32,8 +32,9 @@ const props = defineProps(Object.assign({}, commonProps, {
     choices: {
         type: [String, Object, Array],
     },
-    extraParams: {
-        type: Object,
+    inline: {
+        type: Boolean,
+        default: false,
     },
     trueLabel: {
         type: String,
