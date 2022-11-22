@@ -2,7 +2,7 @@
     <div class="container">
         <h1>Demo App</h1>
         <div class="row">
-            <div class="col-8">
+            <div class="col-8 overflow-hidden">
                 <FieldGroup v-model="vals" v-model:errors="errors">
                     <div class="row g-3 mb-4">
                         <MediaField label="Image" name="image" class="col-6" />

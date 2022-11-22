@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="row">
-            <div class="col-8">
+            <div class="col-8 overflow-hidden">
                 <FieldGroup v-model="vals" v-model:errors="errors">
                     <div class="row g-3 mb-4">
                         <RepeaterTableField label="Pets" name="pets" :cols="[{name: 'name'}, {name: 'type'}, {name: 'attributes'}]" class="col-12">
