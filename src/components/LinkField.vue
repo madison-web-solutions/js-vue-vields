@@ -114,7 +114,12 @@ const aliasKey = computed({
 
 const currentLinkAlias = ref<LinkAlias | null>(null);
 
+// Watch the modelValue and load up the correct LinkAlias when it changes
 watchEffect(() => {
+    if (currentLinkAlias.value && currentLinkAlias.value.scheme == schemeKey.value && currentLinkAlias.value.key == aliasKey.value) {
+        // We already have the correct item loaded
+        return;
+    }
     currentLinkAlias.value = null;
     if (provider != null && schemeKey.value != '' && schemeKey.value != 'url' && aliasKey.value != '') {
         provider.value.lookup(schemeKey.value, aliasKey.value).then((result: LookupResult<LinkAlias>) => {
