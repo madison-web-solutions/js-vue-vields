@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.4] - 2022-11-30
+
+### Fixed
+ - Bug where customDisplayValue was not displayed in NumberFields with null values
+ - Prevent reloading of link alias objects during changes in other fields causing flicker
+
+
 ## [1.0.3] - 2022-11-16
 
 ### Added
