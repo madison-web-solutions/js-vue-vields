@@ -338,6 +338,7 @@ export type ParsesTextFieldOptions<T> = {
     isValid?: (val: T) => boolean,
     clamp?: (val: T) => T,
     formatForReading?: (val: T) => string,
+    formatNullForReading?: () => string,
     formatForEditing?: (val: T) => string,
 };
 
@@ -382,8 +383,16 @@ export function useParsesTextField<T>(modelValue: Ref<T | undefined>, inputEle: 
     };
 
     const displayValue = computed((): string => {
-        if (tempClear.value || modelValue.value == null) {
+
+        if (tempClear.value) {
             return '';
+        }
+        if (modelValue.value == null) {
+            if (! focused.value && opts.formatNullForReading) {
+                return opts.formatNullForReading();
+            } else {
+                return '';
+            }
         }
         if (focused.value && opts.formatForEditing) {
             return opts.formatForEditing(modelValue.value);

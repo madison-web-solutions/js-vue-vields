@@ -112,6 +112,12 @@ const parsesTextFieldOptions: ParsesTextFieldOptions<number> = {
         }
         return num.toLocaleString(undefined, localeStringOpts.value);
     },
+    formatNullForReading: (): string => {
+        if (props.customDisplayValue != null) {
+            return props.customDisplayValue;
+        }
+        return '';
+    },
     formatForEditing: (num: number): string => {
         return String(num);
     }
