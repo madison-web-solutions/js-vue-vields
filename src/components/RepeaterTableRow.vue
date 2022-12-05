@@ -2,10 +2,10 @@
     <div :style="itemStyle(index)" :class="{'is-invalid': showRowErrors, 'is-moving': index === movingIndex}">
         <div class="repeater-table-cell repeater-item-control" :rowspan="showRowErrors ? 2: 1">
             <div>
-                <button v-if="editMode == 'edit'" class="btn btn-repeater-move" @click="emit('startMove', index)">{{ index + 1 }}</button>
-                <span v-if="editMode != 'edit'">{{ index + 1 }}</span>
+                <button v-if="editable" class="btn btn-repeater-move" @click="emit('startMove', index)">{{ index + 1 }}</button>
+                <span v-if="! editable">{{ index + 1 }}</span>
             </div>
-            <div v-if="editMode == 'edit'" class="btn-group mt-2">
+            <div v-if="editable" class="btn-group mt-2">
                 <button v-if="canAddRow" class="btn btn-sm btn-outline-primary" @click="emit('insertRowAt', index)"><i class="fas fa-plus"></i></button>
                 <button class="btn btn-sm btn-outline-danger" @click="emit('deleteRowAt', index)"><i class="fas fa-times"></i></button>
             </div>
@@ -16,7 +16,7 @@
                 <div v-for="msg in myErrors">{{ msg }}</div>
             </div>
         </div>
-        <template v-if="movingIndex != null">
+        <template v-if="editable && movingIndex != null">
             <div v-if="movingIndex - index >= 0" class="repeater-move-target move-before" @click="emit('completeMoveTo', index)"></div>
             <div v-if="movingIndex - index > 0" class="repeater-move-target move-after" @click="emit('completeMoveTo', index + 1)"></div>
             <div v-if="index - movingIndex > 0" class="repeater-move-target move-before" @click="emit('completeMoveTo', index - 1)"></div>
@@ -52,6 +52,10 @@ const props = defineProps({
     movingIndex: {
         type: Number,
         required: false,
+    },
+    editable: {
+        type: Boolean,
+        required: true,
     }
 });
 

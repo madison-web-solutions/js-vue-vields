@@ -5,10 +5,10 @@
                 <div class="repeater-item" :class="{'is-moving': index === movingIndex}" :style="itemStyle(index)" v-for="(rowVals, index) in modelValue">
                     <div class="repeater-item-control">
                         <div>
-                            <button v-if="editMode == 'edit'" class="btn btn-repeater-move" @click="startMove(index)">{{ index + 1 }}</button>
-                            <span v-if="editMode != 'edit'">{{ index + 1 }}</span>
+                            <button v-if="editable" class="btn btn-repeater-move" @click="startMove(index)">{{ index + 1 }}</button>
+                            <span v-if="! editable">{{ index + 1 }}</span>
                         </div>
-                        <div v-if="editMode == 'edit'" class="btn-group mt-2">
+                        <div v-if="editable" class="btn-group mt-2">
                             <button v-if="canAddRow" class="btn btn-sm btn-outline-primary" @click="insertRowAt(index)"><i class="fas fa-plus"></i></button>
                             <button class="btn btn-sm btn-outline-danger" @click="deleteRowAt(index)"><i class="fas fa-times"></i></button>
                         </div>
@@ -18,14 +18,14 @@
                             <slot :index="index" :subVals="subVals"></slot>
                         </template>
                     </RepeaterRow>
-                    <template v-if="editMode == 'edit' && movingIndex != null">
+                    <template v-if="editable && movingIndex != null">
                         <div v-if="movingIndex - index >= 0" class="repeater-move-target move-before" @click="completeMoveTo(index)"></div>
                         <div v-if="movingIndex - index > 0" class="repeater-move-target move-after" @click="completeMoveTo(index + 1)"></div>
                         <div v-if="index - movingIndex > 0" class="repeater-move-target move-before" @click="completeMoveTo(index - 1)"></div>
                         <div v-if="index - movingIndex >= 0" class="repeater-move-target move-after" @click="completeMoveTo(index)"></div>
                     </template>
                 </div>
-                <div v-if="editMode == 'edit' && canAddRow" class="repeater-append">
+                <div v-if="editable && canAddRow" class="repeater-append">
                     <button class="btn btn-primary" @click="appendRow"><i class="fas fa-plus"></i> {{ appendLabel }}</button>
                 </div>
             </div>
@@ -36,7 +36,7 @@
 <script setup lang="ts">
 import type { StyleValue } from 'vue';
 import type { RepeaterFormValue, MessageBag } from '@/main';
-import { toRefs } from 'vue';
+import { computed, toRefs } from 'vue';
 import { commonProps, useRepeaterField } from '@/main';
 import { RepeaterRow, FieldWrapper } from '@/main';
 
@@ -72,6 +72,10 @@ const {
     startMove,
     completeMoveTo,
 } = useRepeaterField(emit, propRefs);
+
+const editable = computed(() => {
+    return (props.disabled !== true) && (editMode.value == 'edit');
+});
 
 const itemStyle = (index: number) => {
     // TypeScript doesn't know that CSS custom variable names are valid in a Style object

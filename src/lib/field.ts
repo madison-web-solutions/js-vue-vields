@@ -67,6 +67,7 @@ export type UseFormFieldPropRefs<ValueType> = {
     label?: Ref<string | undefined>,
     required?: Ref<boolean | undefined>,
     help?: Ref<string | undefined>,
+    disabled?: Ref<boolean | undefined>,
 };
 
 export type FieldEmitType<ValueType> = {

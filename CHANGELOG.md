@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.5] - 2022-12-05
+
+### Fixed
+ - RepeaterField and RepeaterTableField not respecting the :disabled attribute
+
+
 ## [1.0.4] - 2022-11-30
 
 ### Fixed

@@ -14,6 +14,7 @@
                     :index="index"
                     :subVals="rowVals"
                     :movingIndex="movingIndex"
+                    :editable="editable"
                     @startMove="startMove"
                     @insertRowAt="insertRowAt"
                     @deleteRowAt="deleteRowAt"
@@ -26,7 +27,7 @@
                     </template>
                 </RepeaterTableRow>
 
-                <div v-if="editMode == 'edit' && canAddRow" class="repeater-append">
+                <div v-if="editable && canAddRow" class="repeater-append">
                     <button class="btn btn-primary" @click="appendRow"><i class="fas fa-plus"></i> {{ appendLabel }}</button>
                 </div>
             </div>
@@ -78,6 +79,10 @@ const {
     startMove,
     completeMoveTo,
 } = useRepeaterField(emit, propRefs);
+
+const editable = computed(() => {
+    return (props.disabled !== true) && (editMode.value == 'edit');
+});
 
 const myCols = computed((): RepeaterTableCol[] => {
     return (propRefs.cols?.value || []).map((col) => {
