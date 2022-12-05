@@ -1,6 +1,6 @@
 {
   "name": "vue-fields-ms",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "main": "dist/vue-fields-ms.es.js",
   "repository": "github:madison-web-solutions/js-vue-vields",
   "scripts": {
