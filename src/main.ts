@@ -1,4 +1,5 @@
 import { defineAsyncComponent } from 'vue';
+import type { App, Component } from 'vue';
 
 export type UpdateOk<T> = {
     status: 'ok',
@@ -61,8 +62,36 @@ import RepeaterTableRow from "@/components/RepeaterTableRow.vue";
 
 const HtmlField = defineAsyncComponent(() => import('@/components/HtmlField.vue'));
 
+const publicComponents: Record<string, Component> = {
+    TextField,
+    TextAreaField,
+    CheckboxField,
+    CheckboxesField,
+    CurrencyField,
+    DateField,
+    NumberField,
+    ToggleField,
+    RepeaterField,
+    RadioField,
+    SearchField,
+    SelectField,
+    CustomSelectField,
+    HtmlField,
+    FlexibleContentField,
+    LinkField,
+    FieldGroup
+};
+
+const registerComponents = (app: App, prefix?: string | null | undefined) => {
+    const _prefix: string = (prefix == null ? '' : prefix);
+    for (const name in publicComponents) {
+        app.component(_prefix + name, publicComponents[name]);
+    }
+};
+
 export type { CompoundFormValue, RepeaterFormValue, FormValue, MessageBag, BooleansMap, KeysList, MediaItem, ResizableMediaItem, Choosable, LinkAlias, SearchResultPage, ChoicesProvider, LinksProvider, MediaProvider, PasswordStrengthProvider, Path, ParsesTextFieldOptions };
-export { commonProps, useFormField, useHasChoices, useHasChoicesSingle, useHasChoicesMultiple, useParsesTextField, useHasMaxChars, useSearches, useRepeaterField }
+export { registerComponents };
+export { commonProps, useFormField, useHasChoices, useHasChoicesSingle, useHasChoicesMultiple, useParsesTextField, useHasMaxChars, useSearches, useRepeaterField };
 export { sliceMessageBag, spliceMessageBag, messageBagToString }
 export { startCase, getUniqueKey, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols };
 export { TextField, TextAreaField, CheckboxField, CheckboxesField, CurrencyField, DateField, NumberField, ToggleField, RepeaterField, RepeaterRow, RadioField, SearchField, SelectField, CustomSelectField, HtmlField, FlexibleContentField, LinkField, FieldWrapper, FieldGroup };
