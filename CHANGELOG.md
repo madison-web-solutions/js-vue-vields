@@ -1,5 +1,12 @@
 # Changelog
 
+
+## [1.0.6] - 2023-02-08
+
+#### Added
+ - Added option to show a mouseover tooltip on fields using popper.js
+ - Added utility function for registering all the components globally on a Vue app
+
 ## [1.0.5] - 2022-12-05
 
 ### Fixed
