@@ -50,7 +50,7 @@
                             </template>
                         </FlexibleContentField>
                         <hr />
-                        <SearchField label="Search Cats" name="cat" directory="cats" class="col-6">
+                        <SearchField label="Search Cats" name="cat" directory="cats" class="col-6" tooltip="This field has a custom tooltip that you can use">
                             <template #suggestion="{ suggestion }">
                                 {{ (suggestion as Cat).label }}
                                 <span v-if="(suggestion as Cat).age">({{ (suggestion as Cat).age }})</span>

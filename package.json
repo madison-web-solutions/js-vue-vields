@@ -38,6 +38,7 @@
     "scss/**/*"
   ],
   "dependencies": {
+    "@popperjs/core": "^2.11.6",
     "date-format-ms": "^1.2.1"
   }
 }
