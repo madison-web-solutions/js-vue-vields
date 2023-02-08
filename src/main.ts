@@ -79,7 +79,16 @@ const publicComponents: Record<string, Component> = {
     HtmlField,
     FlexibleContentField,
     LinkField,
-    FieldGroup
+    FieldGroup,
+    PasswordStrengthMeter,
+    PasswordField,
+    TimeField,
+    CompoundField,
+    RepeaterTableField,
+    MediaPreview,
+    MediaLibrary,
+    MediaDetails,
+    MediaField,
 };
 
 const registerComponents = (app: App, prefix?: string | null | undefined) => {
