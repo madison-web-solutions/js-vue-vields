@@ -1,4 +1,4 @@
-.tooltip {
+.#{$vfms-prefix}tooltip {
     border: 1px solid $card-border-color;
     background-color: $white;
     font-size: $font-size-sm;

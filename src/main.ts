@@ -20,7 +20,7 @@ export type LookupNotFound = {
 };
 export type LookupResult<T> = LookupFound<T> | LookupNotFound;
 
-import type { CompoundFormValue, RepeaterFormValue, FormValue, Path } from '@/lib/util';
+import type { CompoundFormValue, RepeaterFormValue, FormValue, Path, AppConfigOptions } from '@/lib/util';
 import type { MessageBag } from '@/lib/MessageBag';
 import type { Choosable, LinkAlias, SearchResultPage, ChoicesProvider, LinksProvider, MediaProvider, PasswordStrengthProvider } from '@/lib/search';
 import type { MediaItem, ResizableMediaItem } from '@/lib/media';
@@ -97,9 +97,43 @@ const registerComponents = (app: App, prefix?: string | null | undefined) => {
         app.component(_prefix + name, publicComponents[name]);
     }
 };
+const configureApp = (app: App, config: AppConfigOptions) => {
+    app.provide(symbols.appConfig, config);
+
+    const cssPrefix = config.cssPrefix || '';
+    const normalizeClassList = (arg: any): string[] => {
+        const classList = [];
+        if (arg == null || arg == '') {
+            // nothing
+        } else if (typeof arg == 'string') {
+            classList.push(...arg.split(/\s+/));
+        } else if (Array.isArray(arg)) {
+            classList.push(...arg);
+        } else {
+            for (const [key, condition] of Object.entries(arg)) {
+                if (condition) {
+                    classList.push(String(key));
+                }
+            }
+        }
+        return classList.map((className) => cssPrefix + className);
+    };
+    app.directive('pclass', {
+        mounted: (el, binding) => {
+            const classes = 
+            el.classList.add(...normalizeClassList(binding.value));
+        },
+        updated: (el, binding) => {
+            if (binding.value != binding.oldValue) {
+                el.classList.remove(...normalizeClassList(binding.oldValue));
+                el.classList.add(...normalizeClassList(binding.value));
+            }
+        },
+    });
+};
 
 export type { CompoundFormValue, RepeaterFormValue, FormValue, MessageBag, BooleansMap, KeysList, MediaItem, ResizableMediaItem, Choosable, LinkAlias, SearchResultPage, ChoicesProvider, LinksProvider, MediaProvider, PasswordStrengthProvider, Path, ParsesTextFieldOptions };
-export { registerComponents };
+export { registerComponents, configureApp };
 export { commonProps, useFormField, useHasChoices, useHasChoicesSingle, useHasChoicesMultiple, useParsesTextField, useHasMaxChars, useSearches, useRepeaterField };
 export { sliceMessageBag, spliceMessageBag, messageBagToString }
 export { startCase, getUniqueKey, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols };

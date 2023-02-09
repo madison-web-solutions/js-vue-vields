@@ -1,8 +1,11 @@
 <template>
-    <div :style="itemStyle(index)" :class="{'is-invalid': showRowErrors, 'is-moving': index === movingIndex}">
-        <div class="repeater-table-cell repeater-item-control" :rowspan="showRowErrors ? 2: 1">
+                    class=""
+                    :class="{'is-moving': index === movingIndex}"   
+
+    <div :style="itemStyle(index)" v-pclass="{'repeater-item': true, 'is-moving': index === movingIndex}" :class="{'is-invalid': showRowErrors}">
+        <div v-pclass="'repeater-table-cell repeater-item-control'" :rowspan="showRowErrors ? 2: 1">
             <div>
-                <button v-if="editable" class="btn btn-repeater-move" @click="emit('startMove', index)">{{ index + 1 }}</button>
+                <button v-if="editable" class="btn" v-pclass="'btn-repeater-move'" @click="emit('startMove', index)">{{ index + 1 }}</button>
                 <span v-if="! editable">{{ index + 1 }}</span>
             </div>
             <div v-if="editable" class="btn-group mt-2">
@@ -11,16 +14,16 @@
             </div>
         </div>
         <slot :subVals="modelValue"></slot>
-        <div v-if="showRowErrors" class="repeater-table-item-errors">
+        <div v-if="showRowErrors" v-pclass="'repeater-table-item-errors'">
             <div class="invalid-feedback d-block">
                 <div v-for="msg in myErrors">{{ msg }}</div>
             </div>
         </div>
         <template v-if="editable && movingIndex != null">
-            <div v-if="movingIndex - index >= 0" class="repeater-move-target move-before" @click="emit('completeMoveTo', index)"></div>
-            <div v-if="movingIndex - index > 0" class="repeater-move-target move-after" @click="emit('completeMoveTo', index + 1)"></div>
-            <div v-if="index - movingIndex > 0" class="repeater-move-target move-before" @click="emit('completeMoveTo', index - 1)"></div>
-            <div v-if="index - movingIndex >= 0" class="repeater-move-target move-after" @click="emit('completeMoveTo', index)"></div>
+            <div v-if="movingIndex - index >= 0" v-pclass="'repeater-move-target move-before'" @click="emit('completeMoveTo', index)"></div>
+            <div v-if="movingIndex - index > 0" v-pclass="'repeater-move-target move-after'" @click="emit('completeMoveTo', index + 1)"></div>
+            <div v-if="index - movingIndex > 0" v-pclass="'repeater-move-target move-before'" @click="emit('completeMoveTo', index - 1)"></div>
+            <div v-if="index - movingIndex >= 0" v-pclass="'repeater-move-target move-after'" @click="emit('completeMoveTo', index)"></div>
         </template>
     </div>
 </template>

@@ -1,28 +1,28 @@
 @use "sass:math";
 
-.repeater, .repeater-table {
+.#{$vfms-prefix}repeater, .#{$vfms-prefix}repeater-table {
     display: grid;
     position: relative;
 
-    .repeater-item {
+    .#{$vfms-prefix}repeater-item {
         display: contents;
     }
 
-    .btn-repeater-move {
+    .#{$vfms-prefix}btn-repeater-move {
         cursor: move;
         &:hover {
             border: 1px dashed $border-color;
         }
     }
 
-    .repeater-item-control {
+    .#{$vfms-prefix}repeater-item-control {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
     }
 
-    .repeater-append {
+    .#{$vfms-prefix}repeater-append {
         grid-column: 1 / -1;
         margin-top: $table-cell-padding-y;
     }
@@ -33,10 +33,10 @@
     // By using absolute position within the grid, we can use the grid lines to position the targets over the top of
     // existing grid content without them taking up any 'slots' in the grid
     // This works very nicely, but it does depend on the --row-num css val being set in the vue template
-    .repeater-item.is-moving {
+    .#{$vfms-prefix}repeater-item.#{$vfms-prefix}is-moving {
         opacity: 0.5;
     }
-    .repeater-move-target {
+    .#{$vfms-prefix}repeater-move-target {
         position: absolute;
         z-index: 1;
         grid-column: 1 / -1;
@@ -46,12 +46,12 @@
         &:hover {
             border-color: $repeater-move-indicator-color;
         }
-        &.move-before {
+        &.#{$vfms-prefix}move-before {
             top: - math.div($repeater-move-indicator-size, 2);
             bottom: 50%;
             border-top-width: $repeater-move-indicator-size;
         }
-        &.move-after {
+        &.#{$vfms-prefix}move-after {
             top: 50%;
             bottom: - math.div($repeater-move-indicator-size, 2);
             border-bottom-width: $repeater-move-indicator-size;
@@ -60,37 +60,37 @@
 }
 
 // Styles that apply to repeater fields but not to repeater-table fields
-.repeater {
+.#{$vfms-prefix}repeater {
     grid-template-columns: min-content minmax(0, 1fr);
 
     border-top: 1px solid $border-color;
     border-left: 1px solid $border-color;
 
-    .repeater-item-control, .repeater-item-content {
+    .#{$vfms-prefix}repeater-item-control, .#{$vfms-prefix}repeater-item-content {
         padding: 1rem;
         border-bottom: 1px solid $border-color;
         border-right: 1px solid $border-color;
     }
 
-    .repeater-item-content.is-invalid {
+    .#{$vfms-prefix}repeater-item-content.is-invalid {
         border: 1px solid $form-feedback-invalid-color;
     }
 
-    .repeater-move-target {
+    .#{$vfms-prefix}repeater-move-target {
         grid-row: var(--row-num) / span 1;
     }
 }
 
 // Styles that apply to repeater table fields but not to repeater fields
-.repeater-table {
+.#{$vfms-prefix}repeater-table {
     grid-template-columns: min-content repeat(var(--num-cols), minmax(0, 1fr));
 
-    .repeater-table-cell {
+    .#{$vfms-prefix}repeater-table-cell {
         padding: $table-cell-padding-y $table-cell-padding-x;
     }
 
     // Add an underlay div covering the whole row - this will be used to add borders
-    .repeater-table-header::after, .repeater-item::after {
+    .#{$vfms-prefix}repeater-table-header::after, .#{$vfms-prefix}repeater-item::after {
         display: block;
         content: "";
         position: absolute;
@@ -101,7 +101,7 @@
         bottom: -$table-border-width;
     }
 
-    .repeater-table-header {
+    .#{$vfms-prefix}repeater-table-header {
         display: contents;
         font-weight: $repeater-table-header-font-weight;
         :first-child {
@@ -116,17 +116,17 @@
         }
     }
 
-    .repeater-table-item-errors {
+    .#{$vfms-prefix}repeater-table-item-errors {
         grid-column: 2 / -1;
     }
 
-    .repeater-item {
-        > .repeater-table-cell {
+    .#{$vfms-prefix}repeater-item {
+        > .#{$vfms-prefix}repeater-table-cell {
             // if the item is valid, then there will be no item errors
             // so each field should span both of this item's grid rows
             grid-row-end: span 2;
         }
-        &.is-invalid > .repeater-table-cell:not(.repeater-item-control) {
+        &.is-invalid > .#{$vfms-prefix}repeater-table-cell:not(.#{$vfms-prefix}repeater-item-control) {
             // If the item is not valid, then the errors will go into the second row,
             // so the fields should only use one of the grid rows
             grid-row-end: span 1;
@@ -146,7 +146,7 @@
         }
     }
 
-    .repeater-item .repeater-move-target {
+    .#{$vfms-prefix}repeater-item .#{$vfms-prefix}repeater-move-target {
         grid-row: var(--row-num) / span 2;
     }
 }

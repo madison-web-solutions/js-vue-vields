@@ -24,7 +24,7 @@
             </slot>
         </div>
         <small v-if="help" class="form-text text-muted">{{ help }}</small>
-        <div v-if="tooltip" ref="tooltipEle" class="tooltip" :class="{active: tooltipOpen}" :style="{display: tooltipOpen ? 'inline-block' : 'none'}">{{ tooltip }}</div>
+        <div v-if="tooltip" ref="tooltipEle" v-pclass="'tooltip'" :class="{active: tooltipOpen}" :style="{display: tooltipOpen ? 'inline-block' : 'none'}">{{ tooltip }}</div>
     </div>
 </template>
 

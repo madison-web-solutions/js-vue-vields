@@ -7,19 +7,19 @@
             <div class="col-6">
                 <input class="form-control" type="text" placeholder="Search" v-model="searchText" />
             </div>
-            <div class="media-upload-form col-6">
+            <div v-pclass="'media-upload-form'" class="col-6">
                 <label class="btn btn-primary w-100">
                     <input ref="fileInput" type="file" multiple @change="fileSelected" />
                     <i class="fas fa-upload me-2"></i> Upload Files
                 </label>
             </div>
             <div class="col-12">
-                <div class="media-preview-list row g-2" @scroll="handleScroll">
+                <div v-pclass="'media-preview-list'" class="row g-2" @scroll="handleScroll">
                     <div v-for="upload in uploads" class="col-auto">
-                        <div class="media-preview" :data-upload-status="upload.status">
-                            <p v-if="upload.status == 'new'" class="upload-status">Queued</p>
-                            <p v-if="upload.status == 'uploading'" class="upload-status">{{ upload.progress }}%</p>
-                            <p v-if="upload.status == 'error'" class="upload-status">{{ messageBagToString(upload.errors) }}</p>
+                        <div v-pclass="'media-preview'" :data-upload-status="upload.status">
+                            <p v-if="upload.status == 'new'" v-pclass="'upload-status'">Queued</p>
+                            <p v-if="upload.status == 'uploading'" v-pclass="'upload-status'">{{ upload.progress }}%</p>
+                            <p v-if="upload.status == 'error'" v-pclass="'upload-status'">{{ messageBagToString(upload.errors) }}</p>
                         </div>
                     </div>
                     <div v-for="item in itemsToShow" :key="item.id" class="col-auto">

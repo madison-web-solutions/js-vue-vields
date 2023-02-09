@@ -1,12 +1,12 @@
 <template>
-    <div class="media-preview" :class="cssClasses" :style="style" @click="select">
-        <div class="media-preview-overlay" v-if="showOverlay">
-            <i v-if="iconCssClass" class="media-preview-icon" :class="iconCssClass"></i>
-            <div v-if="item != null && backgroundImage == null" class="media-preview-title">{{ item.title }}</div>
-            <div v-if="status != 'available'" class="media-preview-status">{{ status }}</div>
+    <div v-pclass="{'media-preview': true, 'has-thumb': (backgroundImage != null)}" :style="style" @click="select">
+        <div v-pclass="'media-preview-overlay'" v-if="showOverlay">
+            <i v-if="iconCssClass" v-pclass="'media-preview-icon'" :class="iconCssClass"></i>
+            <div v-if="item != null && backgroundImage == null" v-pclass="'media-preview-title'">{{ item.title }}</div>
+            <div v-if="status != 'available'" v-pclass="'media-preview-status'">{{ status }}</div>
         </div>
-        <button v-if="inspectable" type="button" class="media-preview-inspect btn btn-sm btn-secondary" @click.stop="emit('inspect')"><i class="fas fa-search"></i></button>
-        <button v-if="removable" type="button" class="media-preview-remove btn btn-sm btn-danger" @click.stop="emit('remove')"><i class="fas fa-times"></i></button>
+        <button v-if="inspectable" type="button" v-pclass="'media-preview-inspect'" class="btn btn-sm btn-secondary" @click.stop="emit('inspect')"><i class="fas fa-search"></i></button>
+        <button v-if="removable" type="button" v-pclass="'media-preview-remove'" class="btn btn-sm btn-danger" @click.stop="emit('remove')"><i class="fas fa-times"></i></button>
     </div>
 </template>
 
@@ -87,12 +87,6 @@ const style = computed(() => {
         style.backgroundImage = 'url('+backgroundImage.value+')';
     }
     return style;
-});
-
-const cssClasses = computed(() => {
-    return {
-        'has-thumb': (backgroundImage.value != null),
-    };
 });
 
 const iconCssClass = computed((): string | null => {

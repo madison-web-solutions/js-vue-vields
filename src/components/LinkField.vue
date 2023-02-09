@@ -2,7 +2,7 @@
     <FieldWrapper v-bind="standardWrapperProps">
         <template #input>
             <div class="input-group">
-                <select v-if="availableSchemes.length > 0" class="form-select link-field-scheme-select" v-model="schemeKey">
+                <select v-if="availableSchemes.length > 0" v-pclass="'link-field-scheme-select'" class="form-select" v-model="schemeKey">
                     <option v-for="scheme in availableSchemes" :value="scheme.key">{{ scheme.label }}</option>
                 </select>
                 <div v-if="schemeKey != 'url'" class="form-control" :class="{'is-invalid': hasError}" :disabled="disabled" @click="toggleOpenSearch">

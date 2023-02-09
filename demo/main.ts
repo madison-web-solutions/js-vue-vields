@@ -1,5 +1,6 @@
 import { createApp } from "vue";
 import App from './App.vue';
+import { configureApp } from "@/main";
 
 import css from './scss/app.scss';
 // I don't know what's going on here, but if I just import the css module, and don't
@@ -9,6 +10,7 @@ import css from './scss/app.scss';
 css;
 
 const app = createApp(App);
+configureApp(app, {cssPrefix: 'demo-'});
 
 import router from "./router";
 app.use(router);

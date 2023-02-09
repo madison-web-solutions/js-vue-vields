@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.7] - 2023-02-09
+
+### Fixed
+ - Some of the field components missing from automatic registration
+
+### Added
+ - configureApp() method for setting configuration values to apply to all fields in an App
+ - Option to prefix all the (non-bootstrap) CSS class names used to avoid clashes
+
 
 ## [1.0.6] - 2023-02-08
 

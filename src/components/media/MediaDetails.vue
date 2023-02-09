@@ -1,13 +1,13 @@
 <template>
-    <div class="media-details">
+    <div v-pclass="'media-details'">
         <div class="row g-2">
             <div class="col-12" data-name="back">
                 <a href="#" @click.prevent="emit('close')"><i class="fas fa-long-arrow-alt-left"></i> Back</a>
             </div>
-            <div class="media-details-preview col-8">
+            <div v-pclass="'media-details-preview'" class="col-8">
                 <img v-if="imageSrc" :src="imageSrc" />
-                <div v-if="iconCssClass" class="media-details-overlay">
-                    <i class="media-details-icon" :class="iconCssClass"></i>
+                <div v-if="iconCssClass" v-pclass="'media-details-overlay'">
+                    <i v-pclass="'media-details-icon'" :class="iconCssClass"></i>
                 </div>
             </div>
             <div class="col-4" data-name="details">

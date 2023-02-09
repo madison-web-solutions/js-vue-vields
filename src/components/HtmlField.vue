@@ -1,7 +1,7 @@
 <template>
     <FieldWrapper v-bind="standardWrapperProps">
         <template #input>
-            <div ref="editorContainerEle" class="html-field" :class="{'is-invalid': hasError}"></div>
+            <div ref="editorContainerEle" v-pclass="'html-field'" :class="{'is-invalid': hasError}"></div>
         </template>
         <template #viewMode>
             <div class="card">

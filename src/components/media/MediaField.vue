@@ -1,9 +1,9 @@
 <template>
     <FieldWrapper v-bind="standardWrapperProps">
         <template #input>
-            <div v-if="! inspecting && ! choosing" class="media-preview-list">
+            <div v-if="! inspecting && ! choosing" v-pclass="'media-preview-list'">
                 <MediaPreview v-if="modelValue != null" :item="currentItem" :removable="true" :inspectable="true" @remove="remove" @select="choosing = true" @inspect="inspecting = true" />
-                <button v-if="modelValue == null" type="button" class="media-add-button" @click="choosing = true"><i class="fas fa-plus"></i></button>
+                <button v-if="modelValue == null" type="button" v-pclass="'media-add-button'" @click="choosing = true"><i class="fas fa-plus"></i></button>
             </div>
             <div v-if="choosing" @close="choosing = false" title="Media Library">
                 <MediaLibrary :standalone="false" :extraParams="extraParams" @select="updateValue" @close="choosing = false" />
@@ -13,7 +13,7 @@
             </div>
         </template>
         <template #viewMode>
-            <div class="attachment-list">
+            <div v-pclass="'attachment-list'">
                 <MediaPreview :item="currentItem" :removable="false" :inspectable="false" />
             </div>
         </template>

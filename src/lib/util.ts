@@ -260,7 +260,12 @@ export const startCase = (s: unknown): string => {
         .replace(/\b\w+/g, (s) => s.charAt(0).toUpperCase() + s.substr(1).toLowerCase());
 };
 
+export type AppConfigOptions = {
+    cssPrefix?: string,
+};
+
 const symbols = {
+    appConfig: Symbol() as InjectionKey<AppConfigOptions>,
     editMode: Symbol() as InjectionKey<Ref<"edit" | "view">>,
     noValueLabel: Symbol() as InjectionKey<Ref<string>>,
     path: Symbol() as InjectionKey<Ref<Path> | undefined>,

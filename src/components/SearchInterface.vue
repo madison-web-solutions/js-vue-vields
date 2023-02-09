@@ -1,7 +1,7 @@
 <template>
     <div ref="container">
         <input class="form-control" ref="searchInput" type="text" placeholder="Search" v-model="searchText" @keydown.enter.prevent="emit('enterPress')" />
-        <div class="search-field-results" @scroll="handleScroll">
+        <div v-pclass="'search-field-results'" @scroll="handleScroll">
             <slot v-if="noResults" name="noResults" :searchText="searchText">
                 <div class="form-text text-warning">No results</div>
             </slot>
