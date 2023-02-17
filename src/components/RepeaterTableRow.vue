@@ -1,7 +1,4 @@
 <template>
-                    class=""
-                    :class="{'is-moving': index === movingIndex}"   
-
     <div :style="itemStyle(index)" v-pclass="{'repeater-item': true, 'is-moving': index === movingIndex}" :class="{'is-invalid': showRowErrors}">
         <div v-pclass="'repeater-table-cell repeater-item-control'" :rowspan="showRowErrors ? 2: 1">
             <div>
