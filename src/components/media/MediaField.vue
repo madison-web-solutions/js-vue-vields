@@ -24,7 +24,7 @@
 import type { MediaItem, MessageBag, LookupResult } from '@/main';
 import { computed, ref, toRefs, watchEffect, inject } from 'vue';
 import { commonProps, useFormField, symbols } from '@/main';
-import { FieldWrapper, MediaPreview, MediaLibrary, MediaDetails } from '@/main';
+import { MediaPreview, MediaLibrary, MediaDetails } from '@/main';
 
 type IdType = string | number | undefined;
 
@@ -51,7 +51,7 @@ const coerceFn = (value: any): IdType => {
     return undefined;
 };
 
-const { modelValue, standardWrapperProps } = useFormField<IdType>(coerceFn, emit, propRefs);
+const { modelValue, FieldWrapper, standardWrapperProps } = useFormField<IdType>(coerceFn, emit, propRefs);
 
 const provider = inject(symbols.mediaProvider);
 

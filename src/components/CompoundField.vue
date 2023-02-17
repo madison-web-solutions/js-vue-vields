@@ -11,7 +11,6 @@
 import type { MessageBag, CompoundFormValue, FormValue } from '@/main';
 import { provide, ref, toRefs } from 'vue';
 import { commonProps, spliceMessageBag, useFormField, coerceToCompoundFormValue, copyCompoundFormValue, symbols } from '@/main';
-import { FieldWrapper } from '@/main';
 
 const props = defineProps(Object.assign({}, commonProps, {}));
 
@@ -22,7 +21,7 @@ const emit = defineEmits<{
 
 const propRefs = toRefs(props);
 
-const { modelValue, errors, standardWrapperProps } = useFormField<CompoundFormValue>(coerceToCompoundFormValue, emit, propRefs);
+const { modelValue, errors, FieldWrapper, standardWrapperProps } = useFormField<CompoundFormValue>(coerceToCompoundFormValue, emit, propRefs);
 
 // provide the setter
 const setter = ref((value: FormValue, key: string | number): void => {

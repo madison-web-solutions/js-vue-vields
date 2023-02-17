@@ -23,7 +23,6 @@
 import type { MessageBag, KeysList } from '@/main';
 import { toRefs } from 'vue';
 import { commonProps, useFormField, useHasChoicesMultiple } from '@/main';
-import { FieldWrapper } from '@/main';
 
 const props = defineProps(Object.assign({}, commonProps, {
     directory: {
@@ -69,7 +68,7 @@ const coerceFn = (value: any): KeysList => {
     return out;
 };
 
-const { inputEleId, pathString, modelValue, errors, standardWrapperProps } = useFormField<KeysList>(coerceFn, emit, propRefs);
+const { inputEleId, pathString, modelValue, errors, FieldWrapper, standardWrapperProps } = useFormField<KeysList>(coerceFn, emit, propRefs);
 
 const { choicesNormalized, subValues, toggle, subErrors, hasSubErrors } = useHasChoicesMultiple(modelValue, errors, propRefs);
 

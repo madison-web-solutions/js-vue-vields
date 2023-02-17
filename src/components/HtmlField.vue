@@ -24,7 +24,6 @@ import { ClassicEditor } from 'ckeditor';
 import type { MessageBag } from '@/main';
 import { ref, toRefs, watch, onBeforeUnmount } from 'vue';
 import { commonProps, useFormField } from '@/main';
-import { FieldWrapper } from '@/main';
 
 const props = defineProps(Object.assign({}, commonProps, {}));
 
@@ -39,7 +38,7 @@ const coerceToString = (value: any): string => {
     return value ? String(value) : '';
 };
 
-const { modelValue, hasError, standardWrapperProps } = useFormField<string>(coerceToString, emit, propRefs);
+const { modelValue, hasError, FieldWrapper, standardWrapperProps } = useFormField<string>(coerceToString, emit, propRefs);
 
 const INPUT_DEBOUNCE_WAIT: number = 300;
 

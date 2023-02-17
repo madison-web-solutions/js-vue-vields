@@ -33,7 +33,6 @@
 import type { MessageBag, Choosable } from '@/main';
 import { computed, onMounted, onBeforeUnmount, ref, toRefs, inject } from 'vue';
 import { commonProps, useFormField, useHasChoicesSingle, symbols } from '@/main';
-import { FieldWrapper } from '@/main';
 
 type IdType = string | number | undefined;
 
@@ -66,7 +65,7 @@ const coerceFn = (value: any): IdType => {
     return undefined;
 };
 
-const { modelValue, standardWrapperProps } = useFormField<IdType>(coerceFn, emit, propRefs);
+const { modelValue, FieldWrapper, standardWrapperProps } = useFormField<IdType>(coerceFn, emit, propRefs);
 
 const { choicesNormalized, currentChoice, nullSelected } = useHasChoicesSingle(modelValue, propRefs);
 

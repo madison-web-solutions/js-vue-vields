@@ -11,7 +11,6 @@
 import type { MessageBag, ParsesTextFieldOptions } from '@/main';
 import { computed, ref, toRefs } from 'vue';
 import { commonProps, useFormField, useParsesTextField } from '@/main';
-import { FieldWrapper } from '@/main';
 
 const props = defineProps(Object.assign({}, commonProps, {
     max: {
@@ -55,7 +54,7 @@ const coerceToNumber = (value: unknown): number | undefined => {
     return undefined;
 };
 
-const { inputEleId, pathString, modelValue, hasError, standardWrapperProps } = useFormField<number | undefined>(coerceToNumber, emit, propRefs);
+const { inputEleId, pathString, modelValue, hasError, FieldWrapper, standardWrapperProps } = useFormField<number | undefined>(coerceToNumber, emit, propRefs);
 
 const myStep = computed((): number | undefined => {
     if (props.step == null) {

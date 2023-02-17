@@ -38,7 +38,6 @@
 import type { MessageBag, Choosable, SearchResultPage } from '@/main';
 import { computed, ref, toRefs, watchEffect, inject } from 'vue';
 import { commonProps, useFormField, useSearches, symbols } from '@/main';
-import { FieldWrapper } from '@/main';
 import SearchInterface from './SearchInterface.vue';
 
 type IdType = string | number | undefined;
@@ -70,7 +69,7 @@ const coerceFn = (value: any): IdType => {
     return undefined;
 };
 
-const { modelValue, hasError, standardWrapperProps } = useFormField<IdType>(coerceFn, emit, propRefs);
+const { modelValue, hasError, FieldWrapper, standardWrapperProps } = useFormField<IdType>(coerceFn, emit, propRefs);
 
 const provider = inject(symbols.choicesProvider);
 

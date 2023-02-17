@@ -99,6 +99,7 @@ const registerComponents = (app: App, prefix?: string | null | undefined) => {
 };
 const configureApp = (app: App, config: AppConfigOptions) => {
     app.provide(symbols.appConfig, config);
+    app.provide(symbols.fieldWrapperComponent, config.fieldWrapperComponent);
 
     const cssPrefix = config.cssPrefix || '';
     const normalizeClassList = (arg: any): string[] => {

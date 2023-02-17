@@ -12,7 +12,6 @@
 import type { MessageBag } from '@/main';
 import { toRefs } from 'vue';
 import { commonProps, useFormField, useHasMaxChars } from '@/main';
-import { FieldWrapper } from '@/main';
 
 const props = defineProps(Object.assign({}, commonProps, {
     rows: {
@@ -36,7 +35,7 @@ const coerceToString = (value: any): string => {
     return value ? String(value) : '';
 };
 
-const { inputEleId, pathString, modelValue, hasError, standardWrapperProps } = useFormField<string>(coerceToString, emit, propRefs);
+const { inputEleId, pathString, modelValue, hasError, FieldWrapper, standardWrapperProps } = useFormField<string>(coerceToString, emit, propRefs);
 
 const { remainingChars, showRemainingChars } = useHasMaxChars(modelValue, propRefs);
 

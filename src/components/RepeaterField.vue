@@ -38,7 +38,7 @@ import type { StyleValue } from 'vue';
 import type { RepeaterFormValue, MessageBag } from '@/main';
 import { computed, toRefs } from 'vue';
 import { commonProps, useRepeaterField } from '@/main';
-import { RepeaterRow, FieldWrapper } from '@/main';
+import { RepeaterRow } from '@/main';
 
 const props = defineProps(Object.assign({}, commonProps, {
     appendLabel: {
@@ -63,6 +63,7 @@ const propRefs = toRefs(props);
 const {
     modelValue,
     editMode,
+    FieldWrapper,
     standardWrapperProps,
     canAddRow,
     appendRow,

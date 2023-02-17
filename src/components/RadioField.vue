@@ -14,7 +14,6 @@
 import type { Choosable, MessageBag } from '@/main';
 import { computed, toRefs } from 'vue';
 import { commonProps, useFormField, useHasChoicesSingle } from '@/main';
-import { FieldWrapper } from '@/main';
 
 type IdType = string | number | undefined;
 
@@ -51,7 +50,7 @@ const coerceFn = (value: any): IdType => {
     return undefined;
 };
 
-const { inputEleId, pathString, modelValue, hasError, standardWrapperProps } = useFormField<IdType>(coerceFn, emit, propRefs);
+const { inputEleId, pathString, modelValue, hasError, FieldWrapper, standardWrapperProps } = useFormField<IdType>(coerceFn, emit, propRefs);
 
 const { choicesNormalized, currentChoice } = useHasChoicesSingle(modelValue, propRefs);
 

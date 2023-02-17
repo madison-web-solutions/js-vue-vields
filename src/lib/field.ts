@@ -1,5 +1,5 @@
 import type { Ref, PropType } from 'vue';
-import type { MessageBag, Path, FormValue, Choosable } from '@/main';
+import { FieldWrapper as StandardFieldWrapper, MessageBag, Path, FormValue, Choosable, CompoundField } from '@/main';
 import { computed, provide, inject, ref, watchEffect } from 'vue';
 import { getUniqueKey, sliceMessageBag, reindexErrors, symbols } from '@/main';
 import { startCase } from '@/lib/util';
@@ -152,6 +152,8 @@ export function useFormField<ValueType extends FormValue> (valueCoerceFn: (val: 
 
     const editMode = inject(symbols.editMode, ref('edit'));
 
+    const FieldWrapper = inject(symbols.fieldWrapperComponent) || StandardFieldWrapper;
+
     const standardWrapperProps = computed(() => {
         return {
             inputEleId: inputEleId.value,
@@ -163,7 +165,7 @@ export function useFormField<ValueType extends FormValue> (valueCoerceFn: (val: 
         };
     });
 
-    return { inputEleId, path, pathString, rawValue, modelValue, errors, myErrors, hasError, editMode, standardWrapperProps };
+    return { inputEleId, path, pathString, rawValue, modelValue, errors, myErrors, hasError, editMode, FieldWrapper, standardWrapperProps };
 };
 
 export type BooleansMap = {[key: string]: boolean};

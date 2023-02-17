@@ -1,4 +1,5 @@
-import type { Ref, InjectionKey } from 'vue';
+import { Ref, InjectionKey } from 'vue';
+import { FieldWrapper } from '@/main';
 import type { MessageBag } from '@/main';
 import type { ChoicesProvider, LinksProvider, MediaProvider, PasswordStrengthProvider } from '@/main';
 
@@ -262,6 +263,7 @@ export const startCase = (s: unknown): string => {
 
 export type AppConfigOptions = {
     cssPrefix?: string,
+    fieldWrapperComponent?: typeof FieldWrapper
 };
 
 const symbols = {
@@ -277,6 +279,7 @@ const symbols = {
     linksProvider: Symbol() as InjectionKey<Ref<LinksProvider> | undefined>,
     mediaProvider: Symbol() as InjectionKey<Ref<MediaProvider> | undefined>,
     passwordStrengthProvider: Symbol() as InjectionKey<Ref<PasswordStrengthProvider> | undefined>,
+    fieldWrapperComponent: Symbol() as InjectionKey<typeof FieldWrapper | undefined>,
 };
 Object.freeze(symbols);
 export { symbols };

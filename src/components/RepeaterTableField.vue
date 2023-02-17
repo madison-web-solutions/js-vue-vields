@@ -38,7 +38,7 @@ import type { PropType, StyleValue } from 'vue';
 import type { RepeaterFormValue, MessageBag } from '@/main';
 import { computed, toRefs } from 'vue';
 import { commonProps, useRepeaterField, startCase } from '@/main';
-import { RepeaterTableRow, FieldWrapper } from '@/main';
+import { RepeaterTableRow } from '@/main';
 import { RepeaterTableCol, RepeaterTableColOpts } from '@/lib/repeater';
 
 const props = defineProps(Object.assign({}, commonProps, {
@@ -68,6 +68,7 @@ const propRefs = toRefs(props);
 const {
     modelValue,
     editMode,
+    FieldWrapper,
     standardWrapperProps,
     canAddRow,
     appendRow,

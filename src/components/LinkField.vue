@@ -36,7 +36,6 @@
 import type { Choosable, LinkAlias, MessageBag, LookupResult, SearchResultPage } from '@/main';
 import { computed, ref, inject, toRefs, watchEffect } from 'vue';
 import { commonProps, useFormField, useSearches, symbols } from '@/main';
-import { FieldWrapper } from '@/main';
 import SearchInterface from './SearchInterface.vue';
 
 const props = defineProps(Object.assign({}, commonProps, {
@@ -56,7 +55,7 @@ const coerceFn = (value: unknown): string => {
     return value ? String(value) : '';
 };
 
-const { modelValue, hasError, standardWrapperProps } = useFormField<string | undefined>(coerceFn, emit, propRefs);
+const { modelValue, hasError, FieldWrapper, standardWrapperProps } = useFormField<string | undefined>(coerceFn, emit, propRefs);
 
 const provider = inject(symbols.linksProvider);
 

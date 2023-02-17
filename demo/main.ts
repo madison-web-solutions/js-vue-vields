@@ -10,7 +10,9 @@ import css from './scss/app.scss';
 css;
 
 const app = createApp(App);
-configureApp(app, {cssPrefix: 'demo-'});
+configureApp(app, {
+    cssPrefix: 'demo-',
+});
 
 import router from "./router";
 app.use(router);

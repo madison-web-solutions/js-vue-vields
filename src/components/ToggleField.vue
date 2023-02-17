@@ -14,7 +14,6 @@
 import type { MessageBag } from '@/main';
 import { computed, toRefs } from 'vue';
 import { commonProps, useFormField, coerceToBoolean } from '@/main';
-import { FieldWrapper } from '@/main';
 
 const props = defineProps(Object.assign({}, commonProps, {
     trueLabel: {
@@ -34,7 +33,7 @@ const emit = defineEmits<{
 
 const propRefs = toRefs(props);
 
-const { inputEleId, pathString, modelValue, hasError, standardWrapperProps } = useFormField<boolean | undefined>(coerceToBoolean, emit, propRefs);
+const { inputEleId, pathString, modelValue, hasError, FieldWrapper, standardWrapperProps } = useFormField<boolean | undefined>(coerceToBoolean, emit, propRefs);
 
 const displayValue = computed((): string => {
     if (modelValue.value === true) {

@@ -12,7 +12,6 @@ import type { MessageBag, ParsesTextFieldOptions } from '@/main';
 import { computed, ref, toRefs } from 'vue';
 import { commonProps, useFormField, useParsesTextField } from '@/main';
 import { timeParse, timeFormat, timeSplit } from '@/lib/time';
-import { FieldWrapper } from '@/main';
 
 const props = defineProps(Object.assign({}, commonProps, {
     withSeconds: {
@@ -46,7 +45,7 @@ const coerceFn = (value: unknown): string | undefined => {
     return (value == null || value === '') ? undefined : String(value);
 };
 
-const { inputEleId, pathString, modelValue, hasError, standardWrapperProps } = useFormField<string | undefined>(coerceFn, emit, propRefs);
+const { inputEleId, pathString, modelValue, hasError, FieldWrapper, standardWrapperProps } = useFormField<string | undefined>(coerceFn, emit, propRefs);
 
 const stepSeconds = computed((): number | undefined => {
     return props.step == null ? undefined : timeParse(props.step);

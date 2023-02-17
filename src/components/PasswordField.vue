@@ -12,7 +12,7 @@
 import type { MessageBag } from '@/main';
 import { toRefs } from 'vue';
 import { commonProps, useFormField } from '@/main';
-import { FieldWrapper, PasswordStrengthMeter } from '@/main';
+import { PasswordStrengthMeter } from '@/main';
 
 const props = defineProps(Object.assign({}, commonProps, {
     inputType: {
@@ -35,6 +35,6 @@ const coerceToString = (value: any): string => {
     return value ? String(value) : '';
 };
 
-const { inputEleId, pathString, modelValue, hasError, standardWrapperProps } = useFormField<string>(coerceToString, emit, propRefs);
+const { inputEleId, pathString, modelValue, hasError, FieldWrapper, standardWrapperProps } = useFormField<string>(coerceToString, emit, propRefs);
 
 </script>

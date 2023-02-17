@@ -35,7 +35,8 @@
 
 <script setup lang="ts">
 import { computed, ref, provide } from "vue";
-import { FieldGroup, CheckboxesField, TextField, SelectField, RepeaterField, RepeaterTableField } from "@/main";
+import AltFieldWrapper from "../components/AltFieldWrapper.vue";
+import { FieldGroup, CheckboxesField, TextField, SelectField, RepeaterField, RepeaterTableField, symbols } from "@/main";
 
 const vals = ref({
     pets: [
@@ -47,5 +48,7 @@ const vals = ref({
 const errors = ref({
     "pets.0": ['Cats should not be called Gary'],
 });
+
+provide(symbols.fieldWrapperComponent, AltFieldWrapper);
 
 </script>
