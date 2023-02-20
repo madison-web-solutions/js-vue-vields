@@ -31,6 +31,7 @@ import { commonProps, useFormField, useHasChoices, useHasChoicesSingle, useHasCh
 import { useHasMaxChars } from '@/lib/text';
 import { useSearches } from '@/lib/search';
 import { useRepeaterField } from '@/lib/repeater';
+import usePopperTooltip from '@/lib/usePopperTooltip';
 import TextField from "@/components/TextField.vue";
 import TextAreaField from "@/components/TextAreaField.vue";
 import CheckboxField from "@/components/CheckboxField.vue";
@@ -135,7 +136,7 @@ const configureApp = (app: App, config: AppConfigOptions) => {
 
 export type { CompoundFormValue, RepeaterFormValue, FormValue, MessageBag, BooleansMap, KeysList, MediaItem, ResizableMediaItem, Choosable, LinkAlias, SearchResultPage, ChoicesProvider, LinksProvider, MediaProvider, PasswordStrengthProvider, Path, ParsesTextFieldOptions };
 export { registerComponents, configureApp };
-export { commonProps, useFormField, useHasChoices, useHasChoicesSingle, useHasChoicesMultiple, useParsesTextField, useHasMaxChars, useSearches, useRepeaterField };
+export { commonProps, useFormField, useHasChoices, useHasChoicesSingle, useHasChoicesMultiple, useParsesTextField, useHasMaxChars, useSearches, useRepeaterField, usePopperTooltip };
 export { sliceMessageBag, spliceMessageBag, messageBagToString }
 export { startCase, getUniqueKey, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols };
 export { TextField, TextAreaField, CheckboxField, CheckboxesField, CurrencyField, DateField, NumberField, ToggleField, RepeaterField, RepeaterRow, RadioField, SearchField, SelectField, CustomSelectField, HtmlField, FlexibleContentField, LinkField, FieldWrapper, FieldGroup };
