@@ -10,6 +10,7 @@
 
     .#{$vfms-prefix}btn-repeater-move {
         cursor: move;
+        background-image: none;
         &:hover {
             border: 1px dashed $border-color;
         }
