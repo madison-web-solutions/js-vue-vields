@@ -1,4 +1,4 @@
-import { defineAsyncComponent } from 'vue';
+import { defineAsyncComponent, ref } from 'vue';
 import type { App, Component } from 'vue';
 
 export type UpdateOk<T> = {
@@ -99,8 +99,8 @@ const registerComponents = (app: App, prefix?: string | null | undefined) => {
     }
 };
 const configureApp = (app: App, config: AppConfigOptions) => {
-    app.provide(symbols.appConfig, config);
     app.provide(symbols.fieldWrapperComponent, config.fieldWrapperComponent);
+    app.provide(symbols.textAreaDefaultNumRows, ref(config.textAreaDefaultNumRows));
 
     const cssPrefix = config.cssPrefix || '';
     const normalizeClassList = (arg: any): string[] => {
@@ -122,7 +122,7 @@ const configureApp = (app: App, config: AppConfigOptions) => {
     };
     app.directive('pclass', {
         mounted: (el, binding) => {
-            const classes = 
+            const classes =
             el.classList.add(...normalizeClassList(binding.value));
         },
         updated: (el, binding) => {

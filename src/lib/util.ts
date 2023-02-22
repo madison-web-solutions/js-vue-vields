@@ -263,11 +263,11 @@ export const startCase = (s: unknown): string => {
 
 export type AppConfigOptions = {
     cssPrefix?: string,
-    fieldWrapperComponent?: typeof FieldWrapper
+    fieldWrapperComponent?: typeof FieldWrapper,
+    textAreaDefaultNumRows?: number,
 };
 
 const symbols = {
-    appConfig: Symbol() as InjectionKey<AppConfigOptions>,
     editMode: Symbol() as InjectionKey<Ref<"edit" | "view">>,
     noValueLabel: Symbol() as InjectionKey<Ref<string>>,
     path: Symbol() as InjectionKey<Ref<Path> | undefined>,
@@ -280,6 +280,7 @@ const symbols = {
     mediaProvider: Symbol() as InjectionKey<Ref<MediaProvider> | undefined>,
     passwordStrengthProvider: Symbol() as InjectionKey<Ref<PasswordStrengthProvider> | undefined>,
     fieldWrapperComponent: Symbol() as InjectionKey<typeof FieldWrapper | undefined>,
+    textAreaDefaultNumRows: Symbol() as InjectionKey<Ref<number | undefined> | undefined>,
 };
 Object.freeze(symbols);
 export { symbols };
