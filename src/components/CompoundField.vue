@@ -21,7 +21,9 @@ const emit = defineEmits<{
 
 const propRefs = toRefs(props);
 
-const { modelValue, errors, FieldWrapper, standardWrapperProps } = useFormField<CompoundFormValue>(coerceToCompoundFormValue, emit, propRefs);
+const { modelValue, errors, FieldWrapper, standardWrapperProps } = useFormField<CompoundFormValue>(coerceToCompoundFormValue, emit, propRefs, {
+    fieldTypeSlug: 'compound'
+});
 
 // provide the setter
 const setter = ref((value: FormValue, key: string | number): void => {

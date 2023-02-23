@@ -68,7 +68,9 @@ const coerceFn = (value: any): KeysList => {
     return out;
 };
 
-const { inputEleId, pathString, modelValue, errors, FieldWrapper, standardWrapperProps } = useFormField<KeysList>(coerceFn, emit, propRefs);
+const { inputEleId, pathString, modelValue, errors, FieldWrapper, standardWrapperProps } = useFormField<KeysList>(coerceFn, emit, propRefs, {
+    fieldTypeSlug: 'checkboxes'
+});
 
 const { choicesNormalized, subValues, toggle, subErrors, hasSubErrors } = useHasChoicesMultiple(modelValue, errors, propRefs);
 

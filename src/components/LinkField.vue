@@ -55,7 +55,9 @@ const coerceFn = (value: unknown): string => {
     return value ? String(value) : '';
 };
 
-const { modelValue, hasError, FieldWrapper, standardWrapperProps } = useFormField<string | undefined>(coerceFn, emit, propRefs);
+const { modelValue, hasError, FieldWrapper, standardWrapperProps } = useFormField<string | undefined>(coerceFn, emit, propRefs, {
+    fieldTypeSlug: 'link'
+});
 
 const provider = inject(symbols.linksProvider);
 

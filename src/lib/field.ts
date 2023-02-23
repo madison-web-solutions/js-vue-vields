@@ -28,7 +28,11 @@ export const commonProps = {
     },
     name: {
         type: [String, Number],
-    }
+    },
+    fieldTypeSlug: {
+        type: String,
+        required: false,
+    },
 };
 
 // Composable that causes the component to
@@ -67,7 +71,13 @@ export type UseFormFieldPropRefs<ValueType> = {
     label?: Ref<string | undefined>,
     required?: Ref<boolean | undefined>,
     help?: Ref<string | undefined>,
+    tooltip?: Ref<string | undefined>,
     disabled?: Ref<boolean | undefined>,
+    fieldTypeSlug?: Ref<string | undefined>,
+};
+
+export type UseFormFieldOpts = {
+    fieldTypeSlug?: string,
 };
 
 export type FieldEmitType<ValueType> = {
@@ -75,7 +85,7 @@ export type FieldEmitType<ValueType> = {
     (e: 'update:errors', value: MessageBag): void
 };
 
-export function useFormField<ValueType extends FormValue> (valueCoerceFn: (val: unknown) => ValueType, emit: FieldEmitType<ValueType>, propRefs: UseFormFieldPropRefs<ValueType>) {
+export function useFormField<ValueType extends FormValue> (valueCoerceFn: (val: unknown) => ValueType, emit: FieldEmitType<ValueType>, propRefs: UseFormFieldPropRefs<ValueType>, opts?: UseFormFieldOpts) {
 
     const name = computed((): (string | number | undefined) => {
         return propRefs?.name?.value;
@@ -154,14 +164,20 @@ export function useFormField<ValueType extends FormValue> (valueCoerceFn: (val: 
 
     const FieldWrapper = inject(symbols.fieldWrapperComponent) || StandardFieldWrapper;
 
+    const fieldTypeSlug = computed((): string | undefined => {
+        return propRefs?.fieldTypeSlug?.value || opts?.fieldTypeSlug || undefined;
+    });
+
     const standardWrapperProps = computed(() => {
         return {
             inputEleId: inputEleId.value,
             label: propRefs?.label?.value,
             required: propRefs?.required?.value,
             help: propRefs?.help?.value,
-            errors: myErrors.value,
+            tooltip: propRefs?.tooltip?.value,
             modelValue: modelValue.value,
+            errors: myErrors.value,
+            fieldTypeSlug: fieldTypeSlug.value,
         };
     });
 

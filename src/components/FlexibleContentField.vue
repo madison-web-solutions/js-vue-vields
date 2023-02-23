@@ -8,6 +8,7 @@
         :help="help"
         :placeholder="placeholder"
         :name="name"
+        :fieldTypeSlug="fieldTypeSlug"
         appendLabel="Add Section"
         @update:model-value="(newValue) => emit('update:modelValue', newValue)"
         @update:errors="(newErrors) => emit('update:errors', newErrors)"
@@ -24,6 +25,7 @@
 <script setup lang="ts">
 import type { PropType } from 'vue';
 import type { Choosable, MessageBag, RepeaterFormValue } from '@/main';
+import { computed } from 'vue';
 import { commonProps } from '@/main';
 import { RepeaterField } from '@/main';
 import SelectField from './SelectField.vue';
@@ -34,6 +36,10 @@ const props = defineProps(Object.assign({}, commonProps, {
         default: [],
     }
 }));
+
+const fieldTypeSlug = computed((): string | undefined => {
+    return props?.fieldTypeSlug || 'flexible-content-field';
+});
 
 const emit = defineEmits<{
     (e: 'update:modelValue', value: RepeaterFormValue): void

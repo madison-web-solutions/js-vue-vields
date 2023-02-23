@@ -69,7 +69,9 @@ const coerceFn = (value: any): IdType => {
     return undefined;
 };
 
-const { modelValue, hasError, FieldWrapper, standardWrapperProps } = useFormField<IdType>(coerceFn, emit, propRefs);
+const { modelValue, hasError, FieldWrapper, standardWrapperProps } = useFormField<IdType>(coerceFn, emit, propRefs, {
+    fieldTypeSlug: 'search'
+});
 
 const provider = inject(symbols.choicesProvider);
 

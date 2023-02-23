@@ -4,7 +4,7 @@
             <div class="col-8 overflow-hidden">
                 <FieldGroup v-model="vals" v-model:errors="errors">
                     <div class="row g-3 mb-4">
-                        <RepeaterTableField label="Pets" name="pets" :cols="[{name: 'name'}, {name: 'type'}, {name: 'attributes'}]" class="col-12">
+                        <RepeaterTableField :labelSettings="{prefix: 'Lovely'}" label="Pets" name="pets" :cols="[{name: 'name'}, {name: 'type'}, {name: 'attributes'}]" class="col-12">
                             <template #name>
                                 <TextField name="name" />
                             </template>
@@ -16,7 +16,7 @@
                             </template>
                         </RepeaterTableField>
 
-                        <RepeaterField label="Pets" name="pets" class="col-12">
+                        <RepeaterField :labelSettings="{prefix: 'Lovely'}" label="Pets" name="pets" class="col-12">
                             <div class="row">
                                 <TextField label="Name" name="name" class="col-md-4" />
                                 <SelectField label="Type" name="type" choices="cat,dog,fish" class="col-md-4" />

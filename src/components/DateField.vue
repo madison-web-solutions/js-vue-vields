@@ -39,7 +39,9 @@ const coerceFn = (value: any): string | undefined => {
     return ymdToFormat(String(value), 'Y-m-d') || undefined;
 };
 
-const { inputEleId, pathString, modelValue, hasError, FieldWrapper, standardWrapperProps } = useFormField<string | undefined>(coerceFn, emit, propRefs);
+const { inputEleId, pathString, modelValue, hasError, FieldWrapper, standardWrapperProps } = useFormField<string | undefined>(coerceFn, emit, propRefs, {
+    fieldTypeSlug: 'date'
+});
 
 const todayUtc: Date = ((): Date => {
     const now: Date = new Date();

@@ -33,7 +33,9 @@ const emit = defineEmits<{
 
 const propRefs = toRefs(props);
 
-const { inputEleId, pathString, modelValue, hasError, FieldWrapper, standardWrapperProps } = useFormField<boolean | undefined>(coerceToBoolean, emit, propRefs);
+const { inputEleId, pathString, modelValue, hasError, FieldWrapper, standardWrapperProps } = useFormField<boolean | undefined>(coerceToBoolean, emit, propRefs, {
+    fieldTypeSlug: 'toggle'
+});
 
 const displayValue = computed((): string => {
     if (modelValue.value === true) {

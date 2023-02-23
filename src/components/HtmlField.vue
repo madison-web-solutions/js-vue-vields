@@ -38,7 +38,9 @@ const coerceToString = (value: any): string => {
     return value ? String(value) : '';
 };
 
-const { modelValue, hasError, FieldWrapper, standardWrapperProps } = useFormField<string>(coerceToString, emit, propRefs);
+const { modelValue, hasError, FieldWrapper, standardWrapperProps } = useFormField<string>(coerceToString, emit, propRefs, {
+    fieldTypeSlug: 'html'
+});
 
 const INPUT_DEBOUNCE_WAIT: number = 300;
 

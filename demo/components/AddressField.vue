@@ -32,6 +32,7 @@ const fieldProps = computed(() => {
         help: props.help,
         placeholder: props.placeholder,
         name: props.name,
+        fieldTypeSlug: 'address',
     };
 });
 

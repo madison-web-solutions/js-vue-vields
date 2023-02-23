@@ -55,7 +55,9 @@ const coerceToNumber = (value: unknown): number | undefined => {
     return undefined;
 };
 
-const { inputEleId, pathString, modelValue, hasError, FieldWrapper, standardWrapperProps } = useFormField<number | undefined>(coerceToNumber, emit, propRefs);
+const { inputEleId, pathString, modelValue, hasError, FieldWrapper, standardWrapperProps } = useFormField<number | undefined>(coerceToNumber, emit, propRefs, {
+    fieldTypeSlug: 'currency'
+});
 
 const numberFormatter = computed((): Intl.NumberFormat => {
     return new Intl.NumberFormat(undefined, {

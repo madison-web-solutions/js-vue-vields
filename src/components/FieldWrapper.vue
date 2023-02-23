@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div :data-field-type="fieldTypeSlug">
         <slot name="label">
             <label v-if="label" :for="inputEleId" class="form-label">{{ label }}
                 <span v-if="required">*</span>
@@ -34,14 +34,15 @@ import { symbols } from '@/main';
 import usePopperTooltip from '@/lib/usePopperTooltip';
 
 const props = withDefaults(defineProps<{
+    inputEleId?: string,
     label?: string,
     required: boolean,
     help?: string,
     tooltip?: string,
-    errors?: string[],
-    inputEleId?: string,
-    inputWrapperCssClass?: string | string[] | object,
     modelValue?: any,
+    errors?: string[],
+    fieldTypeSlug?: string,
+    inputWrapperCssClass?: string | string[] | object,
 }>(), {
     required: false,
     inputWrapperCssClass: 'position-relative'

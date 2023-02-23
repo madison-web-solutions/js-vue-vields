@@ -51,7 +51,9 @@ const coerceFn = (value: any): IdType => {
     return undefined;
 };
 
-const { modelValue, FieldWrapper, standardWrapperProps } = useFormField<IdType>(coerceFn, emit, propRefs);
+const { modelValue, FieldWrapper, standardWrapperProps } = useFormField<IdType>(coerceFn, emit, propRefs, {
+    fieldTypeSlug: 'media'
+});
 
 const provider = inject(symbols.mediaProvider);
 

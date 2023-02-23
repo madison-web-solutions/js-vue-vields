@@ -72,7 +72,9 @@ const {
     movingIndex,
     startMove,
     completeMoveTo,
-} = useRepeaterField(emit, propRefs);
+} = useRepeaterField(emit, propRefs, {
+    fieldTypeSlug: 'repeater'
+});
 
 const editable = computed(() => {
     return (props.disabled !== true) && (editMode.value == 'edit');

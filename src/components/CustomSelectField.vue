@@ -65,7 +65,9 @@ const coerceFn = (value: any): IdType => {
     return undefined;
 };
 
-const { modelValue, FieldWrapper, standardWrapperProps } = useFormField<IdType>(coerceFn, emit, propRefs);
+const { modelValue, FieldWrapper, standardWrapperProps } = useFormField<IdType>(coerceFn, emit, propRefs, {
+    fieldTypeSlug: 'custom-select'
+});
 
 const { choicesNormalized, currentChoice, nullSelected } = useHasChoicesSingle(modelValue, propRefs);
 

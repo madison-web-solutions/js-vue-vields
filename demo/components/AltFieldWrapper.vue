@@ -1,7 +1,9 @@
 <template>
-    <div>
+    <div :data-field-type="fieldTypeSlug">
         <slot name="label">
-            <h5 v-if="label" :for="inputEleId" class="form-label">{{ label }}
+            <h5 v-if="label" :for="inputEleId" class="form-label">
+                <span v-if="labelSettings && labelSettings.prefix">{{ labelSettings.prefix }}</span>
+                {{ label }}
                 <span v-if="required">*</span>
             </h5>
         </slot>
@@ -31,14 +33,16 @@ import { computed, inject, ref, toRefs } from 'vue';
 import { symbols } from '@/main';
 
 const props = withDefaults(defineProps<{
+    inputEleId?: string,
     label?: string,
     required: boolean,
     help?: string,
     tooltip?: string,
-    errors?: string[],
-    inputEleId?: string,
-    inputWrapperCssClass?: string | string[] | object,
     modelValue?: any,
+    errors?: string[],
+    fieldTypeSlug?: string,
+    inputWrapperCssClass?: string | string[] | object,
+    labelSettings?: {prefix?: string},
 }>(), {
     required: false,
     inputWrapperCssClass: 'position-relative'

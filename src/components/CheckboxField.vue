@@ -41,7 +41,9 @@ const coerceFn = (value: unknown): boolean => {
     return coerceToBoolean(value) === true;
 };
 
-const { inputEleId, pathString, modelValue, hasError, FieldWrapper, standardWrapperProps } = useFormField<boolean>(coerceFn, emit, propRefs);
+const { inputEleId, pathString, modelValue, hasError, FieldWrapper, standardWrapperProps } = useFormField<boolean>(coerceFn, emit, propRefs, {
+    fieldTypeSlug: 'checkbox'
+});
 
 const displayValue = computed((): string => {
     if (modelValue.value === true) {

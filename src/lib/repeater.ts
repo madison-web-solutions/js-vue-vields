@@ -10,7 +10,7 @@ export type RepeaterTableCol = {
 };
 
 import type { Ref, StyleValue } from 'vue';
-import type { RepeaterFormValue, MessageBag, FormValue } from '@/main';
+import type { RepeaterFormValue, MessageBag, FormValue, UseFormFieldOpts } from '@/main';
 import type { FieldEmitType, UseFormFieldPropRefs } from './field';
 import { computed, provide, ref, toRefs, onBeforeUnmount } from 'vue';
 import { commonProps, useFormField, spliceMessageBag, getUniqueKey, coerceToCompoundFormValue, coerceToRepeaterFormValue, copyRepeaterFormValue, coerceToArrayKey, reindexErrors, symbols } from '@/main';
@@ -20,7 +20,7 @@ export type UseRepeaterFieldPropRefs = UseFormFieldPropRefs<RepeaterFormValue> &
     max?: Ref<number | undefined>,
 };
 
-export function useRepeaterField(emit: FieldEmitType<RepeaterFormValue>, propRefs: UseRepeaterFieldPropRefs) {
+export function useRepeaterField(emit: FieldEmitType<RepeaterFormValue>, propRefs: UseRepeaterFieldPropRefs, opts?: UseFormFieldOpts ) {
 
     const canAddRow = computed((): boolean => {
         return propRefs.max?.value == null || modelValue.value.length < propRefs.max.value;
@@ -32,7 +32,7 @@ export function useRepeaterField(emit: FieldEmitType<RepeaterFormValue>, propRef
         return out;
     };
 
-    const { inputEleId, modelValue, errors, myErrors, editMode, FieldWrapper, standardWrapperProps } = useFormField<RepeaterFormValue>(coerceFn, emit, propRefs);
+    const { inputEleId, modelValue, errors, myErrors, editMode, FieldWrapper, standardWrapperProps } = useFormField<RepeaterFormValue>(coerceFn, emit, propRefs, opts);
 
     const addEnoughRows = (value: RepeaterFormValue) => {
         if (propRefs.min?.value != null) {

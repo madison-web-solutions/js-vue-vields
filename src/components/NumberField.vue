@@ -54,7 +54,9 @@ const coerceToNumber = (value: unknown): number | undefined => {
     return undefined;
 };
 
-const { inputEleId, pathString, modelValue, hasError, FieldWrapper, standardWrapperProps } = useFormField<number | undefined>(coerceToNumber, emit, propRefs);
+const { inputEleId, pathString, modelValue, hasError, FieldWrapper, standardWrapperProps } = useFormField<number | undefined>(coerceToNumber, emit, propRefs, {
+    fieldTypeSlug: 'number'
+});
 
 const myStep = computed((): number | undefined => {
     if (props.step == null) {

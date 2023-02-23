@@ -35,6 +35,8 @@ const coerceToString = (value: any): string => {
     return value ? String(value) : '';
 };
 
-const { inputEleId, pathString, modelValue, hasError, FieldWrapper, standardWrapperProps } = useFormField<string>(coerceToString, emit, propRefs);
+const { inputEleId, pathString, modelValue, hasError, FieldWrapper, standardWrapperProps } = useFormField<string>(coerceToString, emit, propRefs, {
+    fieldTypeSlug: 'password'
+});
 
 </script>
