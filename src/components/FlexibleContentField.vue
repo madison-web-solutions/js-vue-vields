@@ -38,7 +38,7 @@ const props = defineProps(Object.assign({}, commonProps, {
 }));
 
 const fieldTypeSlug = computed((): string | undefined => {
-    return props?.fieldTypeSlug || 'flexible-content-field';
+    return props?.fieldTypeSlug || 'flexible-content';
 });
 
 const emit = defineEmits<{

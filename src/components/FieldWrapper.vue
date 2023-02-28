@@ -51,7 +51,7 @@ const props = withDefaults(defineProps<{
 const editMode = inject(symbols.editMode, ref('edit'));
 
 const hasNoValue = computed(() => {
-    return props.modelValue == null || props.modelValue === '';
+    return props.modelValue == null || props.modelValue === '' || (Array.isArray(props.modelValue) && props.modelValue.length == 0);
 });
 const noValueLabel = inject(symbols.noValueLabel, ref('(None)'));
 
