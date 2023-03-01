@@ -123,14 +123,13 @@ const configureApp = (app: App, config: AppConfigOptions) => {
     };
     app.directive('pclass', {
         mounted: (el, binding) => {
-            const classes =
             el.classList.add(...normalizeClassList(binding.value));
         },
         updated: (el, binding) => {
             if (binding.value != binding.oldValue) {
                 el.classList.remove(...normalizeClassList(binding.oldValue));
-                el.classList.add(...normalizeClassList(binding.value));
             }
+            el.classList.add(...normalizeClassList(binding.value));
         },
     });
 };

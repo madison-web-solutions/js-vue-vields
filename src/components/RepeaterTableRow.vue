@@ -1,16 +1,12 @@
 <template>
     <div :style="itemStyle(index)" v-pclass="{'repeater-item': true, 'is-moving': index === movingIndex}" :class="{'is-invalid': showRowErrors}">
-        <div v-pclass="'repeater-table-cell repeater-item-control'" :rowspan="showRowErrors ? 2: 1">
-            <div>
-                <button v-if="editable" class="btn" v-pclass="'btn-repeater-move'" @click="emit('startMove', index)">{{ index + 1 }}</button>
-                <span v-if="! editable">{{ index + 1 }}</span>
-            </div>
-            <div v-if="editable" class="btn-group mt-2">
-                <button v-if="canAddRow" class="btn btn-sm btn-outline-primary" @click="emit('insertRowAt', index)"><i class="fas fa-plus"></i></button>
-                <button class="btn btn-sm btn-outline-danger" @click="emit('deleteRowAt', index)"><i class="fas fa-times"></i></button>
-            </div>
-        </div>
+        <slot v-if="hasIndexCol" name="indexCol" :subVals="modelValue" ></slot>
         <slot :subVals="modelValue"></slot>
+        <div v-if="editable" v-pclass="'repeater-table-cell repeater-item-control'">
+            <button v-if="canAddRow" class="btn btn-sm btn-primary ms-1" v-pclass="'btn-repeater-insert'" @click="emit('insertRowAt', index)"><i class="fas fa-plus fa-fw"></i></button>
+            <button class="btn btn-sm btn-danger ms-1" v-pclass="'btn-repeater-delete'" @click="emit('deleteRowAt', index)"><i class="fas fa-times fa-fw"></i></button>
+            <button v-if="movable" class="btn btn-sm ms-1 btn-secondary" v-pclass="'btn-repeater-move'" @click="emit('startMove', index)"><i class="fas fa-arrows-alt fa-fw"></i></button>
+        </div>
         <div v-if="showRowErrors" v-pclass="'repeater-table-item-errors'">
             <div class="invalid-feedback d-block">
                 <div v-for="msg in myErrors">{{ msg }}</div>
@@ -22,6 +18,7 @@
             <div v-if="index - movingIndex > 0" v-pclass="'repeater-move-target move-before'" @click="emit('completeMoveTo', index - 1)"></div>
             <div v-if="index - movingIndex >= 0" v-pclass="'repeater-move-target move-after'" @click="emit('completeMoveTo', index)"></div>
         </template>
+
     </div>
 </template>
 
@@ -45,6 +42,10 @@ const props = defineProps({
         type: Object as PropType<RepeaterTableCol[]>,
         required: true
     },
+    hasIndexCol: {
+        type: Boolean,
+        default: true,
+    },
     canAddRow: {
         type: Boolean,
         default: true,
@@ -54,6 +55,10 @@ const props = defineProps({
         required: false,
     },
     editable: {
+        type: Boolean,
+        required: true,
+    },
+    movable: {
         type: Boolean,
         required: true,
     }

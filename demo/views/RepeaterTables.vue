@@ -4,23 +4,31 @@
             <div class="col-8 overflow-hidden">
                 <FieldGroup v-model="vals" v-model:errors="errors">
                     <div class="row g-3 mb-4">
-                        <RepeaterTableField :labelSettings="{prefix: 'Lovely'}" label="Pets" name="pets" :cols="[{name: 'name'}, {name: 'type'}, {name: 'attributes'}]" class="col-12">
+                        <RepeaterTableField :labelSettings="{prefix: 'Lovely'}" label="Pets" name="pets" :cols="[{name: 'name'}, {name: 'attributes'}, {name: 'type'}]" class="col-12">
                             <template #name>
                                 <TextField name="name" />
                             </template>
-                            <template #type>
-                                <SelectField name="type" choices="cat,dog,fish" />
-                            </template>
                             <template #attributes>
                                 <CheckboxesField name="attributes" choices="cute,stupid,fat" />
+                            </template>
+                            <template #type>
+                                <SelectField name="type" choices="cat,dog,fish" />
                             </template>
                         </RepeaterTableField>
 
                         <RepeaterField :labelSettings="{prefix: 'Lovely'}" label="Pets" name="pets" class="col-12">
                             <div class="row">
                                 <TextField label="Name" name="name" class="col-md-4" />
-                                <SelectField label="Type" name="type" choices="cat,dog,fish" class="col-md-4" />
                                 <CheckboxesField label="Attributes" name="attributes" choices="cute,stupid,fat" class="col-md-4" />
+                                <SelectField label="Type" name="type" choices="cat,dog,fish" class="col-md-4" />
+                            </div>
+                        </RepeaterField>
+
+                        <RepeaterField label="Pets" name="pets" class="col-12" colCssClass="col-6" :horizontalFlow="true">
+                            <div class="row">
+                                <TextField label="Name" name="name" class="col-md-4" />
+                                <CheckboxesField label="Attributes" name="attributes" choices="cute,stupid,fat" class="col-md-4" />
+                                <SelectField label="Type" name="type" choices="cat,dog,fish" class="col-md-4" />
                             </div>
                         </RepeaterField>
                     </div>

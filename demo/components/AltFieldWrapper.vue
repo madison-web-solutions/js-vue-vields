@@ -1,11 +1,11 @@
 <template>
     <div :data-field-type="fieldTypeSlug">
         <slot name="label">
-            <h5 v-if="label" :for="inputEleId" class="form-label">
+            <label v-if="label" :for="inputEleId" class="form-label">
                 <span v-if="labelSettings && labelSettings.prefix">{{ labelSettings.prefix }}</span>
                 {{ label }}
                 <span v-if="required">*</span>
-            </h5>
+            </label>
         </slot>
         <slot name="preinput"></slot>
         <div v-if="editMode == 'edit'" :class="inputWrapperCssClass">

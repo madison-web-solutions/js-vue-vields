@@ -1,23 +1,34 @@
 <template>
     <FieldWrapper v-bind="standardWrapperProps">
         <template #input>
-            <div v-pclass="'repeater-table'" :style="repeaterStyle">
+            <div v-pclass="{'repeater-table': true, 'repeater-vertical-flow': true, 'has-index-col': hasIndexCol, 'has-control-col': editable}" :style="repeaterStyle">
                 <div v-pclass="'repeater-table-header'">
+                    <div v-if="hasIndexCol" v-pclass="'repeater-table-cell'"></div>
                     <div v-for="col in myCols" v-pclass="'repeater-table-cell'">
                         <slot name="th" :col="col">{{ col.label }}</slot>
                     </div>
+                    <div v-if="editable" v-pclass="'repeater-table-cell'"></div>
                 </div>
                 <RepeaterTableRow v-for="(rowVals, index) in modelValue"                     
                     :cols="myCols"
+                    :hasIndexCol="hasIndexCol"
                     :index="index"
                     :subVals="rowVals"
                     :movingIndex="movingIndex"
                     :editable="editable"
+                    :movable="editable && modelValue.length > 1"
                     @startMove="startMove"
                     @insertRowAt="insertRowAt"
                     @deleteRowAt="deleteRowAt"
                     @completeMoveTo="completeMoveTo"
                 >
+                    <template #indexCol="{ subVals }">
+                        <div v-pclass="'repeater-table-cell repeater-item-index'">
+                            <slot name="indexCol" :index="index" :subVals="subVals" >
+                                <div>{{ index + 1 }}</div>
+                            </slot>
+                        </div>
+                    </template>
                     <template v-slot="{ subVals }">
                         <div v-for="col in cols" v-pclass="'repeater-table-cell'">
                             <slot :name="col.name" :index="index" :subVals="subVals"></slot>
@@ -55,6 +66,10 @@ const props = defineProps(Object.assign({}, commonProps, {
     cols: {
         type: Object as PropType<RepeaterTableColOpts[]>,
         required: true,
+    },
+    hasIndexCol: {
+        type: Boolean,
+        default: true,
     }
 }));
 

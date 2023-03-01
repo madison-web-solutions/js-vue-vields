@@ -1,12 +1,7 @@
 @use "sass:math";
 
 .#{$vfms-prefix}repeater, .#{$vfms-prefix}repeater-table {
-    display: grid;
     position: relative;
-
-    .#{$vfms-prefix}repeater-item {
-        display: contents;
-    }
 
     .#{$vfms-prefix}btn-repeater-move {
         cursor: move;
@@ -18,76 +13,160 @@
 
     .#{$vfms-prefix}repeater-item-control {
         display: flex;
-        flex-direction: column;
         align-items: center;
         justify-content: center;
-    }
-
-    .#{$vfms-prefix}repeater-append {
-        grid-column: 1 / -1;
-        margin-top: $table-cell-padding-y;
+        .btn {
+            padding: 0px 2px;
+        }
     }
 
     // Repeater item moving
-    // When a row is being moved, divs are added to the dom to act as targets for dropping the row into a new position
-    // For each row, there's a move-before target, and a move-after target
-    // By using absolute position within the grid, we can use the grid lines to position the targets over the top of
-    // existing grid content without them taking up any 'slots' in the grid
-    // This works very nicely, but it does depend on the --row-num css val being set in the vue template
+    // When an item is being moved, divs are added to the dom to act as targets for dropping the row into a new position
+    // For each item, there's a move-before target, and a move-after target
     .#{$vfms-prefix}repeater-item.#{$vfms-prefix}is-moving {
         opacity: 0.5;
     }
     .#{$vfms-prefix}repeater-move-target {
         position: absolute;
         z-index: 1;
-        grid-column: 1 / -1;
-        left: 0px;
-        right: 0px;
         border: 0px dashed transparent;
         &:hover {
             border-color: $repeater-move-indicator-color;
         }
-        &.#{$vfms-prefix}move-before {
-            top: - math.div($repeater-move-indicator-size, 2);
+    }
+    // Moving targets top and bottom
+    &.#{$vfms-prefix}repeater-vertical-flow {
+        .#{$vfms-prefix}repeater-move-target {
+            left: 0px;
+            right: 0px;
+        }
+        .#{$vfms-prefix}move-before {
+            top: $repeater-move-indicator-size * -0.5;
             bottom: 50%;
             border-top-width: $repeater-move-indicator-size;
         }
-        &.#{$vfms-prefix}move-after {
+        .#{$vfms-prefix}move-after {
             top: 50%;
-            bottom: - math.div($repeater-move-indicator-size, 2);
+            bottom: $repeater-move-indicator-size * -0.5;
             border-bottom-width: $repeater-move-indicator-size;
+        }
+    }
+    // Moving targets left and right
+    &.#{$vfms-prefix}repeater-horizontal-flow {
+        .#{$vfms-prefix}repeater-move-target {
+            top: 0px;
+            bottom: 0px;
+        }
+        .#{$vfms-prefix}move-before {
+            left: $repeater-move-indicator-size * -0.5;
+            right: 50%;
+            border-left-width: $repeater-move-indicator-size;
+        }
+        .#{$vfms-prefix}move-after {
+            left: 50%;
+            right: $repeater-move-indicator-size * -0.5;
+            border-right-width: $repeater-move-indicator-size;
         }
     }
 }
 
 // Styles that apply to repeater fields but not to repeater-table fields
 .#{$vfms-prefix}repeater {
-    grid-template-columns: min-content minmax(0, 1fr);
+    --bs-gutter-x: #{$repeater-row-spacing};
+    --bs-gutter-y: #{$repeater-row-spacing};
 
-    border-top: 1px solid $border-color;
-    border-left: 1px solid $border-color;
+    .#{$vfms-prefix}repeater-item {
+        position: relative;
+        height: 100%;
+    }
 
-    .#{$vfms-prefix}repeater-item-control, .#{$vfms-prefix}repeater-item-content {
+    .#{$vfms-prefix}repeater-item-content {
+        position: relative;
         padding: 1rem;
-        border-bottom: 1px solid $border-color;
-        border-right: 1px solid $border-color;
+        border: 1px solid $border-color;
+        z-index: 1;
+        height: 100%;
     }
 
     .#{$vfms-prefix}repeater-item-content.is-invalid {
         border: 1px solid $form-feedback-invalid-color;
+        z-index: 2;
     }
 
-    .#{$vfms-prefix}repeater-move-target {
-        grid-row: var(--row-num) / span 1;
+    .#{$vfms-prefix}repeater-item-control {
+        position: absolute;
+        top: 0;
+        right: 0;
+        transform: translateY(-50%);
+        z-index: 3;
+        .btn:not(:first-child) {
+            margin-left: $spacer * 0.25;
+        }
+    }
+
+    // Enlarge the move targets into the space between rows
+    &.#{$vfms-prefix}repeater-vertical-flow {
+        .#{$vfms-prefix}move-before {
+            top: calc(#{$repeater-row-spacing * -0.5} + #{$repeater-move-indicator-size * -0.5});
+        }
+        .#{$vfms-prefix}move-after {
+            bottom: calc(#{$repeater-row-spacing * -0.5} + #{$repeater-move-indicator-size * -0.5});
+        }
+    }
+    &.#{$vfms-prefix}repeater-horizontal-flow {
+        .#{$vfms-prefix}move-before {
+            left: calc(#{$repeater-row-spacing * -0.5} + #{$repeater-move-indicator-size * -0.5});
+        }
+        .#{$vfms-prefix}move-after {
+            right: calc(#{$repeater-row-spacing * -0.5} + #{$repeater-move-indicator-size * -0.5});
+        }
     }
 }
 
 // Styles that apply to repeater table fields but not to repeater fields
 .#{$vfms-prefix}repeater-table {
-    grid-template-columns: min-content repeat(var(--num-cols), minmax(0, 1fr));
+    display: grid;
+
+    grid-template-columns: [content-start] repeat(var(--num-cols), minmax(0, 1fr)) [content-end];
+    &.#{$vfms-prefix}has-index-col {
+        grid-template-columns: [index-start] min-content [content-start] repeat(var(--num-cols), minmax(0, 1fr)) [content-end];
+    }
+    &.#{$vfms-prefix}has-control-col {
+        grid-template-columns: [content-start] repeat(var(--num-cols), minmax(0, 1fr)) [content-end] min-content [control-end];
+    }
+    &.#{$vfms-prefix}has-index-col.#{$vfms-prefix}has-control-col {
+        grid-template-columns: [index-start] min-content [content-start] repeat(var(--num-cols), minmax(0, 1fr)) [content-end] min-content [control-end];
+    }
+
+    .#{$vfms-prefix}repeater-item {
+        display: contents;
+    }
 
     .#{$vfms-prefix}repeater-table-cell {
         padding: $table-cell-padding-y $table-cell-padding-x;
+    }
+
+    .#{$vfms-prefix}repeater-item-index {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        grid-column: index-start / content-start;
+        grid-row: var(--row-num) / span 2;
+    }
+
+    .#{$vfms-prefix}repeater-item-control {
+        grid-column: content-end / control-end;
+        grid-row: var(--row-num) / span 2;
+        flex-direction: column;
+        .btn:not(:first-child) {
+            margin-top: $spacer * 0.25;
+        }
+    }
+
+    .#{$vfms-prefix}repeater-table-item-errors {
+        grid-column: content-start / content-end;
+        grid-row-start: calc(var(--row-num) + 1);
     }
 
     // Add an underlay div covering the whole row - this will be used to add borders
@@ -105,10 +184,6 @@
     .#{$vfms-prefix}repeater-table-header {
         display: contents;
         font-weight: $repeater-table-header-font-weight;
-        :first-child {
-            // The header doesn't have any content in col 1
-            grid-column-start: 2;
-        }
         // Thick border under the header
         &::after {
             grid-row: 1 / span 1;
@@ -117,17 +192,13 @@
         }
     }
 
-    .#{$vfms-prefix}repeater-table-item-errors {
-        grid-column: 2 / -1;
-    }
-
     .#{$vfms-prefix}repeater-item {
         > .#{$vfms-prefix}repeater-table-cell {
             // if the item is valid, then there will be no item errors
             // so each field should span both of this item's grid rows
             grid-row-end: span 2;
         }
-        &.is-invalid > .#{$vfms-prefix}repeater-table-cell:not(.#{$vfms-prefix}repeater-item-control) {
+        &.is-invalid > .#{$vfms-prefix}repeater-table-cell:not(.#{$vfms-prefix}repeater-item-index):not(.#{$vfms-prefix}repeater-item-control) {
             // If the item is not valid, then the errors will go into the second row,
             // so the fields should only use one of the grid rows
             grid-row-end: span 1;
@@ -147,7 +218,15 @@
         }
     }
 
-    .#{$vfms-prefix}repeater-item .#{$vfms-prefix}repeater-move-target {
+    // By using absolute position within the grid, we can use the grid lines to position the targets over the top of
+    // existing grid content without them taking up any 'slots' in the grid
+    // This works very nicely, but it does depend on the --row-num css val being set in the vue template
+    .#{$vfms-prefix}repeater-move-target {
+        grid-column: 1 / -1;
         grid-row: var(--row-num) / span 2;
+    }
+    .#{$vfms-prefix}repeater-append {
+        margin-top: $spacer * 0.5;
+        grid-column: 1 / -1;
     }
 }
