@@ -265,6 +265,7 @@ export type AppConfigOptions = {
     cssPrefix?: string,
     fieldWrapperComponent?: typeof FieldWrapper,
     textAreaDefaultNumRows?: number,
+    defaultShowCurrencyCodes?: boolean,
 };
 
 const symbols = {
@@ -281,6 +282,7 @@ const symbols = {
     passwordStrengthProvider: Symbol() as InjectionKey<Ref<PasswordStrengthProvider> | undefined>,
     fieldWrapperComponent: Symbol() as InjectionKey<typeof FieldWrapper | undefined>,
     textAreaDefaultNumRows: Symbol() as InjectionKey<Ref<number | undefined> | undefined>,
+    defaultShowCurrencyCodes: Symbol() as InjectionKey<Ref<boolean | undefined> | undefined>,
 };
 Object.freeze(symbols);
 export { symbols };

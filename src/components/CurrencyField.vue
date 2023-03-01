@@ -12,8 +12,8 @@
 
 <script setup lang="ts">
 import type { MessageBag, ParsesTextFieldOptions } from '@/main';
-import { computed, ref, toRefs } from 'vue';
-import { commonProps, useFormField, useParsesTextField } from '@/main';
+import { computed, ref, toRefs, inject } from 'vue';
+import { commonProps, useFormField, useParsesTextField, symbols } from '@/main';
 
 const props = defineProps(Object.assign({}, commonProps, {
     currencyCode: {
@@ -31,7 +31,7 @@ const props = defineProps(Object.assign({}, commonProps, {
     },
     showCurrency: {
         type: Boolean,
-        default: false,
+        default: null,
     }
 }));
 
@@ -43,6 +43,18 @@ const emit = defineEmits<{
 }>();
 
 const propRefs = toRefs(props);
+
+const defaultShowCurrency = inject(symbols.defaultShowCurrencyCodes);
+
+const showCurrency = computed(() => {
+    if (props.showCurrency != null) {
+        return props.showCurrency;
+    } else if (defaultShowCurrency && defaultShowCurrency.value != null) {
+        return defaultShowCurrency.value;
+    } else {
+        return false;
+    }
+});
 
 const coerceToNumber = (value: unknown): number | undefined => {
     switch (typeof value) {

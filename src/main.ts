@@ -101,6 +101,7 @@ const registerComponents = (app: App, prefix?: string | null | undefined) => {
 const configureApp = (app: App, config: AppConfigOptions) => {
     app.provide(symbols.fieldWrapperComponent, config.fieldWrapperComponent);
     app.provide(symbols.textAreaDefaultNumRows, ref(config.textAreaDefaultNumRows));
+    app.provide(symbols.defaultShowCurrencyCodes, ref(config.defaultShowCurrencyCodes));
 
     const cssPrefix = config.cssPrefix || '';
     const normalizeClassList = (arg: any): string[] => {
