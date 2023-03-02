@@ -5,6 +5,7 @@
                 <span v-if="labelSettings && labelSettings.prefix">{{ labelSettings.prefix }}</span>
                 {{ label }}
                 <span v-if="required">*</span>
+                <template v-if="path"><small> ({{ path.join('.') }})</small></template>
             </label>
         </slot>
         <slot name="preinput"></slot>
@@ -30,7 +31,7 @@
 
 <script setup lang="ts">
 import { computed, inject, ref, toRefs } from 'vue';
-import { symbols } from '@/main';
+import { Path, symbols } from '@/main';
 
 const props = withDefaults(defineProps<{
     inputEleId?: string,
@@ -41,6 +42,7 @@ const props = withDefaults(defineProps<{
     modelValue?: any,
     errors?: string[],
     fieldTypeSlug?: string,
+    path?: Path,
     inputWrapperCssClass?: string | string[] | object,
     labelSettings?: {prefix?: string},
 }>(), {

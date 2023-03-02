@@ -28,7 +28,7 @@
     }
     .#{$vfms-prefix}repeater-move-target {
         position: absolute;
-        z-index: 1;
+        z-index: 4; // lift above controls
         border: 0px dashed transparent;
         &:hover {
             border-color: $repeater-move-indicator-color;

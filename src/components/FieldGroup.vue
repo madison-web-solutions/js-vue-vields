@@ -5,12 +5,13 @@
 <script setup lang="ts">
 
 import type { MessageBag, CompoundFormValue, FormValue } from '@/main';
-import { provide, ref, toRef } from 'vue';
+import { provide, ref, toRefs } from 'vue';
 import { spliceMessageBag, useFormField, coerceToCompoundFormValue, copyCompoundFormValue, symbols } from '@/main';
 
 const props = defineProps<{
     modelValue?: any,
     errors?: MessageBag,
+    name?: string | number,
 }>();
 
 const emit = defineEmits<{
@@ -18,12 +19,7 @@ const emit = defineEmits<{
     (e: 'update:errors', value: MessageBag): void
 }>();
 
-
-const propRefs = {
-    modelValue: toRef(props, 'modelValue'),
-    errors: toRef(props, 'errors'),
-    name: undefined,
-};
+const propRefs = toRefs(props);
 
 const { modelValue, errors } = useFormField<CompoundFormValue>(coerceToCompoundFormValue, emit, propRefs);
 

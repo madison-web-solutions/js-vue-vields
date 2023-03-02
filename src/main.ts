@@ -50,6 +50,7 @@ import FlexibleContentField from '@/components/FlexibleContentField.vue';
 import LinkField from "@/components/LinkField.vue";
 import FieldWrapper from '@/components/FieldWrapper.vue';
 import FieldGroup from '@/components/FieldGroup.vue';
+import FieldArray from '@/components/FieldArray.vue';
 import MediaPreview from '@/components/media/MediaPreview.vue';
 import MediaLibrary from '@/components/media/MediaLibrary.vue';
 import MediaDetails from '@/components/media/MediaDetails.vue';
@@ -81,6 +82,7 @@ const publicComponents: Record<string, Component> = {
     FlexibleContentField,
     LinkField,
     FieldGroup,
+    FieldArray,
     PasswordStrengthMeter,
     PasswordField,
     TimeField,
@@ -139,6 +141,6 @@ export { registerComponents, configureApp };
 export { commonProps, useFormField, useHasChoices, useHasChoicesSingle, useHasChoicesMultiple, useParsesTextField, useHasMaxChars, useSearches, useRepeaterField, usePopperTooltip };
 export { sliceMessageBag, spliceMessageBag, messageBagToString }
 export { startCase, getUniqueKey, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols };
-export { TextField, TextAreaField, CheckboxField, CheckboxesField, CurrencyField, DateField, NumberField, ToggleField, RepeaterField, RepeaterRow, RadioField, SearchField, SelectField, CustomSelectField, HtmlField, FlexibleContentField, LinkField, FieldWrapper, FieldGroup };
+export { TextField, TextAreaField, CheckboxField, CheckboxesField, CurrencyField, DateField, NumberField, ToggleField, RepeaterField, RepeaterRow, RadioField, SearchField, SelectField, CustomSelectField, HtmlField, FlexibleContentField, LinkField, FieldWrapper, FieldGroup, FieldArray };
 export { MediaPreview, MediaLibrary, MediaDetails, MediaField };
 export { PasswordStrengthMeter, PasswordField, TimeField, CompoundField, RepeaterTableField, RepeaterTableRow };

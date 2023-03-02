@@ -178,6 +178,7 @@ export function useFormField<ValueType extends FormValue> (valueCoerceFn: (val: 
             modelValue: modelValue.value,
             errors: myErrors.value,
             fieldTypeSlug: fieldTypeSlug.value,
+            path: path.value,
         };
     });
 
