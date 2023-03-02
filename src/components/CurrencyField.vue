@@ -3,7 +3,7 @@
         <template #input>
             <div class="input-group">
                 <span v-if="showCurrency" class="input-group-text">{{ currencyCode }}</span>
-                <input ref="inputEle" :id="inputEleId" :name="pathString" type="text" class="form-control" :class="{'is-invalid': hasError}" :disabled="disabled" :placeholder="placeholder" :value="displayValue" @change="change" @focus="onFocus" @blur="onBlur" />
+                <input ref="inputEle" :id="inputEleId" :name="pathString" type="text" class="form-control text-end" :class="{'is-invalid': hasError}" :disabled="disabled" :placeholder="placeholder" :value="displayValue" @change="change" @focus="onFocus" @blur="onBlur" />
             </div>
         </template>
         <template #viewMode>{{ displayValue }}</template>
