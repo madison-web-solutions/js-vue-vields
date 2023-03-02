@@ -20,14 +20,14 @@ export type LookupNotFound = {
 };
 export type LookupResult<T> = LookupFound<T> | LookupNotFound;
 
-import type { CompoundFormValue, RepeaterFormValue, FormValue, Path, AppConfigOptions } from '@/lib/util';
+import type { CompoundFormValue, RepeaterFormValue, FormValue, Path, AppConfigOptions, FixedLens, IndexedLens, NamedLens, Lens } from '@/lib/util';
 import type { MessageBag } from '@/lib/MessageBag';
 import type { Choosable, LinkAlias, SearchResultPage, ChoicesProvider, LinksProvider, MediaProvider, PasswordStrengthProvider } from '@/lib/search';
 import type { MediaItem, ResizableMediaItem } from '@/lib/media';
 import type { BooleansMap, KeysList, UseFormFieldOpts, ParsesTextFieldOptions } from '@/lib/field';
 import { sliceMessageBag, spliceMessageBag, messageBagToString } from '@/lib/MessageBag';
 import { startCase, getUniqueKey, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols } from '@/lib/util';
-import { commonProps, useFormField, useHasChoices, useHasChoicesSingle, useHasChoicesMultiple, useParsesTextField } from '@/lib/field';
+import { commonProps, useFormField, useHasCompoundValue, useHasChoices, useHasChoicesSingle, useHasChoicesMultiple, useParsesTextField } from '@/lib/field';
 import { useHasMaxChars } from '@/lib/text';
 import { useSearches } from '@/lib/search';
 import { useRepeaterField } from '@/lib/repeater';
@@ -136,9 +136,9 @@ const configureApp = (app: App, config: AppConfigOptions) => {
     });
 };
 
-export type { CompoundFormValue, RepeaterFormValue, FormValue, MessageBag, BooleansMap, KeysList, UseFormFieldOpts, MediaItem, ResizableMediaItem, Choosable, LinkAlias, SearchResultPage, ChoicesProvider, LinksProvider, MediaProvider, PasswordStrengthProvider, Path, ParsesTextFieldOptions };
+export type { CompoundFormValue, RepeaterFormValue, FormValue, MessageBag, BooleansMap, KeysList, UseFormFieldOpts, MediaItem, ResizableMediaItem, Choosable, LinkAlias, SearchResultPage, ChoicesProvider, LinksProvider, MediaProvider, PasswordStrengthProvider, Path, ParsesTextFieldOptions, FixedLens, IndexedLens, NamedLens, Lens };
 export { registerComponents, configureApp };
-export { commonProps, useFormField, useHasChoices, useHasChoicesSingle, useHasChoicesMultiple, useParsesTextField, useHasMaxChars, useSearches, useRepeaterField, usePopperTooltip };
+export { commonProps, useFormField, useHasCompoundValue, useHasChoices, useHasChoicesSingle, useHasChoicesMultiple, useParsesTextField, useHasMaxChars, useSearches, useRepeaterField, usePopperTooltip };
 export { sliceMessageBag, spliceMessageBag, messageBagToString }
 export { startCase, getUniqueKey, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols };
 export { TextField, TextAreaField, CheckboxField, CheckboxesField, CurrencyField, DateField, NumberField, ToggleField, RepeaterField, RepeaterRow, RadioField, SearchField, SelectField, CustomSelectField, HtmlField, FlexibleContentField, LinkField, FieldWrapper, FieldGroup, FieldArray };

@@ -9,11 +9,11 @@ export type RepeaterTableCol = {
     label: string,
 };
 
-import type { Ref, StyleValue } from 'vue';
-import type { RepeaterFormValue, MessageBag, FormValue, UseFormFieldOpts } from '@/main';
+import type { Ref } from 'vue';
+import type { RepeaterFormValue, MessageBag, FormValue, UseFormFieldOpts, IndexedLens } from '@/main';
 import type { FieldEmitType, UseFormFieldPropRefs } from './field';
-import { computed, provide, ref, toRefs, onBeforeUnmount } from 'vue';
-import { commonProps, useFormField, spliceMessageBag, getUniqueKey, coerceToCompoundFormValue, coerceToRepeaterFormValue, copyRepeaterFormValue, coerceToArrayKey, reindexErrors, symbols } from '@/main';
+import { computed, provide, ref, onBeforeUnmount } from 'vue';
+import { useFormField, sliceMessageBag, spliceMessageBag, coerceToCompoundFormValue, coerceToRepeaterFormValue, copyRepeaterFormValue, reindexErrors, symbols } from '@/main';
 
 export type UseRepeaterFieldPropRefs = UseFormFieldPropRefs<RepeaterFormValue> & {
     min?: Ref<number | undefined>,
@@ -120,27 +120,33 @@ export function useRepeaterField(emit: FieldEmitType<RepeaterFormValue>, propRef
         });
     };
 
-    // provide the setter
-    const setter = ref((value: FormValue, key: string | number): void => {
-        const index = coerceToArrayKey(key);
-        if (index != null) {
-            // make a copy of our array
+    const valueLens: IndexedLens<FormValue> = {
+        lensType: 'indexed',
+        get: (index: number): FormValue => {
+            return modelValue.value ? modelValue.value[index] : undefined;
+        },
+        set: (index: number, newVal: FormValue) => {
+            // make a copy of our value
             const modelValueCopy: RepeaterFormValue = copyRepeaterFormValue(modelValue.value);
-            // set our new value
-            modelValueCopy[index] = coerceToCompoundFormValue(value);
+            // set the new value
+            modelValueCopy[index] = coerceToCompoundFormValue(newVal);
             modelValue.value = modelValueCopy;
+        },
+    };
+
+    provide(symbols.valueLens, valueLens);
+
+    const errorsLens: IndexedLens<MessageBag> = {
+        lensType: 'indexed',
+        get: (index: number): MessageBag => {
+            return sliceMessageBag(errors.value, String(index));
+        },
+        set: (index: number, newSubErrors: MessageBag) => {
+            errors.value = spliceMessageBag(errors.value, String(index), newSubErrors);
         }
-    });
-
-    provide(symbols.setter, setter);
-
-    const errorsSetter = ref((newSubErrors: MessageBag, key: string | number): void => {
-        errors.value = spliceMessageBag(errors.value, String(key), newSubErrors);
-    });
-
-    provide(symbols.errorsSetter, errorsSetter);
-
-
+    };
+    
+    provide(symbols.errorsLens, errorsLens);
 
     const movingIndex = ref<number | undefined>(undefined);
     const isMoving = computed((): boolean => {

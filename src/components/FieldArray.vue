@@ -1,6 +1,6 @@
 <template>
     <slot name="beforeLoop" :appendRow="appendRow" :insertRowAt="insertRowAt" :deleteRowAt="deleteRowAt"></slot>
-    <FieldGroup v-for="item in loopItems" :name="item.index">
+    <FieldGroup v-for="item in loopItems" :index="item.index">
         <slot v-bind="item"></slot>
     </FieldGroup>
     <slot name="afterLoop" :appendRow="appendRow" :insertRowAt="insertRowAt" :deleteRowAt="deleteRowAt"></slot>
@@ -15,7 +15,8 @@ import { FieldGroup, useRepeaterField, sliceMessageBag, spliceMessageBag, useFor
 const props = defineProps<{
     modelValue?: any,
     errors?: MessageBag,
-    name?: string | number,
+    name?: string,
+    index?: number,
 }>();
 
 const emit = defineEmits<{

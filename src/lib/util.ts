@@ -20,6 +20,26 @@ export type RepeaterFormValue = CompoundFormValue[];
 
 export type FormValue = ScalarFormValue | KeyListFormValue | RepeaterFormValue | CompoundFormValue;
 
+export type FixedLens<T> = {
+    get: () => T,
+    set: (newVal: T) => void,
+    lensType: 'fixed',
+};
+
+export type IndexedLens<T> = {
+    get: (index: number) => T,
+    set: (index: number, newVal: T) => void,
+    lensType: 'indexed',
+};
+
+export type NamedLens<T> = {
+    get: (name: string) => T,
+    set: (name: string, newVal: T) => void,
+    lensType: 'named',
+};
+
+export type Lens<T> = (FixedLens<T> | IndexedLens<T> | NamedLens<T>);
+
 export const coerceToScalarFormValue = (val: unknown): ScalarFormValue => {
     switch (typeof val) {
         case 'number':
@@ -272,10 +292,8 @@ const symbols = {
     editMode: Symbol() as InjectionKey<Ref<"edit" | "view">>,
     noValueLabel: Symbol() as InjectionKey<Ref<string>>,
     path: Symbol() as InjectionKey<Ref<Path> | undefined>,
-    modelValue: Symbol() as InjectionKey<Ref<FormValue> | undefined>,
-    errors: Symbol() as InjectionKey<Ref<MessageBag> | undefined>,
-    setter: Symbol() as InjectionKey<Ref<(value: FormValue, key: string | number) => void> | undefined>,
-    errorsSetter: Symbol() as InjectionKey<Ref<(newSubErrors: MessageBag, key: string | number) => void> | undefined>,
+    valueLens: Symbol() as InjectionKey<Lens<FormValue>>,
+    errorsLens: Symbol() as InjectionKey<Lens<MessageBag>>,
     choicesProvider: Symbol() as InjectionKey<Ref<ChoicesProvider> | undefined>,
     linksProvider: Symbol() as InjectionKey<Ref<LinksProvider> | undefined>,
     mediaProvider: Symbol() as InjectionKey<Ref<MediaProvider> | undefined>,

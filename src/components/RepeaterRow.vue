@@ -9,13 +9,13 @@
 
 
 <script setup lang="ts">
-import type { MessageBag, FormValue, CompoundFormValue } from '@/main';
-import { computed, ref, toRef, provide } from 'vue';
-import { useFormField, spliceMessageBag, coerceToCompoundFormValue, copyCompoundFormValue, symbols } from '@/main';
+import type { MessageBag, CompoundFormValue } from '@/main';
+import { computed, toRef } from 'vue';
+import { useFormField, useHasCompoundValue, coerceToCompoundFormValue } from '@/main';
 
 const props = defineProps<{
     index: number,
-    subVals: CompoundFormValue,
+    subVals: CompoundFormValue, // @todo can we remove this?
 }>();
 
 const emit = defineEmits<{
@@ -24,29 +24,12 @@ const emit = defineEmits<{
 }>();
 
 const propRefs = {
-    modelValue: undefined,
-    errors: undefined,
-    name: toRef(props, 'index'),
+    index: toRef(props, 'index'),
 };
 
 const { modelValue, errors, myErrors, editMode } = useFormField<CompoundFormValue>(coerceToCompoundFormValue, emit, propRefs);
 
-// provide the setter
-const setter = ref((value: FormValue, key: string | number): void => {
-    // make a copy of our value
-    const modelValueCopy: CompoundFormValue = copyCompoundFormValue(modelValue.value);
-    // set our new value
-    modelValueCopy[String(key)] = value;
-    modelValue.value = modelValueCopy;
-});
-
-provide(symbols.setter, setter);
-
-const errorsSetter = ref((newSubErrors: MessageBag, key: string | number): void => {
-    errors.value = spliceMessageBag(errors.value, String(key), newSubErrors);
-});
-
-provide(symbols.errorsSetter, errorsSetter);
+useHasCompoundValue(modelValue, errors);
 
 const showRowErrors = computed((): boolean => {
     return editMode.value == 'edit' && myErrors.value.length > 0;

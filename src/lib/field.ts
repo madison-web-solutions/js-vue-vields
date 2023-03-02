@@ -1,7 +1,8 @@
 import type { Ref, PropType } from 'vue';
-import { FieldWrapper as StandardFieldWrapper, MessageBag, Path, FormValue, Choosable, CompoundField } from '@/main';
+import type { MessageBag, Path, FormValue, CompoundFormValue, FixedLens, IndexedLens, NamedLens, Lens, Choosable } from '@/main';
+import { FieldWrapper as StandardFieldWrapper, CompoundField } from '@/main';
 import { computed, provide, inject, ref, watchEffect } from 'vue';
-import { getUniqueKey, sliceMessageBag, reindexErrors, symbols } from '@/main';
+import { getUniqueKey, sliceMessageBag, spliceMessageBag, copyCompoundFormValue, reindexErrors, symbols } from '@/main';
 import { startCase } from '@/lib/util';
 
 export const commonProps = {
@@ -27,7 +28,7 @@ export const commonProps = {
         type: Object as PropType<MessageBag>,
     },
     name: {
-        type: [String, Number],
+        type: String,
     },
     fieldTypeSlug: {
         type: String,
@@ -67,7 +68,8 @@ export const useExtendsPath = (nameOrIndex: Ref<string | number | undefined> | u
 export type UseFormFieldPropRefs<ValueType> = {
     modelValue?: Ref<unknown>,
     errors?: Ref<MessageBag | undefined>,
-    name?: Ref<string | number | undefined>,
+    name?: Ref<string | undefined>,
+    index?: Ref<number | undefined>,
     label?: Ref<string | undefined>,
     required?: Ref<boolean | undefined>,
     help?: Ref<string | undefined>,
@@ -87,69 +89,87 @@ export type FieldEmitType<ValueType> = {
 
 export function useFormField<ValueType extends FormValue> (valueCoerceFn: (val: unknown) => ValueType, emit: FieldEmitType<ValueType>, propRefs: UseFormFieldPropRefs<ValueType>, opts?: UseFormFieldOpts) {
 
-    const name = computed((): (string | number | undefined) => {
+    const name = computed((): (string | undefined) => {
         return propRefs?.name?.value;
+    });
+    const index = computed((): (number | undefined) => {
+        return propRefs?.index?.value;
     });
 
     const { path, pathString } = useExtendsPath(propRefs.name);
 
     const inputEleId = ref(getUniqueKey());
 
-    const injectedModelValue = inject(symbols.modelValue, undefined);
+    const valueLens = inject(symbols.valueLens, undefined);
 
-    const rawValue = computed((): unknown => {
-        if (name.value == null) {
-            return propRefs?.modelValue?.value;
-        } else {
-            return (injectedModelValue && injectedModelValue.value) ? (injectedModelValue.value as any)[name.value] : undefined;
+    // @todo
+    // Warn of ambiguities about the data bindings from incorrect use
+    // For example if there's both a v-model and a name, or an indexedLens with no index, etc
+
+    const rawValue = computed(() => {
+        if (valueLens && valueLens.lensType == 'fixed') {
+            return valueLens.get();
         }
+        if (name.value && valueLens && valueLens.lensType == 'named') {
+            return valueLens.get(name.value);
+        }
+        if (index.value != null && valueLens && valueLens.lensType == 'indexed') {
+            return valueLens.get(index.value);
+        }
+        return propRefs?.modelValue?.value;;
     });
 
-    const setter = inject(symbols.setter, undefined);
+    const setNewValue = (newVal: ValueType) => {
+        if (valueLens && valueLens.lensType == 'fixed') {
+            valueLens.set(newVal);
+        } else if (name.value && valueLens && valueLens.lensType == 'named') {
+            valueLens.set(name.value, newVal);
+        } else if (index.value != null && valueLens && valueLens.lensType == 'indexed') {
+            valueLens.set(index.value, newVal);
+        } else {
+            emit('update:modelValue', newVal);
+        }
+    };
 
     const modelValue = computed({
         get: (): ValueType => {
             return valueCoerceFn(rawValue.value);
         },
-        set: (newValue: ValueType): void => {
-            if (name.value == null) {
-                emit('update:modelValue', newValue);
-            } else {
-                if (setter && setter.value) {
-                    setter.value(newValue, name.value);
-                }
-            }
+        set: (newVal: ValueType) => {
+            setNewValue(newVal);
         }
     });
 
-    provide(symbols.modelValue, modelValue);
+    const errorsLens = inject(symbols.errorsLens, undefined);
 
-    const injectedErrors = inject(symbols.errors, undefined);
-    const errorsSetter = inject(symbols.errorsSetter, undefined);
-
+    // All error messages for this field and any nested subfields
     const errors = computed({
         get: (): MessageBag => {
-            if (name.value == null) {
-                return propRefs?.errors?.value || {};
-            } else {
-                if (injectedErrors && injectedErrors.value) {
-                    return sliceMessageBag(injectedErrors.value, String(name.value));
-                } else {
-                    return {};
-                }
+            if (errorsLens && errorsLens.lensType == 'fixed') {
+                return errorsLens.get();
             }
+            if (name.value && errorsLens && errorsLens.lensType == 'named') {
+                return errorsLens.get(name.value);
+            }
+            if (index.value != null && errorsLens && errorsLens.lensType == 'indexed') {
+                return errorsLens.get(index.value);
+            }
+            return propRefs?.errors?.value || {};
         },
         set: (newErrors: MessageBag) => {
-            if (name.value == null) {
-                emit('update:errors', newErrors);
+            if (errorsLens && errorsLens.lensType == 'fixed') {
+                errorsLens.set(newErrors);
+            } else if (name.value && errorsLens && errorsLens.lensType == 'named') {
+                errorsLens.set(name.value, newErrors);
+            } else if (index.value != null && errorsLens && errorsLens.lensType == 'indexed') {
+                errorsLens.set(index.value, newErrors);
             } else {
-                if (errorsSetter && errorsSetter.value) {
-                    errorsSetter.value(newErrors, name.value);
-                }
+                emit('update:errors', newErrors);
             }
         }
     });
 
+    // Error messages specifically for this field
     const myErrors = computed((): string[] => {
         return errors.value[''] || [];
     });
@@ -157,8 +177,6 @@ export function useFormField<ValueType extends FormValue> (valueCoerceFn: (val: 
     const hasError = computed((): boolean => {
         return myErrors.value.length > 0;
     });
-
-    provide(symbols.errors, errors);
 
     const editMode = inject(symbols.editMode, ref('edit'));
 
@@ -183,6 +201,36 @@ export function useFormField<ValueType extends FormValue> (valueCoerceFn: (val: 
     });
 
     return { inputEleId, path, pathString, rawValue, modelValue, errors, myErrors, hasError, editMode, FieldWrapper, standardWrapperProps };
+};
+
+export const useHasCompoundValue = (modelValue: Ref<CompoundFormValue>, errors: Ref<MessageBag>) => {
+    const valueLens: NamedLens<FormValue> = {
+        lensType: 'named',
+        get: (name: string): FormValue => {
+            return modelValue.value ? modelValue.value[name] : undefined;
+        },
+        set: (name: string, newVal: FormValue) => {
+            // make a copy of our value
+            const modelValueCopy: CompoundFormValue = copyCompoundFormValue(modelValue.value);
+            // set the new value
+            modelValueCopy[name] = newVal;
+            modelValue.value = modelValueCopy;
+        },
+    };
+
+    provide(symbols.valueLens, valueLens);
+
+    const errorsLens: NamedLens<MessageBag> = {
+        lensType: 'named',
+        get: (name: string): MessageBag => {
+            return sliceMessageBag(errors.value, name);
+        },
+        set: (name: string, newSubErrors: MessageBag) => {
+            errors.value = spliceMessageBag(errors.value, name, newSubErrors);
+        }
+    };
+
+    provide(symbols.errorsLens, errorsLens);
 };
 
 export type BooleansMap = {[key: string]: boolean};
