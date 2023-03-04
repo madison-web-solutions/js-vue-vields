@@ -18,7 +18,6 @@ import { commonProps, useFormField, useParsesTextField, symbols } from '@/main';
 const props = defineProps(Object.assign({}, commonProps, {
     currencyCode: {
         type: String,
-        required: true,
     },
     max: {
         type: Number,
@@ -47,7 +46,9 @@ const propRefs = toRefs(props);
 const defaultShowCurrency = inject(symbols.defaultShowCurrencyCodes);
 
 const showCurrency = computed(() => {
-    if (props.showCurrency != null) {
+    if (props.currencyCode == null) {
+        return false;
+    } else if (props.showCurrency != null) {
         return props.showCurrency;
     } else if (defaultShowCurrency && defaultShowCurrency.value != null) {
         return defaultShowCurrency.value;
@@ -72,10 +73,18 @@ const { inputEleId, pathString, modelValue, hasError, FieldWrapper, standardWrap
 });
 
 const numberFormatter = computed((): Intl.NumberFormat => {
-    return new Intl.NumberFormat(undefined, {
-        style: 'currency',
-        currency: props.currencyCode,
-    });
+    if (props.currencyCode) {
+        return new Intl.NumberFormat(undefined, {
+            style: 'currency',
+            currency: props.currencyCode,
+        });
+    } else {
+        return new Intl.NumberFormat(undefined, {
+            style: 'decimal',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        });
+    }
 });
 
 const exponent = computed((): number => {
@@ -85,31 +94,31 @@ const exponent = computed((): number => {
 const parsesTextFieldOptions: ParsesTextFieldOptions<number> = {
     coerceNotEmpty: (textInput: string): number | undefined => {
         textInput = textInput.replace(/^[^0-9]+/,'');
-        const amountInPounds = parseFloat(textInput);
-        if (! isFinite(amountInPounds)) {
+        const amountInMajorUnits = parseFloat(textInput);
+        if (! isFinite(amountInMajorUnits)) {
             return undefined;
         }
-        return amountInPounds * Math.pow(10, exponent.value);
+        return amountInMajorUnits * Math.pow(10, exponent.value);
     },
-    clamp: (amountInPence: number): number => {
+    clamp: (amountInMinorUnits: number): number => {
         if (props.step != null) {
-            amountInPence = Math.round(amountInPence / props.step) * props.step;
+            amountInMinorUnits = Math.round(amountInMinorUnits / props.step) * props.step;
         }
         if (props.min != null) {
-            amountInPence = Math.max(amountInPence, props.min);
+            amountInMinorUnits = Math.max(amountInMinorUnits, props.min);
         }
         if (props.max != null) {
-            amountInPence = Math.min(amountInPence, props.max);
+            amountInMinorUnits = Math.min(amountInMinorUnits, props.max);
         }
-        return Math.round(amountInPence);
+        return Math.round(amountInMinorUnits);
     },
-    formatForReading: (amountInPence: number): string => {
-        const amountInPounds = amountInPence / Math.pow(10, exponent.value);
-        return numberFormatter.value.format(amountInPounds);
+    formatForReading: (amountInMinorUnits: number): string => {
+        const amountInMajorUnits = amountInMinorUnits / Math.pow(10, exponent.value);
+        return numberFormatter.value.format(amountInMajorUnits);
     },
-    formatForEditing: (amountInPence: number): string => {
-        const amountInPounds = amountInPence / Math.pow(10, exponent.value);
-        return String(amountInPounds);
+    formatForEditing: (amountInMinorUnits: number): string => {
+        const amountInMajorUnits = amountInMinorUnits / Math.pow(10, exponent.value);
+        return String(amountInMajorUnits);
     }
 };
 
