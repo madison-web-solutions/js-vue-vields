@@ -133,6 +133,7 @@ export type UseFormFieldPropRefs<ValueType> = {
     label?: Ref<string | undefined>,
     required?: Ref<boolean | undefined>,
     help?: Ref<string | undefined>,
+    placeholder?: Ref<string | undefined>,
     tooltip?: Ref<string | undefined>,
     disabled?: Ref<boolean | undefined>,
     fieldTypeSlug?: Ref<string | undefined>,
