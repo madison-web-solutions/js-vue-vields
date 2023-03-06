@@ -15,7 +15,6 @@ import { useFormField, useHasCompoundValue, coerceToCompoundFormValue } from '@/
 
 const props = defineProps<{
     index: number,
-    subVals: CompoundFormValue, // @todo can we remove this?
 }>();
 
 const emit = defineEmits<{

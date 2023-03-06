@@ -33,10 +33,6 @@ const props = defineProps({
         type: Number,
         required: true,
     },
-    subVals: {
-        type: Object as PropType<CompoundFormValue>,
-        required: true,
-    },
     cols: {
         type: Object as PropType<RepeaterTableCol[]>,
         required: true

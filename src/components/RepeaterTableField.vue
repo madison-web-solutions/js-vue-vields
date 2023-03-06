@@ -13,7 +13,6 @@
                     :cols="myCols"
                     :hasIndexCol="hasIndexCol"
                     :index="index"
-                    :subVals="rowVals"
                     :movingIndex="movingIndex"
                     :editable="editable"
                     :movable="editable && modelValue.length > 1"

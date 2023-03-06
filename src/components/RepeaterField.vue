@@ -9,7 +9,7 @@
                             <button v-if="modelValue.length > 1" class="btn btn-sm btn-secondary" v-pclass="'btn-repeater-move'" @click="startMove(index)"><i class="fas fa-arrows-alt fa-fw"></i></button>
                             <button class="btn btn-sm btn-danger ms-1" v-pclass="'btn-repeater-delete'" @click="deleteRowAt(index)"><i class="fas fa-times fa-fw"></i></button>
                         </div>
-                        <RepeaterRow v-pclass="'repeater-item-content'" :index="index" :subVals="rowVals">
+                        <RepeaterRow v-pclass="'repeater-item-content'" :index="index">
                             <template v-slot="{ subVals }">
                                 <slot :index="index" :subVals="subVals"></slot>
                             </template>

@@ -10,7 +10,7 @@
 
 import type { MessageBag, RepeaterFormValue, CompoundFormValue } from '@/main';
 import { computed, provide, ref, toRefs } from 'vue';
-import { FieldGroup, useRepeaterField, sliceMessageBag, spliceMessageBag, useFormField, coerceToCompoundFormValue, copyCompoundFormValue, symbols } from '@/main';
+import { FieldGroup, useRepeaterField, sliceMessageBag } from '@/main';
 
 const props = defineProps<{
     modelValue?: any,
