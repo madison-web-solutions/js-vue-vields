@@ -1,5 +1,5 @@
 <template>
-    <CompoundField v-bind="fieldProps" v-model="modelValue" v-model:errors="errors" class="col-12">
+    <CompoundField :required="required" fieldTypeSlug="address" class="col-12">
         <div class="card">
             <div class="card-body">
                 <div class="row gy-2 gx-3">
@@ -16,39 +16,11 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag, CompoundFormValue } from '@/main';
-import { computed, ref } from 'vue';
-import { commonProps, coerceToCompoundFormValue } from '@/main';
+import { commonProps } from '@/main';
 import { CompoundField, TextField } from '@/main';
 import CountryField from './CountryField.vue';
 
-const props = defineProps(commonProps);
-
-const fieldProps = computed(() => {
-    return {
-        label: props.label,
-        required: props.required,
-        disabled: props.disabled,
-        help: props.help,
-        placeholder: props.placeholder,
-        name: props.name,
-        fieldTypeSlug: 'address',
-    };
+const props = defineProps({
+    required: commonProps.required,
 });
-
-const emit = defineEmits<{
-    (e: 'update:modelValue', value: CompoundFormValue): void
-    (e: 'update:errors', value: MessageBag): void
-}>();
-
-const modelValue = computed({
-    get: (): CompoundFormValue => coerceToCompoundFormValue(props.modelValue),
-    set: (newValue: CompoundFormValue) => emit('update:modelValue', newValue)
-});
-
-const errors = computed({
-    get: (): MessageBag => props.errors || {},
-    set: (newErrors: MessageBag) => emit('update:errors', newErrors)
-});
-
 </script>
