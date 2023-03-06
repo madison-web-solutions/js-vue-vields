@@ -1,16 +1,4 @@
-export type MediaItem = {
-    id: string | number,
-    status: 'uploading' | 'available' | 'missing',
-    title: string,
-    extension: string,
-    src: string | null,
-    alt: string | null,
-    // media type ?
-};
-
-export type ResizableMediaItem = MediaItem & {
-    src_thumb: string,
-};
+import type { MediaItem, ResizableMediaItem } from '@/main';
 
 export const isMediaItemResizable = (item: MediaItem): item is ResizableMediaItem => {
     return 'src_thumb' in item;

@@ -46,11 +46,10 @@
 
 <script setup lang="ts">
 import type { PropType, StyleValue } from 'vue';
-import type { RepeaterFormValue, MessageBag } from '@/main';
+import type { RepeaterFormValue, MessageBag, RepeaterTableCol, RepeaterTableColOpts } from '@/main';
 import { computed, toRefs } from 'vue';
 import { commonProps, useRepeaterField, startCase } from '@/main';
 import { RepeaterTableRow } from '@/main';
-import { RepeaterTableCol, RepeaterTableColOpts } from '@/lib/repeater';
 
 const props = defineProps(Object.assign({}, commonProps, {
     appendLabel: {

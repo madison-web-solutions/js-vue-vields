@@ -21,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import type { MediaItem, MessageBag, LookupResult } from '@/main';
+import type { MediaItem, MessageBag } from '@/main';
 import { computed, ref, toRefs, watchEffect, inject } from 'vue';
 import { commonProps, useFormField, symbols } from '@/main';
 import { MediaPreview, MediaLibrary, MediaDetails } from '@/main';

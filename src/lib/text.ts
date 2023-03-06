@@ -1,9 +1,6 @@
-import type { Ref, PropType } from 'vue';
+import type { Ref } from 'vue';
+import type { UseHasMaxCharsPropRefs } from '@/main';
 import { computed, ref, watch } from 'vue';
-
-type UseHasMaxCharsPropRefs = {
-    max?: Ref<number | undefined>,
-};
 
 export const useHasMaxChars = (modelValue: Ref<string>, props: UseHasMaxCharsPropRefs) => {
 

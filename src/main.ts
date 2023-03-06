@@ -1,30 +1,47 @@
 import { defineAsyncComponent, ref } from 'vue';
 import type { App, Component } from 'vue';
 
-export type UpdateOk<T> = {
-    status: 'ok',
-    resource: T
-};
-export type UpdateFailed = {
-    status: 'fail',
-    errors: MessageBag,
-}
-export type UpdateResult<T> = UpdateOk<T> | UpdateFailed;
+import type {
+    AppConfigOptions,
+    BooleansMap,
+    ChoicesProvider,
+    Choosable,
+    CompoundFormValue,
+    FieldEmitType,
+    FixedLens,
+    FormValue,
+    IndexedLens,
+    KeyListFormValue,
+    KeysList,
+    Lens,
+    LinkAlias,
+    LinksProvider,
+    LookupFound,
+    LookupNotFound,
+    LookupResult,
+    MediaItem,
+    MediaProvider,
+    MessageBag,
+    NamedLens,
+    ParsesTextFieldOptions,
+    PasswordStrengthProvider,
+    Path,
+    RepeaterFormValue,
+    RepeaterTableCol,
+    RepeaterTableColOpts,
+    ResizableMediaItem,
+    ScalarFormValue,
+    SearchResultPage,
+    UpdateFailed,
+    UpdateOk,
+    UpdateResult,
+    UseFormFieldOpts,
+    UseFormFieldPropRefs,
+    UseHasChoicesPropRefs,
+    UseHasMaxCharsPropRefs,
+    UseRepeaterFieldPropRefs,
+} from '@/lib/types';
 
-export type LookupFound<T> = {
-    status: 'found',
-    resource: T,
-};
-export type LookupNotFound = {
-    status: 'not-found',
-};
-export type LookupResult<T> = LookupFound<T> | LookupNotFound;
-
-import type { CompoundFormValue, RepeaterFormValue, FormValue, Path, AppConfigOptions, FixedLens, IndexedLens, NamedLens, Lens } from '@/lib/util';
-import type { MessageBag } from '@/lib/MessageBag';
-import type { Choosable, LinkAlias, SearchResultPage, ChoicesProvider, LinksProvider, MediaProvider, PasswordStrengthProvider } from '@/lib/search';
-import type { MediaItem, ResizableMediaItem } from '@/lib/media';
-import type { BooleansMap, KeysList, UseFormFieldOpts, ParsesTextFieldOptions } from '@/lib/field';
 import { sliceMessageBag, spliceMessageBag, messageBagToString } from '@/lib/MessageBag';
 import { startCase, getUniqueKey, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols } from '@/lib/util';
 import { commonProps, useFormField, useHasCompoundValue, useHasChoices, useHasChoicesSingle, useHasChoicesMultiple, useParsesTextField } from '@/lib/field';
@@ -136,7 +153,47 @@ const configureApp = (app: App, config: AppConfigOptions) => {
     });
 };
 
-export type { CompoundFormValue, RepeaterFormValue, FormValue, MessageBag, BooleansMap, KeysList, UseFormFieldOpts, MediaItem, ResizableMediaItem, Choosable, LinkAlias, SearchResultPage, ChoicesProvider, LinksProvider, MediaProvider, PasswordStrengthProvider, Path, ParsesTextFieldOptions, FixedLens, IndexedLens, NamedLens, Lens };
+export type {
+    AppConfigOptions,
+    BooleansMap,
+    ChoicesProvider,
+    Choosable,
+    CompoundFormValue,
+    FieldEmitType,
+    FixedLens,
+    FormValue,
+    IndexedLens,
+    KeyListFormValue,
+    KeysList,
+    Lens,
+    LinkAlias,
+    LinksProvider,
+    LookupFound,
+    LookupNotFound,
+    LookupResult,
+    MediaItem,
+    MediaProvider,
+    MessageBag,
+    NamedLens,
+    ParsesTextFieldOptions,
+    PasswordStrengthProvider,
+    Path,
+    RepeaterFormValue,
+    RepeaterTableCol,
+    RepeaterTableColOpts,
+    ResizableMediaItem,
+    ScalarFormValue,
+    SearchResultPage,
+    UpdateFailed,
+    UpdateOk,
+    UpdateResult,
+    UseFormFieldOpts,
+    UseFormFieldPropRefs,
+    UseHasChoicesPropRefs,
+    UseHasMaxCharsPropRefs,
+    UseRepeaterFieldPropRefs,
+};
+
 export { registerComponents, configureApp };
 export { commonProps, useFormField, useHasCompoundValue, useHasChoices, useHasChoicesSingle, useHasChoicesMultiple, useParsesTextField, useHasMaxChars, useSearches, useRepeaterField, usePopperTooltip };
 export { sliceMessageBag, spliceMessageBag, messageBagToString }

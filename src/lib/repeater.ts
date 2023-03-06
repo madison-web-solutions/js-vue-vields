@@ -1,24 +1,14 @@
-
-export type RepeaterTableColOpts = {
-    name: string,
-    label?: string | null | undefined,
-};
-
-export type RepeaterTableCol = {
-    name: string,
-    label: string,
-};
-
-import type { Ref } from 'vue';
-import type { RepeaterFormValue, MessageBag, FormValue, UseFormFieldOpts, IndexedLens } from '@/main';
-import type { FieldEmitType, UseFormFieldPropRefs } from './field';
+import type {
+    FieldEmitType,
+    FormValue,
+    IndexedLens,
+    MessageBag,
+    RepeaterFormValue,
+    UseFormFieldOpts,
+    UseRepeaterFieldPropRefs,
+} from '@/main';
 import { computed, provide, ref, onBeforeUnmount } from 'vue';
 import { useFormField, sliceMessageBag, spliceMessageBag, coerceToCompoundFormValue, coerceToRepeaterFormValue, copyRepeaterFormValue, reindexErrors, symbols } from '@/main';
-
-export type UseRepeaterFieldPropRefs = UseFormFieldPropRefs<RepeaterFormValue> & {
-    min?: Ref<number | undefined>,
-    max?: Ref<number | undefined>,
-};
 
 export function useRepeaterField(emit: FieldEmitType<RepeaterFormValue>, propRefs: UseRepeaterFieldPropRefs, opts?: UseFormFieldOpts ) {
 

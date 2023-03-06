@@ -31,7 +31,6 @@
 </template>
 
 <script setup lang="ts">
-import type { StyleValue } from 'vue';
 import type { RepeaterFormValue, MessageBag } from '@/main';
 import { computed, toRefs } from 'vue';
 import { commonProps, useRepeaterField } from '@/main';

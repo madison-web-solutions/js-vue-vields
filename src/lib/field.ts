@@ -1,6 +1,20 @@
 import type { Ref, PropType } from 'vue';
-import type { MessageBag, Path, FormValue, CompoundFormValue, FixedLens, IndexedLens, NamedLens, Lens, Choosable } from '@/main';
-import { FieldWrapper as StandardFieldWrapper, CompoundField } from '@/main';
+import type {
+    BooleansMap,
+    Choosable,
+    CompoundFormValue,
+    FieldEmitType,
+    FormValue,
+    KeysList,
+    MessageBag,
+    NamedLens,
+    ParsesTextFieldOptions,
+    Path,
+    UseFormFieldOpts,
+    UseFormFieldPropRefs,
+    UseHasChoicesPropRefs
+} from '@/main';
+import { FieldWrapper as StandardFieldWrapper } from '@/main';
 import { computed, provide, inject, ref, watchEffect } from 'vue';
 import { getUniqueKey, sliceMessageBag, spliceMessageBag, copyCompoundFormValue, reindexErrors, symbols } from '@/main';
 import { startCase } from '@/lib/util';
@@ -63,28 +77,6 @@ export const useExtendsPath = (nameOrIndex: Ref<string | number | undefined> | u
     provide(symbols.path, path);
 
     return { path, pathString };
-};
-
-export type UseFormFieldPropRefs<ValueType> = {
-    modelValue?: Ref<unknown>,
-    errors?: Ref<MessageBag | undefined>,
-    name?: Ref<string | undefined>,
-    index?: Ref<number | undefined>,
-    label?: Ref<string | undefined>,
-    required?: Ref<boolean | undefined>,
-    help?: Ref<string | undefined>,
-    tooltip?: Ref<string | undefined>,
-    disabled?: Ref<boolean | undefined>,
-    fieldTypeSlug?: Ref<string | undefined>,
-};
-
-export type UseFormFieldOpts = {
-    fieldTypeSlug?: string,
-};
-
-export type FieldEmitType<ValueType> = {
-    (e: 'update:modelValue', value: ValueType): void
-    (e: 'update:errors', value: MessageBag): void
 };
 
 export function useFormField<ValueType extends FormValue> (valueCoerceFn: (val: unknown) => ValueType, emit: FieldEmitType<ValueType>, propRefs: UseFormFieldPropRefs<ValueType>, opts?: UseFormFieldOpts) {
@@ -233,16 +225,7 @@ export const useHasCompoundValue = (modelValue: Ref<CompoundFormValue>, errors: 
     provide(symbols.errorsLens, errorsLens);
 };
 
-export type BooleansMap = {[key: string]: boolean};
-export type KeysList = (string | number)[];
-
-type UseHasChoicePropRefs = {
-    directory?: Ref<string | undefined>,
-    choices?: Ref<string | object | undefined>,
-    extraParams?: Ref<object | undefined>,
-};
-
-export const useHasChoices = (props: UseHasChoicePropRefs) => {
+export const useHasChoices = (props: UseHasChoicesPropRefs) => {
 
     const { directory, choices, extraParams } = props;
 
@@ -318,7 +301,7 @@ export const useHasChoices = (props: UseHasChoicePropRefs) => {
 };
 
 
-export const useHasChoicesSingle = (modelValue: Ref<string | number | undefined>, props: UseHasChoicePropRefs) => {
+export const useHasChoicesSingle = (modelValue: Ref<string | number | undefined>, props: UseHasChoicesPropRefs) => {
 
     const { choicesNormalized, possibleValues } = useHasChoices(props);
 
@@ -339,7 +322,7 @@ export const useHasChoicesSingle = (modelValue: Ref<string | number | undefined>
 };
 
 
-export const useHasChoicesMultiple = (modelValue: Ref<KeysList>, errors: Ref<MessageBag>, props: UseHasChoicePropRefs) => {
+export const useHasChoicesMultiple = (modelValue: Ref<KeysList>, errors: Ref<MessageBag>, props: UseHasChoicesPropRefs) => {
 
     const { choicesNormalized, possibleValues } = useHasChoices(props);
 
@@ -401,14 +384,6 @@ export const useHasChoicesMultiple = (modelValue: Ref<KeysList>, errors: Ref<Mes
 };
 
 
-export type ParsesTextFieldOptions<T> = {
-    coerceNotEmpty: (val: string) => T | undefined,
-    isValid?: (val: T) => boolean,
-    clamp?: (val: T) => T,
-    formatForReading?: (val: T) => string,
-    formatNullForReading?: () => string,
-    formatForEditing?: (val: T) => string,
-};
 
 export function useParsesTextField<T>(modelValue: Ref<T | undefined>, inputEle: Ref<HTMLInputElement | null>, opts: ParsesTextFieldOptions<T>) {
 

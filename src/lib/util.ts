@@ -1,44 +1,24 @@
+import type {
+    ChoicesProvider,
+    CompoundFormValue,
+    FormValue,
+    KeyListFormValue,
+    Lens,
+    LinksProvider,
+    MediaProvider,
+    MessageBag,
+    PasswordStrengthProvider,
+    Path,
+    RepeaterFormValue,
+    ScalarFormValue,
+} from '@/main';
 import { Ref, InjectionKey } from 'vue';
 import { FieldWrapper } from '@/main';
-import type { MessageBag } from '@/main';
-import type { ChoicesProvider, LinksProvider, MediaProvider, PasswordStrengthProvider } from '@/main';
 
 let uniqueKeyCounter: number = 1;
 export const getUniqueKey = function(): string {
     return 'k' + (uniqueKeyCounter++).toString(36);
 };
-
-export type ScalarFormValue = number | string | boolean | undefined | null;
-
-export type KeyListFormValue = (number | string)[];
-
-export type CompoundFormValue = {
-    [key: string]: FormValue
-};
-
-export type RepeaterFormValue = CompoundFormValue[];
-
-export type FormValue = ScalarFormValue | KeyListFormValue | RepeaterFormValue | CompoundFormValue;
-
-export type FixedLens<T> = {
-    get: () => T,
-    set: (newVal: T) => void,
-    lensType: 'fixed',
-};
-
-export type IndexedLens<T> = {
-    get: (index: number) => T,
-    set: (index: number, newVal: T) => void,
-    lensType: 'indexed',
-};
-
-export type NamedLens<T> = {
-    get: (name: string) => T,
-    set: (name: string, newVal: T) => void,
-    lensType: 'named',
-};
-
-export type Lens<T> = (FixedLens<T> | IndexedLens<T> | NamedLens<T>);
 
 export const coerceToScalarFormValue = (val: unknown): ScalarFormValue => {
     switch (typeof val) {
@@ -175,8 +155,6 @@ export const copyFormValue = (val: FormValue): FormValue => {
     }
 };
 
-export type Path = (string | number)[];
-
 export const valueAtPath = (value: FormValue, path: Path): FormValue => {
     let curr: FormValue = value;
     if (path.length == 0) {
@@ -279,13 +257,6 @@ export const startCase = (s: unknown): string => {
         .trim()
         .replace(/_/g, ' ')
         .replace(/\b\w+/g, (s) => s.charAt(0).toUpperCase() + s.substr(1).toLowerCase());
-};
-
-export type AppConfigOptions = {
-    cssPrefix?: string,
-    fieldWrapperComponent?: typeof FieldWrapper,
-    textAreaDefaultNumRows?: number,
-    defaultShowCurrencyCodes?: boolean,
 };
 
 const symbols = {

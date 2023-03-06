@@ -12,7 +12,7 @@
 
 <script setup lang="ts">
 import type { PropType } from 'vue';
-import type { MediaItem, LookupResult } from '@/main';
+import type { MediaItem } from '@/main';
 import { ref, computed, inject, watchEffect, toRef } from 'vue';
 import { symbols } from '@/main';
 import { isMediaItemResizable, getIconCssClass } from '@/lib/media';

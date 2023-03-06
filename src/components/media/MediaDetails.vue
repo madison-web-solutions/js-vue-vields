@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import type { MediaItem, MessageBag, LookupResult, UpdateResult } from '@/main';
+import type { MediaItem, LookupResult, UpdateResult } from '@/main';
 import { computed, ref, inject, watchEffect } from 'vue';
 import { getIconCssClass } from '@/lib/media';
 import { symbols, FieldGroup, TextField } from '@/main';

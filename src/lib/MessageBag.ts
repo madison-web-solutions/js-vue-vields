@@ -1,4 +1,4 @@
-export type MessageBag = { [path: string]: string[] };
+import type { MessageBag } from "@/main";
 
 export const copyMessageBag = (bag: MessageBag): MessageBag => {
     const bagCopy: MessageBag = {};

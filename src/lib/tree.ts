@@ -1,4 +1,4 @@
-import type { MessageBag } from './MessageBag';
+import type { MessageBag } from '@/main';
 
 type TreeNode<T> = {
     value?: T,

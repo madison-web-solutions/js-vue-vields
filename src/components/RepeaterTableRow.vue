@@ -24,10 +24,9 @@
 
 <script setup lang="ts">
 import type { PropType, StyleValue } from 'vue';
-import type { MessageBag, CompoundFormValue } from '@/main';
+import type { MessageBag, CompoundFormValue, RepeaterTableCol } from '@/main';
 import { computed, toRef } from 'vue';
 import { useFormField, useHasCompoundValue, coerceToCompoundFormValue } from '@/main';
-import { RepeaterTableCol } from '@/lib/repeater';
 
 const props = defineProps({
     index: {
