@@ -4,6 +4,7 @@ import type {
     IndexedLens,
     MessageBag,
     RepeaterFormValue,
+    RepeaterItem,
     UseFormFieldOpts,
     UseRepeaterFieldPropRefs,
 } from '@/main';
@@ -167,6 +168,33 @@ export function useRepeaterField(emit: FieldEmitType<RepeaterFormValue>, propRef
     };
     onBeforeUnmount(cancelMove);
 
+    const loopItems = computed((): RepeaterItem[] => {
+        return modelValue.value.map((rowVals: FormValue, index: number): RepeaterItem => {
+            const childErrors = sliceMessageBag(errors.value, String(index));
+            const rowErrors = childErrors[''] || [];
+            return {
+                index: index,
+                rowVals: rowVals,
+                rowErrors: rowErrors,
+                showRowErrors: (editMode.value == 'edit' && rowErrors.length > 0),
+                childErrors: childErrors,
+                insertRowBefore: () => insertRowAt(index - 1),
+                insertRowAfter: () => insertRowAt(index + 1),
+                deleteRow: () => deleteRowAt(index),
+                startMove: () => startMove(index),
+                completeMoveBefore: () => {
+                    if (movingIndex.value != null) {
+                        completeMoveTo(index > movingIndex.value ? (index - 1) : index);
+                    }
+                },
+                completeMoveAfter: () => {
+                    if (movingIndex.value != null) {
+                        completeMoveTo(index < movingIndex.value ? (index + 1) : index);
+                    }
+                }
+            };
+        });
+    });
 
     return {
         inputEleId,
@@ -187,5 +215,6 @@ export function useRepeaterField(emit: FieldEmitType<RepeaterFormValue>, propRef
         startMove,
         completeMoveTo,
         cancelMove,
+        loopItems,
     };
 };

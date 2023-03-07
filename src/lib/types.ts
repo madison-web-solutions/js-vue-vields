@@ -168,6 +168,20 @@ export type UseRepeaterFieldPropRefs = UseFormFieldPropRefs<RepeaterFormValue> &
     max?: Ref<number | undefined>,
 };
 
+export type RepeaterItem = {
+    index: number,
+    rowVals: FormValue,
+    rowErrors: string[],
+    showRowErrors: boolean,
+    childErrors: MessageBag,
+    insertRowBefore: () => void,
+    insertRowAfter: () => void,
+    deleteRow: () => void,
+    startMove: () => void,
+    completeMoveBefore: () => void,
+    completeMoveAfter: () => void,
+};
+
 export type UseHasMaxCharsPropRefs = {
     max?: Ref<number | undefined>,
 };

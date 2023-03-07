@@ -27,6 +27,7 @@ import type {
     PasswordStrengthProvider,
     Path,
     RepeaterFormValue,
+    RepeaterItem,
     RepeaterTableCol,
     RepeaterTableColOpts,
     ResizableMediaItem,
@@ -58,7 +59,6 @@ import DateField from '@/components/DateField.vue';
 import NumberField from "@/components/NumberField.vue";
 import ToggleField from "@/components/ToggleField.vue";
 import RepeaterField from "@/components/RepeaterField.vue";
-import RepeaterRow from "@/components/RepeaterRow.vue";
 import RadioField from '@/components/RadioField.vue';
 import SearchField from '@/components/SearchField.vue';
 import SelectField from '@/components/SelectField.vue';
@@ -180,6 +180,7 @@ export type {
     PasswordStrengthProvider,
     Path,
     RepeaterFormValue,
+    RepeaterItem,
     RepeaterTableCol,
     RepeaterTableColOpts,
     ResizableMediaItem,
@@ -199,6 +200,6 @@ export { registerComponents, configureApp };
 export { commonProps, useExtendsPath, useFormField, useHasCompoundValue, useHasChoices, useHasChoicesSingle, useHasChoicesMultiple, useParsesTextField, useHasMaxChars, useSearches, useRepeaterField, usePopperTooltip };
 export { sliceMessageBag, spliceMessageBag, messageBagToString }
 export { startCase, getUniqueKey, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols };
-export { TextField, TextAreaField, CheckboxField, CheckboxesField, CurrencyField, DateField, NumberField, ToggleField, RepeaterField, RepeaterRow, RadioField, SearchField, SelectField, CustomSelectField, HtmlField, FlexibleContentField, LinkField, FieldWrapper, FieldGroup, FieldArray, FieldArrayItem };
+export { TextField, TextAreaField, CheckboxField, CheckboxesField, CurrencyField, DateField, NumberField, ToggleField, RepeaterField, RadioField, SearchField, SelectField, CustomSelectField, HtmlField, FlexibleContentField, LinkField, FieldWrapper, FieldGroup, FieldArray, FieldArrayItem };
 export { MediaPreview, MediaLibrary, MediaDetails, MediaField };
 export { PasswordStrengthMeter, PasswordField, TimeField, CompoundField, RepeaterTableField, RepeaterTableRow };

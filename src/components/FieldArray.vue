@@ -7,16 +7,17 @@
 </template>
 
 <script setup lang="ts">
-
-import type { MessageBag, RepeaterFormValue, FormValue } from '@/main';
-import { computed, toRefs } from 'vue';
-import { FieldArrayItem, useRepeaterField, sliceMessageBag } from '@/main';
+import type { MessageBag, RepeaterFormValue } from '@/main';
+import { toRefs } from 'vue';
+import { FieldArrayItem, useRepeaterField } from '@/main';
 
 const props = defineProps<{
     modelValue?: any,
     errors?: MessageBag,
     name?: string,
     index?: number,
+    min?: number,
+    max?: number,
 }>();
 
 const emit = defineEmits<{
@@ -27,36 +28,10 @@ const emit = defineEmits<{
 const propRefs = toRefs(props);
 
 const {
-    modelValue,
-    errors,
     appendRow,
     insertRowAt,
     deleteRowAt,
+    loopItems,
 } = useRepeaterField(emit, propRefs);
-
-type LoopItem = {
-    index: number,
-    rowVals: FormValue,
-    rowErrors: string[],
-    childErrors: MessageBag,
-    insertRowBefore: () => void,
-    insertRowAfter: () => void,
-    deleteRow: () => void,
-};
-
-const loopItems = computed((): LoopItem[] => {
-    return modelValue.value.map((rowVals: FormValue, index: number): LoopItem => {
-        const childErrors = sliceMessageBag(errors.value, String(index));
-        return {
-            index: index,
-            rowVals: rowVals,
-            rowErrors: childErrors[''] || [],
-            childErrors: childErrors,
-            insertRowBefore: () => insertRowAt(index - 1),
-            insertRowAfter: () => insertRowAt(index + 1),
-            deleteRow: () => deleteRowAt(index),
-        };
-    });
-});
 
 </script>
