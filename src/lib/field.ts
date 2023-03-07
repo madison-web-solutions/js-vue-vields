@@ -82,13 +82,22 @@ export const useExtendsPath = (nameOrIndex: Ref<string | number | undefined> | u
 export function useFormField<ValueType extends FormValue> (valueCoerceFn: (val: unknown) => ValueType, emit: FieldEmitType<ValueType>, propRefs: UseFormFieldPropRefs<ValueType>, opts?: UseFormFieldOpts) {
 
     const name = computed((): (string | undefined) => {
-        return propRefs?.name?.value;
+        return propRefs.name?.value;
     });
     const index = computed((): (number | undefined) => {
-        return propRefs?.index?.value;
+        return propRefs.index?.value;
+    });
+    const nameOrIndex = computed((): (string | number | undefined) => {
+        if (propRefs.name?.value != null) {
+            return propRefs.name.value;
+        }
+        if (propRefs.index?.value != null) {
+            return propRefs.index.value;
+        }
+        return undefined;
     });
 
-    const { path, pathString } = useExtendsPath(propRefs.name);
+    const { path, pathString } = useExtendsPath(nameOrIndex);
 
     const inputEleId = ref(getUniqueKey());
 

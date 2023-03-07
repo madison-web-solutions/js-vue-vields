@@ -72,7 +72,7 @@ export const coerceToKeyListFormValue = (val: unknown): KeyListFormValue => {
 
 export const coerceToRepeaterFormValue = (val: unknown): RepeaterFormValue => {
     if (Array.isArray(val)) {
-        return val.map(coerceToCompoundFormValue);
+        return val.map(coerceToFormValue);
     } else {
         return [];
     }
@@ -103,13 +103,7 @@ export const coerceToFormValue = (val: unknown): FormValue => {
             if (val == null) {
                 return null;
             } else if (Array.isArray(val)) {
-                if (val.length == 0) {
-                    return [];
-                } else if (typeof val[0] == 'string' || typeof val[0] == 'number') {
-                    return coerceToKeyListFormValue(val);
-                } else {
-                    return val.map((subVal) => coerceToCompoundFormValue(subVal));
-                }
+                return val.map(coerceToFormValue);
             } else {
                 const coercedVals: CompoundFormValue = {};
                 for (const [key, subVal] of Object.entries(val)) {
@@ -130,7 +124,7 @@ export const copyCompoundFormValue = (val: CompoundFormValue): CompoundFormValue
 };
 
 export const copyRepeaterFormValue = (val: RepeaterFormValue): RepeaterFormValue => {
-    return val.map((subVal) => copyCompoundFormValue(subVal));
+    return val.map((subVal) => copyFormValue(subVal));
 };
 
 export const copyKeyListFormValue = (val: KeyListFormValue): KeyListFormValue => {

@@ -12,6 +12,10 @@ import { useFormField, sliceMessageBag, spliceMessageBag, coerceToCompoundFormVa
 
 export function useRepeaterField(emit: FieldEmitType<RepeaterFormValue>, propRefs: UseRepeaterFieldPropRefs, opts?: UseFormFieldOpts ) {
 
+    const newRowValue = (): FormValue => {
+        return null;
+    };
+
     const canAddRow = computed((): boolean => {
         return propRefs.max?.value == null || modelValue.value.length < propRefs.max.value;
     });
@@ -22,12 +26,12 @@ export function useRepeaterField(emit: FieldEmitType<RepeaterFormValue>, propRef
         return out;
     };
 
-    const { inputEleId, modelValue, errors, myErrors, editMode, FieldWrapper, standardWrapperProps } = useFormField<RepeaterFormValue>(coerceFn, emit, propRefs, opts);
+    const { inputEleId, rawValue, modelValue, errors, myErrors, editMode, FieldWrapper, standardWrapperProps } = useFormField<RepeaterFormValue>(coerceFn, emit, propRefs, opts);
 
     const addEnoughRows = (value: RepeaterFormValue) => {
         if (propRefs.min?.value != null) {
             while (value.length < propRefs.min.value) {
-                value.push({});
+                value.push(newRowValue());
             }
         }
     };
@@ -36,7 +40,7 @@ export function useRepeaterField(emit: FieldEmitType<RepeaterFormValue>, propRef
         // make a copy of our array
         const modelValueCopy: RepeaterFormValue = copyRepeaterFormValue(modelValue.value);
         // add the new row
-        modelValueCopy.push({});
+        modelValueCopy.push(newRowValue());
         // set our new value
         modelValue.value = modelValueCopy;
     };
@@ -45,7 +49,7 @@ export function useRepeaterField(emit: FieldEmitType<RepeaterFormValue>, propRef
         // make a copy of our array
         const modelValueCopy: RepeaterFormValue = copyRepeaterFormValue(modelValue.value);
         // insert the new row at index
-        modelValueCopy.splice(index, 0, {});
+        modelValueCopy.splice(index, 0, newRowValue());
         // set our new value
         modelValue.value = modelValueCopy;
 
@@ -119,7 +123,7 @@ export function useRepeaterField(emit: FieldEmitType<RepeaterFormValue>, propRef
             // make a copy of our value
             const modelValueCopy: RepeaterFormValue = copyRepeaterFormValue(modelValue.value);
             // set the new value
-            modelValueCopy[index] = coerceToCompoundFormValue(newVal);
+            modelValueCopy[index] = newVal;
             modelValue.value = modelValueCopy;
         },
     };
@@ -166,6 +170,7 @@ export function useRepeaterField(emit: FieldEmitType<RepeaterFormValue>, propRef
 
     return {
         inputEleId,
+        rawValue,
         modelValue,
         errors,
         myErrors,

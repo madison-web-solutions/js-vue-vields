@@ -13,7 +13,7 @@ export type KeyListFormValue = KeysList;
 
 export type CompoundFormValue = { [key: string]: FormValue };
 
-export type RepeaterFormValue = CompoundFormValue[];
+export type RepeaterFormValue = FormValue[];
 
 export type FormValue = ScalarFormValue | KeyListFormValue | RepeaterFormValue | CompoundFormValue;
 

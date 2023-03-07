@@ -52,15 +52,17 @@
                         </thead>
                         <tbody>
                             <FieldArray name="pets">
-                                <template #default="{ rowVals, rowErrors, deleteRow }">
-                                    <tr>
-                                        <td><TextField name="name" /></td>
-                                        <td><SelectField name="type" choices="cat,dog,fish" /></td>
-                                        <td><button class="btn btn-outline-danger" @click="deleteRow">Delete</button></td>
-                                    </tr>
-                                    <tr v-if="rowErrors && rowErrors.length">
-                                        <td colspan="3">{{ rowErrors }}</td>
-                                    </tr>
+                                <template #default="{ index, rowVals, rowErrors, deleteRow }">
+                                    <FieldGroup :index="index">
+                                        <tr>
+                                            <td><TextField name="name" /></td>
+                                            <td><SelectField name="type" choices="cat,dog,fish" /></td>
+                                            <td><button class="btn btn-outline-danger" @click="deleteRow">Delete</button></td>
+                                        </tr>
+                                        <tr v-if="rowErrors && rowErrors.length">
+                                            <td colspan="3">{{ rowErrors }}</td>
+                                        </tr>
+                                    </FieldGroup>
                                 </template>
                                 <template #afterLoop="{ appendRow }">
                                     <tr>
@@ -70,6 +72,22 @@
                             </FieldArray>
                         </tbody>
                     </table>
+
+                    <p>Array Field</p>
+                    <FieldArray name="dates">
+                        <template #default="{ index }">
+                            <div class="row mb-2">
+                                <div class="col-auto">{{ index + 1 }}</div>
+                                <DateField class="col" :index="index" />
+                            </div>
+                        </template>
+                        <template #afterLoop="{ appendRow }">
+                            <div>
+                                <button class="btn btn-outline-primary" @click="appendRow">New Date</button>
+                            </div>
+                        </template>
+                    </FieldArray>
+
                 </FieldGroup>
             </div>
             <div class="col-4">
@@ -83,13 +101,14 @@
 import type { MessageBag } from '@/main';
 import { computed, ref, provide } from "vue";
 import AltFieldWrapper from "../components/AltFieldWrapper.vue";
-import { FieldGroup, FieldArray, CheckboxesField, TextField, SelectField, RepeaterField, RepeaterTableField, symbols, sliceMessageBag, spliceMessageBag } from "@/main";
+import { DateField, FieldGroup, FieldArray, CheckboxesField, TextField, SelectField, RepeaterField, RepeaterTableField, symbols, sliceMessageBag, spliceMessageBag } from "@/main";
 
 const vals = ref({
     pets: [
         {name: 'Gary', type: 'cat'},
         {name: 'Waffles', type: 'cat'}
     ],
+    dates: ['2023-03-01', null, '2022-10-23'],
 });
 
 const errors = ref<MessageBag>({

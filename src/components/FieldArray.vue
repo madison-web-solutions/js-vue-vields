@@ -1,16 +1,16 @@
 <template>
     <slot name="beforeLoop" :appendRow="appendRow" :insertRowAt="insertRowAt" :deleteRowAt="deleteRowAt"></slot>
-    <FieldGroup v-for="item in loopItems" :index="item.index">
+    <FieldArrayItem v-for="item in loopItems" :index="item.index">
         <slot v-bind="item"></slot>
-    </FieldGroup>
+    </FieldArrayItem>
     <slot name="afterLoop" :appendRow="appendRow" :insertRowAt="insertRowAt" :deleteRowAt="deleteRowAt"></slot>
 </template>
 
 <script setup lang="ts">
 
-import type { MessageBag, RepeaterFormValue, CompoundFormValue } from '@/main';
-import { computed, provide, ref, toRefs } from 'vue';
-import { FieldGroup, useRepeaterField, sliceMessageBag } from '@/main';
+import type { MessageBag, RepeaterFormValue, FormValue } from '@/main';
+import { computed, toRefs } from 'vue';
+import { FieldArrayItem, useRepeaterField, sliceMessageBag } from '@/main';
 
 const props = defineProps<{
     modelValue?: any,
@@ -36,7 +36,7 @@ const {
 
 type LoopItem = {
     index: number,
-    rowVals: CompoundFormValue,
+    rowVals: FormValue,
     rowErrors: string[],
     childErrors: MessageBag,
     insertRowBefore: () => void,
@@ -45,7 +45,7 @@ type LoopItem = {
 };
 
 const loopItems = computed((): LoopItem[] => {
-    return modelValue.value.map((rowVals: CompoundFormValue, index: number): LoopItem => {
+    return modelValue.value.map((rowVals: FormValue, index: number): LoopItem => {
         const childErrors = sliceMessageBag(errors.value, String(index));
         return {
             index: index,
