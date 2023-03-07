@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag, CompoundFormValue, FormValue, FixedLens } from '@/main';
+import type { MessageBag, FormValue, FixedLens } from '@/main';
 import { toRef, provide, inject } from 'vue';
 import { useExtendsPath, symbols } from '@/main';
 
@@ -12,7 +12,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-    (e: 'update:modelValue', value: CompoundFormValue): void
+    (e: 'update:modelValue', value: FormValue): void
     (e: 'update:errors', value: MessageBag): void
 }>();
 
