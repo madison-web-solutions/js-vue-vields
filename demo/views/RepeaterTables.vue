@@ -74,19 +74,14 @@
                     </table>
 
                     <p>Array Field</p>
-                    <FieldArray name="dates">
+                    <RepeaterField name="dates" subValuesType="simple">
                         <template #default="{ index }">
-                            <div class="row mb-2">
+                            <div class="row">
                                 <div class="col-auto">{{ index + 1 }}</div>
-                                <DateField class="col" :index="index" />
+                                <DateField class="col" />
                             </div>
                         </template>
-                        <template #afterLoop="{ appendRow }">
-                            <div>
-                                <button class="btn btn-outline-primary" @click="appendRow">New Date</button>
-                            </div>
-                        </template>
-                    </FieldArray>
+                    </RepeaterField>
 
                 </FieldGroup>
             </div>
