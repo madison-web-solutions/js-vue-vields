@@ -78,7 +78,6 @@ import PasswordField from '@/components/PasswordField.vue';
 import TimeField from '@/components/TimeField.vue';
 import CompoundField from '@/components/CompoundField.vue';
 import RepeaterTableField from "@/components/RepeaterTableField.vue";
-import RepeaterTableRow from "@/components/RepeaterTableRow.vue";
 
 const HtmlField = defineAsyncComponent(() => import('@/components/HtmlField.vue'));
 
@@ -202,4 +201,4 @@ export { sliceMessageBag, spliceMessageBag, messageBagToString }
 export { startCase, getUniqueKey, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols };
 export { TextField, TextAreaField, CheckboxField, CheckboxesField, CurrencyField, DateField, NumberField, ToggleField, RepeaterField, RadioField, SearchField, SelectField, CustomSelectField, HtmlField, FlexibleContentField, LinkField, FieldWrapper, FieldGroup, FieldArray, FieldArrayItem };
 export { MediaPreview, MediaLibrary, MediaDetails, MediaField };
-export { PasswordStrengthMeter, PasswordField, TimeField, CompoundField, RepeaterTableField, RepeaterTableRow };
+export { PasswordStrengthMeter, PasswordField, TimeField, CompoundField, RepeaterTableField };
