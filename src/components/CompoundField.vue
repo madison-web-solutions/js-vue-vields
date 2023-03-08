@@ -1,7 +1,7 @@
 <template>
     <FieldWrapper v-bind="standardWrapperProps">
         <template #input>
-            <slot></slot>
+            <slot :subVals="modelValue"></slot>
         </template>
     </FieldWrapper>
 </template>
