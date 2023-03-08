@@ -31,8 +31,9 @@
                         </RepeaterField>
                         <TimeField label="Opening Time" name="opening_time" min="06:30" max="19:00" class="col-md-6" />
                         <DateField label="Date of Birth" name="dob" max="today" class="col-md-6" />
-                        <NumberField label="Days Holiday" name="days_holiday" :min="0" class="col-md-6" />
-                        <CurrencyField label="Salary" name="salary" currencyCode="GBP" class="col-md-6" />
+                        <NumberField label="Days Holiday" name="days_holiday" :min="0" :step="1" class="col-md-4" />
+                        <NumberField label="Area" name="area" :min="0" unit="m²" class="col-md-4" />
+                        <CurrencyField label="Salary" name="salary" currencyCode="GBP" class="col-md-4" />
                         <hr />
                         <TextField label="Short Description" name="short_description" :max="20" class="col-md-6" help="20 character max" />
                         <HtmlField label="Description" name="description" class="col-12" />
@@ -103,6 +104,7 @@ const vals = ref({
         {name: 'Waffles', type: 'cat'}
     ],
     days_holiday: 20,
+    area: 4.5,
     salary: 4200000,
     description: '<h3>Hobbies</h3><ul><li>Trampolining</li><li>Knitting</li></ul>',
     page_sections: [

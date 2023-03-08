@@ -29,6 +29,10 @@ const props = defineProps(Object.assign({}, commonProps, {
     step: {
         type: Number,
     },
+    unit: {
+        type: String,
+        required: false,
+    },
     customDisplayValue: {
         type: String,
     }
@@ -111,7 +115,7 @@ const parsesTextFieldOptions: ParsesTextFieldOptions<number> = {
         if (props.customDisplayValue != null) {
             return props.customDisplayValue;
         }
-        return num.toLocaleString(undefined, localeStringOpts.value);
+        return num.toLocaleString(undefined, localeStringOpts.value) + (props.unit ? ' ' + props.unit : '');
     },
     formatNullForReading: (): string => {
         if (props.customDisplayValue != null) {
