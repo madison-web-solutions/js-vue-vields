@@ -1,15 +1,13 @@
 <template>
-    <slot name="beforeLoop" :appendRow="appendRow" :insertRowAt="insertRowAt" :deleteRowAt="deleteRowAt"></slot>
-    <FieldArrayItem v-for="item in loopItems" :index="item.index">
-        <slot v-bind="item"></slot>
-    </FieldArrayItem>
-    <slot name="afterLoop" :appendRow="appendRow" :insertRowAt="insertRowAt" :deleteRowAt="deleteRowAt"></slot>
+    <slot name="beforeLoop" :canAddRow="canAddRow" :appendRow="appendRow" :insertRowAt="insertRowAt" :deleteRowAt="deleteRowAt"></slot>
+    <slot :loopItems="loopItems"></slot>
+    <slot name="afterLoop" :canAddRow="canAddRow" :appendRow="appendRow" :insertRowAt="insertRowAt" :deleteRowAt="deleteRowAt"></slot>
 </template>
 
 <script setup lang="ts">
 import type { MessageBag, RepeaterFormValue } from '@/main';
 import { toRefs } from 'vue';
-import { FieldArrayItem, useRepeaterField } from '@/main';
+import { useRepeaterField } from '@/main';
 
 const props = defineProps<{
     modelValue?: any,
@@ -28,6 +26,7 @@ const emit = defineEmits<{
 const propRefs = toRefs(props);
 
 const {
+    canAddRow,
     appendRow,
     insertRowAt,
     deleteRowAt,

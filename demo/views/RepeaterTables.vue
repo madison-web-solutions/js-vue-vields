@@ -43,34 +43,40 @@
 
                     <p>Using a completely custom layout via the &lt;FieldArray&gt; component.</p>
                     <table class="table mb-3">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Type</th>
-                                <th>&nbsp;</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <FieldArray name="pets">
-                                <template #default="{ index, rowVals, rowErrors, deleteRow }">
-                                    <FieldGroup :index="index">
-                                        <tr>
-                                            <td><TextField name="name" /></td>
-                                            <td><SelectField name="type" choices="cat,dog,fish" /></td>
-                                            <td><button class="btn btn-outline-danger" @click="deleteRow">Delete</button></td>
-                                        </tr>
-                                        <tr v-if="rowErrors && rowErrors.length">
-                                            <td colspan="3">{{ rowErrors }}</td>
-                                        </tr>
-                                    </FieldGroup>
-                                </template>
-                                <template #afterLoop="{ appendRow }">
+                        <FieldArray name="pets">
+                            <template #beforeLoop>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>&nbsp;</th>
+                                    </tr>
+                                </thead>
+                            </template>
+                            <template #default="{ loopItems }">
+                                <tbody>
+                                    <FieldArrayItem v-for="item in loopItems" :index="item.index">
+                                        <FieldGroup>
+                                            <tr>
+                                                <td><TextField name="name" /></td>
+                                                <td><SelectField name="type" choices="cat,dog,fish" /></td>
+                                                <td><button class="btn btn-outline-danger" @click="item.deleteRow">Delete</button></td>
+                                            </tr>
+                                            <tr v-if="item.showRowErrors">
+                                                <td colspan="3">{{ item.rowErrors }}</td>
+                                            </tr>
+                                        </FieldGroup>
+                                    </FieldArrayItem>
+                                </tbody>
+                            </template>
+                            <template #afterLoop="{ appendRow }">
+                                <tfoot>
                                     <tr>
                                         <td colspan="3"><button class="btn btn-outline-primary" @click="appendRow">New Pet</button></td>
                                     </tr>
-                                </template>
-                            </FieldArray>
-                        </tbody>
+                                </tfoot>
+                            </template>
+                        </FieldArray>
                     </table>
 
                     <p>Array Field</p>
@@ -96,7 +102,7 @@
 import type { MessageBag } from '@/main';
 import { computed, ref, provide } from "vue";
 import AltFieldWrapper from "../components/AltFieldWrapper.vue";
-import { DateField, FieldGroup, FieldArray, CheckboxesField, TextField, SelectField, RepeaterField, RepeaterTableField, symbols, sliceMessageBag, spliceMessageBag } from "@/main";
+import { DateField, FieldGroup, FieldArray, CheckboxesField, TextField, SelectField, RepeaterField, RepeaterTableField, symbols, FieldArrayItem } from "@/main";
 
 const vals = ref({
     pets: [
