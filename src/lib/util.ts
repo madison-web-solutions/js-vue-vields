@@ -2,7 +2,7 @@ import type {
     ChoicesProvider,
     CompoundFormValue,
     FormValue,
-    KeyListFormValue,
+    KeysList,
     Lens,
     LinksProvider,
     MediaProvider,
@@ -37,37 +37,41 @@ export const coerceToScalarFormValue = (val: unknown): ScalarFormValue => {
     return String(val);
 };
 
-export const coerceToKeyListFormValue = (val: unknown): KeyListFormValue => {
-    switch (typeof val) {
-        case 'number':
+export const coerceToBooleansNativeMap = (value: any): Map<string | number, boolean> => {
+    const out: Map<string | number, boolean> = new Map();
+    switch (typeof value) {
         case 'string':
-            return [val];
+        case 'number':
+            out.set(value, true);
+            break;
         case 'object':
-            if (val == null) {
-                return [];
-            } else if (Array.isArray(val)) {
-                const out: KeyListFormValue = [];
-                for (const subVal of val) {
-                    const key = coerceToScalarFormValue(subVal);
-                    if (typeof key == 'string' || typeof key == 'number') {
-                        if (! out.includes(key)) {
-                            out.push(key);
-                        }
+            if (value == null) {
+                // nothing
+            } else if (Array.isArray(value)) {
+                value.forEach((subVal) => {
+                    if (typeof subVal == 'string' || typeof subVal == 'number') {
+                        out.set(subVal, true);
                     }
-                }
-                return out;
+                });
             } else {
-                const out: KeyListFormValue = [];
-                for (const [subKey, subVal] of Object.entries(val)) {
-                    if (subVal) {
-                        out.push(subKey);
-                    }
+                for (const [key, subVal] of Object.entries(value)) {
+                    out.set(key, !!subVal);
                 }
-                return out;
             }
+            break;
     }
-    // undefined, boolean
-    return [];
+    return out;
+};
+
+export const coerceToKeysList = (value: any): KeysList => {
+    const partial = coerceToBooleansNativeMap(value);
+    const out: KeysList = [];
+    for (const [key, subVal] of partial.entries()) {
+        if (subVal) {
+            out.push(key);
+        }
+    }
+    return out;
 };
 
 export const coerceToRepeaterFormValue = (val: unknown): RepeaterFormValue => {
@@ -127,21 +131,11 @@ export const copyRepeaterFormValue = (val: RepeaterFormValue): RepeaterFormValue
     return val.map((subVal) => copyFormValue(subVal));
 };
 
-export const copyKeyListFormValue = (val: KeyListFormValue): KeyListFormValue => {
-    return val.slice();
-};
-
 export const copyFormValue = (val: FormValue): FormValue => {
     if (val == null) {
         return val;
     } else if (Array.isArray(val)) {
-        if (val.length == 0) {
-            return [];
-        } else if (typeof val[0] == 'string' || typeof val[0] == 'number') {
-            return copyKeyListFormValue(val as KeyListFormValue);
-        } else {
-            return copyRepeaterFormValue(val as RepeaterFormValue);
-        }
+        return copyRepeaterFormValue(val as RepeaterFormValue);
     } else if (typeof val == 'object') {
         return copyCompoundFormValue(val);
     } else {

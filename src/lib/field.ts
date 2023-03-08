@@ -12,11 +12,12 @@ import type {
     Path,
     UseFormFieldOpts,
     UseFormFieldPropRefs,
-    UseHasChoicesPropRefs
+    UseFormFieldHasChoicesMultiplePropRefs,
+    UseHasChoicesPropRefs,
 } from '@/main';
 import { FieldWrapper as StandardFieldWrapper } from '@/main';
 import { computed, provide, inject, ref, watchEffect } from 'vue';
-import { getUniqueKey, sliceMessageBag, spliceMessageBag, copyCompoundFormValue, reindexErrors, symbols } from '@/main';
+import { getUniqueKey, sliceMessageBag, spliceMessageBag, coerceToBooleansNativeMap, coerceToKeysList, copyCompoundFormValue, reindexErrors, symbols } from '@/main';
 import { startCase } from '@/lib/util';
 
 export const commonProps = {
@@ -330,69 +331,121 @@ export const useHasChoicesSingle = (modelValue: Ref<string | number | undefined>
     return { choicesNormalized, currentChoice, possibleValues, nullSelected };
 };
 
+export function useFormFieldWithChoicesMultiple(emit: FieldEmitType<KeysList | BooleansMap>, propRefs: UseFormFieldHasChoicesMultiplePropRefs, opts?: UseFormFieldOpts) {
 
-export const useHasChoicesMultiple = (modelValue: Ref<KeysList>, errors: Ref<MessageBag>, props: UseHasChoicesPropRefs) => {
+    const { choicesNormalized, possibleValues } = useHasChoices(propRefs);
 
-    const { choicesNormalized, possibleValues } = useHasChoices(props);
-
-    const subValues = computed((): BooleansMap => {
-        const out: BooleansMap = {};
-        choicesNormalized.value.forEach((choice) => {
-            out[String(choice.key)] = modelValue.value.includes(choice.key);
-        });
-        return out;
+    const valueIs = computed((): ("array" | "object") => {
+        return propRefs.valueIs?.value || 'array';
     });
 
-    const toggle = (key: string | number): void => {
-        const newValue = modelValue.value.slice();
-        if (newValue.includes(key)) {
-            // This key is being turned off
-            const index = newValue.indexOf(key);
-            newValue.splice(index, 1);
-            // We'll also need to shift error message indexes
-            errors.value = reindexErrors(errors.value, (oldIndex) => {
-                if (oldIndex === index) {
-                    // errors from the deleted key should be discarded
-                    return undefined;
-                } else if (oldIndex > index) {
-                    // errors from keys after the deleted one will shift backwards one position
-                    return oldIndex - 1;
-                } else {
-                    return oldIndex;
-                }
-            });
+    const coerceToChoicesBooleansMap = (value: any): BooleansMap => {
+        const partial = coerceToBooleansNativeMap(value);
+        const out: BooleansMap = {};
+        choicesNormalized.value.forEach((choice) => {
+            const key = String(choice.key);
+            out[key] = !! partial.get(key);
+        });
+        return out;
+    };
+    
+    const coerceFn = (value: any): KeysList | BooleansMap => {
+        if (valueIs.value == 'array') {
+            return coerceToKeysList(value);
         } else {
-            // This key is being turned on
-            newValue.push(key);
+            return coerceToChoicesBooleansMap(value);
         }
-        modelValue.value = newValue;
     };
 
+    const { inputEleId, pathString, modelValue, errors, FieldWrapper, standardWrapperProps } = useFormField<KeysList | BooleansMap>(coerceFn, emit, propRefs, opts);
+
+    const toggle = (key: string | number): void => {
+        if (valueIs.value == 'array') {
+            const newValue = coerceToKeysList(modelValue.value); // creates a copy
+            if (newValue.includes(key)) {
+                // This key is being turned off
+                const index = newValue.indexOf(key);
+                newValue.splice(index, 1);
+                // We'll also need to shift error message indexes
+                errors.value = reindexErrors(errors.value, (oldIndex) => {
+                    if (oldIndex === index) {
+                        // errors from the deleted key should be discarded
+                        return undefined;
+                    } else if (oldIndex > index) {
+                        // errors from keys after the deleted one will shift backwards one position
+                        return oldIndex - 1;
+                    } else {
+                        return oldIndex;
+                    }
+                });
+            } else {
+                // This key is being turned on
+                newValue.push(key);
+            }
+            modelValue.value = newValue;
+        } else {
+            const newValue = coerceToChoicesBooleansMap(modelValue.value); // creates a copy
+            newValue[key] = ! newValue[key];
+            modelValue.value = newValue;
+        }
+    };
+
+    const modelValueAsKeyList = computed(() => {
+        return coerceToKeysList(modelValue.value);
+    });
+    
+    const modelValueAsBooleansMap = computed(() => {
+        return coerceToChoicesBooleansMap(modelValue.value);
+    });
+    
+    const isOn = (key: string | number): boolean => {
+        if (valueIs.value == 'array') {
+            return modelValueAsKeyList.value.includes(key);
+        } else {
+            return !! modelValueAsBooleansMap.value[String(key)];
+        }
+    };
+    
     const subErrors = computed((): MessageBag => {
         const out: MessageBag = {};
-        choicesNormalized.value.forEach((choice) => {
-            const index = modelValue.value.indexOf(choice.key);
-            if (index == -1) {
+        if (valueIs.value == 'array') {
+            // Then we should expect the errors to be indexed numerically
+            choicesNormalized.value.forEach((choice) => {
                 out[choice.key] = [];
-            } else {
-                out[choice.key] = errors.value[String(index)] || [];
-            }
-        });
+            });
+            coerceToKeysList(modelValue.value).forEach((key, index) => {
+                out[key] = errors.value[index] || [];
+            });
+        } else {
+            // Then we should expect the errors to be indexed by choice key
+            choicesNormalized.value.forEach((choice) => {
+                out[choice.key] = errors.value[choice.key] || [];
+            });
+        }
         return out;
     });
+    
+    const hasSubErrors = (key: string | number): boolean => {
+        const errors = subErrors.value[String(key)] || [];
+        return errors.length > 0;
+    };    
 
-    const hasSubErrors = computed((): BooleansMap => {
-        const out: BooleansMap = {};
-        choicesNormalized.value.forEach((choice) => {
-            out[choice.key] = subErrors.value[choice.key].length > 0;
-        });
-        return out;
-    });
-
-    return { choicesNormalized, possibleValues, subValues, toggle, subErrors, hasSubErrors };
+    return {
+        choicesNormalized,
+        possibleValues,
+        valueIs,
+        inputEleId,
+        pathString,
+        modelValue,
+        errors,
+        FieldWrapper,
+        standardWrapperProps,
+        toggle,
+        isOn,
+        subErrors,
+        hasSubErrors,
+    };
 };
-
-
 
 export function useParsesTextField<T>(modelValue: Ref<T | undefined>, inputEle: Ref<HTMLInputElement | null>, opts: ParsesTextFieldOptions<T>) {
 

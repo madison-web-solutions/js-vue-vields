@@ -60,7 +60,9 @@
                         <SelectField label="Select Cat" name="cat" directory="cats" class="col-6" />
                         <ToggleField label="Inline Checks" name="inline_checks" class="col-12" />
                         <RadioField label="Select Cat" name="cat" directory="cats" :inline="!!vals.inline_checks" :class="vals.inline_checks ? 'col-12' : 'col-6'" />
-                        <CheckboxesField label="Select Cats" name="cats" directory="cats" :inline="!!vals.inline_checks" :class="vals.inline_checks ? 'col-12' : 'col-6'" />
+                        <CheckboxesField label="Select Cats (Arr)" name="cats_arr" directory="cats" valueIs="array" :inline="!!vals.inline_checks" :class="vals.inline_checks ? 'col-12' : 'col-6'" />
+                        <CheckboxesField label="Select Cats (Obj)" name="cats_obj" directory="cats" valueIs="object" :inline="!!vals.inline_checks" :class="vals.inline_checks ? 'col-12' : 'col-6'" />
+
                         <CompoundField label="Address" name="address" class="col-12">
                             <div class="card">
                                 <div class="card-body">
@@ -114,6 +116,8 @@ const vals = ref({
         }
     ],
     inline_checks: false,
+    cats_arr: [3, 6, 11],
+    cats_obj: {6: true},
 });
 
 type Cat = {
@@ -132,6 +136,8 @@ const errors = ref({
     'first_name': ['Some kind of error here'],
     'summary': ['Some kind of error here'],
     'description': ['Some kind of error here'],
+    'cats_arr.1': ['Barbura Barbura'],
+    'cats_obj.6': ['Barbura Barbura'],
 });
 
 </script>

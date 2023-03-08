@@ -9,13 +9,11 @@ export type MessageBag = { [path: string]: string[] };
 
 export type ScalarFormValue = number | string | boolean | undefined | null;
 
-export type KeyListFormValue = KeysList;
-
 export type CompoundFormValue = { [key: string]: FormValue };
 
 export type RepeaterFormValue = FormValue[];
 
-export type FormValue = ScalarFormValue | KeyListFormValue | RepeaterFormValue | CompoundFormValue;
+export type FormValue = ScalarFormValue | RepeaterFormValue | CompoundFormValue;
 
 export type BooleansMap = {[key: string]: boolean};
 
@@ -153,6 +151,13 @@ export type UseHasChoicesPropRefs = {
     choices?: Ref<string | object | undefined>,
     extraParams?: Ref<object | undefined>,
 };
+
+export type UseFormFieldHasChoicesMultiplePropRefs =
+    UseFormFieldPropRefs<KeysList | BooleansMap>
+    &  UseHasChoicesPropRefs
+    & {
+        valueIs?: Ref<"array" | "object">,
+    };
 
 export type ParsesTextFieldOptions<T> = {
     coerceNotEmpty: (val: string) => T | undefined,

@@ -11,7 +11,6 @@ import type {
     FixedLens,
     FormValue,
     IndexedLens,
-    KeyListFormValue,
     KeysList,
     Lens,
     LinkAlias,
@@ -38,14 +37,15 @@ import type {
     UpdateResult,
     UseFormFieldOpts,
     UseFormFieldPropRefs,
+    UseFormFieldHasChoicesMultiplePropRefs,
     UseHasChoicesPropRefs,
     UseHasMaxCharsPropRefs,
     UseRepeaterFieldPropRefs,
 } from '@/lib/types';
 
 import { sliceMessageBag, spliceMessageBag, messageBagToString } from '@/lib/MessageBag';
-import { startCase, getUniqueKey, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols } from '@/lib/util';
-import { commonProps, useExtendsPath, useFormField, useHasCompoundValue, useHasChoices, useHasChoicesSingle, useHasChoicesMultiple, useParsesTextField } from '@/lib/field';
+import { startCase, getUniqueKey, coerceToScalarFormValue, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, coerceToBooleansNativeMap, coerceToKeysList, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols } from '@/lib/util';
+import { commonProps, useExtendsPath, useFormField, useHasCompoundValue, useHasChoices, useHasChoicesSingle, useFormFieldWithChoicesMultiple, useParsesTextField } from '@/lib/field';
 import { useHasMaxChars } from '@/lib/text';
 import { useSearches } from '@/lib/search';
 import { useRepeaterField } from '@/lib/repeater';
@@ -163,7 +163,6 @@ export type {
     FixedLens,
     FormValue,
     IndexedLens,
-    KeyListFormValue,
     KeysList,
     Lens,
     LinkAlias,
@@ -190,15 +189,16 @@ export type {
     UpdateResult,
     UseFormFieldOpts,
     UseFormFieldPropRefs,
+    UseFormFieldHasChoicesMultiplePropRefs,
     UseHasChoicesPropRefs,
     UseHasMaxCharsPropRefs,
     UseRepeaterFieldPropRefs,
 };
 
 export { registerComponents, configureApp };
-export { commonProps, useExtendsPath, useFormField, useHasCompoundValue, useHasChoices, useHasChoicesSingle, useHasChoicesMultiple, useParsesTextField, useHasMaxChars, useSearches, useRepeaterField, usePopperTooltip };
+export { commonProps, useExtendsPath, useFormField, useHasCompoundValue, useHasChoices, useHasChoicesSingle, useFormFieldWithChoicesMultiple, useParsesTextField, useHasMaxChars, useSearches, useRepeaterField, usePopperTooltip };
 export { sliceMessageBag, spliceMessageBag, messageBagToString }
-export { startCase, getUniqueKey, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols };
+export { startCase, getUniqueKey, coerceToScalarFormValue, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, coerceToBooleansNativeMap, coerceToKeysList, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols };
 export { TextField, TextAreaField, CheckboxField, CheckboxesField, CurrencyField, DateField, NumberField, ToggleField, RepeaterField, RadioField, SearchField, SelectField, CustomSelectField, HtmlField, FlexibleContentField, LinkField, FieldWrapper, FieldGroup, FieldArray, FieldArrayItem };
 export { MediaPreview, MediaLibrary, MediaDetails, MediaField };
 export { PasswordStrengthMeter, PasswordField, TimeField, CompoundField, RepeaterTableField };
