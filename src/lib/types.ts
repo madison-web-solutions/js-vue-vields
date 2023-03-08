@@ -1,6 +1,8 @@
 import type { Ref } from 'vue';
 import { FieldWrapper } from '@/main';
 
+export type EditMode = "edit" | "view";
+
 export type Path = (string | number)[];
 
 export type KeysList = (string | number)[];
@@ -135,6 +137,7 @@ export type UseFormFieldPropRefs<ValueType> = {
     tooltip?: Ref<string | undefined>,
     disabled?: Ref<boolean | undefined>,
     fieldTypeSlug?: Ref<string | undefined>,
+    editMode?: Ref<EditMode | undefined>,
 };
 
 export type UseFormFieldOpts = {

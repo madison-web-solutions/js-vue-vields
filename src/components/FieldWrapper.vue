@@ -30,7 +30,7 @@
 
 <script setup lang="ts">
 import { computed, inject, ref, toRefs } from 'vue';
-import { symbols } from '@/main';
+import { EditMode, symbols } from '@/main';
 import usePopperTooltip from '@/lib/usePopperTooltip';
 
 const props = withDefaults(defineProps<{
@@ -43,12 +43,12 @@ const props = withDefaults(defineProps<{
     errors?: string[],
     fieldTypeSlug?: string,
     inputWrapperCssClass?: string | string[] | object,
+    editMode?: EditMode,
 }>(), {
     required: false,
-    inputWrapperCssClass: 'position-relative'
+    inputWrapperCssClass: 'position-relative',
+    editMode: 'edit',
 });
-
-const editMode = inject(symbols.editMode, ref('edit'));
 
 const hasNoValue = computed(() => {
     return props.modelValue == null || props.modelValue === '' || (Array.isArray(props.modelValue) && props.modelValue.length == 0);

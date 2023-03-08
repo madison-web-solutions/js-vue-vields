@@ -3,6 +3,7 @@ import type {
     BooleansMap,
     Choosable,
     CompoundFormValue,
+    EditMode,
     FieldEmitType,
     FormValue,
     KeysList,
@@ -49,6 +50,9 @@ export const commonProps = {
         type: String,
         required: false,
     },
+    editMode: {
+        type: String as PropType<EditMode>,
+    }
 };
 
 // Composable that causes the component to
@@ -180,7 +184,10 @@ export function useFormField<ValueType extends FormValue> (valueCoerceFn: (val: 
         return myErrors.value.length > 0;
     });
 
-    const editMode = inject(symbols.editMode, ref('edit'));
+    const injectedEditMode = inject(symbols.editMode, undefined);
+    const editMode = computed((): EditMode => {
+        return propRefs.editMode?.value || injectedEditMode?.value || 'edit';
+    });
 
     const FieldWrapper = inject(symbols.fieldWrapperComponent) || StandardFieldWrapper;
 
@@ -199,6 +206,7 @@ export function useFormField<ValueType extends FormValue> (valueCoerceFn: (val: 
             errors: myErrors.value,
             fieldTypeSlug: fieldTypeSlug.value,
             path: path.value,
+            editMode: editMode.value,
         };
     });
 
