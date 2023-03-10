@@ -65,7 +65,11 @@ export const useExtendsPath = (nameOrIndex: Ref<string | number | undefined> | u
 
     const path = computed((): Path => {
         if (nameOrIndex?.value == null) {
-            return [];
+            if (parentPath) {
+                return parentPath.value;
+            } else {
+                return [];
+            }
         } else {
             if (parentPath) {
                 return parentPath.value.concat(nameOrIndex.value);

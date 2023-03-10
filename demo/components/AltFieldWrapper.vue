@@ -5,7 +5,6 @@
                 <span v-if="labelSettings && labelSettings.prefix">{{ labelSettings.prefix }}</span>
                 {{ label }}
                 <span v-if="required">*</span>
-                <template v-if="path"><small> ({{ path.join('.') }})</small></template>
             </label>
         </slot>
         <slot name="preinput"></slot>
@@ -25,7 +24,8 @@
                 <span class="text-muted">{{ noValueLabel }}</span>
             </slot>
         </div>
-        <small v-if="help" class="form-text text-muted">{{ help }}</small>
+        <div v-if="help" class="small form-text text-muted">{{ help }}</div>
+        <div v-if="path" class="small form-text text-info">({{ path.join('.') }})</div>
     </div>
 </template>
 
