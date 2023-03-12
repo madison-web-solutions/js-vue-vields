@@ -10,8 +10,8 @@
 
 <script setup lang="ts">
 import type { MessageBag } from '@/main';
-import { toRefs, computed, inject } from 'vue';
-import { commonProps, useFormField, useHasMaxChars, symbols } from '@/main';
+import { toRefs } from 'vue';
+import { commonProps, useFormField, useHasMaxChars, getConfigRef } from '@/main';
 
 const props = defineProps(Object.assign({}, commonProps, {
     rows: {
@@ -31,17 +31,7 @@ const emit = defineEmits<{
 
 const propRefs = toRefs(props);
 
-const defaultNumRows = inject(symbols.textAreaDefaultNumRows);
-
-const rows = computed(() => {
-    if (props.rows != null) {
-        return props.rows;
-    } else if (defaultNumRows && defaultNumRows.value != null) {
-        return defaultNumRows.value;
-    } else {
-        return 5;
-    }
-});
+const rows = getConfigRef('textArea.numRows', propRefs.rows);
 
 const coerceToString = (value: any): string => {
     return value ? String(value) : '';

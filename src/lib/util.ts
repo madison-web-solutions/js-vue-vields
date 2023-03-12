@@ -1,19 +1,12 @@
 import type {
-    ChoicesProvider,
     CompoundFormValue,
     FormValue,
     KeysList,
-    Lens,
-    LinksProvider,
-    MediaProvider,
     MessageBag,
-    PasswordStrengthProvider,
     Path,
     RepeaterFormValue,
     ScalarFormValue,
 } from '@/main';
-import { Ref, InjectionKey } from 'vue';
-import { FieldWrapper } from '@/main';
 
 let uniqueKeyCounter: number = 1;
 export const getUniqueKey = function(): string {
@@ -246,20 +239,3 @@ export const startCase = (s: unknown): string => {
         .replace(/_/g, ' ')
         .replace(/\b\w+/g, (s) => s.charAt(0).toUpperCase() + s.substr(1).toLowerCase());
 };
-
-const symbols = {
-    editMode: Symbol() as InjectionKey<Ref<"edit" | "view">>,
-    noValueLabel: Symbol() as InjectionKey<Ref<string>>,
-    path: Symbol() as InjectionKey<Ref<Path> | undefined>,
-    valueLens: Symbol() as InjectionKey<Lens<FormValue>>,
-    errorsLens: Symbol() as InjectionKey<Lens<MessageBag>>,
-    choicesProvider: Symbol() as InjectionKey<Ref<ChoicesProvider> | undefined>,
-    linksProvider: Symbol() as InjectionKey<Ref<LinksProvider> | undefined>,
-    mediaProvider: Symbol() as InjectionKey<Ref<MediaProvider> | undefined>,
-    passwordStrengthProvider: Symbol() as InjectionKey<Ref<PasswordStrengthProvider> | undefined>,
-    fieldWrapperComponent: Symbol() as InjectionKey<typeof FieldWrapper | undefined>,
-    textAreaDefaultNumRows: Symbol() as InjectionKey<Ref<number | undefined> | undefined>,
-    defaultShowCurrencyCodes: Symbol() as InjectionKey<Ref<boolean | undefined> | undefined>,
-};
-Object.freeze(symbols);
-export { symbols };

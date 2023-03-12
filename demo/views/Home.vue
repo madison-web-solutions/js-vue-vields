@@ -3,7 +3,7 @@
         <h1>Demo App</h1>
         <div class="row">
             <div class="col-8 overflow-hidden">
-                <FieldGroup v-model="vals" v-model:errors="errors">
+                <FieldGroup v-model="vals" v-model:errors="errors" :config="config">
                     <div class="row g-3 mb-4">
                         <MediaField label="Image" name="image" class="col-6" />
                         <CustomSelectField label="Color" name="color" directory="colors" class="col-6">
@@ -20,7 +20,7 @@
                         <TextField label="First Name" name="first_name" class="col-md-6" />
                         <TextField label="Last Name" name="last_name" class="col-md-6" />
                         <PasswordField label="Password" name="password" :minStrength="3" class="col-12" />
-                        <TextAreaField label="Summary" name="summary" :rows="3" :max="155" class="col-12" />
+                        <TextAreaField label="Summary" name="summary" :max="155" class="col-12" />
                         <RadioField label="Type" name="type" choices="new,existing" class="col-12" />
                         <RepeaterField label="Pets" name="pets" :min="3" :max="5" class="col-12">
                             <div class="row">
@@ -33,7 +33,7 @@
                         <DateField label="Date of Birth" name="dob" max="today" class="col-md-6" />
                         <NumberField label="Days Holiday" name="days_holiday" :min="0" :step="1" class="col-md-4" />
                         <NumberField label="Area" name="area" :min="0" unit="m²" class="col-md-4" />
-                        <CurrencyField label="Salary" name="salary" currencyCode="GBP" class="col-md-4" />
+                        <CurrencyField label="Salary" name="salary" class="col-md-4" />
                         <hr />
                         <TextField label="Short Description" name="short_description" :max="20" class="col-md-6" help="20 character max" />
                         <HtmlField label="Description" name="description" class="col-12" />
@@ -138,6 +138,11 @@ const errors = ref({
     'description': ['Some kind of error here'],
     'cats_arr.1': ['Barbura Barbura'],
     'cats_obj.6': ['Barbura Barbura'],
+});
+
+const config = ref({
+    'currency.currencyCode': 'GBP',
+    'textArea.numRows': 4,
 });
 
 </script>

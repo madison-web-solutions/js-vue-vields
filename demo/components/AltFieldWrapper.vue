@@ -30,8 +30,9 @@
 </template>
 
 <script setup lang="ts">
+import type { Path, EditMode } from '@/main';
 import { computed, inject, ref, toRefs } from 'vue';
-import { Path, symbols } from '@/main';
+import { symbols } from '@/main';
 
 const props = withDefaults(defineProps<{
     inputEleId?: string,
@@ -45,12 +46,12 @@ const props = withDefaults(defineProps<{
     path?: Path,
     inputWrapperCssClass?: string | string[] | object,
     labelSettings?: {prefix?: string},
+    editMode?: EditMode,
 }>(), {
     required: false,
-    inputWrapperCssClass: 'position-relative'
+    inputWrapperCssClass: 'position-relative',
+    editMode: 'edit',
 });
-
-const editMode = inject(symbols.editMode, ref('edit'));
 
 const hasNoValue = computed(() => {
     return props.modelValue == null || props.modelValue === '';

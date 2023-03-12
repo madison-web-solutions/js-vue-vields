@@ -5,9 +5,9 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag, RepeaterFormValue } from '@/main';
+import type { MessageBag, RepeaterFormValue, Config } from '@/main';
 import { toRefs } from 'vue';
-import { useRepeaterField } from '@/main';
+import { useRepeaterField, useExtendsConfig } from '@/main';
 
 const props = defineProps<{
     modelValue?: any,
@@ -16,6 +16,7 @@ const props = defineProps<{
     index?: number,
     min?: number,
     max?: number,
+    config?: Partial<Config>,
 }>();
 
 const emit = defineEmits<{
@@ -32,5 +33,7 @@ const {
     deleteRowAt,
     loopItems,
 } = useRepeaterField(emit, propRefs);
+
+useExtendsConfig(propRefs.config);
 
 </script>

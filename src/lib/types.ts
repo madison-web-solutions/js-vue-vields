@@ -194,10 +194,17 @@ export type UseHasMaxCharsPropRefs = {
     max?: Ref<number | undefined>,
 };
 
-export type AppConfigOptions = {
-    cssPrefix?: string,
-    fieldWrapperComponent?: typeof FieldWrapper,
-    textAreaDefaultNumRows?: number,
-    defaultShowCurrencyCodes?: boolean,
+export type Config = {
+    'textArea.numRows': number,
+    'currency.currencyCode': string | null,
+    'currency.showCurrency': boolean,
+};
+
+export type ConfigKey = keyof Config;
+
+// @deprecated
+export type AppConfigOptions = Config & {
+    cssPrefix: string,
+    fieldWrapperComponent: typeof FieldWrapper,
 };
 

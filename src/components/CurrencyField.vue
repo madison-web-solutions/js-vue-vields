@@ -13,7 +13,7 @@
 <script setup lang="ts">
 import type { MessageBag, ParsesTextFieldOptions } from '@/main';
 import { computed, ref, toRefs, inject } from 'vue';
-import { commonProps, useFormField, useParsesTextField, symbols } from '@/main';
+import { commonProps, useFormField, useParsesTextField, symbols, getConfigRef } from '@/main';
 
 const props = defineProps(Object.assign({}, commonProps, {
     currencyCode: {
@@ -43,19 +43,9 @@ const emit = defineEmits<{
 
 const propRefs = toRefs(props);
 
-const defaultShowCurrency = inject(symbols.defaultShowCurrencyCodes);
+const showCurrency = getConfigRef('currency.showCurrency', propRefs.showCurrency);
 
-const showCurrency = computed(() => {
-    if (props.currencyCode == null) {
-        return false;
-    } else if (props.showCurrency != null) {
-        return props.showCurrency;
-    } else if (defaultShowCurrency && defaultShowCurrency.value != null) {
-        return defaultShowCurrency.value;
-    } else {
-        return false;
-    }
-});
+const currencyCode = getConfigRef('currency.currencyCode', propRefs.currencyCode);
 
 const coerceToNumber = (value: unknown): number | undefined => {
     switch (typeof value) {
@@ -73,10 +63,10 @@ const { inputEleId, pathString, modelValue, hasError, FieldWrapper, standardWrap
 });
 
 const numberFormatter = computed((): Intl.NumberFormat => {
-    if (props.currencyCode) {
+    if (currencyCode.value) {
         return new Intl.NumberFormat(undefined, {
             style: 'currency',
-            currency: props.currencyCode,
+            currency: currencyCode.value,
         });
     } else {
         return new Intl.NumberFormat(undefined, {

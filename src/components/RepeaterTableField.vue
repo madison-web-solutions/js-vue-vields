@@ -49,9 +49,9 @@
 
 <script setup lang="ts">
 import type { PropType, StyleValue } from 'vue';
-import type { RepeaterFormValue, MessageBag, RepeaterTableCol, RepeaterTableColOpts } from '@/main';
+import type { RepeaterFormValue, MessageBag, RepeaterTableCol, RepeaterTableColOpts, Config } from '@/main';
 import { computed, toRefs } from 'vue';
-import { commonProps, useRepeaterField, startCase } from '@/main';
+import { commonProps, useRepeaterField, startCase, useExtendsConfig } from '@/main';
 import { FieldArrayItem, FieldGroup } from '@/main';
 
 const props = defineProps(Object.assign({}, commonProps, {
@@ -72,7 +72,10 @@ const props = defineProps(Object.assign({}, commonProps, {
     hasIndexCol: {
         type: Boolean,
         default: true,
-    }
+    },
+    config: {
+        type: Object as PropType<Partial<Config>>,
+    },
 }));
 
 const emit = defineEmits<{
@@ -120,5 +123,7 @@ const repeaterStyle = computed(() => {
 const itemStyle = (index: number) => {
     return {'--row-num': ((index * 2) + 2)} as StyleValue;
 };
+
+useExtendsConfig(propRefs.config);
 
 </script>

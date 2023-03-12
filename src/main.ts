@@ -7,6 +7,8 @@ import type {
     ChoicesProvider,
     Choosable,
     CompoundFormValue,
+    Config,
+    ConfigKey,
     EditMode,
     FieldEmitType,
     FixedLens,
@@ -45,8 +47,10 @@ import type {
 } from '@/lib/types';
 
 import { sliceMessageBag, spliceMessageBag, messageBagToString } from '@/lib/MessageBag';
-import { startCase, getUniqueKey, coerceToScalarFormValue, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, coerceToBooleansNativeMap, coerceToKeysList, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols } from '@/lib/util';
+import { startCase, getUniqueKey, coerceToScalarFormValue, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, coerceToBooleansNativeMap, coerceToKeysList, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors } from '@/lib/util';
 import { commonProps, useExtendsPath, useFormField, useHasCompoundValue, useHasChoices, useHasChoicesSingle, useFormFieldWithChoicesMultiple, useParsesTextField } from '@/lib/field';
+import { defaultConfig, getConfigValue, getConfigRef, useExtendsConfig } from '@/lib/config';
+import { symbols } from '@/lib/symbols';
 import { useHasMaxChars } from '@/lib/text';
 import { useSearches } from '@/lib/search';
 import { useRepeaterField } from '@/lib/repeater';
@@ -120,8 +124,6 @@ const registerComponents = (app: App, prefix?: string | null | undefined) => {
 };
 const configureApp = (app: App, config: AppConfigOptions) => {
     app.provide(symbols.fieldWrapperComponent, config.fieldWrapperComponent);
-    app.provide(symbols.textAreaDefaultNumRows, ref(config.textAreaDefaultNumRows));
-    app.provide(symbols.defaultShowCurrencyCodes, ref(config.defaultShowCurrencyCodes));
 
     const cssPrefix = config.cssPrefix || '';
     const normalizeClassList = (arg: any): string[] => {
@@ -152,6 +154,8 @@ const configureApp = (app: App, config: AppConfigOptions) => {
             el.classList.add(...normalizeClassList(binding.value));
         },
     });
+
+    app.provide(symbols.config, ref(config));
 };
 
 export type {
@@ -160,6 +164,8 @@ export type {
     ChoicesProvider,
     Choosable,
     CompoundFormValue,
+    Config,
+    ConfigKey,
     EditMode,
     FieldEmitType,
     FixedLens,
@@ -201,6 +207,7 @@ export { registerComponents, configureApp };
 export { commonProps, useExtendsPath, useFormField, useHasCompoundValue, useHasChoices, useHasChoicesSingle, useFormFieldWithChoicesMultiple, useParsesTextField, useHasMaxChars, useSearches, useRepeaterField, usePopperTooltip };
 export { sliceMessageBag, spliceMessageBag, messageBagToString }
 export { startCase, getUniqueKey, coerceToScalarFormValue, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, coerceToBooleansNativeMap, coerceToKeysList, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols };
+export { defaultConfig, getConfigValue, getConfigRef, useExtendsConfig };
 export { TextField, TextAreaField, CheckboxField, CheckboxesField, CurrencyField, DateField, NumberField, ToggleField, RepeaterField, RadioField, SearchField, SelectField, CustomSelectField, HtmlField, FlexibleContentField, LinkField, FieldWrapper, FieldGroup, FieldArray, FieldArrayItem };
 export { MediaPreview, MediaLibrary, MediaDetails, MediaField };
 export { PasswordStrengthMeter, PasswordField, TimeField, CompoundField, RepeaterTableField };

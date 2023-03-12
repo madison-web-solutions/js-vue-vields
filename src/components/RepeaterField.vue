@@ -38,9 +38,10 @@
 </template>
 
 <script setup lang="ts">
-import type { RepeaterFormValue, MessageBag } from '@/main';
+import type { RepeaterFormValue, MessageBag, Config } from '@/main';
+import type { PropType } from 'vue';
 import { computed, toRefs } from 'vue';
-import { commonProps, useRepeaterField } from '@/main';
+import { commonProps, useRepeaterField, useExtendsConfig } from '@/main';
 import { FieldArrayItem, FieldGroup } from '@/main';
 
 const props = defineProps(Object.assign({}, commonProps, {
@@ -65,7 +66,10 @@ const props = defineProps(Object.assign({}, commonProps, {
     subValuesType: {
         type: String,
         default: 'compound',
-    }
+    },
+    config: {
+        type: Object as PropType<Partial<Config>>,
+    },
 }));
 
 const emit = defineEmits<{
@@ -91,5 +95,7 @@ const {
 const editable = computed(() => {
     return (props.disabled !== true) && (editMode.value == 'edit');
 });
+
+useExtendsConfig(propRefs.config);
 
 </script>
