@@ -5,9 +5,9 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag, RepeaterFormValue, Config } from '@/main';
+import type { MessageBag, RepeaterFormValue, EditMode, Config } from '@/main';
 import { toRefs } from 'vue';
-import { useRepeaterField, useExtendsConfig } from '@/main';
+import { useRepeaterField, useExtendsEditMode, useExtendsConfig } from '@/main';
 
 const props = defineProps<{
     modelValue?: any,
@@ -16,6 +16,7 @@ const props = defineProps<{
     index?: number,
     min?: number,
     max?: number,
+    editMode?: EditMode,
     config?: Partial<Config>,
 }>();
 
@@ -34,6 +35,7 @@ const {
     loopItems,
 } = useRepeaterField(emit, propRefs);
 
+useExtendsEditMode(propRefs.editMode);
 useExtendsConfig(propRefs.config);
 
 </script>

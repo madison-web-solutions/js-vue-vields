@@ -3,6 +3,7 @@ import type {
     BooleansMap,
     Choosable,
     CompoundFormValue,
+    Config,
     EditMode,
     FieldEmitType,
     FormValue,
@@ -215,6 +216,33 @@ export function useFormField<ValueType extends FormValue> (valueCoerceFn: (val: 
     });
 
     return { inputEleId, path, pathString, rawValue, modelValue, errors, myErrors, hasError, editMode, FieldWrapper, standardWrapperProps };
+};
+
+export const useExtendsEditMode = (editModeProp:  Ref<EditMode | undefined> | undefined ): Ref<EditMode> => {
+
+    const injectedEditMode = inject(symbols.editMode, undefined);
+
+    const editMode = computed((): EditMode => {
+        return editModeProp?.value || injectedEditMode?.value || 'edit';
+    });
+
+    provide(symbols.editMode, editMode);
+
+    return editMode;
+
+};
+
+export const useExtendsConfig = (overrides: Ref<Partial<Config> | undefined> | undefined): Ref<Partial<Config>> => {
+
+    const parentConfig = inject(symbols.config, undefined);
+
+    const config = computed((): Partial<Config> => {
+        return Object.assign({}, parentConfig?.value, overrides?.value);
+    });
+
+    provide(symbols.config, config);
+
+    return config;
 };
 
 export const useHasCompoundValue = (modelValue: Ref<CompoundFormValue>, errors: Ref<MessageBag>) => {

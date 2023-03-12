@@ -28,17 +28,3 @@ export const getConfigRef = <K extends ConfigKey>(key: K, propRef?: Ref<Config[K
         return getConfigValue(config?.value, key);
     });
 };
-
-export const useExtendsConfig = (overrides: Ref<Partial<Config> | undefined> | undefined): Ref<Partial<Config>> => {
-
-    const parentConfig = inject(symbols.config, undefined);
-
-    const config = computed((): Partial<Config> => {
-        return Object.assign({}, parentConfig?.value, overrides?.value);
-    });
-
-    provide(symbols.config, config);
-
-    return config;
-};
-

@@ -202,7 +202,6 @@ export type Config = {
 
 export type ConfigKey = keyof Config;
 
-// @deprecated
 export type AppConfigOptions = Config & {
     cssPrefix: string,
     fieldWrapperComponent: typeof FieldWrapper,

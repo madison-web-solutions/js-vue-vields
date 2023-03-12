@@ -40,8 +40,8 @@
 <script setup lang="ts">
 import type { RepeaterFormValue, MessageBag, Config } from '@/main';
 import type { PropType } from 'vue';
-import { computed, toRefs } from 'vue';
-import { commonProps, useRepeaterField, useExtendsConfig } from '@/main';
+import { computed, toRefs, provide } from 'vue';
+import { commonProps, useRepeaterField, useExtendsConfig, symbols } from '@/main';
 import { FieldArrayItem, FieldGroup } from '@/main';
 
 const props = defineProps(Object.assign({}, commonProps, {
@@ -96,6 +96,7 @@ const editable = computed(() => {
     return (props.disabled !== true) && (editMode.value == 'edit');
 });
 
+provide(symbols.editMode, editMode);
 useExtendsConfig(propRefs.config);
 
 </script>

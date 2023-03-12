@@ -50,8 +50,8 @@
 <script setup lang="ts">
 import type { PropType, StyleValue } from 'vue';
 import type { RepeaterFormValue, MessageBag, RepeaterTableCol, RepeaterTableColOpts, Config } from '@/main';
-import { computed, toRefs } from 'vue';
-import { commonProps, useRepeaterField, startCase, useExtendsConfig } from '@/main';
+import { computed, toRefs, provide } from 'vue';
+import { commonProps, useRepeaterField, startCase, useExtendsConfig, symbols } from '@/main';
 import { FieldArrayItem, FieldGroup } from '@/main';
 
 const props = defineProps(Object.assign({}, commonProps, {
@@ -124,6 +124,7 @@ const itemStyle = (index: number) => {
     return {'--row-num': ((index * 2) + 2)} as StyleValue;
 };
 
+provide(symbols.editMode, editMode);
 useExtendsConfig(propRefs.config);
 
 </script>

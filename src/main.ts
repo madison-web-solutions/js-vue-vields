@@ -48,8 +48,8 @@ import type {
 
 import { sliceMessageBag, spliceMessageBag, messageBagToString } from '@/lib/MessageBag';
 import { startCase, getUniqueKey, coerceToScalarFormValue, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, coerceToBooleansNativeMap, coerceToKeysList, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors } from '@/lib/util';
-import { commonProps, useExtendsPath, useFormField, useHasCompoundValue, useHasChoices, useHasChoicesSingle, useFormFieldWithChoicesMultiple, useParsesTextField } from '@/lib/field';
-import { defaultConfig, getConfigValue, getConfigRef, useExtendsConfig } from '@/lib/config';
+import { commonProps, useExtendsPath, useFormField, useExtendsConfig, useExtendsEditMode, useHasCompoundValue, useHasChoices, useHasChoicesSingle, useFormFieldWithChoicesMultiple, useParsesTextField } from '@/lib/field';
+import { defaultConfig, getConfigValue, getConfigRef } from '@/lib/config';
 import { symbols } from '@/lib/symbols';
 import { useHasMaxChars } from '@/lib/text';
 import { useSearches } from '@/lib/search';
@@ -204,10 +204,10 @@ export type {
 };
 
 export { registerComponents, configureApp };
-export { commonProps, useExtendsPath, useFormField, useHasCompoundValue, useHasChoices, useHasChoicesSingle, useFormFieldWithChoicesMultiple, useParsesTextField, useHasMaxChars, useSearches, useRepeaterField, usePopperTooltip };
+export { commonProps, useExtendsPath, useFormField, useExtendsConfig, useExtendsEditMode, useHasCompoundValue, useHasChoices, useHasChoicesSingle, useFormFieldWithChoicesMultiple, useParsesTextField, useHasMaxChars, useSearches, useRepeaterField, usePopperTooltip };
 export { sliceMessageBag, spliceMessageBag, messageBagToString }
 export { startCase, getUniqueKey, coerceToScalarFormValue, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, coerceToBooleansNativeMap, coerceToKeysList, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols };
-export { defaultConfig, getConfigValue, getConfigRef, useExtendsConfig };
+export { defaultConfig, getConfigValue, getConfigRef };
 export { TextField, TextAreaField, CheckboxField, CheckboxesField, CurrencyField, DateField, NumberField, ToggleField, RepeaterField, RadioField, SearchField, SelectField, CustomSelectField, HtmlField, FlexibleContentField, LinkField, FieldWrapper, FieldGroup, FieldArray, FieldArrayItem };
 export { MediaPreview, MediaLibrary, MediaDetails, MediaField };
 export { PasswordStrengthMeter, PasswordField, TimeField, CompoundField, RepeaterTableField };
