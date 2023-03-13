@@ -1,0 +1,54 @@
+<template>
+    <div class="container">
+        <div class="row">
+            <div class="col-8 overflow-hidden">
+                <FieldGroup v-model="vals" v-model:errors="errors">
+                    <RepeaterTableField :default="defaultPets" :labelSettings="{prefix: 'Lovely'}" label="Pets" name="pets" :cols="[{name: 'name'}, {name: 'attributes'}, {name: 'type'}]" class="mb-3">
+                        <template #name>
+                            <TextField name="name" />
+                        </template>
+                        <template #attributes>
+                            <CheckboxesField :default="['stupid']" name="attributes" choices="cute,stupid,fat" />
+                        </template>
+                        <template #type>
+                            <SelectField name="type" choices="cat,dog,fish" />
+                        </template>
+                    </RepeaterTableField>
+
+                    <p>Array Field</p>
+                    <RepeaterField :default="defaultDates" name="dates" subValuesType="simple">
+                        <template #default="{ index }">
+                            <div class="row">
+                                <div class="col-auto">{{ index + 1 }}</div>
+                                <DateField :default="defaultDate" class="col" />
+                            </div>
+                        </template>
+                    </RepeaterField>
+                </FieldGroup>
+            </div>
+            <div class="col-4">
+                <pre>{{ vals }}</pre>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script setup lang="ts">
+import type { MessageBag } from '@/main';
+import { computed, ref, provide } from "vue";
+import AltFieldWrapper from "../components/AltFieldWrapper.vue";
+import { DateField, FieldGroup, CheckboxesField, TextField, SelectField, RepeaterField, RepeaterTableField, symbols, FieldArrayItem } from "@/main";
+
+const vals = ref({});
+const errors = ref({});
+
+const defaultPets = [
+    {name: 'Gary', type: 'cat'},
+    {name: 'Waffles', type: 'cat'}
+];
+
+const defaultDates = ['2023-03-01', null, '2022-10-23'];
+
+const defaultDate = '1981-10-20';
+
+</script>

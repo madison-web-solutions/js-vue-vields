@@ -138,6 +138,7 @@ export type UseFormFieldPropRefs<ValueType> = {
     disabled?: Ref<boolean | undefined>,
     fieldTypeSlug?: Ref<string | undefined>,
     editMode?: Ref<EditMode | undefined>,
+    default?: Ref<unknown>,
 };
 
 export type UseFormFieldOpts = {

@@ -18,7 +18,7 @@ import type {
     UseHasChoicesPropRefs,
 } from '@/main';
 import { FieldWrapper as StandardFieldWrapper } from '@/main';
-import { computed, provide, inject, ref, watchEffect } from 'vue';
+import { computed, provide, inject, ref, watchEffect, onBeforeMount, nextTick } from 'vue';
 import { getUniqueKey, sliceMessageBag, spliceMessageBag, coerceToBooleansNativeMap, coerceToKeysList, copyCompoundFormValue, reindexErrors, symbols } from '@/main';
 import { startCase } from '@/lib/util';
 
@@ -29,11 +29,9 @@ export const commonProps = {
     },
     required: {
         type: Boolean,
-        default: false,
     },
     disabled: {
         type: Boolean,
-        default: false,
     },
     help: {
         type: String,
@@ -49,10 +47,11 @@ export const commonProps = {
     },
     fieldTypeSlug: {
         type: String,
-        required: false,
     },
     editMode: {
         type: String as PropType<EditMode>,
+    },
+    default: {
     }
 };
 
@@ -87,6 +86,32 @@ export const useExtendsPath = (nameOrIndex: Ref<string | number | undefined> | u
     provide(symbols.path, path);
 
     return { path, pathString };
+};
+
+const defaultCheckQueue: ({rawValue: Ref<unknown>, defaultProp: Ref<unknown>, setter: (val: unknown) => void})[] = [];
+let doingDefaultChecks: boolean = false;
+const doNextDefaultCheck = async () => {
+    if (doingDefaultChecks) {
+        return;
+    }
+    doingDefaultChecks = true;
+    await nextTick();
+    while (defaultCheckQueue.length > 0) {
+        const next = defaultCheckQueue.shift();
+        if (! next) {
+            break;
+        }
+        const { rawValue, defaultProp, setter } = next;
+        if (rawValue.value == null && defaultProp.value != null) {
+            setter(next.defaultProp.value);
+            await nextTick();
+        }
+    }
+    doingDefaultChecks = false;
+};
+const queueDefaultCheck = <ValueType extends FormValue>(rawValue: Ref<unknown>, defaultProp: Ref<unknown>, setter: (val: unknown) => void) => {
+    defaultCheckQueue.push({ rawValue, defaultProp, setter });
+    doNextDefaultCheck();
 };
 
 export function useFormField<ValueType extends FormValue> (valueCoerceFn: (val: unknown) => ValueType, emit: FieldEmitType<ValueType>, propRefs: UseFormFieldPropRefs<ValueType>, opts?: UseFormFieldOpts) {
@@ -148,6 +173,12 @@ export function useFormField<ValueType extends FormValue> (valueCoerceFn: (val: 
         },
         set: (newVal: ValueType) => {
             setNewValue(newVal);
+        }
+    });
+
+    onBeforeMount(() => {
+        if (propRefs.default) {
+            queueDefaultCheck(rawValue, propRefs.default, (val: unknown) => setNewValue(valueCoerceFn(val)));
         }
     });
 

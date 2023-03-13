@@ -3,6 +3,7 @@
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/custom-fields">Custom Fields</RouterLink>
         <RouterLink to="/repeater-tables">Repeater Tables</RouterLink>
+        <RouterLink to="/default-values">Default Values</RouterLink>
     </div>
     <RouterView />
 </template>
