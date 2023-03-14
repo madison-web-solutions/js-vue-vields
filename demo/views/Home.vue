@@ -29,8 +29,9 @@
                                 <CheckboxesField label="Attributes" name="attributes" choices="cute,stupid,fat" class="col-md-4" />
                             </div>
                         </RepeaterField>
-                        <TimeField label="Opening Time" name="opening_time" min="06:30" max="19:00" class="col-md-6" />
-                        <DateField label="Date of Birth" name="dob" max="today" class="col-md-6" />
+                        <TimeField label="Opening Time" name="opening_time" min="06:30" max="19:00" class="col-md-4" />
+                        <DateField label="Date of Birth" name="dob" max="today" class="col-md-4" />
+                        <DateField label="Date in 2024" name="date_in_2024" min="2024-01-01" max="2024-12-31" class="col-md-4" />
                         <NumberField label="Days Holiday" name="days_holiday" :min="0" :step="1" class="col-md-4" />
                         <NumberField label="Area" name="area" :min="0" unit="m²" class="col-md-4" />
                         <CurrencyField label="Salary" name="salary" class="col-md-4" />

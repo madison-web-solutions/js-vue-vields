@@ -1,7 +1,7 @@
 <template>
     <FieldWrapper v-bind="standardWrapperProps">
         <template #input>
-            <input :id="inputEleId" :name="pathString" ref="inputEle" type="date" class="form-control" :class="{'is-invalid': hasError}" :disabled="disabled" :placeholder="myPlaceholder" :value="modelValue" @change="onChange" @keydown.enter="onEnterPress" @blur="onBlur" />
+            <input :id="inputEleId" :name="pathString" ref="inputEle" type="date" class="form-control" :class="{'is-invalid': hasError}" :disabled="disabled" :placeholder="myPlaceholder" :value="modelValue" :min="minDateYmd" :max="maxDateYmd" @change="onChange" @keydown.enter="onEnterPress" @blur="onBlur" />
         </template>
         <template #viewMode>{{ displayValue }}</template>
     </FieldWrapper>
@@ -60,6 +60,13 @@ const maxDateUtc = computed((): Date | undefined => {
         return todayUtc;
     }
     return utcYmdToDate(props.max) || undefined;
+});
+
+const minDateYmd = computed((): string | undefined => {
+    return minDateUtc.value ? dateToUtcFormat(minDateUtc.value, 'Y-m-d') : undefined;
+});
+const maxDateYmd = computed((): string | undefined => {
+    return maxDateUtc.value ? dateToUtcFormat(maxDateUtc.value, 'Y-m-d') : undefined;
 });
 
 const clampValue = (date: Date): Date => {
