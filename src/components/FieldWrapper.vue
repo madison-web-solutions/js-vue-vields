@@ -29,8 +29,9 @@
 </template>
 
 <script setup lang="ts">
+import type { EditMode } from '@/main';
 import { computed, inject, ref, toRefs } from 'vue';
-import { EditMode, symbols } from '@/main';
+import { symbols } from '@/main';
 import usePopperTooltip from '@/lib/usePopperTooltip';
 
 const props = withDefaults(defineProps<{
