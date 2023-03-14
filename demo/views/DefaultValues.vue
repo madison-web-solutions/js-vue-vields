@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="row">
-            <div class="col-8 overflow-hidden">
+            <div class="col-8 overflow-hidden mb-5">
                 <FieldGroup v-model="vals" v-model:errors="errors">
                     <RepeaterTableField :default="defaultPets" :labelSettings="{prefix: 'Lovely'}" label="Pets" name="pets" :cols="[{name: 'name'}, {name: 'attributes'}, {name: 'type'}]" class="mb-3">
                         <template #name>
@@ -24,6 +24,8 @@
                             </div>
                         </template>
                     </RepeaterField>
+
+                    <TokensField label="Cats" name="cats" :searchable="true" directory="cats" />
                 </FieldGroup>
             </div>
             <div class="col-4">
@@ -34,12 +36,10 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag } from '@/main';
-import { computed, ref, provide } from "vue";
-import AltFieldWrapper from "../components/AltFieldWrapper.vue";
-import { DateField, FieldGroup, CheckboxesField, TextField, SelectField, RepeaterField, RepeaterTableField, symbols, FieldArrayItem } from "@/main";
+import { ref } from "vue";
+import { DateField, FieldGroup, CheckboxesField, TextField, SelectField, RepeaterField, RepeaterTableField, TokensField } from "@/main";
 
-const vals = ref({});
+const vals = ref({cats: [2,3]});
 const errors = ref({});
 
 const defaultPets = [

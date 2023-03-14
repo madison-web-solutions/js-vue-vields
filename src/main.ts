@@ -28,6 +28,7 @@ import type {
     ParsesTextFieldOptions,
     PasswordStrengthProvider,
     Path,
+    PendingChoosable,
     RepeaterFormValue,
     RepeaterItem,
     RepeaterTableCol,
@@ -83,6 +84,7 @@ import PasswordField from '@/components/PasswordField.vue';
 import TimeField from '@/components/TimeField.vue';
 import CompoundField from '@/components/CompoundField.vue';
 import RepeaterTableField from "@/components/RepeaterTableField.vue";
+import TokensField from "@/components/TokensField.vue";
 
 const HtmlField = defineAsyncComponent(() => import('@/components/HtmlField.vue'));
 
@@ -114,6 +116,7 @@ const publicComponents: Record<string, Component> = {
     MediaLibrary,
     MediaDetails,
     MediaField,
+    TokensField,
 };
 
 const registerComponents = (app: App, prefix?: string | null | undefined) => {
@@ -185,6 +188,7 @@ export type {
     ParsesTextFieldOptions,
     PasswordStrengthProvider,
     Path,
+    PendingChoosable,
     RepeaterFormValue,
     RepeaterItem,
     RepeaterTableCol,
@@ -210,4 +214,4 @@ export { startCase, getUniqueKey, coerceToScalarFormValue, coerceToCompoundFormV
 export { defaultConfig, getConfigValue, getConfigRef };
 export { TextField, TextAreaField, CheckboxField, CheckboxesField, CurrencyField, DateField, NumberField, ToggleField, RepeaterField, RadioField, SearchField, SelectField, CustomSelectField, HtmlField, FlexibleContentField, LinkField, FieldWrapper, FieldGroup, FieldArray, FieldArrayItem };
 export { MediaPreview, MediaLibrary, MediaDetails, MediaField };
-export { PasswordStrengthMeter, PasswordField, TimeField, CompoundField, RepeaterTableField };
+export { PasswordStrengthMeter, PasswordField, TimeField, CompoundField, RepeaterTableField, TokensField };

@@ -1,0 +1,26 @@
+.#{$vfms-prefix}tokens-list {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.#{$vfms-prefix}token {
+    border: 1px solid $border-color;
+    border-radius: 0.6em;
+    display: flex;
+    align-items: center;
+    margin-right: 0.3em;
+    margin-top: 0.3em;
+    background-color: $gray-100;
+    
+    .#{$vfms-prefix}token-content {
+        padding: 0 0.6em;
+    }
+    .#{$vfms-prefix}token-delete {
+        display: flex;
+        align-items: center;
+        margin: -1px;
+        .btn {
+            border-radius: 0.6em;
+        }
+    }
+}

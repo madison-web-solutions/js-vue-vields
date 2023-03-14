@@ -44,6 +44,11 @@ export type Choosable = {
     label: string,
 };
 
+export type PendingChoosable = {
+    pending: true,
+    key: number | string,
+};
+
 export type UpdateOk<T> = {
     status: 'ok',
     resource: T
