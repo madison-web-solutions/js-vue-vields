@@ -5,12 +5,12 @@
                 <MediaPreview v-if="modelValue != null" :item="currentItem" :removable="true" :inspectable="true" @remove="remove" @select="choosing = true" @inspect="inspecting = true" />
                 <button v-if="modelValue == null" type="button" v-pclass="'media-add-button'" @click="choosing = true"><i class="fas fa-plus"></i></button>
             </div>
-            <div v-if="choosing" @close="choosing = false" title="Media Library">
+            <Modal v-if="choosing" title="Media Library" size="xl" @close="choosing = false">
                 <MediaLibrary :standalone="false" :extraParams="extraParams" @select="updateValue" @close="choosing = false" />
-            </div>
-            <div v-if="currentItem && inspecting" @close="inspecting = false" title="Inspect File">
+            </Modal>
+            <Modal v-if="currentItem && inspecting" title="Inspect File" size="xl" @close="inspecting = false">
                 <MediaDetails :itemId="currentItem.id" :editable="true" :deletable="false" @close="inspecting = false" />
-            </div>
+            </Modal>
         </template>
         <template #viewMode>
             <div v-pclass="'attachment-list'">
@@ -22,9 +22,9 @@
 
 <script setup lang="ts">
 import type { MediaItem, MessageBag } from '@/main';
-import { computed, ref, toRefs, watchEffect, inject } from 'vue';
+import { ref, toRefs, watchEffect, inject } from 'vue';
 import { commonProps, useFormField, symbols } from '@/main';
-import { MediaPreview, MediaLibrary, MediaDetails } from '@/main';
+import { MediaPreview, MediaLibrary, MediaDetails, Modal } from '@/main';
 
 type IdType = string | number | undefined;
 
