@@ -11,7 +11,7 @@
         }
     }
 
-    .#{$vfms-prefix}repeater-item-control {
+    .#{$vfms-prefix}repeater-item-control, .#{$vfms-prefix}repeater-table-item-control {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -155,7 +155,7 @@
         grid-row: var(--row-num) / span 2;
     }
 
-    .#{$vfms-prefix}repeater-item-control {
+    .#{$vfms-prefix}repeater-table-item-control {
         grid-column: content-end / control-end;
         grid-row: var(--row-num) / span 2;
         flex-direction: column;

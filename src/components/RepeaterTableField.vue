@@ -22,7 +22,7 @@
                                 <slot :name="col.name" :index="item.index" :subVals="item.rowVals"></slot>
                             </div>
                         </FieldGroup>
-                        <div v-if="editable" v-pclass="'repeater-table-cell repeater-item-control'">
+                        <div v-if="editable" v-pclass="'repeater-table-cell repeater-table-item-control'">
                             <button v-if="canAddRow" class="btn btn-sm btn-primary ms-1" v-pclass="'btn-repeater-insert'" @click="item.insertRowBefore"><i class="fas fa-plus fa-fw"></i></button>
                             <button class="btn btn-sm btn-danger ms-1" v-pclass="'btn-repeater-delete'" @click="item.deleteRow"><i class="fas fa-times fa-fw"></i></button>
                             <button v-if="movable" class="btn btn-sm ms-1 btn-secondary" v-pclass="'btn-repeater-move'" @click="item.startMove"><i class="fas fa-arrows-alt fa-fw"></i></button>

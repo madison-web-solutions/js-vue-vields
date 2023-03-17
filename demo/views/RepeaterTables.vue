@@ -89,6 +89,21 @@
                         </template>
                     </RepeaterField>
 
+                    <p>Repeater Table inside a Repeater</p>
+                    <RepeaterField label="Seasons" name="seasons" class="mb-3" colCssClass="col-6" :horizontalFlow="true" appendLabel="Add Season" >
+                        <div class="row">
+                            <TextField label="Name" name="name" class="mb-2" />
+                            <RepeaterTableField label="Dates" name="dates" :cols="[{name: 'start_date'}, {name: 'end_date'}]">
+                                <template #start_date>
+                                    <DateField name="start_date" />
+                                </template>
+                                <template #end_date>
+                                    <DateField name="end_date" />
+                                </template>
+                            </RepeaterTableField>
+                        </div>
+                    </RepeaterField>
+
                 </FieldGroup>
             </div>
             <div class="col-4">
@@ -110,6 +125,22 @@ const vals = ref({
         {name: 'Waffles', type: 'cat'}
     ],
     dates: ['2023-03-01', null, '2022-10-23'],
+    seasons: [
+        {
+            name: 'Winter',
+            dates: [
+                {start_date: '2024-01-01', end_date: '2024-01-31'},
+                {start_date: '2024-02-01', end_date: '2024-02-28'},
+            ],
+        },
+        {
+            name: 'Summer',
+            dates: [
+                {start_date: '2024-06-01', end_date: '2024-06-30'},
+                {start_date: '2024-07-01', end_date: '2024-07-31'},
+            ],
+        },
+    ]
 });
 
 const errors = ref<MessageBag>({
