@@ -180,6 +180,7 @@ export type ParsesTextFieldOptions<T> = {
 export type UseRepeaterFieldPropRefs = UseFormFieldPropRefs<RepeaterFormValue> & {
     min?: Ref<number | undefined>,
     max?: Ref<number | undefined>,
+    movable?: Ref<boolean | undefined>,
 };
 
 export type RepeaterItem = {

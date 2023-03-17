@@ -65,6 +65,10 @@ const props = defineProps(Object.assign({}, commonProps, {
     max: {
         type: Number,
     },
+    movable: {
+        type: Boolean,
+        default: true,
+    },
     cols: {
         type: Object as PropType<RepeaterTableColOpts[]>,
         required: true,
@@ -90,6 +94,7 @@ const {
     editMode,
     FieldWrapper,
     standardWrapperProps,
+    movable,
     canAddRow,
     appendRow,
     movingIndex,
@@ -100,10 +105,6 @@ const {
 
 const editable = computed(() => {
     return (props.disabled !== true) && (editMode.value == 'edit');
-});
-
-const movable = computed(() => {
-    return editable.value && modelValue.value.length > 1;
 });
 
 const myCols = computed((): RepeaterTableCol[] => {
