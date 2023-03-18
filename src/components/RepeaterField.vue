@@ -1,7 +1,7 @@
 <template>
     <FieldWrapper v-bind="standardWrapperProps">
         <template #input>
-            <div v-pclass="{'repeater': true, 'repeater-vertical-flow': ! horizontalFlow, 'repeater-horizontal-flow': horizontalFlow}" class="row mb-2">
+            <div v-pclass="'repeater'" class="row mb-2">
                 <div :class="colCssClass" v-for="item in loopItems">
                     <div v-pclass="{'repeater-item': true, 'is-moving': item.index === movingIndex}">
                         <div v-pclass="'repeater-item-control'" v-if="editable">
@@ -23,9 +23,9 @@
                                 <slot :index="item.index" :subVal="item.rowVals"></slot>
                             </div>
                         </FieldArrayItem>
-                        <template v-if="editable && movingIndex != null">
-                            <div v-pclass="'repeater-move-target move-before'" @click="item.completeMoveBefore"></div>
-                            <div v-pclass="'repeater-move-target move-after'" @click="item.completeMoveAfter"></div>
+                        <template v-if="editable && isMoving">
+                            <div v-pclass="['repeater-move-target', horizontalFlow ? 'repeater-horizontal-flow' : 'repeater-vertical-flow', 'move-before']" @click="item.completeMoveBefore"></div>
+                            <div v-pclass="['repeater-move-target', horizontalFlow ? 'repeater-horizontal-flow' : 'repeater-vertical-flow', 'move-after']" @click="item.completeMoveAfter"></div>
                         </template>
                     </div>
                 </div>
@@ -84,11 +84,11 @@ const emit = defineEmits<{
 const propRefs = toRefs(props);
 
 const {
-    modelValue,
     editMode,
     FieldWrapper,
     standardWrapperProps,
     movable,
+    isMoving,
     canAddRow,
     appendRow,
     movingIndex,

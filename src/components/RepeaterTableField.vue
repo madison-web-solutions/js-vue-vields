@@ -1,7 +1,7 @@
 <template>
     <FieldWrapper v-bind="standardWrapperProps">
         <template #input>
-            <div v-pclass="{'repeater-table': true, 'repeater-vertical-flow': true, 'has-index-col': hasIndexCol, 'has-control-col': editable}" :style="repeaterStyle">
+            <div v-pclass="{'repeater-table': true, 'has-index-col': hasIndexCol, 'has-control-col': editable}" :style="repeaterStyle">
                 <div v-pclass="'repeater-table-header'">
                     <div v-if="hasIndexCol" v-pclass="'repeater-table-cell'"></div>
                     <div v-for="col in myCols" v-pclass="'repeater-table-cell'">
@@ -11,14 +11,14 @@
                 </div>
 
                 <FieldArrayItem v-for="item in loopItems" :index="item.index">
-                    <div :style="itemStyle(item.index)" v-pclass="{'repeater-item': true, 'is-moving': item.index === movingIndex}" :class="{'is-invalid': item.showRowErrors}">
-                        <div v-if="hasIndexCol" v-pclass="'repeater-table-cell repeater-item-index'">
+                    <div :style="itemStyle(item.index)" v-pclass="{'repeater-table-item': true, 'is-moving': item.index === movingIndex}" :class="{'is-invalid': item.showRowErrors}">
+                        <div v-if="hasIndexCol" v-pclass="'repeater-table-cell repeater-table-item-index'">
                             <slot name="indexCol" :index="item.index" :subVals="item.rowVals" >
                                 <div>{{ item.index + 1 }}</div>
                             </slot>
                         </div>
                         <FieldGroup>
-                            <div v-for="col in cols" v-pclass="'repeater-table-cell'">
+                            <div v-for="col in cols" v-pclass="'repeater-table-cell repeater-table-item-content'">
                                 <slot :name="col.name" :index="item.index" :subVals="item.rowVals"></slot>
                             </div>
                         </FieldGroup>
@@ -27,19 +27,19 @@
                             <button class="btn btn-sm btn-danger ms-1" v-pclass="'btn-repeater-delete'" @click="item.deleteRow"><i class="fas fa-times fa-fw"></i></button>
                             <button v-if="movable" class="btn btn-sm ms-1 btn-secondary" v-pclass="'btn-repeater-move'" @click="item.startMove"><i class="fas fa-arrows-alt fa-fw"></i></button>
                         </div>
-                        <div v-if="item.showRowErrors" v-pclass="'repeater-table-item-errors'">
+                        <div v-if="item.showRowErrors" v-pclass="'repeater-table-cell repeater-table-item-errors'">
                             <div class="invalid-feedback d-block">
                                 <div v-for="msg in item.rowErrors">{{ msg }}</div>
                             </div>
                         </div>
-                        <template v-if="editable && movingIndex != null">
-                            <div v-pclass="'repeater-move-target move-before'" @click="item.completeMoveBefore"></div>
-                            <div v-pclass="'repeater-move-target move-after'" @click="item.completeMoveAfter"></div>
+                        <template v-if="editable && isMoving">
+                            <div v-pclass="'repeater-table-move-target move-before'" @click="item.completeMoveBefore"></div>
+                            <div v-pclass="'repeater-table-move-target move-after'" @click="item.completeMoveAfter"></div>
                         </template>
                     </div>
                 </FieldArrayItem>
 
-                <div v-if="editable && canAddRow" v-pclass="'repeater-append'">
+                <div v-if="editable && canAddRow" v-pclass="'repeater-table-append'">
                     <button class="btn btn-primary" @click="appendRow"><i class="fas fa-plus"></i> {{ appendLabel }}</button>
                 </div>
             </div>
@@ -90,11 +90,11 @@ const emit = defineEmits<{
 const propRefs = toRefs(props);
 
 const {
-    modelValue,
     editMode,
     FieldWrapper,
     standardWrapperProps,
     movable,
+    isMoving,
     canAddRow,
     appendRow,
     movingIndex,
