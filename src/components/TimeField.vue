@@ -1,7 +1,7 @@
 <template>
     <FieldWrapper v-bind="standardWrapperProps">
         <template #input>
-            <input ref="inputEle" :id="inputEleId" :name="pathString" type="text" class="form-control" :class="{'is-invalid': hasError}" :disabled="disabled" :placeholder="placeholder" :value="displayValue" @change="change" @focus="onFocus" @blur="onBlur" />
+            <input ref="inputEle" :id="inputEleId" :name="pathString" type="text" class="form-control" :class="{'is-invalid': hasError}" :disabled="disabled" :placeholder="myPlaceholder" :value="displayValue" @change="change" @focus="onFocus" @blur="onBlur" />
         </template>
         <template #viewMode>{{ displayValue }}</template>
     </FieldWrapper>
@@ -57,6 +57,16 @@ const minSeconds = computed((): number | undefined => {
 });
 const maxSeconds = computed((): number | undefined => {
     return props.max == null ? undefined : timeParse(props.max);
+});
+
+const myPlaceholder = computed((): string => {
+    if (typeof props.placeholder == 'string') {
+        return props.placeholder;
+    } else if (props.withSeconds) {
+        return 'hh:mm:ss';
+    } else {
+        return 'hh:mm';
+    }
 });
 
 const parsesTextFieldOptions: ParsesTextFieldOptions<string> = {

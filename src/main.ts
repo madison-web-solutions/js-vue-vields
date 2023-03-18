@@ -86,6 +86,8 @@ import CompoundField from '@/components/CompoundField.vue';
 import RepeaterTableField from "@/components/RepeaterTableField.vue";
 import TokensField from "@/components/TokensField.vue";
 import Modal from "@/components/Modal.vue";
+import EmptyFieldWrapper from "@/components/EmptyFieldWrapper.vue";
+import DateTimeField from "@/components/DateTimeField.vue";
 
 const HtmlField = defineAsyncComponent(() => import('@/components/HtmlField.vue'));
 
@@ -118,6 +120,7 @@ const publicComponents: Record<string, Component> = {
     MediaDetails,
     MediaField,
     TokensField,
+    DateTimeField,
 };
 
 const registerComponents = (app: App, prefix?: string | null | undefined) => {
@@ -215,4 +218,4 @@ export { startCase, getUniqueKey, coerceToScalarFormValue, coerceToCompoundFormV
 export { defaultConfig, getConfigValue, getConfigRef };
 export { TextField, TextAreaField, CheckboxField, CheckboxesField, CurrencyField, DateField, NumberField, ToggleField, RepeaterField, RadioField, SearchField, SelectField, CustomSelectField, HtmlField, FlexibleContentField, LinkField, FieldWrapper, FieldGroup, FieldArray, FieldArrayItem };
 export { MediaPreview, MediaLibrary, MediaDetails, MediaField };
-export { PasswordStrengthMeter, PasswordField, TimeField, CompoundField, RepeaterTableField, TokensField, Modal };
+export { PasswordStrengthMeter, PasswordField, TimeField, CompoundField, RepeaterTableField, TokensField, Modal, EmptyFieldWrapper, DateTimeField };

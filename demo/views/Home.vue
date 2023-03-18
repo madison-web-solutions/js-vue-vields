@@ -5,6 +5,8 @@
             <div class="col-8 overflow-hidden">
                 <FieldGroup v-model="vals" v-model:errors="errors" :config="config">
                     <div class="row g-3 mb-4">
+                        <DateTimeField label="Check In" name="check_in" class="col-6" />
+                        <DateTimeField label="Check Out" name="check_out" class="col-6" />
                         <MediaField label="Image" name="image" class="col-6" />
                         <CustomSelectField label="Color" name="color" directory="colors" class="col-6">
                             <template v-slot="{ choice }">
@@ -89,7 +91,7 @@
 
 <script setup lang="ts">
 import { computed, ref, provide } from "vue";
-import { FieldGroup, CheckboxField, CheckboxesField, TextField, TextAreaField, SelectField, CustomSelectField, HtmlField, CurrencyField, NumberField, ToggleField, RepeaterField, SearchField, RadioField, DateField, LinkField, MediaField, PasswordField, TimeField, CompoundField, FlexibleContentField, RepeaterTableField } from "@/main";
+import { FieldGroup, CheckboxField, CheckboxesField, TextField, TextAreaField, SelectField, CustomSelectField, HtmlField, CurrencyField, NumberField, ToggleField, RepeaterField, SearchField, RadioField, DateField, LinkField, MediaField, PasswordField, TimeField, CompoundField, FlexibleContentField, RepeaterTableField, DateTimeField } from "@/main";
 import { symbols } from '@/main';
 
 const editMode = ref('edit');
