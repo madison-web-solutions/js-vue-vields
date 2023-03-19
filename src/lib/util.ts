@@ -13,6 +13,17 @@ export const getUniqueKey = function(): string {
     return 'k' + (uniqueKeyCounter++).toString(36);
 };
 
+export const coerceToNumber = (value: unknown): number | undefined => {
+    switch (typeof value) {
+        case 'number':
+            return value;
+        case 'string':
+            const num = parseFloat(value);
+            return isNaN(num) ? undefined : num;
+    }
+    return undefined;
+};
+
 export const coerceToScalarFormValue = (val: unknown): ScalarFormValue => {
     switch (typeof val) {
         case 'number':

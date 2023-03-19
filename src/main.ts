@@ -48,7 +48,7 @@ import type {
 } from '@/lib/types';
 
 import { sliceMessageBag, spliceMessageBag, messageBagToString } from '@/lib/MessageBag';
-import { startCase, getUniqueKey, coerceToScalarFormValue, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, coerceToBooleansNativeMap, coerceToKeysList, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors } from '@/lib/util';
+import { startCase, getUniqueKey, coerceToNumber, coerceToScalarFormValue, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, coerceToBooleansNativeMap, coerceToKeysList, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors } from '@/lib/util';
 import { commonProps, useExtendsPath, useFormField, useExtendsConfig, useExtendsEditMode, useHasCompoundValue, useHasChoices, useHasChoicesSingle, useFormFieldWithChoicesMultiple, useParsesTextField } from '@/lib/field';
 import { defaultConfig, getConfigValue, getConfigRef } from '@/lib/config';
 import { symbols } from '@/lib/symbols';
@@ -88,6 +88,7 @@ import TokensField from "@/components/TokensField.vue";
 import Modal from "@/components/Modal.vue";
 import EmptyFieldWrapper from "@/components/EmptyFieldWrapper.vue";
 import DateTimeField from "@/components/DateTimeField.vue";
+import TimestampField from "@/components/TimestampField.vue";
 
 const HtmlField = defineAsyncComponent(() => import('@/components/HtmlField.vue'));
 
@@ -214,8 +215,8 @@ export type {
 export { registerComponents, configureApp };
 export { commonProps, useExtendsPath, useFormField, useExtendsConfig, useExtendsEditMode, useHasCompoundValue, useHasChoices, useHasChoicesSingle, useFormFieldWithChoicesMultiple, useParsesTextField, useHasMaxChars, useSearches, useRepeaterField, usePopperTooltip };
 export { sliceMessageBag, spliceMessageBag, messageBagToString }
-export { startCase, getUniqueKey, coerceToScalarFormValue, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, coerceToBooleansNativeMap, coerceToKeysList, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols };
+export { startCase, getUniqueKey, coerceToNumber, coerceToScalarFormValue, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, coerceToBooleansNativeMap, coerceToKeysList, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols };
 export { defaultConfig, getConfigValue, getConfigRef };
 export { TextField, TextAreaField, CheckboxField, CheckboxesField, CurrencyField, DateField, NumberField, ToggleField, RepeaterField, RadioField, SearchField, SelectField, CustomSelectField, HtmlField, FlexibleContentField, LinkField, FieldWrapper, FieldGroup, FieldArray, FieldArrayItem };
 export { MediaPreview, MediaLibrary, MediaDetails, MediaField };
-export { PasswordStrengthMeter, PasswordField, TimeField, CompoundField, RepeaterTableField, TokensField, Modal, EmptyFieldWrapper, DateTimeField };
+export { PasswordStrengthMeter, PasswordField, TimeField, CompoundField, RepeaterTableField, TokensField, Modal, EmptyFieldWrapper, DateTimeField, TimestampField };

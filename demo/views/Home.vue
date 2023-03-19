@@ -7,6 +7,8 @@
                     <div class="row g-3 mb-4">
                         <DateTimeField label="Check In" name="check_in" class="col-6" />
                         <DateTimeField label="Check Out" name="check_out" class="col-6" />
+                        <TimestampField label="Transaction Time" name="transaction_time" class="col-6" />
+                        <div class="col-6"></div>
                         <MediaField label="Image" name="image" class="col-6" />
                         <CustomSelectField label="Color" name="color" directory="colors" class="col-6">
                             <template v-slot="{ choice }">
@@ -91,7 +93,7 @@
 
 <script setup lang="ts">
 import { computed, ref, provide } from "vue";
-import { FieldGroup, CheckboxField, CheckboxesField, TextField, TextAreaField, SelectField, CustomSelectField, HtmlField, CurrencyField, NumberField, ToggleField, RepeaterField, SearchField, RadioField, DateField, LinkField, MediaField, PasswordField, TimeField, CompoundField, FlexibleContentField, RepeaterTableField, DateTimeField } from "@/main";
+import { FieldGroup, CheckboxField, CheckboxesField, TextField, TextAreaField, SelectField, CustomSelectField, HtmlField, CurrencyField, NumberField, ToggleField, RepeaterField, SearchField, RadioField, DateField, LinkField, MediaField, PasswordField, TimeField, CompoundField, FlexibleContentField, RepeaterTableField, DateTimeField, TimestampField } from "@/main";
 import { symbols } from '@/main';
 
 const editMode = ref('edit');
@@ -101,6 +103,7 @@ const toggleEditMode = () => {
 provide(symbols.editMode, editMode);
 
 const vals = ref({
+    transaction_time: 1678258688118,
     first_name: 'Jane',
     last_name: 'Doe',
     summary: "A wonderful person.\nKind and caring.",
@@ -141,6 +144,8 @@ const errors = ref({
     'description': ['Some kind of error here'],
     'cats_arr.1': ['Barbura Barbura'],
     'cats_obj.6': ['Barbura Barbura'],
+    'transaction_time': ['Incorrect time'],
+    'check_in': ['An error'],
 });
 
 const config = ref({

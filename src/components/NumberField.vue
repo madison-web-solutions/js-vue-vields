@@ -10,7 +10,7 @@
 <script setup lang="ts">
 import type { MessageBag, ParsesTextFieldOptions } from '@/main';
 import { computed, ref, toRefs } from 'vue';
-import { commonProps, useFormField, useParsesTextField } from '@/main';
+import { commonProps, coerceToNumber, useFormField, useParsesTextField } from '@/main';
 
 const props = defineProps(Object.assign({}, commonProps, {
     max: {
@@ -46,17 +46,6 @@ const emit = defineEmits<{
 }>();
 
 const propRefs = toRefs(props);
-
-const coerceToNumber = (value: unknown): number | undefined => {
-    switch (typeof value) {
-        case 'number':
-            return value;
-        case 'string':
-            const num = parseFloat(value);
-            return isNaN(num) ? undefined : num;
-    }
-    return undefined;
-};
 
 const { inputEleId, pathString, modelValue, hasError, FieldWrapper, standardWrapperProps } = useFormField<number | undefined>(coerceToNumber, emit, propRefs, {
     fieldTypeSlug: 'number'

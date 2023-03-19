@@ -1,10 +1,10 @@
 <template>
     <FieldWrapper v-bind="standardWrapperProps">
         <template #input>
-            <input :id="inputEleId" :name="pathString" type="hidden" :disabled="disabled" :value="modelValue" />
+            <input :id="inputEleId" :name="pathString" type="hidden" :value="modelValue" />
             <div class="input-group">
-                <DateField v-model="dateValue" :disabled="disabled" :min="minDateYmd" :max="maxDateYmd" />
-                <TimeField v-model="timeValue" :disabled="disabled" :min="minTimeHis" :max="maxTimeHis" />
+                <DateField v-model="dateValue" :errors="errors" :disabled="disabled" :min="minDateYmd" :max="maxDateYmd" />
+                <TimeField v-model="timeValue" :errors="errors" :disabled="disabled" :min="minTimeHis" :max="maxTimeHis" />
             </div>
         </template>
         <template #viewMode>{{ displayValue }}</template>
@@ -43,7 +43,7 @@ const coerceFn = (value: any): string | undefined => {
     return (value == null ? '' : String(value));
 };
 
-const { inputEleId, pathString, modelValue, hasError, FieldWrapper, standardWrapperProps } = useFormField<string | undefined>(coerceFn, emit, propRefs, {
+const { inputEleId, pathString, modelValue, errors, FieldWrapper, standardWrapperProps } = useFormField<string | undefined>(coerceFn, emit, propRefs, {
     fieldTypeSlug: 'date-time'
 });
 
