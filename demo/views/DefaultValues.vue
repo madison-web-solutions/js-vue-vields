@@ -37,7 +37,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { DateField, FieldGroup, CheckboxesField, TextField, SelectField, RepeaterField, RepeaterTableField, TokensField } from "@/main";
+import { DateField, FieldGroup, CheckboxesField, TextField, SelectField, RepeaterField, RepeaterTableField, TokensField } from "vue-fields-ms";
 
 const vals = ref({cats: [2,3]});
 const errors = ref({});

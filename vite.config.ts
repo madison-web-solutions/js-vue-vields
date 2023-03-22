@@ -6,9 +6,9 @@ import vuePlugin from "@vitejs/plugin-vue";
 module.exports = defineConfig({
   plugins: [vuePlugin()],
   resolve: {
-    alias: {
+    alias: { // must also add to tsconfig.app.json to get VSCode to understand the aliases
       '@': fileURLToPath(new URL("./src", import.meta.url)),
-      'fields': fileURLToPath(new URL("./src/main.ts", import.meta.url)),
+      'vue-fields-ms': fileURLToPath(new URL("./src/main.ts", import.meta.url)),
       'ckeditor': fileURLToPath(new URL("./ckeditor5/ckeditor.js", import.meta.url)),
       '@scss': fileURLToPath(new URL("./scss", import.meta.url)),
     },

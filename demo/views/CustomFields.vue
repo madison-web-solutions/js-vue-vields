@@ -20,8 +20,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { FieldGroup, TextField } from '@/main';
+import { ref } from 'vue';
+import { FieldGroup, TextField } from 'vue-fields-ms';
 import AddressField from '../components/AddressField.vue';
 import CountryField from '../components/CountryField.vue';
 

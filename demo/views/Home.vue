@@ -92,9 +92,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, provide } from "vue";
-import { FieldGroup, CheckboxField, CheckboxesField, TextField, TextAreaField, SelectField, CustomSelectField, HtmlField, CurrencyField, NumberField, ToggleField, RepeaterField, SearchField, RadioField, DateField, LinkField, MediaField, PasswordField, TimeField, CompoundField, FlexibleContentField, RepeaterTableField, DateTimeField, TimestampField } from "@/main";
-import { symbols } from '@/main';
+import { ref, provide } from "vue";
+import { symbols, FieldGroup, CheckboxField, CheckboxesField, TextField, TextAreaField, SelectField, CustomSelectField, HtmlField, CurrencyField, NumberField, ToggleField, RepeaterField, SearchField, RadioField, DateField, LinkField, MediaField, PasswordField, TimeField, CompoundField, FlexibleContentField, DateTimeField, TimestampField } from "vue-fields-ms";
 
 const editMode = ref('edit');
 const toggleEditMode = () => {

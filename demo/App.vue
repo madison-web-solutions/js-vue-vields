@@ -9,8 +9,8 @@
 </template>
 
 <script setup lang="ts">
-import type { Choosable, LinkAlias, MediaItem, ResizableMediaItem, SearchResultPage, ChoicesProvider, LinksProvider, MediaProvider, PasswordStrengthProvider, LookupResult, UpdateResult } from "@/main";
-import { computed, ref, provide } from "vue";
+import type { Choosable, LinkAlias, MediaItem, ResizableMediaItem, SearchResultPage, ChoicesProvider, LinksProvider, MediaProvider, PasswordStrengthProvider, LookupResult, UpdateResult } from "vue-fields-ms";
+import { ref, provide } from "vue";
 import { symbols } from '@/main';
 import { faker } from '@faker-js/faker';
 

@@ -30,9 +30,9 @@
 </template>
 
 <script setup lang="ts">
-import type { Path, EditMode } from '@/main';
+import type { Path, EditMode } from 'vue-fields-ms';
 import { computed, inject, ref, toRefs } from 'vue';
-import { symbols } from '@/main';
+import { symbols } from 'vue-fields-ms';
 
 const props = withDefaults(defineProps<{
     inputEleId?: string,

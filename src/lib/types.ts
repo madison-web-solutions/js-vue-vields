@@ -210,6 +210,8 @@ export type Config = {
 export type ConfigKey = keyof Config;
 
 export type AppConfigOptions = Config & {
+    registerFieldComponents: boolean,
+    componentPrefix: string,
     cssPrefix: string,
     fieldWrapperComponent: typeof FieldWrapper,
 };

@@ -16,8 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { commonProps } from '@/main';
-import { CompoundField, TextField } from '@/main';
+import { commonProps, CompoundField, TextField } from 'vue-fields-ms';
 import CountryField from './CountryField.vue';
 
 const props = defineProps({

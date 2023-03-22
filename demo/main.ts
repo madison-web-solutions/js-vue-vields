@@ -1,11 +1,12 @@
 import { createApp } from "vue";
 import App from './App.vue';
-import { configureApp } from "@/main";
+import { vueFieldsMsPlugin } from 'vue-fields-ms';
 
 import "./scss/app.scss";
 
 const app = createApp(App);
-configureApp(app, {
+app.use(vueFieldsMsPlugin, {
+    registerFieldComponents: false,
     cssPrefix: 'demo-',
 });
 

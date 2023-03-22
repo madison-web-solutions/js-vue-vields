@@ -124,13 +124,8 @@ const publicComponents: Record<string, Component> = {
     DateTimeField,
 };
 
-const registerComponents = (app: App, prefix?: string | null | undefined) => {
-    const _prefix: string = (prefix == null ? '' : prefix);
-    for (const name in publicComponents) {
-        app.component(_prefix + name, publicComponents[name]);
-    }
-};
-const configureApp = (app: App, config: AppConfigOptions) => {
+const vueFieldsMsPlugin = (app: App, config: Partial<AppConfigOptions>): void => {
+
     app.provide(symbols.fieldWrapperComponent, config.fieldWrapperComponent);
 
     const cssPrefix = config.cssPrefix || '';
@@ -164,6 +159,13 @@ const configureApp = (app: App, config: AppConfigOptions) => {
     });
 
     app.provide(symbols.config, ref(config));
+
+    if (config.registerFieldComponents === true) {
+        const _prefix: string = (config.componentPrefix == null ? '' : config.componentPrefix);
+        for (const name in publicComponents) {
+            app.component(_prefix + name, publicComponents[name]);
+        }
+    }
 };
 
 export type {
@@ -212,7 +214,7 @@ export type {
     UseRepeaterFieldPropRefs,
 };
 
-export { registerComponents, configureApp };
+export { vueFieldsMsPlugin };
 export { commonProps, useExtendsPath, useFormField, useExtendsConfig, useExtendsEditMode, useHasCompoundValue, useHasChoices, useHasChoicesSingle, useFormFieldWithChoicesMultiple, useParsesTextField, useHasMaxChars, useSearches, useRepeaterField, usePopperTooltip };
 export { sliceMessageBag, spliceMessageBag, messageBagToString }
 export { startCase, getUniqueKey, coerceToNumber, coerceToScalarFormValue, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, coerceToBooleansNativeMap, coerceToKeysList, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols };

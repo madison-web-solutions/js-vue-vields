@@ -7,7 +7,10 @@
     "outDir": "./dist",
     "strict": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "vue-fields-ms": ["./src/main.ts"],
+      "ckeditor": ["./ckeditor5/ckeditor.js"],
+      "@scss/": ["./scss/*"]
     }
   },
   "include": ["src/**/*", "src/**/*.vue", "demo/**/*", "demo/**/*.vue"],

@@ -115,9 +115,9 @@
 
 <script setup lang="ts">
 import type { MessageBag } from '@/main';
-import { computed, ref, provide } from "vue";
+import { ref, provide } from "vue";
 import AltFieldWrapper from "../components/AltFieldWrapper.vue";
-import { DateField, FieldGroup, FieldArray, CheckboxesField, TextField, TextAreaField, SelectField, RepeaterField, RepeaterTableField, symbols, FieldArrayItem } from "@/main";
+import { DateField, FieldGroup, FieldArray, CheckboxesField, TextField, TextAreaField, SelectField, RepeaterField, RepeaterTableField, symbols, FieldArrayItem } from "vue-fields-ms";
 
 const vals = ref({
     pets: [
