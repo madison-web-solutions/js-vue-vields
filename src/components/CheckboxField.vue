@@ -1,7 +1,7 @@
 <template>
     <FieldWrapper v-bind="standardWrapperProps" :label="inlineLabel ? undefined : label">
         <template #input>
-            <div class="form-check">
+            <div class="form-check" v-pclass="{'checked': modelValue === true}">
                 <input class="form-check-input" type="checkbox" :id="inputEleId" :name="pathString" v-model="modelValue" :class="{'is-invalid': hasError}" :disabled="disabled">
                 <label v-if="label && inlineLabel" class="form-check-label" :for="inputEleId">{{ label }}</label>
             </div>

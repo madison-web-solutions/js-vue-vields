@@ -1,7 +1,7 @@
 <template>
     <FieldWrapper v-bind="standardWrapperProps">
         <template #input>
-            <div v-for="choice in choicesNormalized" :class="{'form-check': true, 'form-check-inline': inline}">
+            <div v-for="choice in choicesNormalized" :class="{'form-check': true, 'form-check-inline': inline}" v-pclass="{'checked': modelValue === choice.key}" >
                 <input class="form-check-input" :class="{'is-invalid': hasError}" type="radio" :id="inputEleId + String(choice.key)" :name="pathString" :checked="modelValue === choice.key" :disabled="disabled" @change="change(choice)">
                 <label class="form-check-label" :for="inputEleId + String(choice.key)">{{ choice.label }}</label>
             </div>

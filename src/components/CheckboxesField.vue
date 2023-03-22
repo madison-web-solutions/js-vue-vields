@@ -2,7 +2,7 @@
     <FieldWrapper v-bind="standardWrapperProps" :inputWrapperCssClass="inline ? 'd-flex flex-wrap' : ''">
         <template #input>
             <div v-for="choice in choicesNormalized" :key="choice.key" :class="inline ? 'me-3' : ''">
-                <div class="form-check">
+                <div class="form-check" v-pclass="{'checked': isOn(choice.key)}">
                     <input class="form-check-input" type="checkbox" :id="inputEleId + choice.key" :name="pathString + '.' + choice.key" :checked="isOn(choice.key)" @change="toggle(choice.key)" :class="{'is-invalid': hasSubErrors(choice.key)}" :disabled="disabled">
                     <label class="form-check-label" :for="inputEleId + choice.key">{{ choice.label }}</label>
                 </div>
