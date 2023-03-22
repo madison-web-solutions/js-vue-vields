@@ -89,8 +89,12 @@ export function useRepeaterField(emit: FieldEmitType<RepeaterFormValue>, propRef
         });
     };
 
+    const movable = computed((): boolean => {
+        return modelValue.value.length > 0 && !!propRefs.movable?.value && !propRefs.disabled?.value && editMode.value == 'edit';
+    });
+
     const move = (from: number, to: number): void => {
-        if (from === to) {
+        if (movable.value == false || from === to) {
             return;
         }
         // make a copy of our array
@@ -209,6 +213,7 @@ export function useRepeaterField(emit: FieldEmitType<RepeaterFormValue>, propRef
         appendRow,
         insertRowAt,
         deleteRowAt,
+        movable,
         move,
         movingIndex,
         isMoving,
