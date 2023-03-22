@@ -1,7 +1,10 @@
 <template>
     <FieldWrapper v-bind="standardWrapperProps">
         <template #input>
-            <input ref="inputEle" :id="inputEleId" :name="pathString" type="text" class="form-control" :class="{'is-invalid': hasError}" :disabled="disabled" :placeholder="placeholder" :value="displayValue" @change="change" @focus="onFocus" @blur="onBlur" />
+            <div class="input-group">
+                <input ref="inputEle" :id="inputEleId" :name="pathString" type="text" class="form-control" :class="{'is-invalid': hasError}" :disabled="disabled" :placeholder="placeholder" :value="displayValue" @change="change" @focus="onFocus" @blur="onBlur" />
+                <span v-if="unit" class="input-group-text">{{ unit }}</span>
+            </div>
         </template>
         <template #viewMode>{{ displayValue }}</template>
     </FieldWrapper>
@@ -104,7 +107,7 @@ const parsesTextFieldOptions: ParsesTextFieldOptions<number> = {
         if (props.customDisplayValue != null) {
             return props.customDisplayValue;
         }
-        return num.toLocaleString(undefined, localeStringOpts.value) + (props.unit ? ' ' + props.unit : '');
+        return num.toLocaleString(undefined, localeStringOpts.value);
     },
     formatNullForReading: (): string => {
         if (props.customDisplayValue != null) {
