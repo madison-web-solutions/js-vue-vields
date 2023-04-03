@@ -122,6 +122,7 @@ const publicComponents: Record<string, Component> = {
     MediaField,
     TokensField,
     DateTimeField,
+    TimestampField,
 };
 
 const vueFieldsMsPlugin = (app: App, config: Partial<AppConfigOptions>): void => {
