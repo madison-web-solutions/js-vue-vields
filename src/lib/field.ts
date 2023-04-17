@@ -349,10 +349,9 @@ export const useHasChoices = (props: UseHasChoicesPropRefs) => {
                 if (typeof choice == 'string') {
                     out.push({key: choice, label: startCase(choice)});
                 } else if (isPartialChoosable(choice)) {
-                    out.push({
-                        key: choice.key,
+                    out.push(Object.assign({
                         label: ((typeof choice.label == 'string') ? choice.label : startCase(choice.key))
-                    });
+                    }, choice));
                 } else {
                     console.log(choices.value);
                     throw "Invalid choice specification";
