@@ -125,6 +125,12 @@ export function useRepeaterField(emit: FieldEmitType<RepeaterFormValue>, propRef
             return modelValue.value ? modelValue.value[index] : undefined;
         },
         set: (index: number, newVal: FormValue) => {
+            if (index < 0 || index >= modelValue.value.length) {
+                // Don't allow a rogue child to set a value outside of the array range.
+                // This has been a problem in particular when an item is removed from the array, but the child component makes
+                // some kind of update to the value prior to it being dismounted, which results in the row not being deleted
+                return;
+            }
             // make a copy of our value
             const modelValueCopy: RepeaterFormValue = copyRepeaterFormValue(modelValue.value);
             // set the new value

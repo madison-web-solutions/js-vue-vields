@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import type { EditMode } from '@/main';
+import type { EditMode, Path } from '@/main';
 
 // We need this to make this component compatible with the regular FieldWrapper
 // @todo we must be able to avoid this repetition somehow
@@ -16,8 +16,9 @@ const props = withDefaults(defineProps<{
     modelValue?: any,
     errors?: string[],
     fieldTypeSlug?: string,
-    inputWrapperCssClass?: string | string[] | object,
+    path?: Path,
     editMode?: EditMode,
+    inputWrapperCssClass?: string | string[] | object,
 }>(), {
     required: false,
     inputWrapperCssClass: 'position-relative',

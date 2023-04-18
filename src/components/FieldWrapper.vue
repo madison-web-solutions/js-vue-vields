@@ -29,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import type { EditMode } from '@/main';
+import type { EditMode, Path } from '@/main';
 import { computed, inject, ref, toRefs } from 'vue';
 import { symbols } from '@/main';
 import usePopperTooltip from '@/lib/usePopperTooltip';
@@ -43,8 +43,9 @@ const props = withDefaults(defineProps<{
     modelValue?: any,
     errors?: string[],
     fieldTypeSlug?: string,
-    inputWrapperCssClass?: string | string[] | object,
+    path?: Path,
     editMode?: EditMode,
+    inputWrapperCssClass?: string | string[] | object,
 }>(), {
     required: false,
     inputWrapperCssClass: 'position-relative',
