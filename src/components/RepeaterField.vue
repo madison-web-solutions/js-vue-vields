@@ -2,6 +2,7 @@
     <FieldWrapper v-bind="standardWrapperProps">
         <template #input>
             <div v-pclass="'repeater'" class="row mb-2">
+                <div v-if="loopItems.length == 0" class="col-12"><!-- bootstrap row must have at least one col to avoid negative margin breaking layout --></div>
                 <div :class="colCssClass" v-for="item in loopItems">
                     <div v-pclass="{'repeater-item': true, 'is-moving': item.index === movingIndex}">
                         <div v-pclass="'repeater-item-control'" v-if="editable">
