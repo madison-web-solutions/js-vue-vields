@@ -15,7 +15,7 @@
     >
         <template v-slot="{ index, subVals }">
             <SelectField label="Content Type" name="content_type" :choices="sectionChoices" :required="true" class="mb-3" />
-            <template v-if="isValidSection(subVals.content_type)">
+            <template v-if="isValidSection(subVals?.content_type)">
                 <slot :name="subVals.content_type" :index="index" :subVals="subVals"></slot>
             </template>
         </template>
