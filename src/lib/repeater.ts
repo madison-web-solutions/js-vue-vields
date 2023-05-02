@@ -188,7 +188,7 @@ export function useRepeaterField(emit: FieldEmitType<RepeaterFormValue>, propRef
                 rowErrors: rowErrors,
                 showRowErrors: (editMode.value == 'edit' && rowErrors.length > 0),
                 childErrors: childErrors,
-                insertRowBefore: () => insertRowAt(index - 1),
+                insertRowBefore: () => insertRowAt(index),
                 insertRowAfter: () => insertRowAt(index + 1),
                 deleteRow: () => deleteRowAt(index),
                 startMove: () => startMove(index),
