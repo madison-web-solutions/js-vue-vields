@@ -4,8 +4,7 @@
             <div v-pclass="'custom-select'" ref="container">
                 <div class="form-select" @click="toggleDropdown">
                     <slot v-if="currentChoice" :choice="currentChoice">{{ currentChoice.label }}</slot>
-                    <slot v-if="nullSelected" name="nullSelected">{{ placeholder }}</slot>
-                    &nbsp;
+                    <slot v-if="nullSelected" name="nullSelected">{{ placeholder || nbsp }}</slot>
                 </div>
                 <div v-if="showDropdown" v-pclass="'custom-select-items'">
                     <div v-if="nullSelected || ! required" v-pclass="'custom-select-item'" @click="selectNull()">
@@ -29,6 +28,8 @@ import { computed, onMounted, onBeforeUnmount, ref, toRefs, inject } from 'vue';
 import { commonProps, useFormField, useHasChoicesSingle, symbols } from '@/main';
 
 type IdType = string | number | undefined;
+
+const nbsp = '\xa0';
 
 const props = defineProps(Object.assign({}, commonProps, {
     directory: {
