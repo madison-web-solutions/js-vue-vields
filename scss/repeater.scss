@@ -42,12 +42,10 @@
     position: relative;
     padding: 1rem;
     border: 1px solid $border-color;
-    z-index: 1;
     height: 100%;
 
     &.is-invalid {
         border: 1px solid $form-feedback-invalid-color;
-        z-index: 2;
     }
 }
 
