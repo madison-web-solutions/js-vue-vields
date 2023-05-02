@@ -111,6 +111,7 @@ const publicComponents: Record<string, Component> = {
     LinkField,
     FieldGroup,
     FieldArray,
+    FieldArrayItem,
     PasswordStrengthMeter,
     PasswordField,
     TimeField,
