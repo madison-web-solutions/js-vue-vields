@@ -1,0 +1,18 @@
+.#{$vfms-prefix}custom-select {
+    position: relative;
+}
+
+.#{$vfms-prefix}custom-select-items {
+    position: absolute;
+    z-index: $zindex-dropdown;
+    width: 100%;
+    background-color: $custom-select-bg;
+    border: $input-border-width solid $input-border-color;
+}
+
+.#{$vfms-prefix}custom-select-item {
+    padding: ($spacer * .25) $spacer;
+    &:hover, &:focus {
+        background-color: $custom-select-hover-bg;
+    }
+}

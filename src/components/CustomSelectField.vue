@@ -1,26 +1,20 @@
 <template>
     <FieldWrapper v-bind="standardWrapperProps">
         <template #input>
-            <div class="dropdown" ref="container">
-                <div class="input-group" @click="toggleDropdown">
-                    <div class="form-control">
-                        <slot v-if="currentChoice" :choice="currentChoice">{{ currentChoice.label }}</slot>
-                        <slot v-if="nullSelected" name="nullSelected">{{ placeholder }}</slot>
-                    </div>
-                    <button class="btn btn-outline-primary dropdown-toggle" type="button"></button>
+            <div v-pclass="'custom-select'" ref="container">
+                <div class="form-select" @click="toggleDropdown">
+                    <slot v-if="currentChoice" :choice="currentChoice">{{ currentChoice.label }}</slot>
+                    <slot v-if="nullSelected" name="nullSelected">{{ placeholder }}</slot>
+                    &nbsp;
                 </div>
-                <ul class="dropdown-menu" :class="showDropdown ? 'show' : ''">
-                    <li v-if="nullSelected || ! required">
-                        <button type="button" class="dropdown-item" @click="selectNull()">
-                            <slot name="nullOption"><span class="text-muted">{{ noValueLabel }}</span></slot>
-                        </button>
-                    </li>
-                    <li v-for="choice in choicesNormalized">
-                        <button type="button" class="dropdown-item" @click="selectOption(choice)">
-                            <slot :choice="choice">{{ choice.label }}</slot>
-                        </button>
-                    </li>
-                </ul>
+                <div v-if="showDropdown" v-pclass="'custom-select-items'">
+                    <div v-if="nullSelected || ! required" v-pclass="'custom-select-item'" @click="selectNull()">
+                        <slot name="nullOption"><span class="text-muted">{{ noValueLabel }}</span></slot>
+                    </div>
+                    <div v-for="choice in choicesNormalized" v-pclass="'custom-select-item'" @click="selectOption(choice)">
+                        <slot :choice="choice">{{ choice.label }}</slot>
+                    </div>
+                </div>
             </div>
         </template>
         <template #viewMode>

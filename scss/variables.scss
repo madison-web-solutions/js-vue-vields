@@ -1,6 +1,9 @@
 // Forms variables (to be overridden)
 $vfms-prefix: "" !default;
 
+$custom-select-bg: #fff !default;
+$custom-select-hover-bg: $gray-200 !default;
+
 $repeater-row-spacing: $spacer !default;
 $repeater-move-indicator-size: 4px !default;
 $repeater-move-indicator-color: $primary !default;
