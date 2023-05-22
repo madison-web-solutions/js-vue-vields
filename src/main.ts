@@ -1,5 +1,5 @@
-import { defineAsyncComponent, ref } from 'vue';
-import type { App, Component } from 'vue';
+import { defineAsyncComponent, ref, isRef, provide } from 'vue';
+import type { App, Component, Ref } from 'vue';
 
 import type {
     AppConfigOptions,
@@ -126,11 +126,11 @@ const publicComponents: Record<string, Component> = {
     TimestampField,
 };
 
-const vueFieldsMsPlugin = (app: App, config: Partial<AppConfigOptions>): void => {
+const vueFieldsMsPlugin = (app: App, appConfig: Partial<AppConfigOptions>): void => {
 
-    app.provide(symbols.fieldWrapperComponent, config.fieldWrapperComponent);
+    app.provide(symbols.fieldWrapperComponent, appConfig.fieldWrapperComponent);
 
-    const cssPrefix = config.cssPrefix || '';
+    const cssPrefix = appConfig.cssPrefix || '';
     const normalizeClassList = (arg: any): string[] => {
         const classList = [];
         if (arg == null || arg == '') {
@@ -160,15 +160,49 @@ const vueFieldsMsPlugin = (app: App, config: Partial<AppConfigOptions>): void =>
         },
     });
 
-    app.provide(symbols.config, ref(config));
-
-    if (config.registerFieldComponents === true) {
-        const _prefix: string = (config.componentPrefix == null ? '' : config.componentPrefix);
+    if (appConfig.registerFieldComponents === true) {
+        const _prefix: string = (appConfig.componentPrefix == null ? '' : appConfig.componentPrefix);
         for (const name in publicComponents) {
             app.component(_prefix + name, publicComponents[name]);
         }
     }
+
+    if (appConfig.choicesProvider) {
+        app.provide(symbols.choicesProvider, ref(appConfig.choicesProvider));
+    }
+    if (appConfig.linksProvider) {
+        app.provide(symbols.linksProvider, ref(appConfig.linksProvider));
+    }
+    if (appConfig.mediaProvider) {
+        app.provide(symbols.mediaProvider, ref(appConfig.mediaProvider));
+    }
+    if (appConfig.passwordStrengthProvider) {
+        app.provide(symbols.passwordStrengthProvider, ref(appConfig.passwordStrengthProvider));
+    }
+
+    const config: Partial<Config> = {};
+    let configKey: ConfigKey;
+    for (configKey in defaultConfig) {
+        if (configKey in appConfig) {
+            config[configKey] = appConfig[configKey] as any;
+        }
+    }
+    app.provide(symbols.config, ref(config));
 };
+
+const provideChoices = (provider: ChoicesProvider | Ref<ChoicesProvider>) => {
+    provide(symbols.choicesProvider, isRef(provider) ? provider : ref(provider));
+};
+const provideLinks = (provider: LinksProvider | Ref<LinksProvider>) => {
+    provide(symbols.linksProvider, isRef(provider) ? provider : ref(provider));
+};
+const provideMedia = (provider: MediaProvider | Ref<MediaProvider>) => {
+    provide(symbols.mediaProvider, isRef(provider) ? provider : ref(provider));
+};
+const providePasswordStrength = (provider: PasswordStrengthProvider | Ref<PasswordStrengthProvider>) => {
+    provide(symbols.passwordStrengthProvider, isRef(provider) ? provider : ref(provider));
+};
+
 
 export type {
     AppConfigOptions,
@@ -216,7 +250,7 @@ export type {
     UseRepeaterFieldPropRefs,
 };
 
-export { vueFieldsMsPlugin };
+export { vueFieldsMsPlugin, provideChoices, provideLinks, provideMedia, providePasswordStrength };
 export { commonProps, useExtendsPath, useFormField, useExtendsConfig, useExtendsEditMode, useHasCompoundValue, useHasChoices, useHasChoicesSingle, useFormFieldWithChoicesMultiple, useParsesTextField, useHasMaxChars, useSearches, useRepeaterField, usePopperTooltip };
 export { sliceMessageBag, spliceMessageBag, messageBagToString }
 export { startCase, getUniqueKey, coerceToNumber, coerceToScalarFormValue, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, coerceToBooleansNativeMap, coerceToKeysList, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols };

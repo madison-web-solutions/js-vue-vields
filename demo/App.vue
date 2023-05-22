@@ -10,8 +10,8 @@
 
 <script setup lang="ts">
 import type { Choosable, LinkAlias, MediaItem, ResizableMediaItem, SearchResultPage, ChoicesProvider, LinksProvider, MediaProvider, PasswordStrengthProvider, LookupResult, UpdateResult } from "vue-fields-ms";
-import { ref, provide } from "vue";
-import { symbols } from '@/main';
+import { ref } from "vue";
+import { provideChoices, provideLinks, provideMedia, providePasswordStrength } from 'vue-fields-ms';
 import { faker } from '@faker-js/faker';
 
 type Cat = {
@@ -94,7 +94,7 @@ const dummyChoicesProvider = ref<ChoicesProvider>({
     },
 });
 
-provide(symbols.choicesProvider, dummyChoicesProvider);
+provideChoices(dummyChoicesProvider);
 
 const catToLink = (cat: Cat): LinkAlias => {
     return {
@@ -145,7 +145,7 @@ const dummyLinksProvider = ref<LinksProvider>({
     ],
 });
 
-provide(symbols.linksProvider, dummyLinksProvider);
+provideLinks(dummyLinksProvider);
 
 
 let fakeMediaItemCounter: number = 1;
@@ -235,7 +235,7 @@ const dummyMediaProvider = ref<MediaProvider>({
     },
 });
 
-provide(symbols.mediaProvider, dummyMediaProvider);
+provideMedia(dummyMediaProvider);
 
 
 const dummyPasswordStrengthProvider = ref<PasswordStrengthProvider>({
@@ -247,6 +247,6 @@ const dummyPasswordStrengthProvider = ref<PasswordStrengthProvider>({
     maxStrength: 5,
 });
 
-provide(symbols.passwordStrengthProvider, dummyPasswordStrengthProvider);
+providePasswordStrength(dummyPasswordStrengthProvider);
 
 </script>

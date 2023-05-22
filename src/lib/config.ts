@@ -1,7 +1,7 @@
 import type { Config, ConfigKey } from '@/main';
 import type { Ref } from 'vue';
-import { symbols, FieldWrapper } from '@/main';
-import { computed, inject, provide, unref } from 'vue';
+import { symbols } from '@/main';
+import { computed, inject } from 'vue';
 
 export const defaultConfig: Config = {
     'textArea.numRows': 5,

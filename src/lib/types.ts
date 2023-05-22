@@ -214,5 +214,9 @@ export type AppConfigOptions = Config & {
     componentPrefix: string,
     cssPrefix: string,
     fieldWrapperComponent: typeof FieldWrapper,
+    choicesProvider: ChoicesProvider,
+    linksProvider: LinksProvider,
+    mediaProvider: MediaProvider,
+    passwordStrengthProvider: PasswordStrengthProvider,
 };
 
