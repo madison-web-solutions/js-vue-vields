@@ -34,7 +34,7 @@
 
 <script setup lang="ts">
 import type { Choosable, LinkAlias, MessageBag, LookupResult, SearchResultPage } from '@/main';
-import { computed, ref, inject, toRefs, watchEffect } from 'vue';
+import { computed, ref, inject, toRefs, watchEffect, watch } from 'vue';
 import { commonProps, useFormField, useSearches, symbols } from '@/main';
 import SearchInterface from './SearchInterface.vue';
 
@@ -63,7 +63,7 @@ const provider = inject(symbols.linksProvider);
 
 const urlScheme = {key: 'url', label: 'URL'};
 
-const availableSchemes = computed((): Choosable[] => {
+const availableSchemes = computed((): {key: string, label: string}[] => {
     if (provider == null || provider.value == null) {
         return [];
     } else {
@@ -71,45 +71,41 @@ const availableSchemes = computed((): Choosable[] => {
     }
 });
 
-const modelValueParts = computed(() => {
-    if (provider == null || provider.value == null || modelValue.value == null) {
-        return {
-            scheme: urlScheme,
-            key: '',
-        };
-    }
-    const parts = modelValue.value.split(':');
-    if (parts.length > 1) {
-        for (const scheme of availableSchemes.value) {
-            if (scheme.key == parts[0]) {
-                return {
-                    scheme: scheme,
-                    key: parts.slice(1).join(':'),
-                };
+const schemeKey = ref<string>(urlScheme.key);
+const aliasKey = ref<string | undefined>(undefined);
+
+// Set scheme and aliasKey from the modelValue string (and update when modelValue changes)
+const updateLocalVals = (newModelValue: string | undefined) => {
+    if (newModelValue == null) {
+        schemeKey.value = urlScheme.key;
+        aliasKey.value = undefined;
+    } else {
+        const parts = newModelValue.split(':');
+        if (parts.length > 1) {
+            for (const scheme of availableSchemes.value) {
+                if (scheme.key == parts[0]) {
+                    schemeKey.value = scheme.key;
+                    aliasKey.value = parts.slice(1).join(':');
+                }
             }
+        } else {
+            schemeKey.value = urlScheme.key;
+            aliasKey.value = newModelValue;
         }
     }
-    return {
-        scheme: urlScheme,
-        key: modelValue.value,
-    };
-});
+};
+updateLocalVals(modelValue.value);
+watch(modelValue, updateLocalVals);
 
-const schemeKey = computed({
-    get: (): string => {
-        return String(modelValueParts.value.scheme.key);
-    },
-    set: (newSchemeKey: string) => {
-        modelValue.value = newSchemeKey + ':';
-    }
-});
-
-const aliasKey = computed({
-    get: (): string => {
-        return modelValueParts.value.key;
-    },
-    set: (newAliasKey: string) => {
-        modelValue.value = schemeKey.value + ':' + newAliasKey;
+// Set modelValue when schemeKey or aliasKey changes
+watch([schemeKey, aliasKey], ([newSchemeKey, newAliasKey]) => {
+    newSchemeKey = (newSchemeKey || urlScheme.key);
+    newAliasKey = (newAliasKey || '');
+    if (newSchemeKey == urlScheme.key && newAliasKey == '') {
+        // If both are cleared, unset modelValue
+        modelValue.value = undefined;
+    } else {
+        modelValue.value = newSchemeKey + ':' + newAliasKey;
     }
 });
 
@@ -122,7 +118,7 @@ watchEffect(() => {
         return;
     }
     currentLinkAlias.value = null;
-    if (provider != null && schemeKey.value != '' && schemeKey.value != 'url' && aliasKey.value != '') {
+    if (provider != null && schemeKey.value != '' && schemeKey.value != urlScheme.key && aliasKey.value != null && aliasKey.value != '') {
         provider.value.lookup(schemeKey.value, aliasKey.value).then((result: LookupResult<LinkAlias>) => {
             if (result.status == 'found') {
                 currentLinkAlias.value = result.resource;
@@ -132,7 +128,7 @@ watchEffect(() => {
 });
 
 const searchFn = (page: number): Promise<SearchResultPage<LinkAlias>> | null => {
-    if (modelValueParts.value.scheme == null || provider == null) {
+    if (schemeKey.value == '' || schemeKey.value == urlScheme.key || provider == null) {
         return null;
     }
     if (searchText.value.length < 3) {
@@ -153,20 +149,16 @@ const chooseSuggestion = (index: number) => {
 };
 
 const clearValue = () => {
-    if (modelValueParts.value.scheme == null) {
-        modelValue.value = '';
-    } else {
-        modelValue.value = schemeKey.value + ':';
-    }
+    aliasKey.value = undefined;
 };
 
 const displayValue = computed((): string => {
-    if (schemeKey.value == 'url') {
+    if (schemeKey.value == urlScheme.key) {
         return modelValue.value || '';
     } else if (currentLinkAlias.value) {
         return currentLinkAlias.value.label;
     } else {
-        return aliasKey.value;
+        return aliasKey.value || '';
     }
 });
 
