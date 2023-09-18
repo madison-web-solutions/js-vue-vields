@@ -11,7 +11,7 @@
 }
 
 .#{$vfms-prefix}custom-select-item {
-    padding: ($spacer * .25) $spacer;
+    padding: calc($spacer * .25) $spacer;
     &:hover, &:focus {
         background-color: $custom-select-hover-bg;
     }

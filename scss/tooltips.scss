@@ -4,7 +4,7 @@
     font-size: $font-size-sm;
 
     max-width: 30rem;
-    padding: ($spacer * 0.5) $spacer;
+    padding: calc($spacer * 0.5) $spacer;
     border-radius: .7rem;
     box-shadow: 0 1rem 2rem rgba($black, .08);
     white-space: pre-line;

@@ -1,5 +1,3 @@
-@use "sass:math";
-
 /*** Common to RepeaterField and RepeaterTableField ***/
 
 .#{$vfms-prefix}btn-repeater-move {
@@ -56,7 +54,7 @@
     transform: translateY(-50%);
     z-index: 3;
     .btn:not(:first-child) {
-        margin-left: $spacer * 0.25;
+        margin-left: calc($spacer * 0.25);
     }
 }
 
@@ -73,13 +71,13 @@
         left: 0px;
         right: 0px;
         &.#{$vfms-prefix}move-before {
-            top: calc(#{$repeater-row-spacing * -0.5} + #{$repeater-move-indicator-size * -0.5});
+            top: calc(($repeater-row-spacing * -0.5) + ($repeater-move-indicator-size * -0.5));
             bottom: 50%;
             border-top-width: $repeater-move-indicator-size;
         }
         &.#{$vfms-prefix}move-after {
             top: 50%;
-            bottom: calc(#{$repeater-row-spacing * -0.5} + #{$repeater-move-indicator-size * -0.5});
+            bottom: calc(($repeater-row-spacing * -0.5) + ($repeater-move-indicator-size * -0.5));
             border-bottom-width: $repeater-move-indicator-size;
         }
     }
@@ -88,13 +86,13 @@
         top: 0px;
         bottom: 0px;
         &.#{$vfms-prefix}move-before {
-            left: calc(#{$repeater-row-spacing * -0.5} + #{$repeater-move-indicator-size * -0.5});
+            left: calc(($repeater-row-spacing * -0.5) + ($repeater-move-indicator-size * -0.5));
             right: 50%;
             border-left-width: $repeater-move-indicator-size;
         }
         &.#{$vfms-prefix}move-after {
             left: 50%;
-            right: calc(#{$repeater-row-spacing * -0.5} + #{$repeater-move-indicator-size * -0.5});
+            right: calc(($repeater-row-spacing * -0.5) + ($repeater-move-indicator-size * -0.5));
             border-right-width: $repeater-move-indicator-size;
         }
     }
@@ -170,7 +168,7 @@ A CSS variable --row-num is injected on each item which is the row number for th
     // Thick border under the header
     &::after {
         grid-row: 1 / span 1;
-        border-bottom: (2 * $table-border-width) solid $table-group-separator-color;
+        border-bottom: calc(2 * $table-border-width) solid $table-group-separator-color;
         z-index: -2;
     }
 }
@@ -197,7 +195,7 @@ A CSS variable --row-num is injected on each item which is the row number for th
 
     flex-direction: column;
     .btn:not(:first-child) {
-        margin-top: $spacer * 0.25;
+        margin-top: calc($spacer * 0.25);
     }
 }
 
@@ -229,18 +227,18 @@ A CSS variable --row-num is injected on each item which is the row number for th
     left: 0px;
     right: 0px;
     &.#{$vfms-prefix}move-before {
-        top: $repeater-move-indicator-size * -0.5;
+        top: calc($repeater-move-indicator-size * -0.5);
         bottom: 50%;
         border-top-width: $repeater-move-indicator-size;
     }
     &.#{$vfms-prefix}move-after {
         top: 50%;
-        bottom: $repeater-move-indicator-size * -0.5;
+        bottom: calc($repeater-move-indicator-size * -0.5);
         border-bottom-width: $repeater-move-indicator-size;
     }
 }
 
 .#{$vfms-prefix}repeater-table-append {
-    margin-top: $spacer * 0.5;
+    margin-top: calc($spacer * 0.5);
     grid-column: 1 / -1;
 }
