@@ -24,8 +24,8 @@
 
 .#{$vfms-prefix}repeater {
     position: relative;
-    --bs-gutter-x: #{$repeater-row-spacing};
-    --bs-gutter-y: #{$repeater-row-spacing};
+    --#{$variable-prefix}gutter-x: #{$repeater-row-spacing};
+    --#{$variable-prefix}gutter-y: #{$repeater-row-spacing};
 }
 
 .#{$vfms-prefix}repeater-item {
@@ -244,4 +244,3 @@ A CSS variable --row-num is injected on each item which is the row number for th
     margin-top: $spacer * 0.5;
     grid-column: 1 / -1;
 }
-
