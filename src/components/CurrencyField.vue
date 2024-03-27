@@ -83,7 +83,7 @@ const exponent = computed((): number => {
 
 const parsesTextFieldOptions: ParsesTextFieldOptions<number> = {
     coerceNotEmpty: (textInput: string): number | undefined => {
-        textInput = textInput.replace(/^[^0-9]+/,'');
+        textInput = textInput.replace(/^[^-0-9]+/,'');
         const amountInMajorUnits = parseFloat(textInput);
         if (! isFinite(amountInMajorUnits)) {
             return undefined;
