@@ -105,6 +105,8 @@
 }
 
 .#{$vfms-prefix}media-details-preview {
+    position: relative;
+
     > img {
         display: block;
         margin: auto;
@@ -119,5 +121,18 @@
     }
     .#{$vfms-prefix}media-details-icon {
         font-size: 46px;
+    }
+
+    .#{$vfms-prefix}media-details-crop-center-left-pointer, .#{$vfms-prefix}media-details-crop-center-top-pointer {
+        position: absolute;
+        display: block;
+        transform: translate(-50%, -50%);
+        color: $primary;
+    }
+    .#{$vfms-prefix}media-details-crop-center-left-pointer {
+        text-shadow: 0px 2px 3px white;
+    }
+    .#{$vfms-prefix}media-details-crop-center-top-pointer {
+        text-shadow: 2px 0px 3px white;
     }
 }

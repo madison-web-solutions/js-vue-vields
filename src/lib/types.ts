@@ -88,6 +88,7 @@ export type MediaItem = {
     extension: string,
     src: string | null,
     alt: string | null,
+    cropCenter?: {top: number, left: number},
     // media type ?
 };
 
@@ -205,6 +206,7 @@ export type Config = {
     'textArea.numRows': number,
     'currency.currencyCode': string | null,
     'currency.showCurrency': boolean,
+    'media.supportCropCenter': boolean,
 };
 
 export type ConfigKey = keyof Config;

@@ -7,6 +7,7 @@ export const defaultConfig: Config = {
     'textArea.numRows': 5,
     'currency.currencyCode': null,
     'currency.showCurrency': false,
+    'media.supportCropCenter': false,
 };
 
 export const getConfigValue = <K extends ConfigKey>(config: Partial<Config> | undefined, key: K): Config[K] => {

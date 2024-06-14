@@ -8,6 +8,7 @@ const app = createApp(App);
 app.use(vueFieldsMsPlugin, {
     registerFieldComponents: false,
     cssPrefix: 'demo-',
+    'media.supportCropCenter': true,
 });
 
 import router from "./router";
