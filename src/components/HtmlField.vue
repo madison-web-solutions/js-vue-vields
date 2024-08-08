@@ -95,7 +95,7 @@ const destroyEditor = () => {
 };
 
 let timeoutId: number | undefined = undefined;
-const handleEditorDataChange = (evt: any) => {
+const handleEditorDataChange = () => {
     window.clearTimeout(timeoutId);
     if (! editor || props.disabled) {
         return;

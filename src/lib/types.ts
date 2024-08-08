@@ -131,7 +131,7 @@ export type PasswordStrengthProvider = {
     maxStrength: number,
 };
 
-export type UseFormFieldPropRefs<ValueType> = {
+export type UseFormFieldPropRefs = {
     modelValue?: Ref<unknown>,
     errors?: Ref<MessageBag | undefined>,
     name?: Ref<string | undefined>,
@@ -163,7 +163,7 @@ export type UseHasChoicesPropRefs = {
 };
 
 export type UseFormFieldHasChoicesMultiplePropRefs =
-    UseFormFieldPropRefs<KeysList | BooleansMap>
+    UseFormFieldPropRefs
     &  UseHasChoicesPropRefs
     & {
         valueIs?: Ref<"array" | "object">,
@@ -178,7 +178,7 @@ export type ParsesTextFieldOptions<T> = {
     formatForEditing?: (val: T) => string,
 };
 
-export type UseRepeaterFieldPropRefs = UseFormFieldPropRefs<RepeaterFormValue> & {
+export type UseRepeaterFieldPropRefs = UseFormFieldPropRefs & {
     min?: Ref<number | undefined>,
     max?: Ref<number | undefined>,
     movable?: Ref<boolean | undefined>,

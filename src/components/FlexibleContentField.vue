@@ -15,7 +15,7 @@
     >
         <template v-slot="{ index, subVals }">
             <SelectField label="Content Type" name="content_type" :choices="sectionChoices" :required="true" class="mb-3" />
-            <template v-if="isValidSection(subVals?.content_type)">
+            <template v-if="(subVals != null) && (typeof subVals == 'object') && ('content_type' in subVals) && (typeof(subVals.content_type) == 'string') && isValidSection(subVals.content_type)">
                 <slot :name="subVals.content_type" :index="index" :subVals="subVals"></slot>
             </template>
         </template>
@@ -46,7 +46,7 @@ const emit = defineEmits<{
     (e: 'update:errors', value: MessageBag): void
 }>();
 
-const isValidSection = (value: unknown): boolean => {
+const isValidSection = (value: string): boolean => {
     for (const choice of props.sectionChoices) {
         if (choice.key === value) {
             return true;

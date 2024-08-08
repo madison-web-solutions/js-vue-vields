@@ -24,5 +24,6 @@ const props = withDefaults(defineProps<{
     inputWrapperCssClass: 'position-relative',
     editMode: 'edit',
 });
+props; // This is here just to stop tsc saying we declared props but didn't use it
 
 </script>

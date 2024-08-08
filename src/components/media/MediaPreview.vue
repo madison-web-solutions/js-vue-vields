@@ -13,8 +13,7 @@
 <script setup lang="ts">
 import type { PropType } from 'vue';
 import type { MediaItem } from '../../main';
-import { ref, computed, inject, watchEffect, toRef } from 'vue';
-import { symbols } from '../../main';
+import { computed, toRef } from 'vue';
 import { isMediaItemResizable, getIconCssClass } from '../../lib/media';
 
 const props = defineProps({
@@ -40,11 +39,11 @@ const emit = defineEmits<{
     (e: 'select'): void,
 }>();
 
+/*
 const provider = inject(symbols.mediaProvider);
 
-//const loadStatus = ref<'loading' | 'missing' | 'error' | 'loaded'>('loading');
+const loadStatus = ref<'loading' | 'missing' | 'error' | 'loaded'>('loading');
 
-/*
 watchEffect(() => {
     item.value = null;
     loadStatus.value = 'loading';

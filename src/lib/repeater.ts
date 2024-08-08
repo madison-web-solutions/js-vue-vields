@@ -9,7 +9,7 @@ import type {
     UseRepeaterFieldPropRefs,
 } from '../main';
 import { computed, provide, ref, onBeforeUnmount } from 'vue';
-import { useFormField, sliceMessageBag, spliceMessageBag, coerceToCompoundFormValue, coerceToRepeaterFormValue, copyRepeaterFormValue, reindexErrors, symbols } from '../main';
+import { useFormField, sliceMessageBag, spliceMessageBag, coerceToRepeaterFormValue, copyRepeaterFormValue, reindexErrors, symbols } from '../main';
 
 export function useRepeaterField(emit: FieldEmitType<RepeaterFormValue>, propRefs: UseRepeaterFieldPropRefs, opts?: UseFormFieldOpts ) {
 

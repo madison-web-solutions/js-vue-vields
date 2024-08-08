@@ -109,12 +109,12 @@ const doNextDefaultCheck = async () => {
     }
     doingDefaultChecks = false;
 };
-const queueDefaultCheck = <ValueType extends FormValue>(rawValue: Ref<unknown>, defaultProp: Ref<unknown>, setter: (val: unknown) => void) => {
+const queueDefaultCheck = (rawValue: Ref<unknown>, defaultProp: Ref<unknown>, setter: (val: unknown) => void) => {
     defaultCheckQueue.push({ rawValue, defaultProp, setter });
     doNextDefaultCheck();
 };
 
-export function useFormField<ValueType extends FormValue> (valueCoerceFn: (val: unknown) => ValueType, emit: FieldEmitType<ValueType>, propRefs: UseFormFieldPropRefs<ValueType>, opts?: UseFormFieldOpts) {
+export function useFormField<ValueType extends FormValue> (valueCoerceFn: (val: unknown) => ValueType, emit: FieldEmitType<ValueType>, propRefs: UseFormFieldPropRefs, opts?: UseFormFieldOpts) {
 
     const name = computed((): (string | undefined) => {
         return propRefs.name?.value;

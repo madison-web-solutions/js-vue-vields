@@ -12,8 +12,8 @@
 
 <script setup lang="ts">
 import type { MessageBag, ParsesTextFieldOptions } from '../main';
-import { computed, ref, toRefs, inject } from 'vue';
-import { commonProps, useFormField, useParsesTextField, symbols, getConfigRef } from '../main';
+import { computed, ref, toRefs } from 'vue';
+import { commonProps, useFormField, useParsesTextField, getConfigRef } from '../main';
 
 const props = defineProps(Object.assign({}, commonProps, {
     currencyCode: {

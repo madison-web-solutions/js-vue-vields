@@ -221,7 +221,7 @@ const cropCenterMarkerStyle = computed(() => {
 });
 
 // We can use a ResizeObsever to catch changes in size/position of the image or the container, and use that to trigger repositionCropCenterMarkers()
-let resizeObverver = new ResizeObserver((entries) => {
+let resizeObverver = new ResizeObserver(() => {
     // We can 'trick' cropCenterMarkerStyle to be recomputed by increasing this dummy value that is referenced in the computed function
     resizeCount.value++;
 });

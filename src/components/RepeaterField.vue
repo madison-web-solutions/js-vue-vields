@@ -11,6 +11,9 @@
                             <button class="btn btn-sm btn-danger ms-1" v-pclass="'btn-repeater-delete'" @click="item.deleteRow"><i class="fas fa-times fa-fw"></i></button>
                         </div>
                         <FieldArrayItem :index="item.index">
+                            <div v-if="subValuesType == 'simple'" v-pclass="'repeater-item-content'">
+                                <slot :index="item.index" :subVal="item.rowVals"></slot>
+                            </div>
                             <div v-if="subValuesType == 'compound'" v-pclass="'repeater-item-content'" :class="{'is-invalid': item.showRowErrors}">
                                 <FieldGroup>
                                     <slot :index="item.index" :subVals="item.rowVals"></slot>
@@ -18,10 +21,6 @@
                                 <div v-if="item.showRowErrors" class="invalid-feedback d-block">
                                     <div v-for="msg in item.rowErrors">{{ msg }}</div>
                                 </div>
-                            </div>
-
-                            <div v-if="subValuesType == 'simple'" v-pclass="'repeater-item-content'">
-                                <slot :index="item.index" :subVal="item.rowVals"></slot>
                             </div>
                         </FieldArrayItem>
                         <template v-if="editable && isMoving">
