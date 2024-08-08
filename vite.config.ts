@@ -1,9 +1,17 @@
 import { defineConfig } from "vite";
 import path from "path";
 import vuePlugin from "@vitejs/plugin-vue";
+import dts from "vite-plugin-dts";
 
+// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vuePlugin()],
+  plugins: [
+    vuePlugin(),
+    dts({
+      include: ['src'],
+      tsconfigPath: 'tsconfig.build.json',
+    }),
+  ],
   resolve: {
     alias: { // must also add to tsconfig.app.json to get VSCode to understand the aliases
       'vue-fields-ms': path.resolve(__dirname, "./src/main.ts"),
@@ -15,7 +23,6 @@ export default defineConfig({
       entry: path.resolve(__dirname, 'src/main.ts'),
       formats: ['es'],
       name: 'VueFieldsMs',
-      fileName: (format) => `vue-fields-ms.${format}.js`
     },
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
