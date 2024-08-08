@@ -10,6 +10,7 @@ export default defineConfig({
     dts({
       include: ['src'],
       tsconfigPath: 'tsconfig.build.json',
+      rollupTypes: true,
     }),
   ],
   resolve: {
