@@ -8,10 +8,10 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag, ParsesTextFieldOptions } from '@/main';
+import type { MessageBag, ParsesTextFieldOptions } from '../main';
 import { computed, ref, toRefs } from 'vue';
-import { commonProps, useFormField, useParsesTextField } from '@/main';
-import { timeParse, timeFormat, timeSplit } from '@/lib/time';
+import { commonProps, useFormField, useParsesTextField } from '../main';
+import { timeParse, timeFormat, timeSplit } from '../lib/time';
 
 const props = defineProps(Object.assign({}, commonProps, {
     withSeconds: {

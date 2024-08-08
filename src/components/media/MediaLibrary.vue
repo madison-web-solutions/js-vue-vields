@@ -36,9 +36,9 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag, MediaItem, SearchResultPage, UpdateResult } from '@/main';
+import type { MessageBag, MediaItem, SearchResultPage, UpdateResult } from '../../main';
 import { computed, inject, ref } from 'vue';
-import { MediaPreview, MediaDetails, messageBagToString, useSearches, symbols } from '@/main';
+import { MediaPreview, MediaDetails, messageBagToString, useSearches, symbols } from '../../main';
 
 const props = defineProps({
     standalone: {

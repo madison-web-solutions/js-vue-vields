@@ -35,9 +35,9 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag, Choosable, SearchResultPage } from '@/main';
+import type { MessageBag, Choosable, SearchResultPage } from '../main';
 import { computed, ref, toRefs, watchEffect, inject } from 'vue';
-import { commonProps, useFormField, useSearches, symbols } from '@/main';
+import { commonProps, useFormField, useSearches, symbols } from '../main';
 import SearchInterface from './SearchInterface.vue';
 
 type IdType = string | number | undefined;

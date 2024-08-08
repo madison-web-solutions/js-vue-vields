@@ -6,7 +6,7 @@ import type {
     Path,
     RepeaterFormValue,
     ScalarFormValue,
-} from '@/main';
+} from '../main';
 
 let uniqueKeyCounter: number = 1;
 export const getUniqueKey = function(): string {

@@ -4,9 +4,9 @@
 
 <script setup lang="ts">
 
-import type { MessageBag, CompoundFormValue, EditMode, Config } from '@/main';
+import type { MessageBag, CompoundFormValue, EditMode, Config } from '../main';
 import { toRefs } from 'vue';
-import { useFormField, useHasCompoundValue, coerceToCompoundFormValue, useExtendsEditMode, useExtendsConfig } from '@/main';
+import { useFormField, useHasCompoundValue, coerceToCompoundFormValue, useExtendsEditMode, useExtendsConfig } from '../main';
 
 const props = defineProps<{
     modelValue?: any,

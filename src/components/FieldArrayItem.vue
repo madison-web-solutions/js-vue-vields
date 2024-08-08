@@ -3,9 +3,9 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag, FormValue, FixedLens } from '@/main';
+import type { MessageBag, FormValue, FixedLens } from '../main';
 import { toRef, provide, inject } from 'vue';
-import { useExtendsPath, symbols } from '@/main';
+import { useExtendsPath, symbols } from '../main';
 
 const props = defineProps<{
     index: number,

@@ -8,9 +8,9 @@ import type {
     MessageBag,
     PasswordStrengthProvider,
     Path,
-} from '@/main';
+} from '../main';
 import type { Ref, InjectionKey } from 'vue';
-import { FieldWrapper } from '@/main';
+import { FieldWrapper } from '../main';
 
 const symbols = {
     editMode: Symbol() as InjectionKey<Ref<"edit" | "view">>,

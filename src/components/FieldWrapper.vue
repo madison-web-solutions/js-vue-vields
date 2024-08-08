@@ -29,10 +29,10 @@
 </template>
 
 <script setup lang="ts">
-import type { EditMode, Path } from '@/main';
+import type { EditMode, Path } from '../main';
 import { computed, inject, ref, toRefs } from 'vue';
-import { symbols } from '@/main';
-import usePopperTooltip from '@/lib/usePopperTooltip';
+import { symbols } from '../main';
+import usePopperTooltip from '../lib/usePopperTooltip';
 
 const props = withDefaults(defineProps<{
     inputEleId?: string,

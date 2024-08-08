@@ -19,9 +19,9 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag, KeysList, Choosable, PendingChoosable } from '@/main';
+import type { MessageBag, KeysList, Choosable, PendingChoosable } from '../main';
 import { computed, ref, toRefs, watch, watchEffect, inject } from 'vue';
-import { SearchField, SelectField, commonProps, useFormField, useHasChoices, symbols, coerceToKeysList } from '@/main';
+import { SearchField, SelectField, commonProps, useFormField, useHasChoices, symbols, coerceToKeysList } from '../main';
 
 const props = defineProps(Object.assign({}, commonProps, {
     searchable: {

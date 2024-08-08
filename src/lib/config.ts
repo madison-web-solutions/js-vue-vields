@@ -1,6 +1,6 @@
-import type { Config, ConfigKey } from '@/main';
+import type { Config, ConfigKey } from '../main';
 import type { Ref } from 'vue';
-import { symbols } from '@/main';
+import { symbols } from '../main';
 import { computed, inject } from 'vue';
 
 export const defaultConfig: Config = {

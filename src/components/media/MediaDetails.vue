@@ -44,11 +44,10 @@
 </template>
 
 <script setup lang="ts">
-import type { MediaItem, LookupResult, UpdateResult } from '@/main';
+import type { MediaItem, LookupResult, UpdateResult } from '../../main';
 import { computed, ref, inject, watchEffect } from 'vue';
-import { getIconCssClass } from '@/lib/media';
-import { symbols, FieldGroup, TextField, CompoundField, getConfigRef } from '@/main';
-import NumberField from '../NumberField.vue';
+import { getIconCssClass } from '../../lib/media';
+import { symbols, FieldGroup, TextField, CompoundField, NumberField, getConfigRef } from '../../main';
 
 const props = defineProps({
     itemId: {

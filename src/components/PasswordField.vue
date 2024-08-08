@@ -9,10 +9,9 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag } from '@/main';
+import type { MessageBag } from '../main';
 import { toRefs } from 'vue';
-import { commonProps, useFormField } from '@/main';
-import { PasswordStrengthMeter } from '@/main';
+import { commonProps, useFormField, PasswordStrengthMeter } from '../main';
 
 const props = defineProps(Object.assign({}, commonProps, {
     inputType: {

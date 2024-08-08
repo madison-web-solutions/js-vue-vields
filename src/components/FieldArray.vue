@@ -5,9 +5,9 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag, RepeaterFormValue, EditMode, Config } from '@/main';
+import type { MessageBag, RepeaterFormValue, EditMode, Config } from '../main';
 import { toRefs } from 'vue';
-import { useRepeaterField, useExtendsEditMode, useExtendsConfig } from '@/main';
+import { useRepeaterField, useExtendsEditMode, useExtendsConfig } from '../main';
 
 const props = defineProps<{
     modelValue?: any,

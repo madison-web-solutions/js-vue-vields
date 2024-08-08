@@ -7,9 +7,9 @@ import type {
     RepeaterItem,
     UseFormFieldOpts,
     UseRepeaterFieldPropRefs,
-} from '@/main';
+} from '../main';
 import { computed, provide, ref, onBeforeUnmount } from 'vue';
-import { useFormField, sliceMessageBag, spliceMessageBag, coerceToCompoundFormValue, coerceToRepeaterFormValue, copyRepeaterFormValue, reindexErrors, symbols } from '@/main';
+import { useFormField, sliceMessageBag, spliceMessageBag, coerceToCompoundFormValue, coerceToRepeaterFormValue, copyRepeaterFormValue, reindexErrors, symbols } from '../main';
 
 export function useRepeaterField(emit: FieldEmitType<RepeaterFormValue>, propRefs: UseRepeaterFieldPropRefs, opts?: UseFormFieldOpts ) {
 
@@ -74,7 +74,7 @@ export function useRepeaterField(emit: FieldEmitType<RepeaterFormValue>, propRef
         addEnoughRows(modelValueCopy);
         // set our new value
         modelValue.value = modelValueCopy;
-    
+
         // update indices in error messages so that errors remain attached to the right row
         errors.value = reindexErrors(errors.value, (oldIndex) => {
             if (oldIndex === index) {
@@ -150,7 +150,7 @@ export function useRepeaterField(emit: FieldEmitType<RepeaterFormValue>, propRef
             errors.value = spliceMessageBag(errors.value, String(index), newSubErrors);
         }
     };
-    
+
     provide(symbols.errorsLens, errorsLens);
 
     const movingIndex = ref<number | undefined>(undefined);

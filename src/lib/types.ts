@@ -1,5 +1,5 @@
 import type { Ref } from 'vue';
-import { FieldWrapper } from '@/main';
+import { FieldWrapper } from '../main';
 
 export type EditMode = "edit" | "view";
 

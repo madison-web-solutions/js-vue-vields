@@ -21,10 +21,10 @@
 </template>
 
 <script setup lang="ts">
-import type { MediaItem, MessageBag } from '@/main';
+import type { MediaItem, MessageBag } from '../../main';
 import { ref, toRefs, watchEffect, inject } from 'vue';
-import { commonProps, useFormField, symbols } from '@/main';
-import { MediaPreview, MediaLibrary, MediaDetails, Modal } from '@/main';
+import { commonProps, useFormField, symbols } from '../../main';
+import { MediaPreview, MediaLibrary, MediaDetails, Modal } from '../../main';
 
 type IdType = string | number | undefined;
 

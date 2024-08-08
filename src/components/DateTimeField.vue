@@ -12,9 +12,9 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag } from '@/main';
+import type { MessageBag } from '../main';
 import { computed, toRefs, provide } from 'vue';
-import { symbols, commonProps, useFormField, DateField, TimeField, EmptyFieldWrapper } from '@/main';
+import { symbols, commonProps, useFormField, DateField, TimeField, EmptyFieldWrapper } from '../main';
 import { ymdHisToFormat } from 'date-format-ms';
 
 const props = defineProps(Object.assign({}, commonProps, {

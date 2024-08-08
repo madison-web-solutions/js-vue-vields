@@ -21,9 +21,9 @@
 
 <script setup lang="ts">
 import type { PropType } from 'vue';
-import type { MessageBag, KeysList, BooleansMap } from '@/main';
+import type { MessageBag, KeysList, BooleansMap } from '../main';
 import { toRefs } from 'vue';
-import { commonProps, useFormFieldWithChoicesMultiple } from '@/main';
+import { commonProps, useFormFieldWithChoicesMultiple } from '../main';
 
 const props = defineProps(Object.assign({}, commonProps, {
     directory: {

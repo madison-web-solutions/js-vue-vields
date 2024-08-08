@@ -1,4 +1,4 @@
-import type { MessageBag } from "@/main";
+import type { MessageBag } from "../main";
 
 export const copyMessageBag = (bag: MessageBag): MessageBag => {
     const bagCopy: MessageBag = {};

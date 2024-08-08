@@ -19,11 +19,11 @@
 // ...but perhaps we could make a separate ms-ckeditor package where we use webpack to build the editor according
 // to the spec that we want, then include it here? something like that?
 // @ts-ignore
-import { ClassicEditor } from 'ckeditor';
+import { ClassicEditor } from '../../ckeditor5/ckeditor.js';
 
-import type { MessageBag } from '@/main';
+import type { MessageBag } from '../main';
 import { ref, toRefs, watch, onBeforeUnmount } from 'vue';
-import { commonProps, useFormField } from '@/main';
+import { commonProps, useFormField } from '../main';
 
 const props = defineProps(Object.assign({}, commonProps, {}));
 

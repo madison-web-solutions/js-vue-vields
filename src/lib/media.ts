@@ -1,4 +1,4 @@
-import type { MediaItem, ResizableMediaItem } from '@/main';
+import type { MediaItem, ResizableMediaItem } from '../main';
 
 export const isMediaItemResizable = (item: MediaItem): item is ResizableMediaItem => {
     return 'src_thumb' in item;

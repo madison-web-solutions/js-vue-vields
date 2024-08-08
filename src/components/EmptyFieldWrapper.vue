@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import type { EditMode, Path } from '@/main';
+import type { EditMode, Path } from '../main';
 
 // We need this to make this component compatible with the regular FieldWrapper
 // @todo we must be able to avoid this repetition somehow

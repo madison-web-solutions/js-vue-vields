@@ -33,9 +33,9 @@
 </template>
 
 <script setup lang="ts">
-import type { Choosable, LinkAlias, MessageBag, LookupResult, SearchResultPage } from '@/main';
+import type { LinkAlias, MessageBag, LookupResult, SearchResultPage } from '../main';
 import { computed, ref, inject, toRefs, watchEffect, watch } from 'vue';
-import { commonProps, useFormField, useSearches, symbols } from '@/main';
+import { commonProps, useFormField, useSearches, symbols } from '../main';
 import SearchInterface from './SearchInterface.vue';
 
 const props = defineProps(Object.assign({}, commonProps, {

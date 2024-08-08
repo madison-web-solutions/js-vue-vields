@@ -13,7 +13,7 @@
 
 <script setup lang="ts">
 import { ref, computed, inject, watchEffect } from 'vue';
-import { symbols } from '@/main';
+import { symbols } from '../main';
 
 const props = defineProps({
     password: {

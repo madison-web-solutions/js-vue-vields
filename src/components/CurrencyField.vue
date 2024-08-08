@@ -11,9 +11,9 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag, ParsesTextFieldOptions } from '@/main';
+import type { MessageBag, ParsesTextFieldOptions } from '../main';
 import { computed, ref, toRefs, inject } from 'vue';
-import { commonProps, useFormField, useParsesTextField, symbols, getConfigRef } from '@/main';
+import { commonProps, useFormField, useParsesTextField, symbols, getConfigRef } from '../main';
 
 const props = defineProps(Object.assign({}, commonProps, {
     currencyCode: {
@@ -78,7 +78,7 @@ const numberFormatter = computed((): Intl.NumberFormat => {
 });
 
 const exponent = computed((): number => {
-    return numberFormatter.value.resolvedOptions().maximumFractionDigits;
+    return numberFormatter.value.resolvedOptions().maximumFractionDigits ?? 2;
 });
 
 const parsesTextFieldOptions: ParsesTextFieldOptions<number> = {

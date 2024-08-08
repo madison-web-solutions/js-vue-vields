@@ -8,9 +8,9 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag } from '@/main';
+import type { MessageBag } from '../main';
 import { computed, ref, toRefs } from 'vue';
-import { commonProps, useFormField } from '@/main';
+import { commonProps, useFormField } from '../main';
 import { dateToUtcFormat, ymdToFormat } from 'date-format-ms';
 
 const props = defineProps(Object.assign({}, commonProps, {

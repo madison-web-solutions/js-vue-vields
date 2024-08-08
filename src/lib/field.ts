@@ -16,11 +16,11 @@ import type {
     UseFormFieldPropRefs,
     UseFormFieldHasChoicesMultiplePropRefs,
     UseHasChoicesPropRefs,
-} from '@/main';
-import { FieldWrapper as StandardFieldWrapper } from '@/main';
+} from '../main';
+import { FieldWrapper as StandardFieldWrapper } from '../main';
 import { computed, provide, inject, ref, watchEffect, onBeforeMount, nextTick } from 'vue';
-import { getUniqueKey, sliceMessageBag, spliceMessageBag, coerceToBooleansNativeMap, coerceToKeysList, copyCompoundFormValue, reindexErrors, symbols } from '@/main';
-import { startCase } from '@/lib/util';
+import { getUniqueKey, sliceMessageBag, spliceMessageBag, coerceToBooleansNativeMap, coerceToKeysList, copyCompoundFormValue, reindexErrors, symbols } from '../main';
+import { startCase } from '../lib/util';
 
 export const commonProps = {
     modelValue: {},
@@ -418,7 +418,7 @@ export function useFormFieldWithChoicesMultiple(emit: FieldEmitType<KeysList | B
         });
         return out;
     };
-    
+
     const coerceFn = (value: any): KeysList | BooleansMap => {
         if (valueIs.value == 'array') {
             return coerceToKeysList(value);
@@ -463,11 +463,11 @@ export function useFormFieldWithChoicesMultiple(emit: FieldEmitType<KeysList | B
     const modelValueAsKeyList = computed(() => {
         return coerceToKeysList(modelValue.value);
     });
-    
+
     const modelValueAsBooleansMap = computed(() => {
         return coerceToChoicesBooleansMap(modelValue.value);
     });
-    
+
     const isOn = (key: string | number): boolean => {
         if (valueIs.value == 'array') {
             return modelValueAsKeyList.value.includes(key);
@@ -475,7 +475,7 @@ export function useFormFieldWithChoicesMultiple(emit: FieldEmitType<KeysList | B
             return !! modelValueAsBooleansMap.value[String(key)];
         }
     };
-    
+
     const subErrors = computed((): MessageBag => {
         const out: MessageBag = {};
         if (valueIs.value == 'array') {
@@ -494,11 +494,11 @@ export function useFormFieldWithChoicesMultiple(emit: FieldEmitType<KeysList | B
         }
         return out;
     });
-    
+
     const hasSubErrors = (key: string | number): boolean => {
         const errors = subErrors.value[String(key)] || [];
         return errors.length > 0;
-    };    
+    };
 
     return {
         choicesNormalized,

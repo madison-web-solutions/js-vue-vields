@@ -41,11 +41,11 @@
 </template>
 
 <script setup lang="ts">
-import type { RepeaterFormValue, MessageBag, Config } from '@/main';
+import type { RepeaterFormValue, MessageBag, Config } from '../main';
 import type { PropType } from 'vue';
 import { computed, toRefs, provide } from 'vue';
-import { commonProps, useRepeaterField, useExtendsConfig, symbols } from '@/main';
-import { FieldArrayItem, FieldGroup } from '@/main';
+import { commonProps, useRepeaterField, useExtendsConfig, symbols } from '../main';
+import { FieldArrayItem, FieldGroup } from '../main';
 
 const props = defineProps(Object.assign({}, commonProps, {
     appendLabel: {

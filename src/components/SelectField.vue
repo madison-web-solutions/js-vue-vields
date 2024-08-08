@@ -11,9 +11,9 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag } from '@/main';
+import type { MessageBag } from '../main';
 import { computed, toRefs } from 'vue';
-import { commonProps, useFormField, useHasChoicesSingle } from '@/main';
+import { commonProps, useFormField, useHasChoicesSingle } from '../main';
 
 type IdType = string | number | undefined;
 

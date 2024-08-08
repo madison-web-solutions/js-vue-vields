@@ -1,5 +1,5 @@
 import type { Ref } from 'vue';
-import type { SearchResultPage } from "@/main";
+import type { SearchResultPage } from "../main";
 import { computed, ref, watch } from 'vue';
 
 export function useSearches<T>(searchFn: (page: number) => Promise<SearchResultPage<T>> | null) {
@@ -52,7 +52,7 @@ export function useSearches<T>(searchFn: (page: number) => Promise<SearchResultP
     const canFetchMore = computed((): boolean => {
         return hasMore.value && searchingId.value == null;
     });
-    
+
     let searchCount: number = 1;
     const doSearch = (page: number) => {
         const searchId = searchCount++;

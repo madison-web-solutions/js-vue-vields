@@ -11,9 +11,9 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag, ParsesTextFieldOptions } from '@/main';
+import type { MessageBag, ParsesTextFieldOptions } from '../main';
 import { computed, ref, toRefs } from 'vue';
-import { commonProps, coerceToNumber, useFormField, useParsesTextField } from '@/main';
+import { commonProps, coerceToNumber, useFormField, useParsesTextField } from '../main';
 
 const props = defineProps(Object.assign({}, commonProps, {
     max: {

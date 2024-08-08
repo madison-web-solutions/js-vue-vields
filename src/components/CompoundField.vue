@@ -8,9 +8,9 @@
 
 <script setup lang="ts">
 
-import type { MessageBag, CompoundFormValue } from '@/main';
+import type { MessageBag, CompoundFormValue } from '../main';
 import { toRefs } from 'vue';
-import { commonProps, useFormField, useHasCompoundValue, coerceToCompoundFormValue } from '@/main';
+import { commonProps, useFormField, useHasCompoundValue, coerceToCompoundFormValue } from '../main';
 
 const props = defineProps(Object.assign({}, commonProps, {}));
 

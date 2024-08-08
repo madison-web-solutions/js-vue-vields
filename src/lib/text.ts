@@ -1,5 +1,5 @@
 import type { Ref } from 'vue';
-import type { UseHasMaxCharsPropRefs } from '@/main';
+import type { UseHasMaxCharsPropRefs } from '../main';
 import { computed, ref, watch } from 'vue';
 
 export const useHasMaxChars = (modelValue: Ref<string>, props: UseHasMaxCharsPropRefs) => {
