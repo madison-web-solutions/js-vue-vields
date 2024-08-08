@@ -1,14 +1,13 @@
 import { defineConfig } from "vite";
-import { fileURLToPath, URL } from "url";
 import path from "path";
 import vuePlugin from "@vitejs/plugin-vue";
 
-module.exports = defineConfig({
+export default defineConfig({
   plugins: [vuePlugin()],
   resolve: {
     alias: { // must also add to tsconfig.app.json to get VSCode to understand the aliases
-      'vue-fields-ms': fileURLToPath(new URL("./src/main.ts", import.meta.url)),
-      '@scss': fileURLToPath(new URL("./scss", import.meta.url)),
+      'vue-fields-ms': path.resolve(__dirname, "./src/main.ts"),
+      '@scss': path.resolve(__dirname, "./scss"),
     },
   },
   build: {
