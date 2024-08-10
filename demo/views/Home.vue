@@ -16,13 +16,13 @@
                                 {{ choice.label }}
                             </template>
                         </CustomSelectField>
-                        <CheckboxField label="Very Derris" name="derris" :inlineLabel="true" class="col-6" />
+                        <CheckboxField label="Very Derris" name="derris" :inlineLabel="true" class="col-6" ref="derrisField" />
                         <CheckboxField label="Derrisson" name="derrisson" :inlineLabel="false" class="col-6" />
                         <hr />
                         <LinkField label="Link" name="link" class="col-12" />
                         <hr />
                         <TextField label="First Name" name="first_name" class="col-md-6" />
-                        <TextField label="Last Name" name="last_name" class="col-md-6" />
+                        <TextField label="Last Name" name="last_name" class="col-md-6" ref="lastNameField" />
                         <PasswordField label="Password" name="password" :minStrength="3" class="col-12" />
                         <TextAreaField label="Summary" name="summary" :max="155" class="col-12" />
                         <RadioField label="Type" name="type" choices="new,existing" class="col-12" />
@@ -36,12 +36,12 @@
                         <TimeField label="Opening Time" name="opening_time" min="06:30" max="19:00" class="col-md-4" />
                         <DateField label="Date of Birth" name="dob" max="today" class="col-md-4" />
                         <DateField label="Date in 2024" name="date_in_2024" min="2024-01-01" max="2024-12-31" class="col-md-4" />
-                        <NumberField label="Days Holiday" name="days_holiday" :min="0" :step="1" class="col-md-4" />
-                        <NumberField label="Area" name="area" :min="0" unit="m²" class="col-md-4" />
-                        <CurrencyField label="Salary" name="salary" class="col-md-4" />
+                        <NumberField label="Days Holiday" name="days_holiday" :min="0" :step="1" class="col-md-4" ref="daysHolidayField" />
+                        <NumberField label="Area" name="area" :min="0" unit="m²" class="col-md-4" ref="areaField" />
+                        <CurrencyField label="Salary" name="salary" class="col-md-4" ref="salaryField" />
                         <hr />
                         <TextField label="Short Description" name="short_description" :max="20" class="col-md-6" help="20 character max" />
-                        <HtmlField label="Description" name="description" class="col-12" />
+                        <HtmlField label="Description" name="description" class="col-12" ref="descriptionField" />
                         <hr />
                         <FlexibleContentField label="Page Sections" name="page_sections" :sectionChoices="[{key: 'banner', label: 'Banner'}, {key: 'promos', label: 'Promos'}]" class="col-12">
                             <template #banner>
@@ -92,7 +92,10 @@
                 </FieldGroup>
             </div>
             <div class="col-4">
-                <p><button type="button" class="btn btn-primary" @click="toggleEditMode">{{ editMode == 'edit' ? 'Stop Editing' : 'Edit' }}</button></p>
+                <p>
+                    <button type="button" class="btn btn-primary" @click="toggleEditMode">{{ editMode == 'edit' ? 'Stop Editing' : 'Edit' }}</button>
+                    <button type="button" class="btn btn-link" @click="focusAField">Test Field Focusing</button>
+                </p>
                 <pre>{{ vals }}</pre>
             </div>
         </div>
@@ -160,5 +163,20 @@ const config = ref({
     'currency.currencyCode': 'GBP',
     'textArea.numRows': 4,
 });
+
+
+// Test focus() functionality on different field types
+const lastNameField = ref<InstanceType<typeof TextField>|null>(null);
+const derrisField = ref<InstanceType<typeof CheckboxField>|null>(null);
+const descriptionField = ref<InstanceType<typeof HtmlField>|null>(null);
+const daysHolidayField = ref<InstanceType<typeof NumberField>|null>(null);
+const areaField = ref<InstanceType<typeof NumberField>|null>(null);
+const salaryField = ref<InstanceType<typeof CurrencyField>|null>(null);
+const focusableFields = [lastNameField, derrisField, descriptionField, daysHolidayField, areaField, salaryField];
+let focusFieldCounter = 0;
+const focusAField = () => {
+    const field = focusableFields[focusFieldCounter++ % focusableFields.length];
+    field.value && field.value.focus();
+};
 
 </script>

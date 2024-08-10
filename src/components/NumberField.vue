@@ -50,7 +50,7 @@ const emit = defineEmits<{
 
 const propRefs = toRefs(props);
 
-const { inputEleId, pathString, modelValue, hasError, FieldWrapper, standardWrapperProps } = useFormField<number | undefined>(coerceToNumber, emit, propRefs, {
+const { inputEleId, pathString, modelValue, hasError, FieldWrapper, standardWrapperProps, focus } = useFormField<number | undefined>(coerceToNumber, emit, propRefs, {
     fieldTypeSlug: 'number'
 });
 
@@ -121,5 +121,7 @@ const parsesTextFieldOptions: ParsesTextFieldOptions<number> = {
 };
 
 const { onFocus, onBlur, change, displayValue } = useParsesTextField<number>(modelValue, inputEle, parsesTextFieldOptions);
+
+defineExpose({ focus });
 
 </script>

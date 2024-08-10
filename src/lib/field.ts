@@ -273,7 +273,11 @@ export function useFormField<ValueType extends FormValue> (valueCoerceFn: (val: 
         };
     });
 
-    return { inputEleId, path, pathString, rawValue, modelValue, errors, myErrors, hasError, editMode, FieldWrapper, standardWrapperProps };
+    const focus = () => {
+        document.getElementById(inputEleId.value)?.focus();
+    };
+
+    return { inputEleId, path, pathString, rawValue, modelValue, errors, myErrors, hasError, editMode, FieldWrapper, standardWrapperProps, focus };
 };
 
 export const useExtendsEditMode = (editModeProp:  Ref<EditMode | undefined> | undefined ): Ref<EditMode> => {

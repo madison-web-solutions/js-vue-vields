@@ -3,7 +3,7 @@
         <template #input>
             <input :id="inputEleId" :name="pathString" type="hidden" :value="modelValue" />
             <div class="input-group">
-                <DateField v-model="dateValue" :errors="errors" :disabled="disabled" :min="minDateYmd" :max="maxDateYmd" />
+                <DateField v-model="dateValue" :errors="errors" :disabled="disabled" :min="minDateYmd" :max="maxDateYmd" ref="firstField" />
                 <TimeField v-model="timeValue" :errors="errors" :withSeconds="true" :disabled="disabled" :min="minTimeHis" :max="maxTimeHis" />
             </div>
         </template>
@@ -106,5 +106,9 @@ const maxTimeHis = computed((): string | undefined => {
 
 // @todo expose this?
 // const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+const firstField = ref<InstanceType<typeof DateField>|null>(null);
+const focus = () => firstField.value?.focus();
+defineExpose({ focus });
 
 </script>

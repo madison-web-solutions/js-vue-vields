@@ -126,4 +126,9 @@ watch(editorContainerEle, () => {
 
 onBeforeUnmount(destroyEditor);
 
+const focus = () => {
+    editor?.editing?.view?.focus();
+};
+defineExpose({ focus });
+
 </script>

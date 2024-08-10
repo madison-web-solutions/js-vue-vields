@@ -39,7 +39,7 @@ const coerceFn = (value: any): string | undefined => {
     return ymdToFormat(String(value), 'Y-m-d') || undefined;
 };
 
-const { inputEleId, pathString, modelValue, hasError, FieldWrapper, standardWrapperProps } = useFormField<string | undefined>(coerceFn, emit, propRefs, {
+const { inputEleId, pathString, modelValue, hasError, FieldWrapper, standardWrapperProps, focus } = useFormField<string | undefined>(coerceFn, emit, propRefs, {
     fieldTypeSlug: 'date'
 });
 
@@ -126,5 +126,7 @@ const myPlaceholder = computed((): string => {
 const displayValue = computed((): string => {
     return ymdToFormat(modelValue.value, props.displayFormat) || '';
 });
+
+defineExpose({ focus });
 
 </script>
