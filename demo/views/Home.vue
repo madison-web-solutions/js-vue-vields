@@ -80,6 +80,14 @@
                                 </div>
                             </div>
                         </CompoundField>
+
+                        <CompoundField label="Single Call To Action" name="single_cts" class="col-12">
+                            <CallToActionFields />
+                        </CompoundField>
+
+                        <RepeaterField label="Repeater Call To Action" name="repeater_cts" class="col-12">
+                            <CallToActionFields />
+                        </RepeaterField>
                     </div>
                 </FieldGroup>
             </div>
@@ -94,8 +102,9 @@
 <script setup lang="ts">
 import { ref, provide } from "vue";
 import { symbols, FieldGroup, CheckboxField, CheckboxesField, TextField, TextAreaField, SelectField, CustomSelectField, HtmlField, CurrencyField, NumberField, ToggleField, RepeaterField, SearchField, RadioField, DateField, LinkField, MediaField, PasswordField, TimeField, CompoundField, FlexibleContentField, DateTimeField, TimestampField } from "vue-fields-ms";
+import CallToActionFields from "../components/CallToActionFields.vue";
 
-const editMode = ref('edit');
+const editMode = ref<'edit'|'view'>('edit');
 const toggleEditMode = () => {
     editMode.value = (editMode.value == 'edit' ? 'view' : 'edit');
 };

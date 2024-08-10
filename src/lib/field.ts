@@ -20,7 +20,7 @@ import type {
 import { FieldWrapper as StandardFieldWrapper } from '../main';
 import { computed, provide, inject, ref, watchEffect, onBeforeMount, nextTick } from 'vue';
 import { getUniqueKey, sliceMessageBag, spliceMessageBag, coerceToBooleansNativeMap, coerceToKeysList, copyCompoundFormValue, reindexErrors, symbols } from '../main';
-import { startCase } from '../lib/util';
+import { startCase, getValueFromLensGeneral } from '../lib/util';
 
 export const commonProps = {
     modelValue: {},
@@ -113,6 +113,33 @@ const queueDefaultCheck = (rawValue: Ref<unknown>, defaultProp: Ref<unknown>, se
     defaultCheckQueue.push({ rawValue, defaultProp, setter });
     doNextDefaultCheck();
 };
+
+
+/**
+ * Get a computed Ref pointing to the current value (or named/indexed subvalue)
+ *
+ * If the current value is compound, a string name can be supplied to get the named subvalue
+ * If the current value is an array, a numerical index can be supplied to get the indexed subvalue
+ * If no name/index is supplied, the outer value is returned
+ * If a name/index is supplied for a scalar value, function logs an error and returns undefined
+ */
+export function getCurrentValue(nameOrIndex?: string|number|undefined): Ref<FormValue> {
+    const valueLens = inject(symbols.valueLens, undefined);
+
+    return computed((): FormValue|FormValue[]|Record<string,FormValue>|undefined => {
+        return valueLens ? getValueFromLensGeneral(valueLens, nameOrIndex) : undefined;
+    });
+};
+
+export function getCurrentErrors(nameOrIndex?: string|number|undefined): Ref<MessageBag|MessageBag[]|Record<string,MessageBag>|undefined> {
+    const errorsLens = inject(symbols.errorsLens, undefined);
+
+    return computed((): MessageBag|MessageBag[]|Record<string,MessageBag>|undefined => {
+        return errorsLens ? getValueFromLensGeneral(errorsLens, nameOrIndex) : undefined;
+    });
+};
+
+
 
 export function useFormField<ValueType extends FormValue> (valueCoerceFn: (val: unknown) => ValueType, emit: FieldEmitType<ValueType>, propRefs: UseFormFieldPropRefs, opts?: UseFormFieldOpts) {
 
@@ -282,6 +309,9 @@ export const useHasCompoundValue = (modelValue: Ref<CompoundFormValue>, errors: 
         get: (name: string): FormValue => {
             return modelValue.value ? modelValue.value[name] : undefined;
         },
+        getAll: (): Record<string,FormValue> => {
+            return modelValue.value;
+        },
         set: (name: string, newVal: FormValue) => {
             // make a copy of our value
             const modelValueCopy: CompoundFormValue = copyCompoundFormValue(modelValue.value);
@@ -297,6 +327,19 @@ export const useHasCompoundValue = (modelValue: Ref<CompoundFormValue>, errors: 
         lensType: 'named',
         get: (name: string): MessageBag => {
             return sliceMessageBag(errors.value, name);
+        },
+        getAll: (): Record<string,MessageBag> => {
+            const out: Record<string,MessageBag> = {};
+            Object.entries(errors.value).forEach(([path, subErrors]) => {
+                const parts = path.split('.');
+                const prefix = parts.shift() ?? '';
+                const rest = parts.join('.');
+                if (!(prefix in out)) {
+                    out[prefix] = {};
+                }
+                out[prefix][rest] = subErrors.slice();
+            });
+            return out;
         },
         set: (name: string, newSubErrors: MessageBag) => {
             errors.value = spliceMessageBag(errors.value, name, newSubErrors);

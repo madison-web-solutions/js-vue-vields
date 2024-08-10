@@ -122,7 +122,10 @@ export function useRepeaterField(emit: FieldEmitType<RepeaterFormValue>, propRef
     const valueLens: IndexedLens<FormValue> = {
         lensType: 'indexed',
         get: (index: number): FormValue => {
-            return modelValue.value ? modelValue.value[index] : undefined;
+            return modelValue.value[index];
+        },
+        getAll: (): FormValue[] => {
+            return modelValue.value;
         },
         set: (index: number, newVal: FormValue) => {
             if (index < 0 || index >= modelValue.value.length) {
@@ -145,6 +148,9 @@ export function useRepeaterField(emit: FieldEmitType<RepeaterFormValue>, propRef
         lensType: 'indexed',
         get: (index: number): MessageBag => {
             return sliceMessageBag(errors.value, String(index));
+        },
+        getAll: (): MessageBag[] => {
+            return modelValue.value.map((_, index): MessageBag => sliceMessageBag(errors.value, String(index)));
         },
         set: (index: number, newSubErrors: MessageBag) => {
             errors.value = spliceMessageBag(errors.value, String(index), newSubErrors);

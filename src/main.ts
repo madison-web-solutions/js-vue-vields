@@ -48,8 +48,8 @@ import type {
 } from './lib/types';
 
 import { sliceMessageBag, spliceMessageBag, messageBagToString } from './lib/MessageBag';
-import { startCase, getUniqueKey, coerceToNumber, coerceToScalarFormValue, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, coerceToBooleansNativeMap, coerceToKeysList, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors } from './lib/util';
-import { commonProps, useExtendsPath, useFormField, useExtendsConfig, useExtendsEditMode, useHasCompoundValue, useHasChoices, useHasChoicesSingle, useFormFieldWithChoicesMultiple, useParsesTextField } from './lib/field';
+import { startCase, getUniqueKey, coerceToNumber, coerceToScalarFormValue, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, coerceToBooleansNativeMap, coerceToKeysList, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, getValueFromLens, getValueFromLensGeneral } from './lib/util';
+import { commonProps, useExtendsPath, useFormField, useExtendsConfig, useExtendsEditMode, useHasCompoundValue, useHasChoices, useHasChoicesSingle, useFormFieldWithChoicesMultiple, useParsesTextField, getCurrentValue, getCurrentErrors } from './lib/field';
 import { defaultConfig, getConfigValue, getConfigRef } from './lib/config';
 import { symbols } from './lib/symbols';
 import { useHasMaxChars } from './lib/text';
@@ -251,9 +251,9 @@ export type {
 };
 
 export { vueFieldsMsPlugin, provideChoices, provideLinks, provideMedia, providePasswordStrength };
-export { commonProps, useExtendsPath, useFormField, useExtendsConfig, useExtendsEditMode, useHasCompoundValue, useHasChoices, useHasChoicesSingle, useFormFieldWithChoicesMultiple, useParsesTextField, useHasMaxChars, useSearches, useRepeaterField, usePopperTooltip };
+export { commonProps, useExtendsPath, useFormField, useExtendsConfig, useExtendsEditMode, useHasCompoundValue, useHasChoices, useHasChoicesSingle, useFormFieldWithChoicesMultiple, useParsesTextField, useHasMaxChars, useSearches, useRepeaterField, usePopperTooltip, getCurrentValue, getCurrentErrors };
 export { sliceMessageBag, spliceMessageBag, messageBagToString }
-export { startCase, getUniqueKey, coerceToNumber, coerceToScalarFormValue, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, coerceToBooleansNativeMap, coerceToKeysList, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols };
+export { startCase, getUniqueKey, coerceToNumber, coerceToScalarFormValue, coerceToCompoundFormValue, coerceToRepeaterFormValue, coerceToArrayKey, coerceToBooleansNativeMap, coerceToKeysList, copyCompoundFormValue, copyRepeaterFormValue, coerceToBoolean, reindexErrors, symbols, getValueFromLens, getValueFromLensGeneral };
 export { defaultConfig, getConfigValue, getConfigRef };
 export { TextField, TextAreaField, CheckboxField, CheckboxesField, CurrencyField, DateField, NumberField, ToggleField, RepeaterField, RadioField, SearchField, SelectField, CustomSelectField, HtmlField, FlexibleContentField, LinkField, FieldWrapper, FieldGroup, FieldArray, FieldArrayItem };
 export { MediaPreview, MediaLibrary, MediaDetails, MediaField };

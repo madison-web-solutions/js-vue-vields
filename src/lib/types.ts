@@ -28,12 +28,14 @@ export type FixedLens<T> = {
 export type IndexedLens<T> = {
     get: (index: number) => T,
     set: (index: number, newVal: T) => void,
+    getAll: () => T[],
     lensType: 'indexed',
 };
 
 export type NamedLens<T> = {
     get: (name: string) => T,
     set: (name: string, newVal: T) => void,
+    getAll: () => Record<string,T>
     lensType: 'named',
 };
 

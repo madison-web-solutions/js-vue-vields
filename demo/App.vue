@@ -48,8 +48,8 @@ const colors: Color[] = [
 ];
 
 const dummyChoicesProvider = ref<ChoicesProvider>({
-    getAll: (directory: string, extraParams?: object | undefined): Promise<LookupResult<Choosable[]>> => {
-        return new Promise<LookupResult<Choosable[]>>((resolve, reject) => {
+    getAll: (directory: string, _extraParams?: object | undefined): Promise<LookupResult<Choosable[]>> => {
+        return new Promise<LookupResult<Choosable[]>>((resolve, _reject) => {
             window.setTimeout(() => {
                 if (directory == 'colors') {
                     resolve({status: 'found', resource: colors});
@@ -60,7 +60,7 @@ const dummyChoicesProvider = ref<ChoicesProvider>({
         });
     },
     lookup: (directory: string, id: string | number): Promise<LookupResult<Choosable>> => {
-        return new Promise<LookupResult<Choosable>>((resolve, reject) => {
+        return new Promise<LookupResult<Choosable>>((resolve, _reject) => {
             window.setTimeout(() => {
                 const list = (directory == 'colors' ? colors : cats);
                 for (const item of list) {
@@ -72,8 +72,8 @@ const dummyChoicesProvider = ref<ChoicesProvider>({
             });
         });
     },
-    search: (directory: string, searchText: string, page?: number): Promise<SearchResultPage<Choosable>> => {
-        return new Promise<SearchResultPage<Choosable>>((resolve, reject) => {
+    search: (directory: string, _searchText: string, page?: number): Promise<SearchResultPage<Choosable>> => {
+        return new Promise<SearchResultPage<Choosable>>((resolve, _reject) => {
             window.setTimeout(() => {
                 if (page == null) {
                     page = 1;
@@ -107,7 +107,7 @@ const catToLink = (cat: Cat): LinkAlias => {
 
 const dummyLinksProvider = ref<LinksProvider>({
     lookup: (scheme: string, key: string): Promise<LookupResult<LinkAlias>> => {
-        return new Promise<LookupResult<LinkAlias>>((resolve, reject) => {
+        return new Promise<LookupResult<LinkAlias>>((resolve, _reject) => {
             window.setTimeout(() => {
                 for (const cat of cats) {
                     if (scheme === 'cat' && String(cat.key) === key) {
@@ -118,8 +118,8 @@ const dummyLinksProvider = ref<LinksProvider>({
             });
         });
     },
-    search: (scheme: string, searchText: string, page?: number): Promise<SearchResultPage<LinkAlias>> => {
-        return new Promise<SearchResultPage<LinkAlias>>((resolve, reject) => {
+    search: (scheme: string, _searchText: string, page?: number): Promise<SearchResultPage<LinkAlias>> => {
+        return new Promise<SearchResultPage<LinkAlias>>((resolve, _reject) => {
             window.setTimeout(() => {
                 if (page == null) {
                     page = 1;
@@ -180,8 +180,8 @@ for (let i = 0; i < 95; i++) {
 }
 
 const dummyMediaProvider = ref<MediaProvider>({
-    search: (searchText?: string, page?: number, extraParams?: object): Promise<SearchResultPage<MediaItem>> => {
-        return new Promise<SearchResultPage<MediaItem>>((resolve, reject) => {
+    search: (searchText?: string, page?: number, _extraParams?: object): Promise<SearchResultPage<MediaItem>> => {
+        return new Promise<SearchResultPage<MediaItem>>((resolve, _reject) => {
             page = Math.max(1, Math.floor(page == null ? 1 : page));
             let filteredMediaStore: MediaItem[];
             if (searchText) {
@@ -203,7 +203,7 @@ const dummyMediaProvider = ref<MediaProvider>({
         });
     },
     lookup: (key: number | string): Promise<LookupResult<MediaItem>> => {
-        return new Promise<LookupResult<MediaItem>>((resolve, reject) => {
+        return new Promise<LookupResult<MediaItem>>((resolve, _reject) => {
             window.setTimeout(() => {
                 for (const item of mediaStore) {
                     if (item.id == key) {
@@ -215,21 +215,21 @@ const dummyMediaProvider = ref<MediaProvider>({
             }, 600);
         });
     },
-    upload: (data: FormData, progressCallback: (loaded: number, total: number) => void): Promise<UpdateResult<MediaItem>> => {
+    upload: (_data: FormData, progressCallback: (loaded: number, total: number) => void): Promise<UpdateResult<MediaItem>> => {
         for (let i = 1; i < 10; i++) {
             window.setTimeout(() => progressCallback(i * 500, 5000), i * 300);
         }
-        return new Promise<UpdateResult<MediaItem>>((resolve, reject) => {
+        return new Promise<UpdateResult<MediaItem>>((resolve, _reject) => {
             window.setTimeout(() => resolve({status: 'ok', resource: generateFakeMediaItem()}), 3000);
         });
     },
-    delete: (key: number | string): Promise<boolean> => {
-        return new Promise<boolean>((resolve, reject) => {
+    delete: (_key: number | string): Promise<boolean> => {
+        return new Promise<boolean>((resolve, _reject) => {
             window.setTimeout(() => resolve(true), 3000);
         });
     },
-    update: (key: number | string, data: object): Promise<UpdateResult<MediaItem>> => {
-        return new Promise<UpdateResult<MediaItem>>((resolve, reject) => {
+    update: (_key: number | string, _data: object): Promise<UpdateResult<MediaItem>> => {
+        return new Promise<UpdateResult<MediaItem>>((resolve, _reject) => {
             window.setTimeout(() => resolve({status: 'ok', resource: generateFakeMediaItem()}), 3000);
         });
     },
@@ -240,7 +240,7 @@ provideMedia(dummyMediaProvider);
 
 const dummyPasswordStrengthProvider = ref<PasswordStrengthProvider>({
     check: (password: string): Promise<number> => {
-        return new Promise<number>((resolve, reject) => {
+        return new Promise<number>((resolve, _reject) => {
             resolve(Math.pow(2, password.length) / Math.pow(2, 6));
         });
     },

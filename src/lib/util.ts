@@ -6,6 +6,10 @@ import type {
     Path,
     RepeaterFormValue,
     ScalarFormValue,
+    Lens,
+    FixedLens,
+    IndexedLens,
+    NamedLens,
 } from '../main';
 
 let uniqueKeyCounter: number = 1;
@@ -249,4 +253,65 @@ export const startCase = (s: unknown): string => {
         .trim()
         .replace(/_/g, ' ')
         .replace(/\b\w+/g, (s) => s.charAt(0).toUpperCase() + s.substr(1).toLowerCase());
+};
+
+/**
+ * This version uses overloads so that if we know the types of the arguments, we'll know the return type
+ */
+export function getValueFromLens<T>(lens: FixedLens<T>): T|undefined;
+export function getValueFromLens<T>(lens: NamedLens<T>): Record<string,T>;
+export function getValueFromLens<T>(lens: NamedLens<T>, name: string): T|undefined;
+export function getValueFromLens<T>(lens: IndexedLens<T>): T[];
+export function getValueFromLens<T>(lens: IndexedLens<T>, index: number): T|undefined;
+export function getValueFromLens<T>(lens: Lens<T>, nameOrIndex?: string|number|undefined): T|T[]|Record<string,T>|undefined {
+    if (lens.lensType == 'fixed') {
+        return lens.get();
+    }
+    if (lens.lensType == 'named') {
+        if (nameOrIndex == null) {
+            return lens.getAll();
+        } else if (typeof nameOrIndex == 'string') {
+            return lens.get(nameOrIndex);
+        }
+    }
+    if (lens.lensType == 'indexed') {
+        if (nameOrIndex == null) {
+            return lens.getAll();
+        } else if (typeof nameOrIndex == 'number') {
+            return lens.get(nameOrIndex);
+        }
+    }
+    return undefined;
+};
+
+/**
+ * This version will work on any lens type and nameOrIndex type, but we lose specific info on the return type
+ */
+export function getValueFromLensGeneral<T>(lens: Lens<T>, nameOrIndex?: string|number|undefined): T|T[]|Record<string,T>|undefined {
+    if (lens.lensType == 'fixed') {
+        if (nameOrIndex == null) {
+            return getValueFromLens(lens);
+        } else {
+            console.error(`FixedLens does not have subvalues - cannot access subvalue with key '${nameOrIndex}'`);
+            return undefined;
+        }
+    }
+    if (lens.lensType == 'named') {
+        if (nameOrIndex == null) {
+            return getValueFromLens(lens);
+        } else {
+            return getValueFromLens(lens, String(nameOrIndex));
+        }
+    }
+    if (lens.lensType == 'indexed') {
+        if (nameOrIndex == null) {
+            return getValueFromLens(lens);
+        } else if (typeof nameOrIndex == 'string') {
+            console.error(`Subvalues of IndexedLens are accessed by a numerical index, cannot access subvalue with string key '${nameOrIndex}'`);
+            return undefined;
+        } else {
+            return getValueFromLens(lens, nameOrIndex);
+        }
+    }
+    return undefined;
 };
