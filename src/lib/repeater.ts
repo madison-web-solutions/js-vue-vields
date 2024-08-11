@@ -229,12 +229,15 @@ export function useRepeaterField(
   onBeforeUnmount(cancelMove);
 
   const loopItems = computed((): RepeaterItem[] => {
+    const lastIndex = modelValue.value.length - 1;
     return modelValue.value.map(
       (rowVals: FormValue, index: number): RepeaterItem => {
         const childErrors = sliceMessageBag(errors.value, String(index));
         const rowErrors = childErrors[""] || [];
         return {
           index: index,
+          isFirst: (index == 0),
+          isLast: (index == lastIndex),
           rowVals: rowVals,
           rowErrors: rowErrors,
           showRowErrors: editMode.value == "edit" && rowErrors.length > 0,

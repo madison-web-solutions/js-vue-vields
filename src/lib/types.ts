@@ -213,6 +213,8 @@ export type UseRepeaterFieldPropRefs = UseFormFieldPropRefs & {
 
 export type RepeaterItem = {
   index: number;
+  isFirst: boolean,
+  isLast: boolean,
   rowVals: FormValue;
   rowErrors: string[];
   showRowErrors: boolean;

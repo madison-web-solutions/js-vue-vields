@@ -89,6 +89,7 @@
               <template #beforeLoop>
                 <thead>
                   <tr>
+                    <th>Index</th>
                     <th>Name</th>
                     <th>Type</th>
                     <th>&nbsp;</th>
@@ -100,6 +101,7 @@
                   <FieldArrayItem v-for="item in loopItems" :index="item.index">
                     <FieldGroup>
                       <tr>
+                        <td :rowspan="item.showRowErrors ? 2 : 1" >{{ item.index }} {{ item.isFirst ? '(first)' : '' }}{{ item.isLast ? '(last)' : '' }}</td>
                         <td><TextAreaField name="name" /></td>
                         <td>
                           <SelectField name="type" choices="cat,dog,fish" />
