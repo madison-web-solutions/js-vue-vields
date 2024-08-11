@@ -60,6 +60,15 @@ const props = withDefaults(
   },
 );
 
+const slots = defineSlots<{
+  label: (props: {}) => any;
+  preinput: (props: {}) => any;
+  input: (props: {}) => any;
+  viewMode: (props: {}) => any;
+  viewModeNoValue: (props: {}) => any;
+  errors: (props: {}) => any;
+}>();
+
 const hasNoValue = computed(() => {
   return props.modelValue == null || props.modelValue === "";
 });
