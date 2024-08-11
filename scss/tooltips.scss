@@ -1,12 +1,12 @@
 .#{$vfms-prefix}tooltip {
-    border: 1px solid $card-border-color;
-    background-color: $white;
-    font-size: $font-size-sm;
+  border: 1px solid $card-border-color;
+  background-color: $white;
+  font-size: $font-size-sm;
 
-    max-width: 30rem;
-    padding: calc($spacer * 0.5) $spacer;
-    border-radius: .7rem;
-    box-shadow: 0 1rem 2rem rgba($black, .08);
-    white-space: pre-line;
-    z-index: $zindex-tooltip;
+  max-width: 30rem;
+  padding: calc($spacer * 0.5) $spacer;
+  border-radius: 0.7rem;
+  box-shadow: 0 1rem 2rem rgba($black, 0.08);
+  white-space: pre-line;
+  z-index: $zindex-tooltip;
 }

@@ -1,14 +1,14 @@
 import { createApp } from "vue";
-import App from './App.vue';
-import { vueFieldsMsPlugin } from 'vue-fields-ms';
+import App from "./App.vue";
+import { vueFieldsMsPlugin } from "vue-fields-ms";
 
 import "./scss/app.scss";
 
 const app = createApp(App);
 app.use(vueFieldsMsPlugin, {
-    registerFieldComponents: false,
-    cssPrefix: 'demo-',
-    'media.supportCropCenter': true,
+  registerFieldComponents: false,
+  cssPrefix: "demo-",
+  "media.supportCropCenter": true,
 });
 
 import router from "./router";

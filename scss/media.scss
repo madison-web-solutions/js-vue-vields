@@ -1,138 +1,145 @@
-.#{$vfms-prefix}media-add-button, .#{$vfms-prefix}media-preview {
-    width: $media-preview-width;
-    height: $media-preview-height;
-    background: no-repeat center / cover;
-    position: relative;
-    border: $input-border-width solid $input-border-color;
-    border-radius: $media-preview-border-radius;
-    cursor: pointer;
+.#{$vfms-prefix}media-add-button,
+.#{$vfms-prefix}media-preview {
+  width: $media-preview-width;
+  height: $media-preview-height;
+  background: no-repeat center / cover;
+  position: relative;
+  border: $input-border-width solid $input-border-color;
+  border-radius: $media-preview-border-radius;
+  cursor: pointer;
 }
 
 .#{$vfms-prefix}media-add-button {
-    background-color: $input-bg;
-    transition: background-color .2s ease-in-out;
-    &:hover, &:focus {
-        background-color: darken($input-bg, 10%);
-    }
-    color: $input-placeholder-color;
-    i {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-size: 2.6rem;
-    }
+  background-color: $input-bg;
+  transition: background-color 0.2s ease-in-out;
+  &:hover,
+  &:focus {
+    background-color: darken($input-bg, 10%);
+  }
+  color: $input-placeholder-color;
+  i {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.6rem;
+  }
 }
 
 .#{$vfms-prefix}media-preview-list {
-    max-height: 60vh;
-    overflow-y: auto;
+  max-height: 60vh;
+  overflow-y: auto;
 }
 
 .#{$vfms-prefix}media-preview-icon {
-    font-size: 2rem;
+  font-size: 2rem;
 }
 
 .#{$vfms-prefix}media-preview {
-    overflow: hidden;
+  overflow: hidden;
 
-    .#{$vfms-prefix}media-preview-overlay, .#{$vfms-prefix}upload-status {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
+  .#{$vfms-prefix}media-preview-overlay,
+  .#{$vfms-prefix}upload-status {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 
+  .#{$vfms-prefix}media-preview-overlay {
+    text-align: center;
+  }
+
+  .#{$vfms-prefix}media-preview-title {
+    color: $body-color;
+    overflow-wrap: break-word;
+    font-size: $media-preview-font-size;
+  }
+
+  .#{$vfms-prefix}media-preview-status {
+    color: $red;
+    overflow-wrap: break-word;
+    font-size: $media-preview-font-size;
+  }
+
+  &.#{$vfms-prefix}has-thumb {
     .#{$vfms-prefix}media-preview-overlay {
-        text-align: center;
+      color: $white;
+      background-color: $black;
+      padding: 0.4rem 0.8rem;
+      opacity: 0.6;
     }
 
     .#{$vfms-prefix}media-preview-title {
-        color: $body-color;
-        overflow-wrap: break-word;
-        font-size: $media-preview-font-size;
+      display: none;
     }
+  }
 
-    .#{$vfms-prefix}media-preview-status {
-        color: $red;
-        overflow-wrap: break-word;
-        font-size: $media-preview-font-size;
-    }
-
-    &.#{$vfms-prefix}has-thumb {
-        .#{$vfms-prefix}media-preview-overlay {
-            color: $white;
-            background-color: $black;
-            padding: .4rem .8rem;
-            opacity: .6;
-        }
-
-        .#{$vfms-prefix}media-preview-title {
-            display: none;
-        }
-    }
-
-    .#{$vfms-prefix}media-preview-inspect, .#{$vfms-prefix}media-preview-remove {
-        display: none;
-        position: absolute;
-    }
-    &:hover, &:focus {
-        .#{$vfms-prefix}media-preview-inspect, .#{$vfms-prefix}media-preview-remove {
-            display: inline-block;
-        }
-    }
-    .#{$vfms-prefix}media-preview-inspect {
-        top: 5%;
-        left: 5%;
-    }
+  .#{$vfms-prefix}media-preview-inspect,
+  .#{$vfms-prefix}media-preview-remove {
+    display: none;
+    position: absolute;
+  }
+  &:hover,
+  &:focus {
+    .#{$vfms-prefix}media-preview-inspect,
     .#{$vfms-prefix}media-preview-remove {
-        top: 5%;
-        right: 5%;
+      display: inline-block;
     }
+  }
+  .#{$vfms-prefix}media-preview-inspect {
+    top: 5%;
+    left: 5%;
+  }
+  .#{$vfms-prefix}media-preview-remove {
+    top: 5%;
+    right: 5%;
+  }
 
-    &[data-upload-status=error] {
-        color: $danger;
-    }
+  &[data-upload-status="error"] {
+    color: $danger;
+  }
 }
 
 .#{$vfms-prefix}media-upload-form {
-    label {
-        display: inline-block;
-        input {
-            @include visually-hidden;
-        }
+  label {
+    display: inline-block;
+    input {
+      @include visually-hidden;
     }
+  }
 }
 
 .#{$vfms-prefix}media-details-preview {
-    position: relative;
+  position: relative;
 
-    > img {
-        display: block;
-        margin: auto;
-        max-width: 100%;
-        max-height: 20rem;
-    }
-    .#{$vfms-prefix}media-details-overlay {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
-    .#{$vfms-prefix}media-details-icon {
-        font-size: 46px;
-    }
+  > img {
+    display: block;
+    margin: auto;
+    max-width: 100%;
+    max-height: 20rem;
+  }
+  .#{$vfms-prefix}media-details-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .#{$vfms-prefix}media-details-icon {
+    font-size: 46px;
+  }
 
-    .#{$vfms-prefix}media-details-crop-center-left-pointer, .#{$vfms-prefix}media-details-crop-center-top-pointer {
-        position: absolute;
-        display: block;
-        transform: translate(-50%, -50%);
-        color: $primary;
-    }
-    .#{$vfms-prefix}media-details-crop-center-left-pointer {
-        text-shadow: 0px 2px 3px white;
-    }
-    .#{$vfms-prefix}media-details-crop-center-top-pointer {
-        text-shadow: 2px 0px 3px white;
-    }
+  .#{$vfms-prefix}media-details-crop-center-left-pointer,
+  .#{$vfms-prefix}media-details-crop-center-top-pointer {
+    position: absolute;
+    display: block;
+    transform: translate(-50%, -50%);
+    color: $primary;
+  }
+  .#{$vfms-prefix}media-details-crop-center-left-pointer {
+    text-shadow: 0px 2px 3px white;
+  }
+  .#{$vfms-prefix}media-details-crop-center-top-pointer {
+    text-shadow: 2px 0px 3px white;
+  }
 }

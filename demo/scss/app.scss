@@ -2,7 +2,6 @@
 
 @import "./variables";
 
-
 /** Bootstrap includes **/
 
 // Boostrap Required
@@ -51,12 +50,10 @@
 // Utilities
 @import "bootstrap/scss/utilities/api";
 
-
 /** Fields Includes **/
 
 @import "@scss/variables";
 @import "@scss/main";
-
 
 /** App-specific includes **/
 
