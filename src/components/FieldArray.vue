@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag, RepeaterFormValue, EditMode, Config } from '../main';
+import type { MessageBag, RepeaterFormValue, EditMode, Config, RepeaterItem } from '../main';
 import { toRefs } from 'vue';
 import { useRepeaterField, useExtendsEditMode, useExtendsConfig } from '../main';
 
@@ -23,6 +23,12 @@ const props = defineProps<{
 const emit = defineEmits<{
     (e: 'update:modelValue', value: RepeaterFormValue): void
     (e: 'update:errors', value: MessageBag): void
+}>();
+
+const slots = defineSlots<{
+    default: (props: {loopItems: RepeaterItem[]}) => any,
+    beforeLoop: (props: {canAddRow: boolean, appendRow: () => void, insertRowAt: (index: number) => void, deleteRowAt: (index: number) => void}) => any,
+    afterLoop: (props: {canAddRow: boolean, appendRow: () => void, insertRowAt: (index: number) => void, deleteRowAt: (index: number) => void}) => any,
 }>();
 
 const propRefs = toRefs(props);

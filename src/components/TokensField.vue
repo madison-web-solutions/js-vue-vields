@@ -39,6 +39,11 @@ const props = defineProps(Object.assign({}, commonProps, {
     },
 }));
 
+const slots = defineSlots<{
+    tokenContent: (props: {token: Choosable}) => any,
+    pendingTokenContent: (props: {token: PendingChoosable}) => any,
+}>();
+
 const emit = defineEmits<{
     (e: 'update:modelValue', value: KeysList): void
     (e: 'update:errors', value: MessageBag): void

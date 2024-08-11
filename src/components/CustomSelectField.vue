@@ -43,6 +43,12 @@ const props = defineProps(Object.assign({}, commonProps, {
     },
 }));
 
+const slots = defineSlots<{
+    default: (props: {choice: Choosable}) => any,
+    nullSelected: (props: {}) => any,
+    nullOption: (props: {}) => any,
+}>();
+
 const emit = defineEmits<{
     (e: 'update:modelValue', value: IdType): void
     (e: 'update:errors', value: MessageBag): void

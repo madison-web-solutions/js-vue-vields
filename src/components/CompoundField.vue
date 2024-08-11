@@ -19,6 +19,10 @@ const emit = defineEmits<{
     (e: 'update:errors', value: MessageBag): void
 }>();
 
+const slots = defineSlots<{
+    default: (props: {subVals: CompoundFormValue}) => any,
+}>();
+
 const propRefs = toRefs(props);
 
 const { modelValue, errors, FieldWrapper, standardWrapperProps } = useFormField<CompoundFormValue>(coerceToCompoundFormValue, emit, propRefs, {

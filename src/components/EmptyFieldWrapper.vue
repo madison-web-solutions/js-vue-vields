@@ -26,4 +26,13 @@ const props = withDefaults(defineProps<{
 });
 props; // This is here just to stop tsc saying we declared props but didn't use it
 
+const slots = defineSlots<{
+    label: (props: {}) => any,
+    preinput: (props: {}) => any,
+    input: (props: {}) => any,
+    viewMode: (props: {}) => any,
+    viewModeNoValue: (props: {}) => any,
+    errors: (props: {}) => any,
+}>();
+
 </script>

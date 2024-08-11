@@ -12,11 +12,11 @@
                         </div>
                         <FieldArrayItem :index="item.index">
                             <div v-if="subValuesType == 'simple'" v-pclass="'repeater-item-content'">
-                                <slot :index="item.index" :subVal="item.rowVals"></slot>
+                                <slot :index="item.index" :subVal="item.rowVals" :subVals="null"></slot>
                             </div>
                             <div v-if="subValuesType == 'compound'" v-pclass="'repeater-item-content'" :class="{'is-invalid': item.showRowErrors}">
                                 <FieldGroup>
-                                    <slot :index="item.index" :subVals="item.rowVals"></slot>
+                                    <slot :index="item.index" :subVal="null" :subVals="item.rowVals"></slot>
                                 </FieldGroup>
                                 <div v-if="item.showRowErrors" class="invalid-feedback d-block">
                                     <div v-for="msg in item.rowErrors">{{ msg }}</div>
@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import type { RepeaterFormValue, MessageBag, Config } from '../main';
+import type { RepeaterFormValue, MessageBag, Config, FormValue } from '../main';
 import type { PropType } from 'vue';
 import { computed, toRefs, provide } from 'vue';
 import { commonProps, useRepeaterField, useExtendsConfig, symbols } from '../main';
@@ -81,6 +81,11 @@ const props = defineProps(Object.assign({}, commonProps, {
 const emit = defineEmits<{
     (e: 'update:modelValue', value: RepeaterFormValue): void
     (e: 'update:errors', value: MessageBag): void
+}>();
+
+const slots = defineSlots<{
+    default: (props: {index:number, subVal: FormValue|null, subVals: FormValue|null}) => any,
+    appendRow: (props: {canAddRow: boolean}) => any,
 }>();
 
 const propRefs = toRefs(props);

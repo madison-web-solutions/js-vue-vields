@@ -24,7 +24,7 @@
 
 <script setup lang="ts">
 import type { PropType } from 'vue';
-import type { Choosable, MessageBag, RepeaterFormValue } from '../main';
+import type { Choosable, MessageBag, RepeaterFormValue, FormValue } from '../main';
 import { computed } from 'vue';
 import { commonProps } from '../main';
 import { RepeaterField } from '../main';
@@ -36,6 +36,8 @@ const props = defineProps(Object.assign({}, commonProps, {
         default: [],
     }
 }));
+
+const slots = defineSlots<Record<string, (props: {index: number, subVals: FormValue}) => any>>();
 
 const fieldTypeSlug = computed((): string | undefined => {
     return props?.fieldTypeSlug || 'flexible-content';

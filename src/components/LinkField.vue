@@ -24,7 +24,7 @@
                 @selected="chooseSuggestion"
             >
                 <template #suggestion="{ suggestion }">
-                    <slot name="suggestion" :suggestion="suggestion">{{ (suggestion as LinkAlias).label }}</slot>
+                    <slot name="suggestion" :suggestion="suggestion">{{ suggestion.label }}</slot>
                 </template>
             </SearchInterface>
         </template>
@@ -43,6 +43,10 @@ const props = defineProps(Object.assign({}, commonProps, {
         type: Object,
     },
 }));
+
+const slots = defineSlots<{
+    suggestion: (props: {suggestion: LinkAlias}) => any,
+}>();
 
 const emit = defineEmits<{
     (e: 'update:modelValue', value: string | undefined): void

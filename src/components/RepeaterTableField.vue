@@ -49,7 +49,7 @@
 
 <script setup lang="ts">
 import type { PropType, StyleValue } from 'vue';
-import type { RepeaterFormValue, MessageBag, RepeaterTableCol, RepeaterTableColOpts, Config } from '../main';
+import type { FormValue, RepeaterFormValue, MessageBag, RepeaterTableCol, RepeaterTableColOpts, Config } from '../main';
 import { computed, toRefs, provide } from 'vue';
 import { commonProps, useRepeaterField, startCase, useExtendsConfig, symbols } from '../main';
 import { FieldArrayItem, FieldGroup } from '../main';
@@ -81,6 +81,11 @@ const props = defineProps(Object.assign({}, commonProps, {
         type: Object as PropType<Partial<Config>>,
     },
 }));
+
+const slots = defineSlots<{
+    th: (props: {col: RepeaterTableCol}) => any,
+    indexCol: (props: {index:number, subVals: FormValue}) => any,
+} & Record<string, (props: {index:number, subVals: FormValue}) => any>>();
 
 const emit = defineEmits<{
     (e: 'update:modelValue', value: RepeaterFormValue): void

@@ -6,7 +6,7 @@
                     <div v-if="hasHeader" class="modal-header">
                         <slot name="header" :close="close">
                             <h5 v-if="title" class="modal-title">{{ title }}</h5>
-                            <button type="button" class="btn-close" aria-label="Close" @click="close"></button>                        
+                            <button type="button" class="btn-close" aria-label="Close" @click="close"></button>
                         </slot>
                     </div>
                     <div class="modal-body">
@@ -42,6 +42,12 @@ const props = defineProps({
         type: String as PropType<"sm" | "lg" | "xl">
     }
 });
+
+const slots = defineSlots<{
+    default: (props: {}) => any,
+    header: (props: {close: () => void}) => any,
+    footer: (props: {close: () => void}) => any,
+}>();
 
 const emit = defineEmits<{
     (e: 'close'): void

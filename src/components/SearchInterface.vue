@@ -18,8 +18,10 @@
     </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" generic="T extends Choosable">
 import { computed, ref, onMounted, onBeforeUnmount } from 'vue';
+import type { Choosable } from 'vue-fields-ms';
+import type { PropType } from 'vue';
 
 const props = defineProps({
     modelValue: {
@@ -27,7 +29,7 @@ const props = defineProps({
         required: false,
     },
     suggestions: {
-        type: Array,
+        type: Array as PropType<T[]>,
         required: true
     },
     isSearching: {
@@ -50,6 +52,11 @@ const emit = defineEmits<{
     (e: 'selected', index: number): void,
     (e: 'enterPress'): void,
     (e: 'fetchNextPage'): void,
+}>();
+
+const slots = defineSlots<{
+    suggestion: (props: {suggestion: T}) => any,
+    noResults: (props: {searchText: string}) => any,
 }>();
 
 const container = ref<HTMLElement | null>(null);

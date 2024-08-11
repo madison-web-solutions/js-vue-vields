@@ -16,6 +16,10 @@ const emit = defineEmits<{
     (e: 'update:errors', value: MessageBag): void
 }>();
 
+const slots = defineSlots<{
+    default: (props: {}) => any,
+}>();
+
 const index = toRef(props, 'index');
 
 useExtendsPath(index);
