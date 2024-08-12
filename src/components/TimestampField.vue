@@ -31,8 +31,11 @@
 </template>
 
 <script setup lang="ts">
+/*
+ * ModelValue is a timestamp in _milliseconds_ (number)
+ */
 import type { MessageBag } from "../main";
-import { computed, toRefs, provide, ref, watch } from "vue";
+import { computed, toRefs, provide, ref, watch, PropType } from "vue";
 import {
   symbols,
   commonProps,
@@ -42,13 +45,19 @@ import {
   TimeField,
   EmptyFieldWrapper,
 } from "../main";
-import { tsToLocalFormat, localYmdHisToDate } from "date-format-ms";
+import { localYmdHisToDate, utcYmdHisToDate, dateToLocalFormat, dateToUtcFormat } from "date-format-ms";
+import { timeFormat, timeSplit } from "../lib/time";
 
 const props = defineProps(
   Object.assign({}, commonProps, {
     displayFormat: {
       type: String,
       default: "d/m/Y H:i:s",
+    },
+    // Only 'local' and 'utc' are supported because those are the only choices for extracting values from a JS Date object
+    timeZone: {
+      type: String as PropType<'local'|'utc'>,
+      default: 'local',
     },
     min: {
       type: Number,
@@ -68,6 +77,59 @@ provide(symbols.fieldWrapperComponent, EmptyFieldWrapper);
 
 const propRefs = toRefs(props);
 
+const tsToFormat = (ts: number, format: string): string|null => {
+  const date = new Date(ts);
+  const formatWithoutTimezone = (props.timeZone == 'local' ? dateToLocalFormat : dateToUtcFormat)(date, format);
+  // We will support a few timezone codes that aren't supported in date-format-ms yet
+  // e - Timezone identifier	Examples: UTC, GMT, Atlantic/Azores
+  // P	Difference to Greenwich time (GMT) with colon between hours and minutes	Example: +02:00
+  // p	The same as P, but returns Z instead of +00:00 (available as of PHP 8.0.0)	Examples: Z or +02:00
+  // Z	Timezone offset in seconds. The offset for timezones west of UTC is always negative, and for those east of UTC is always positive.	-43200 through 50400
+  return formatWithoutTimezone.replace(/(?<!\\)(e|P|p|Z)/g, (code: string): string => {
+      if (props.timeZone == 'local') {
+        if (code == 'e') {
+          // Gives a value like Europe/London
+          return Intl.DateTimeFormat().resolvedOptions().timeZone;
+        }
+        const offsetSecs = -date.getTimezoneOffset() * 60;
+        const sign = offsetSecs < 0 ? -1 : 1;
+        const [hours, mins] = timeSplit(sign * offsetSecs);
+        switch (code) {
+          case 'P':
+            return (sign < 0 ? '-' : '+') + timeFormat(hours, mins);
+          case 'p':
+            if (offsetSecs == 0) {
+              return 'Z';
+            } else {
+              return (sign < 0 ? '-' : '+') + timeFormat(hours, mins);
+            }
+          case 'Z':
+            return String(offsetSecs);
+          default:
+            return code;
+        }
+      } else {
+        switch (code) {
+          case 'e':
+            return 'UTC';
+          case 'P':
+            return '+00:00';
+          case 'p':
+            return 'Z';
+          case 'Z':
+            return '0';
+          default:
+            return code;
+        }
+      }
+    });
+};
+
+// Used to interpret the incoming date/time from the DateField and TimeField
+const ymdHisToDate = (ymdHis: string): Date|null => {
+  return (props.timeZone == 'local' ? localYmdHisToDate : utcYmdHisToDate)(ymdHis);
+};
+
 const {
   inputEleId,
   pathString,
@@ -83,7 +145,7 @@ const displayValue = computed((): string => {
   if (modelValue.value == null) {
     return "";
   }
-  const formatted = tsToLocalFormat(modelValue.value, props.displayFormat);
+  const formatted = tsToFormat(modelValue.value, props.displayFormat);
   return formatted == null ? "" : formatted;
 });
 
@@ -96,9 +158,9 @@ const updateLocalVals = (newTs: number | undefined) => {
     dateValue.value = undefined;
     timeValue.value = undefined;
   } else {
-    const dateYmd = tsToLocalFormat(newTs, "Y-m-d");
+    const dateYmd = tsToFormat(newTs, "Y-m-d");
     dateValue.value = dateYmd ? dateYmd : undefined;
-    const timeHis = tsToLocalFormat(newTs, "H:i:s");
+    const timeHis = tsToFormat(newTs, "H:i:s");
     timeValue.value = timeHis ? timeHis : undefined;
   }
 };
@@ -109,7 +171,7 @@ watch(modelValue, updateLocalVals);
 watch([dateValue, timeValue], ([newDate, newTime]) => {
   if (newDate && newTime) {
     // If both are set, update modelValue to the new timestamp
-    const date = localYmdHisToDate(newDate + " " + newTime);
+    const date = ymdHisToDate(newDate + " " + newTime);
     if (date) {
       modelValue.value = date.getTime();
     }
@@ -121,27 +183,24 @@ watch([dateValue, timeValue], ([newDate, newTime]) => {
 });
 
 const minDateYmd = computed((): string | undefined => {
-  return tsToLocalFormat(props.min, "Y-m-d") || undefined;
+  return props.min == null ? undefined : (tsToFormat(props.min, "Y-m-d") ?? undefined);
 });
 
 const maxDateYmd = computed((): string | undefined => {
-  return tsToLocalFormat(props.max, "Y-m-d") || undefined;
+  return props.max == null ? undefined : (tsToFormat(props.max, "Y-m-d") ?? undefined);
 });
 
 const minTimeHis = computed((): string | undefined => {
   if (props.min && dateValue.value && dateValue.value == minDateYmd.value) {
-    return tsToLocalFormat(props.min, "H-i-s") || undefined;
+    return tsToFormat(props.min, "H-i-s") || undefined;
   }
 });
 
 const maxTimeHis = computed((): string | undefined => {
   if (props.max && dateValue.value && dateValue.value == maxDateYmd.value) {
-    return tsToLocalFormat(props.max, "H-i-s") || undefined;
+    return tsToFormat(props.max, "H-i-s") || undefined;
   }
 });
-
-// @todo expose this?
-// const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 const firstField = ref<InstanceType<typeof DateField> | null>(null);
 const focus = () => firstField.value?.focus();

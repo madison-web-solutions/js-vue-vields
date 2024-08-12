@@ -10,6 +10,8 @@
             <TimestampField
               label="Transaction Time"
               name="transaction_time"
+              timeZone="local"
+              displayFormat="d/m/Y H:i:s P"
               class="col-6"
             />
             <div class="col-6"></div>
@@ -322,7 +324,7 @@ const toggleEditMode = () => {
 provide(symbols.editMode, editMode);
 
 const vals = ref({
-  transaction_time: 1678258688118,
+  transaction_time: 1678258688118, // milliseconds
   first_name: "Jane",
   last_name: "Doe",
   summary: "A wonderful person.\nKind and caring.",
