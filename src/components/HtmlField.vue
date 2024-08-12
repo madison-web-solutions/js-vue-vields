@@ -16,18 +16,31 @@
 </template>
 
 <script setup lang="ts">
-// I got this file from making a 'custom build' here https://ckeditor.com/ckeditor-5/online-builder/
-// Then editing so that it creates and exports the ClassicEditor object
-// @todo, we really need to stop relying on these custom builds, they're a complete nuisance
-// CKEditor must be built using webpack so I don't think we can build it from source in this project (Vite/Rollup),
-// ...but perhaps we could make a separate ms-ckeditor package where we use webpack to build the editor according
-// to the spec that we want, then include it here? something like that?
-// @ts-ignore
-import { ClassicEditor } from "../../ckeditor5/ckeditor.js";
-
+import {
+  ClassicEditor,
+  Essentials,
+  Bold,
+  Italic,
+  Paragraph,
+  Heading,
+  Strikethrough,
+  Underline,
+  Code,
+  Link,
+  Subscript,
+  Superscript,
+  Alignment,
+  List,
+  CodeBlock,
+  BlockQuote,
+  HorizontalLine,
+  Table,
+} from "ckeditor5";
 import type { MessageBag } from "../main";
 import { ref, toRefs, watch, onBeforeUnmount } from "vue";
 import { commonProps, useFormField } from "../main";
+import { symbols } from "../lib/symbols";
+import "ckeditor5/ckeditor5.css";
 
 const props = defineProps(Object.assign({}, commonProps, {}));
 
@@ -51,12 +64,31 @@ const INPUT_DEBOUNCE_WAIT: number = 300;
 
 const lastEditorData = ref<string>("");
 
-let editor: any = null;
+let editor: ClassicEditor | null = null;
 
 const editorContainerEle = ref<HTMLElement | null>(null);
 
 const ckEditorConfig = () => {
   return {
+    plugins: [
+      Essentials,
+      Bold,
+      Italic,
+      Paragraph,
+      Heading,
+      Strikethrough,
+      Underline,
+      Code,
+      Link,
+      Subscript,
+      Superscript,
+      Alignment,
+      List,
+      CodeBlock,
+      BlockQuote,
+      HorizontalLine,
+      Table,
+    ],
     toolbar: {
       items: [
         "heading",
@@ -96,11 +128,13 @@ const createEditor = () => {
     const editorEle = document.createElement("div");
     editorContainerEle.value.appendChild(editorEle);
     ClassicEditor.create(editorEle, config)
-      .then((newEditor: any) => {
+      .then((newEditor) => {
         // Save the reference to the instance for further use.
         editor = newEditor;
         // Set initial disabled state.
-        editor.isReadOnly = props.disabled;
+        if (props.disabled) {
+          editor.enableReadOnlyMode(symbols.htmlEditorLock);
+        }
         editor.model.document.on("change:data", handleEditorDataChange);
         editor.setData(modelValue.value || "");
         //console.log(Array.from(editor.ui.componentFactory.names()));
@@ -126,7 +160,7 @@ const handleEditorDataChange = () => {
   }
   timeoutId = window.setTimeout(() => {
     // Cache the last editor data.
-    const data = editor.getData() || "";
+    const data = editor?.getData() || "";
     if (data != lastEditorData.value) {
       lastEditorData.value = data;
       modelValue.value = data;
@@ -139,6 +173,19 @@ watch(modelValue, () => {
     editor.setData(modelValue.value || "");
   }
 });
+
+watch(
+  () => props.disabled,
+  (newVal) => {
+    if (editor) {
+      if (newVal) {
+        editor.enableReadOnlyMode(symbols.htmlEditorLock);
+      } else {
+        editor.disableReadOnlyMode(symbols.htmlEditorLock);
+      }
+    }
+  },
+);
 
 watch(editorContainerEle, () => {
   if (editorContainerEle.value) {

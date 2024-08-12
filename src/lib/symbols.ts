@@ -28,6 +28,7 @@ const symbols = {
     typeof FieldWrapper | undefined
   >,
   config: Symbol() as InjectionKey<Ref<Partial<Config>> | undefined>,
+  htmlEditorLock: Symbol(),
 };
 Object.freeze(symbols);
 export { symbols };
