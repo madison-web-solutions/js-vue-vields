@@ -14,7 +14,7 @@
   transition: background-color 0.2s ease-in-out;
   &:hover,
   &:focus {
-    background-color: darken($input-bg, 10%);
+    background-color: $input-focus-bg;
   }
   color: $input-placeholder-color;
   i {
