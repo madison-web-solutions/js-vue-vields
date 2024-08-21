@@ -6,6 +6,18 @@
         v-pclass="'html-field'"
         :class="{ 'is-invalid': hasError }"
       ></div>
+      <Modal
+        v-if="choosingImage"
+        title="Media Library"
+        size="xl"
+        @close="choosingImage = false"
+      >
+        <MediaLibrary
+          :standalone="false"
+          @select="insertChosenImage"
+          @close="choosingImage = false"
+        />
+      </Modal>
     </template>
     <template #viewMode>
       <div class="card">
@@ -35,14 +47,44 @@ import {
   BlockQuote,
   HorizontalLine,
   Table,
+  EditorConfig,
+  Image,
+  PluginConstructor,
+  Editor,
+  ToolbarConfigItem,
+  ImageToolbar,
+  ImageConfig,
+  ImageStyle,
+  TableConfig,
 } from "ckeditor5";
-import type { MessageBag } from "../main";
-import { ref, toRefs, watch, onBeforeUnmount } from "vue";
-import { commonProps, useFormField } from "../main";
-import { symbols } from "../lib/symbols";
+import type { LookupResult, MediaItem, MessageBag } from "../main";
+import { ref, toRefs, watch, onBeforeUnmount, inject } from "vue";
+import { symbols, commonProps, getConfigRef, useFormField } from "../main";
+import { CkEditorMediaLibraryPlugin } from "../lib/media";
+import Modal from "./Modal.vue";
+import MediaLibrary from "./media/MediaLibrary.vue";
 import "ckeditor5/ckeditor5.css";
 
-const props = defineProps(Object.assign({}, commonProps, {}));
+const props = defineProps(
+  Object.assign({}, commonProps, {
+    subSuperScript: {
+      type: Boolean,
+      required: false,
+    },
+    code: {
+      type: Boolean,
+      required: false,
+    },
+    tables: {
+      type: Boolean,
+      required: false,
+    },
+    images: {
+      type: Boolean,
+      required: false,
+    },
+  }),
+);
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: string): void;
@@ -50,6 +92,14 @@ const emit = defineEmits<{
 }>();
 
 const propRefs = toRefs(props);
+
+const enableSubSuperScript = getConfigRef(
+  "html.subSuperScript",
+  propRefs.subSuperScript,
+);
+const enableCode = getConfigRef("html.code", propRefs.code);
+const enableTables = getConfigRef("html.tables", propRefs.tables);
+const enableImages = getConfigRef("html.images", propRefs.images);
 
 const coerceToString = (value: any): string => {
   return value ? String(value) : "";
@@ -68,58 +118,96 @@ let editor: ClassicEditor | null = null;
 
 const editorContainerEle = ref<HTMLElement | null>(null);
 
-const ckEditorConfig = () => {
-  return {
-    plugins: [
-      Essentials,
-      Bold,
-      Italic,
-      Paragraph,
-      Heading,
-      Strikethrough,
-      Underline,
-      Code,
-      Link,
-      Subscript,
-      Superscript,
-      Alignment,
-      List,
-      CodeBlock,
-      BlockQuote,
-      HorizontalLine,
-      Table,
-    ],
-    toolbar: {
-      items: [
-        "heading",
-        "|",
-        "bold",
-        "italic",
-        "strikethrough",
-        "underline",
-        "code",
-        "link",
-        "subscript",
-        "superscript",
-        "|",
-        "alignment",
-        "bulletedList",
-        "numberedList",
-        "codeBlock",
-        "blockQuote",
-        "insertTable",
-        "horizontalLine",
-        "|",
-        "undo",
-        "redo",
+const mediaProvider = inject(symbols.mediaProvider);
+
+const ckEditorConfig = (): EditorConfig => {
+  const plugins: PluginConstructor<Editor>[] = [
+    Essentials,
+    Bold,
+    Italic,
+    Paragraph,
+    Heading,
+    Strikethrough,
+    Underline,
+    Link,
+    Alignment,
+    List,
+    BlockQuote,
+    HorizontalLine,
+  ];
+  const toolbarGroups: Record<string, ToolbarConfigItem[]> = {
+    heading: ["heading"],
+    inlineFormat: ["bold", "italic", "strikethrough", "underline", "link"],
+    blockFormat: ["alignment", "bulletedList", "blockQuote", "horizontalLine"],
+    undo: ["undo", "redo"],
+  };
+  let imageConfig: ImageConfig | undefined = undefined;
+  let tableConfig: TableConfig | undefined = undefined;
+
+  if (enableSubSuperScript.value) {
+    plugins.push(Subscript, Superscript);
+    toolbarGroups.inlineFormat.push("subscript", "superscript");
+  }
+  if (enableCode.value) {
+    plugins.push(Code, CodeBlock);
+    toolbarGroups.inlineFormat.push("code");
+    toolbarGroups.blockFormat.push("codeBlock");
+  }
+  if (enableTables.value) {
+    plugins.push(Table);
+    toolbarGroups.blockFormat.push("insertTable");
+    tableConfig = {
+      contentToolbar: ["tableColumn", "tableRow", "mergeTableCells"],
+    };
+  }
+  if (enableImages.value && mediaProvider) {
+    plugins.push(Image, ImageToolbar, ImageStyle, CkEditorMediaLibraryPlugin);
+    toolbarGroups.media = ["medialibrary"];
+    imageConfig = {
+      toolbar: [
+        "imageTextAlternative",
+        "imageStyle:alignBlockLeft",
+        "imageStyle:alignBlockRight",
+        "imageStyle:block",
+        "imageStyle:inline",
       ],
+    };
+  }
+
+  const toolbarItems: ToolbarConfigItem[] = [];
+  Object.values(toolbarGroups).forEach((items, index) => {
+    if (index > 0) {
+      toolbarItems.push("|");
+    }
+    toolbarItems.push(...items);
+  });
+
+  const config: EditorConfig = {
+    plugins: plugins,
+    toolbar: {
+      items: toolbarItems,
     },
     language: "en",
-    table: {
-      contentToolbar: ["tableColumn", "tableRow", "mergeTableCells"],
-    },
-    width: "auto",
+    table: tableConfig,
+    image: imageConfig,
   };
+
+  return config;
+};
+
+const choosingImage = ref<boolean>(false);
+const insertChosenImage = (mediaId: string | number) => {
+  choosingImage.value = false;
+  const mlPlugin = editor?.plugins.get(CkEditorMediaLibraryPlugin);
+  if (enableImages.value && mediaProvider && mlPlugin) {
+    mediaProvider.value
+      .lookup(mediaId)
+      .then((result: LookupResult<MediaItem>) => {
+        if (result.status == "found") {
+          mlPlugin.insertSelectedImage(result.resource);
+        }
+      });
+  }
 };
 
 const createEditor = () => {
@@ -137,7 +225,13 @@ const createEditor = () => {
         }
         editor.model.document.on("change:data", handleEditorDataChange);
         editor.setData(modelValue.value || "");
-        //console.log(Array.from(editor.ui.componentFactory.names()));
+        // Connect the media library ckeditor plugin so that the button opens the MediaLibrary Modal
+        const mlPlugin = editor?.plugins.get(CkEditorMediaLibraryPlugin);
+        if (enableImages.value && mlPlugin) {
+          mlPlugin.onOpenMediaLibrary(() => (choosingImage.value = true));
+        }
+        // Uncomment to see list of possible toolbar items
+        // console.log(Array.from(editor.ui.componentFactory.names()));
       })
       .catch((error: any) => {
         console.error(error.stack);

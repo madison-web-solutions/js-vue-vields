@@ -213,8 +213,8 @@ export type UseRepeaterFieldPropRefs = UseFormFieldPropRefs & {
 
 export type RepeaterItem = {
   index: number;
-  isFirst: boolean,
-  isLast: boolean,
+  isFirst: boolean;
+  isLast: boolean;
   rowVals: FormValue;
   rowErrors: string[];
   showRowErrors: boolean;
@@ -236,6 +236,10 @@ export type Config = {
   "currency.currencyCode": string | null;
   "currency.showCurrency": boolean;
   "media.supportCropCenter": boolean;
+  "html.subSuperScript": boolean;
+  "html.code": boolean;
+  "html.tables": boolean;
+  "html.images": boolean;
 };
 
 export type ConfigKey = keyof Config;

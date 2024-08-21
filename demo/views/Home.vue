@@ -152,6 +152,7 @@
             <HtmlField
               label="Description"
               name="description"
+              :images="true"
               class="col-12"
               ref="descriptionField"
             />

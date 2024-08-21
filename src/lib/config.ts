@@ -8,6 +8,10 @@ export const defaultConfig: Config = {
   "currency.currencyCode": null,
   "currency.showCurrency": false,
   "media.supportCropCenter": false,
+  "html.subSuperScript": true,
+  "html.code": true,
+  "html.tables": true,
+  "html.images": false,
 };
 
 export const getConfigValue = <K extends ConfigKey>(
