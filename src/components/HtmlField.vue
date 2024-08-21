@@ -162,7 +162,7 @@ const ckEditorConfig = (): EditorConfig => {
   }
   if (enableImages.value && mediaProvider) {
     plugins.push(Image, ImageToolbar, ImageStyle, CkEditorMediaLibraryPlugin);
-    toolbarGroups.media = ["medialibrary"];
+    toolbarGroups.media = ["vfmMedialibrary"];
     imageConfig = {
       toolbar: [
         "imageTextAlternative",
@@ -198,7 +198,7 @@ const ckEditorConfig = (): EditorConfig => {
 const choosingImage = ref<boolean>(false);
 const insertChosenImage = (mediaId: string | number) => {
   choosingImage.value = false;
-  const mlPlugin = editor?.plugins.get(CkEditorMediaLibraryPlugin);
+  const mlPlugin = (editor && editor.plugins.has(CkEditorMediaLibraryPlugin)) ? editor.plugins.get(CkEditorMediaLibraryPlugin) : null;
   if (enableImages.value && mediaProvider && mlPlugin) {
     mediaProvider.value
       .lookup(mediaId)
@@ -216,22 +216,22 @@ const createEditor = () => {
     const editorEle = document.createElement("div");
     editorContainerEle.value.appendChild(editorEle);
     ClassicEditor.create(editorEle, config)
-      .then((newEditor) => {
-        // Save the reference to the instance for further use.
-        editor = newEditor;
+      .then((newEditor: ClassicEditor) => {
         // Set initial disabled state.
         if (props.disabled) {
-          editor.enableReadOnlyMode(symbols.htmlEditorLock);
+          newEditor.enableReadOnlyMode(symbols.htmlEditorLock);
         }
-        editor.model.document.on("change:data", handleEditorDataChange);
-        editor.setData(modelValue.value || "");
+        newEditor.model.document.on("change:data", handleEditorDataChange);
+        newEditor.setData(modelValue.value || "");
         // Connect the media library ckeditor plugin so that the button opens the MediaLibrary Modal
-        const mlPlugin = editor?.plugins.get(CkEditorMediaLibraryPlugin);
-        if (enableImages.value && mlPlugin) {
-          mlPlugin.onOpenMediaLibrary(() => (choosingImage.value = true));
+        if (enableImages.value && newEditor.plugins.has(CkEditorMediaLibraryPlugin)) {
+          newEditor.plugins.get(CkEditorMediaLibraryPlugin).onOpenMediaLibrary(() => (choosingImage.value = true));
         }
         // Uncomment to see list of possible toolbar items
-        // console.log(Array.from(editor.ui.componentFactory.names()));
+        // console.log(Array.from(newEditor.ui.componentFactory.names()));
+
+        // Save the reference to the instance for further use.
+        editor = newEditor;
       })
       .catch((error: any) => {
         console.error(error.stack);
