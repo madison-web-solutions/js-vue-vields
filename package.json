@@ -7,10 +7,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc -b ./tsconfig.build.json && vite build",
+    "build": "vite build",
     "preview": "vite preview",
     "prepare": "npm run build",
-    "format": "prettier ./demo ./scss ./src --write"
+    "format": "prettier ./demo ./scss ./src --write",
+    "tsc": "vue-tsc -b ./tsconfig.build.json"
   },
   "devDependencies": {
     "@babel/types": "^7.25.2",
