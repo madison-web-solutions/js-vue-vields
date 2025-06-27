@@ -3,17 +3,13 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag, FormValue, FixedLens } from "../main";
+import type { MessageBag, FormValue, FixedLens } from "../types";
 import { toRef, provide, inject } from "vue";
-import { useExtendsPath, symbols } from "../main";
+import useExtendsPath from "../lib/useExtendsPath";
+import { injectionSymbols } from "..";
 
 const props = defineProps<{
   index: number;
-}>();
-
-const emit = defineEmits<{
-  (e: "update:modelValue", value: FormValue): void;
-  (e: "update:errors", value: MessageBag): void;
 }>();
 
 const slots = defineSlots<{
@@ -24,7 +20,7 @@ const index = toRef(props, "index");
 
 useExtendsPath(index);
 
-const parentValueLens = inject(symbols.valueLens, undefined);
+const parentValueLens = inject(injectionSymbols.valueLens, undefined);
 
 const valueLens: FixedLens<FormValue> = {
   lensType: "fixed",
@@ -42,9 +38,9 @@ const valueLens: FixedLens<FormValue> = {
   },
 };
 
-provide(symbols.valueLens, valueLens);
+provide(injectionSymbols.valueLens, valueLens);
 
-const parentErrorsLens = inject(symbols.errorsLens, undefined);
+const parentErrorsLens = inject(injectionSymbols.errorsLens, undefined);
 
 const errorsLens: FixedLens<MessageBag> = {
   lensType: "fixed",
@@ -62,5 +58,5 @@ const errorsLens: FixedLens<MessageBag> = {
   },
 };
 
-provide(symbols.errorsLens, errorsLens);
+provide(injectionSymbols.errorsLens, errorsLens);
 </script>

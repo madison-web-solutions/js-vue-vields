@@ -1,22 +1,8 @@
 <template>
   <FieldWrapper :field="field">
     <template #input>
-      <div v-for="choice in choicesNormalized" :class="{ 'form-check': true, 'form-check-inline': inline, 'vfm-checked': modelValue === choice.key }">
-        <input
-          class="form-check-input"
-          :class="{ 'is-invalid': field.hasError }"
-          type="radio"
-          :id="field.inputEleId + String(choice.key)"
-          :name="field.pathString"
-          :checked="modelValue === choice.key"
-          :disabled="disabled"
-          @change="change(choice)"
-        />
-        <label
-          class="form-check-label"
-          :for="field.inputEleId + String(choice.key)"
-          >{{ choice.label }}</label
-        >
+      <div v-for="choice in choicesNormalized" @click="selectOption(choice)">
+        <slot :choice="choice" :selected="modelValue === choice.key">{{ choice.label }}</slot>
       </div>
     </template>
     <template #viewMode>{{ displayValue }}</template>
@@ -41,6 +27,10 @@ const emit = defineEmits<{
   (e: "update:errors", value: MessageBag): void;
 }>();
 
+const slots = defineSlots<{
+  default: (props: { choice: Choosable, selected: boolean }) => any;
+}>();
+
 const propRefs = toRefs(props);
 
 const coerceFn = (value: any): IdType => {
@@ -54,13 +44,13 @@ const coerceFn = (value: any): IdType => {
 };
 
 const { modelValue, field } = useFormField<IdType>(coerceFn, emit, propRefs);
-const { choicesNormalized, currentChoice, displayValue } = useHasChoicesSingle(modelValue, propRefs);
+const { choicesNormalized, displayValue } = useHasChoicesSingle(modelValue, propRefs);
 
-const change = (newChoice: Choosable) => {
-  if (props.disabled) {
+const selectOption = (choice: Choosable) => {
+  if (field.value.disabled) {
     return;
   }
-  modelValue.value = newChoice.key;
+  modelValue.value = choice.key;
 };
 
 </script>

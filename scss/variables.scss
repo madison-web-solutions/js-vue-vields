@@ -1,6 +1,3 @@
-// Forms variables (to be overridden)
-$vfms-prefix: "" !default;
-
 $custom-select-bg: #fff !default;
 $custom-select-hover-bg: $gray-200 !default;
 
@@ -8,8 +5,3 @@ $repeater-row-spacing: $spacer !default;
 $repeater-move-indicator-size: 4px !default;
 $repeater-move-indicator-color: $primary !default;
 $repeater-table-header-font-weight: 600 !default;
-
-$media-preview-width: 120px !default;
-$media-preview-height: 120px !default;
-$media-preview-border-radius: 8px !default;
-$media-preview-font-size: 12px !default;

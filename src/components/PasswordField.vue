@@ -1,14 +1,14 @@
 <template>
-  <FieldWrapper v-bind="standardWrapperProps">
+  <FieldWrapper :field="field">
     <template #input>
       <input
-        :id="inputEleId"
-        :name="pathString"
+        :id="field.inputEleId"
+        :name="field.pathString"
         type="password"
         class="form-control"
-        :class="{ 'is-invalid': hasError }"
-        :disabled="disabled"
-        :placeholder="placeholder"
+        :class="{ 'is-invalid': field.hasError }"
+        :disabled="field.disabled"
+        :placeholder="field.placeholder"
         v-model="modelValue"
       />
       <PasswordStrengthMeter
@@ -23,21 +23,16 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag } from "../main";
+import type { MessageBag, FieldProps } from "../types";
 import { toRefs } from "vue";
-import { commonProps, useFormField, PasswordStrengthMeter } from "../main";
+import useFormField from "../lib/useFormField";
+import PasswordStrengthMeter from "./PasswordStrengthMeter.vue";
+import FieldWrapper from "./FieldWrapper.vue";
+import { coerceToString } from "../lib/type-utils";
 
-const props = defineProps(
-  Object.assign({}, commonProps, {
-    inputType: {
-      type: String,
-      default: "text",
-    },
-    minStrength: {
-      type: Number,
-    },
-  }),
-);
+const props = defineProps<FieldProps & {
+  minStrength?: number | undefined
+}>();
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: string): void;
@@ -46,21 +41,5 @@ const emit = defineEmits<{
 
 const propRefs = toRefs(props);
 
-const coerceToString = (value: any): string => {
-  return value ? String(value) : "";
-};
-
-const {
-  inputEleId,
-  pathString,
-  modelValue,
-  hasError,
-  FieldWrapper,
-  standardWrapperProps,
-  focus,
-} = useFormField<string>(coerceToString, emit, propRefs, {
-  fieldTypeSlug: "password",
-});
-
-defineExpose({ focus });
+const {modelValue, field} = useFormField<string>(coerceToString, emit, propRefs);
 </script>

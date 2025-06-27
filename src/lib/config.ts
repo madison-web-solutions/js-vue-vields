@@ -1,23 +1,16 @@
-import type { Config, ConfigKey } from "../main";
 import type { Ref } from "vue";
-import { symbols } from "../main";
-import { computed, inject } from "vue";
+import type { Config, ConfigKey } from "../types";
+import { inject, computed, unref } from "vue";
+import injectionSymbols from "./injection-symbols";
 
 export const defaultConfig: Config = {
-  "textArea.numRows": 5,
+  noValueLabel: "(none)",
+  "textArea.numRows": 4,
   "currency.currencyCode": null,
   "currency.showCurrency": false,
-  "media.supportCropCenter": false,
-  "html.subSuperScript": true,
-  "html.code": true,
-  "html.tables": true,
-  "html.images": false,
 };
 
-export const getConfigValue = <K extends ConfigKey>(
-  config: Partial<Config> | undefined,
-  key: K,
-): Config[K] => {
+export const getConfigValue = <K extends ConfigKey>(config: Partial<Config> | undefined, key: K): Config[K] => {
   if (config && key in config) {
     return config[key] as Config[K];
   } else {
@@ -25,18 +18,18 @@ export const getConfigValue = <K extends ConfigKey>(
   }
 };
 
-export const getConfigRef = <K extends ConfigKey>(
-  key: K,
-  propRef?: Ref<Config[K] | undefined> | undefined,
-  config?: Ref<Partial<Config> | undefined> | undefined,
-): Ref<Config[K]> => {
+// Must be used in setup() functions
+export const getConfigRef = <K extends ConfigKey>(key: K, override?: Ref<Config[K] | undefined> | Config[K] | undefined, config?: Ref<Partial<Config> | undefined> | undefined): Ref<Config[K]> => {
   if (config == null) {
-    config = inject(symbols.config, undefined);
+    config = inject(injectionSymbols.config, undefined);
   }
   return computed(() => {
-    if (propRef && propRef.value != null) {
-      return propRef.value;
+    const overrideValue = unref(override);
+    if (overrideValue != null) {
+      return overrideValue;
+    } else {
+      return getConfigValue(config?.value, key);
     }
-    return getConfigValue(config?.value, key);
   });
 };
+

@@ -14,7 +14,8 @@
 
 <script setup lang="ts">
 import { ref, computed, inject, watchEffect } from "vue";
-import { symbols } from "../main";
+import injectionSymbols from "../lib/injection-symbols";
+import { clamp } from "../lib/utils";
 
 const props = defineProps({
   password: {
@@ -27,18 +28,16 @@ const props = defineProps({
   },
 });
 
-const provider = inject(symbols.passwordStrengthProvider, undefined);
+const provider = inject(injectionSymbols.passwordStrengthProvider, undefined);
 
 const strength = ref<number | undefined>(undefined);
 
-watchEffect(() => {
-  if (provider && provider.value && props.password) {
-    provider.value.check(props.password).then((newStrength: number) => {
-      strength.value = newStrength;
-    });
-  } else {
+watchEffect(async () => {
+  if (! provider || ! props.password) {
     strength.value = undefined;
+    return;
   }
+  strength.value = await provider.check(props.password);
 });
 
 const passwordOk = computed((): boolean => {
@@ -46,11 +45,8 @@ const passwordOk = computed((): boolean => {
 });
 
 const percent = computed((): number => {
-  if (provider && provider.value && strength.value != null) {
-    return Math.max(
-      0,
-      Math.min((100 * strength.value) / provider.value.maxStrength),
-    );
+  if (provider && strength.value != null) {
+    return clamp(0, 100, 100 * strength.value / provider.maxStrength);
   } else {
     return 0;
   }

@@ -1,5 +1,5 @@
 <template>
-  <FieldWrapper v-bind="standardWrapperProps">
+  <FieldWrapper :field="field" >
     <template #input>
       <div class="input-group">
         <span v-if="showCurrency" class="input-group-text">{{
@@ -7,11 +7,11 @@
         }}</span>
         <input
           ref="inputEle"
-          :id="inputEleId"
-          :name="pathString"
+          :id="field.inputEleId"
+          :name="field.pathString"
           type="text"
           class="form-control text-end"
-          :class="{ 'is-invalid': hasError }"
+          :class="{ 'is-invalid': field.hasError }"
           :disabled="disabled"
           :placeholder="placeholder"
           :value="displayValue"
@@ -26,35 +26,20 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag, ParsesTextFieldOptions } from "../main";
+import type { FieldProps, MessageBag, ParsesTextFieldOptions } from "../types";
 import { computed, ref, toRefs } from "vue";
-import {
-  commonProps,
-  useFormField,
-  useParsesTextField,
-  getConfigRef,
-} from "../main";
+import useFormField from "../lib/useFormField";
+import useParsesTextField from "../lib/useParsesTextField";
+import { getConfigRef } from "../lib/config";
+import FieldWrapper from "./FieldWrapper.vue";
 
-const props = defineProps(
-  Object.assign({}, commonProps, {
-    currencyCode: {
-      type: String,
-    },
-    max: {
-      type: Number,
-    },
-    min: {
-      type: Number,
-    },
-    step: {
-      type: Number,
-    },
-    showCurrency: {
-      type: Boolean,
-      default: null,
-    },
-  }),
-);
+const props = defineProps<FieldProps & {
+  currencyCode?: string | undefined,
+  max?: number | undefined,
+  min?: number | undefined,
+  step?: number | undefined,
+  showCurrency?: boolean | undefined,
+}>();
 
 const inputEle = ref<HTMLInputElement | null>(null);
 
@@ -65,15 +50,8 @@ const emit = defineEmits<{
 
 const propRefs = toRefs(props);
 
-const showCurrency = getConfigRef(
-  "currency.showCurrency",
-  propRefs.showCurrency,
-);
-
-const currencyCode = getConfigRef(
-  "currency.currencyCode",
-  propRefs.currencyCode,
-);
+const showCurrency = getConfigRef("currency.showCurrency", propRefs.showCurrency);
+const currencyCode = getConfigRef("currency.currencyCode", propRefs.currencyCode);
 
 const coerceToNumber = (value: unknown): number | undefined => {
   switch (typeof value) {
@@ -86,17 +64,7 @@ const coerceToNumber = (value: unknown): number | undefined => {
   return undefined;
 };
 
-const {
-  inputEleId,
-  pathString,
-  modelValue,
-  hasError,
-  FieldWrapper,
-  standardWrapperProps,
-  focus,
-} = useFormField<number | undefined>(coerceToNumber, emit, propRefs, {
-  fieldTypeSlug: "currency",
-});
+const { modelValue, field } = useFormField<number | undefined>(coerceToNumber, emit, propRefs);
 
 const numberFormatter = computed((): Intl.NumberFormat => {
   if (currencyCode.value) {
@@ -151,11 +119,6 @@ const parsesTextFieldOptions: ParsesTextFieldOptions<number> = {
   },
 };
 
-const { onFocus, onBlur, change, displayValue } = useParsesTextField<number>(
-  modelValue,
-  inputEle,
-  parsesTextFieldOptions,
-);
+const { onFocus, onBlur, change, displayValue } = useParsesTextField<number>(modelValue, inputEle, parsesTextFieldOptions);
 
-defineExpose({ focus });
 </script>

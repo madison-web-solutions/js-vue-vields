@@ -1,26 +1,23 @@
 <template>
-  <FieldWrapper
-    v-bind="standardWrapperProps"
-    :inputWrapperCssClass="inline ? 'd-flex flex-wrap' : ''"
-  >
+  <FieldWrapper :field="field" :inputWrapperCssClass="inline ? 'd-flex flex-wrap' : ''">
     <template #input>
       <div
         v-for="choice in choicesNormalized"
         :key="choice.key"
         :class="inline ? 'me-3' : ''"
       >
-        <div class="form-check" v-pclass="{ checked: isOn(choice.key) }">
+        <div :class="{'form-check': true, 'vfm-checked': isOn(choice.key)}">
           <input
             class="form-check-input"
             type="checkbox"
-            :id="inputEleId + choice.key"
-            :name="pathString + '.' + choice.key"
+            :id="field.inputEleId + choice.key"
+            :name="field.pathString + '.' + choice.key"
             :checked="isOn(choice.key)"
             @change="toggle(choice.key)"
             :class="{ 'is-invalid': hasSubErrors(choice.key) }"
             :disabled="disabled"
           />
-          <label class="form-check-label" :for="inputEleId + choice.key">{{
+          <label class="form-check-label" :for="field.inputEleId + choice.key">{{
             choice.label
           }}</label>
         </div>
@@ -40,56 +37,35 @@
 </template>
 
 <script setup lang="ts">
-import type { PropType } from "vue";
-import type { MessageBag, KeysList, BooleansMap } from "../main";
-import { toRefs } from "vue";
-import { commonProps, useFormFieldWithChoicesMultiple } from "../main";
+import type { MessageBag, FieldProps, HasChoicesMultipleFieldProps, KeyListFormValue, BooleansMapFormValue } from "../types";
+import { computed, toRefs } from "vue";
+import useFormFieldWithChoicesMultiple from "../lib/useFormFieldWithChoicesMultiple";
+import FieldWrapper from "./FieldWrapper.vue";
 
-const props = defineProps(
-  Object.assign({}, commonProps, {
-    directory: {
-      type: String,
-    },
-    choices: {
-      type: [String, Object, Array],
-    },
-    inline: {
-      type: Boolean,
-      default: false,
-    },
-    valueIs: {
-      type: String as PropType<"array" | "object">,
-      default: "array",
-    },
-    trueLabel: {
-      type: String,
-      default: "Yes",
-    },
-    falseLabel: {
-      type: String,
-      default: "No",
-    },
-  }),
-);
+const props = defineProps<FieldProps & HasChoicesMultipleFieldProps & {
+  inline?: boolean | undefined,
+  trueLabel?: string | undefined,
+  falseLabel?: string | undefined,
+}>();
+
+const trueLabel = computed(() => props.trueLabel ?? 'Yes');
+const falseLabel = computed(() => props.falseLabel ?? 'No');
 
 const emit = defineEmits<{
-  (e: "update:modelValue", value: KeysList | BooleansMap): void;
+  (e: "update:modelValue", value: KeyListFormValue | BooleansMapFormValue): void;
   (e: "update:errors", value: MessageBag): void;
 }>();
 
 const propRefs = toRefs(props);
 
 const {
+  field,
   choicesNormalized,
-  inputEleId,
-  pathString,
-  FieldWrapper,
-  standardWrapperProps,
   toggle,
   isOn,
   subErrors,
   hasSubErrors,
-} = useFormFieldWithChoicesMultiple(emit, propRefs, {
-  fieldTypeSlug: "checkboxes",
-});
+} = useFormFieldWithChoicesMultiple(emit, propRefs);
+
+
 </script>

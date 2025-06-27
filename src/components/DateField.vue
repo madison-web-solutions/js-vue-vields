@@ -1,20 +1,21 @@
 <template>
-  <FieldWrapper v-bind="standardWrapperProps">
+  <FieldWrapper :field="field">
     <template #input>
       <input
-        :id="inputEleId"
-        :name="pathString"
+        :id="field.inputEleId"
+        :name="field.pathString"
         ref="inputEle"
         type="date"
         class="form-control"
-        :class="{ 'is-invalid': hasError }"
-        :disabled="disabled"
+        :class="{ 'is-invalid': field.hasError }"
+        :disabled="field.disabled"
         :placeholder="myPlaceholder"
         :value="modelValue"
         :min="minDateYmd"
         :max="maxDateYmd"
         @change="onChange"
         @keydown.enter="onEnterPress"
+        @keydown.tab="onEnterPress"
         @blur="onBlur"
       />
     </template>
@@ -23,25 +24,19 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag } from "../main";
+import type { FieldProps, MessageBag } from "../types";
 import { computed, ref, toRefs } from "vue";
-import { commonProps, useFormField } from "../main";
+import useFormField from "../lib/useFormField";
 import { dateToUtcFormat, ymdToFormat } from "date-format-ms";
+import FieldWrapper from "./FieldWrapper.vue";
 
-const props = defineProps(
-  Object.assign({}, commonProps, {
-    displayFormat: {
-      type: String,
-      default: "d/m/Y",
-    },
-    min: {
-      type: String,
-    },
-    max: {
-      type: String,
-    },
-  }),
-);
+const props = defineProps<FieldProps & {
+  displayFormat?: string | undefined,
+  min?: string | undefined,
+  max?: string | undefined,
+}>();
+
+const displayFormat = computed(() => props.displayFormat ?? "d/m/Y");
 
 const inputEle = ref<HTMLInputElement | null>(null);
 
@@ -56,29 +51,11 @@ const coerceFn = (value: any): string | undefined => {
   return ymdToFormat(String(value), "Y-m-d") || undefined;
 };
 
-const {
-  inputEleId,
-  pathString,
-  modelValue,
-  hasError,
-  FieldWrapper,
-  standardWrapperProps,
-  focus,
-} = useFormField<string | undefined>(coerceFn, emit, propRefs, {
-  fieldTypeSlug: "date",
-});
+const { modelValue, field } = useFormField<string | undefined>(coerceFn, emit, propRefs);
 
 const todayUtc: Date = ((): Date => {
   const now: Date = new Date();
-  const tsUtc: number = Date.UTC(
-    now.getFullYear(),
-    now.getMonth(),
-    now.getDate(),
-    0,
-    0,
-    0,
-    0,
-  );
+  const tsUtc: number = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
   return new Date(tsUtc);
 })();
 
@@ -156,12 +133,11 @@ const onBlur = () => {
 };
 
 const myPlaceholder = computed((): string => {
-  return props.placeholder || "dd/mm/yyyy";
+  return field.value.placeholder ?? "dd/mm/yyyy";
 });
 
 const displayValue = computed((): string => {
-  return ymdToFormat(modelValue.value, props.displayFormat) || "";
+  return ymdToFormat(modelValue.value, displayFormat.value) ?? "";
 });
 
-defineExpose({ focus });
 </script>

@@ -1,58 +1,32 @@
 <template>
-  <FieldWrapper v-bind="standardWrapperProps">
+  <FieldWrapper :field="field">
     <template #input>
-      <div v-pclass="'repeater'" class="row mb-2">
+      <div class="vfm-repeater row mb-2">
         <div v-if="loopItems.length == 0" class="col-12">
           <!-- bootstrap row must have at least one col to avoid negative margin breaking layout -->
         </div>
         <div :class="colCssClass" v-for="item in loopItems">
-          <div
-            v-pclass="{
-              'repeater-item': true,
-              'is-moving': item.index === movingIndex,
-            }"
-          >
-            <div v-pclass="'repeater-item-control'" v-if="editable">
-              <button
-                v-if="canAddRow"
-                class="btn btn-sm btn-primary"
-                v-pclass="'btn-repeater-insert'"
-                @click="item.insertRowBefore"
-              >
-                <i class="fas fa-plus fa-fw"></i>
+          <div :class="{'vfm-repeater-item': true, 'vfm-is-moving': item.index === movingIndex}">
+            <div class="vfm-repeater-item-control" v-if="editable">
+              <button v-if="canAddRow" class="vfm-btn-repeater-insert btn btn-sm btn-primary" @click="item.insertRowBefore">
+                <Icon icon="plus"/>
               </button>
-              <button
-                v-if="movable"
-                class="btn btn-sm btn-secondary"
-                v-pclass="'btn-repeater-move'"
-                @click="item.startMove"
-              >
-                <i class="fas fa-arrows-alt fa-fw"></i>
+              <button v-if="movable" class="vfm-btn-repeater-move btn btn-sm btn-secondary" @click="item.startMove">
+                <Icon icon="move"/>
               </button>
-              <button
-                class="btn btn-sm btn-danger ms-1"
-                v-pclass="'btn-repeater-delete'"
-                @click="item.deleteRow"
-              >
-                <i class="fas fa-times fa-fw"></i>
+              <button class="vfm-btn-repeater-delete btn btn-sm btn-danger ms-1" @click="item.deleteRow">
+                <Icon icon="x"/>
               </button>
             </div>
             <FieldArrayItem :index="item.index">
-              <div
-                v-if="subValuesType == 'simple'"
-                v-pclass="'repeater-item-content'"
-              >
+              <div v-if="subValuesType == 'simple'" class="vfm-repeater-item-content">
                 <slot
                   :index="item.index"
                   :subVal="item.rowVals"
                   :subVals="null"
                 ></slot>
               </div>
-              <div
-                v-if="subValuesType == 'compound'"
-                v-pclass="'repeater-item-content'"
-                :class="{ 'is-invalid': item.showRowErrors }"
-              >
+              <div v-if="subValuesType == 'compound'" :class="{'vfm-repeater-item-content': true, 'is-invalid': item.showRowErrors}">
                 <FieldGroup>
                   <slot
                     :index="item.index"
@@ -66,32 +40,14 @@
               </div>
             </FieldArrayItem>
             <template v-if="editable && isMoving">
-              <div
-                v-pclass="[
-                  'repeater-move-target',
-                  horizontalFlow
-                    ? 'repeater-horizontal-flow'
-                    : 'repeater-vertical-flow',
-                  'move-before',
-                ]"
-                @click="item.completeMoveBefore"
-              ></div>
-              <div
-                v-pclass="[
-                  'repeater-move-target',
-                  horizontalFlow
-                    ? 'repeater-horizontal-flow'
-                    : 'repeater-vertical-flow',
-                  'move-after',
-                ]"
-                @click="item.completeMoveAfter"
-              ></div>
+              <div :class="['vfm-repeater-move-target', horizontalFlow ? 'vfm-repeater-horizontal-flow' : 'repeater-vertical-flow', 'vfm-move-before']" @click="item.completeMoveBefore"></div>
+              <div :class="['vfm-repeater-move-target', horizontalFlow ? 'vfm-repeater-horizontal-flow' : 'vfm-repeater-vertical-flow', 'vfm-move-after']" @click="item.completeMoveAfter"></div>
             </template>
           </div>
         </div>
       </div>
       <slot name="appendRow" :canAddRow="canAddRow">
-        <div v-if="editable && canAddRow" v-pclass="'repeater-append'">
+        <div v-if="editable && canAddRow" class="vfm-repeater-append">
           <button class="btn btn-primary" @click="appendRow">
             <i class="fas fa-plus"></i> {{ appendLabel }}
           </button>
@@ -102,50 +58,25 @@
 </template>
 
 <script setup lang="ts">
-import type { RepeaterFormValue, MessageBag, Config, FormValue } from "../main";
-import type { PropType } from "vue";
-import { computed, toRefs, provide } from "vue";
-import {
-  commonProps,
-  useRepeaterField,
-  useExtendsConfig,
-  symbols,
-} from "../main";
-import { FieldArrayItem, FieldGroup } from "../main";
+import type { RepeaterFormValue, MessageBag, Config, Loose, FormValue, FieldProps, RepeaterFieldProps } from "../types";
+import { computed, toRefs } from "vue";
+import useRepeaterField from "../lib/useRepeaterField";
+import useExtendsConfig from "../lib/useExtendsConfig";
+import FieldGroup from "./FieldGroup.vue";
+import FieldWrapper from "./FieldWrapper.vue";
+import FieldArrayItem from "./FieldArrayItem.vue";
+import Icon from "./Icon.vue";
 
-const props = defineProps(
-  Object.assign({}, commonProps, {
-    appendLabel: {
-      type: String,
-      default: "Add Row",
-    },
-    min: {
-      type: Number,
-    },
-    max: {
-      type: Number,
-    },
-    movable: {
-      type: Boolean,
-      default: true,
-    },
-    colCssClass: {
-      type: String,
-      default: "col-12",
-    },
-    horizontalFlow: {
-      type: Boolean,
-      default: false,
-    },
-    subValuesType: {
-      type: String,
-      default: "compound",
-    },
-    config: {
-      type: Object as PropType<Partial<Config>>,
-    },
-  }),
-);
+const props = defineProps<FieldProps & RepeaterFieldProps & {
+  appendLabel?: string | undefined,
+  colCssClass?: string | undefined,
+  horizontalFlow?: boolean | undefined,
+  subValuesType?: 'simple' | 'compound' | undefined,
+  config?: Loose<Config>
+}>();
+
+const appendLabel = computed(() => props.appendLabel ?? 'Add row');
+const colCssClass = computed(() => props.colCssClass ?? 'col-12');
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: RepeaterFormValue): void;
@@ -163,24 +94,20 @@ const slots = defineSlots<{
 
 const propRefs = toRefs(props);
 
+useExtendsConfig(propRefs.config);
+
 const {
-  editMode,
-  FieldWrapper,
-  standardWrapperProps,
+  field,
   movable,
   isMoving,
   canAddRow,
   appendRow,
   movingIndex,
   loopItems,
-} = useRepeaterField(emit, propRefs, {
-  fieldTypeSlug: "repeater",
-});
+} = useRepeaterField(emit, propRefs);
 
 const editable = computed(() => {
-  return props.disabled !== true && editMode.value == "edit";
+  return props.disabled !== true && field.value.editMode == "edit";
 });
 
-provide(symbols.editMode, editMode);
-useExtendsConfig(propRefs.config);
 </script>

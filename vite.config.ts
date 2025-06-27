@@ -1,35 +1,27 @@
-import { defineConfig } from "vite";
-import path from "path";
-import vuePlugin from "@vitejs/plugin-vue";
-import dts from "vite-plugin-dts";
+import { defineConfig } from 'vite';
+import vuePlugin from '@vitejs/plugin-vue';
+import svgLoader from 'vite-svg-loader';
+import { resolve } from 'path';
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     vuePlugin(),
-    dts({
-      include: ['src'],
-      tsconfigPath: 'tsconfig.build.json',
-      rollupTypes: true,
-    }),
+    svgLoader(),
   ],
-  resolve: {
-    alias: { // must also add to tsconfig.app.json to get VSCode to understand the aliases
-      'vue-fields-ms': path.resolve(__dirname, "./src/main.ts"),
-      '@scss': path.resolve(__dirname, "./scss"),
-    },
-  },
   build: {
-    cssCodeSplit: true,
     lib: {
-      entry: path.resolve(__dirname, 'src/main.ts'),
+      // Entrypoint in the source code
+      entry: resolve(__dirname, 'src/index.ts'),
+      // We will only support (and output) the ES format
       formats: ['es'],
-      name: 'VueFieldsMs',
+      // Name of entry point file created when the library is built
+      fileName: 'index'
     },
     rollupOptions: {
-      // make sure to externalize deps that shouldn't be bundled
-      // into your library
+      // The following dependencies should not be bundled into the library
       external: ['vue', 'date-format-ms'],
-    }
+    },
+    outDir: 'dist', // default, but explicit
+    emptyOutDir: true
   }
 });

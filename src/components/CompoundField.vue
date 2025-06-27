@@ -1,5 +1,5 @@
 <template>
-  <FieldWrapper v-bind="standardWrapperProps">
+  <FieldWrapper :field="field">
     <template #input>
       <slot :subVals="modelValue"></slot>
     </template>
@@ -7,16 +7,16 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag, CompoundFormValue } from "../main";
+import type { MessageBag, CompoundFormValue, FieldProps, Loose, Config } from "../types";
 import { toRefs } from "vue";
-import {
-  commonProps,
-  useFormField,
-  useHasCompoundValue,
-  coerceToCompoundFormValue,
-} from "../main";
+import useFormField from "../lib/useFormField";
+import useHasCompoundValue from "../lib/useHasCompoundValue";
+import useExtendsConfig from "../lib/useExtendsConfig";
+import { coerceToCompoundFormValue } from "../lib/type-utils";
 
-const props = defineProps(Object.assign({}, commonProps, {}));
+const props = defineProps<FieldProps & {
+    config?: Loose<Config>
+}>();
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: CompoundFormValue): void;
@@ -29,10 +29,7 @@ const slots = defineSlots<{
 
 const propRefs = toRefs(props);
 
-const { modelValue, errors, FieldWrapper, standardWrapperProps } =
-  useFormField<CompoundFormValue>(coerceToCompoundFormValue, emit, propRefs, {
-    fieldTypeSlug: "compound",
-  });
-
+useExtendsConfig(propRefs.config);
+const { modelValue, errors, field } = useFormField<CompoundFormValue>(coerceToCompoundFormValue, emit, propRefs);
 useHasCompoundValue(modelValue, errors);
 </script>

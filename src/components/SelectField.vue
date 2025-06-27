@@ -1,21 +1,18 @@
 <template>
-  <FieldWrapper v-bind="standardWrapperProps">
+  <FieldWrapper :field="field">
     <template #input>
       <select
         class="form-select"
-        :class="{ 'is-invalid': hasError }"
-        :id="inputEleId"
-        :name="pathString"
-        :disabled="disabled"
+        :class="{ 'is-invalid': field.hasError }"
+        :id="field.inputEleId"
+        :name="field.pathString"
+        :disabled="field.disabled"
         @change="change"
       >
-        <option ref="nullOption" :disabled="required" :selected="nullSelected">
+        <option ref="nullOption" :disabled="field.required" :selected="nullSelected">
           {{ nullOptionLabel }}
         </option>
-        <option
-          v-for="choice in choicesNormalized"
-          :selected="modelValue === choice.key"
-        >
+        <option v-for="choice in choicesNormalized" :selected="modelValue === choice.key">
           {{ choice.label }}
         </option>
       </select>
@@ -25,25 +22,15 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag } from "../main";
+import type { FieldProps, MessageBag, HasChoicesFieldProps } from "../types";
 import { computed, toRefs } from "vue";
-import { commonProps, useFormField, useHasChoicesSingle } from "../main";
+import useFormField from "../lib/useFormField";
+import useHasChoicesSingle from "../lib/useHasChoicesSingle";
+import FieldWrapper from "./FieldWrapper.vue";
 
 type IdType = string | number | undefined;
 
-const props = defineProps(
-  Object.assign({}, commonProps, {
-    directory: {
-      type: String,
-    },
-    choices: {
-      type: [String, Object, Array],
-    },
-    extraParams: {
-      type: Object,
-    },
-  }),
-);
+const props = defineProps<FieldProps & HasChoicesFieldProps>();
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: IdType): void;
@@ -62,22 +49,9 @@ const coerceFn = (value: any): IdType => {
   return undefined;
 };
 
-const {
-  inputEleId,
-  pathString,
-  modelValue,
-  hasError,
-  FieldWrapper,
-  standardWrapperProps,
-  focus,
-} = useFormField<IdType>(coerceFn, emit, propRefs, {
-  fieldTypeSlug: "select",
-});
+const { modelValue, field } = useFormField<IdType>(coerceFn, emit, propRefs);
 
-const { choicesNormalized, currentChoice, nullSelected } = useHasChoicesSingle(
-  modelValue,
-  propRefs,
-);
+const { choicesNormalized, nullSelected, displayValue } = useHasChoicesSingle(modelValue, propRefs);
 
 const nullOptionLabel = computed(() => {
   return props.placeholder || (props.required ? "Select" : "");
@@ -96,13 +70,4 @@ const change = (e: Event) => {
   }
 };
 
-const displayValue = computed((): string => {
-  if (currentChoice.value) {
-    return currentChoice.value.label;
-  } else {
-    return String(modelValue.value);
-  }
-});
-
-defineExpose({ focus });
 </script>

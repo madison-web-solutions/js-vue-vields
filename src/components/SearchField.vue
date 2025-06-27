@@ -1,36 +1,21 @@
 <template>
-  <FieldWrapper v-bind="standardWrapperProps">
+  <FieldWrapper :field="field">
     <template #input>
       <div class="input-group">
         <div
           class="form-control"
-          :class="{ 'is-invalid': hasError }"
-          :disabled="disabled"
+          :class="{ 'is-invalid': field.hasError }"
+          :disabled="field.disabled"
           @click="maybeToggleOpenSearch"
         >
-          <slot
-            v-if="currentItem"
-            name="suggestion"
-            :suggestion="currentItem"
-            >{{ displayValue }}</slot
-          >
-          <span v-if="placeholder && !currentItem">{{ placeholder }}</span>
+          <slot v-if="currentItem" name="suggestion" :suggestion="currentItem">{{ displayValue }}</slot>
+          <span v-if="field.placeholder && !currentItem">{{ field.placeholder }}</span>
         </div>
-        <button
-          v-if="!disabled"
-          class="btn btn-outline-primary"
-          type="button"
-          @click="toggleOpenSearch"
-        >
-          <i class="fas fa-search"></i>
+        <button v-if="!disabled" class="btn btn-outline-primary" type="button" @click="toggleOpenSearch">
+          <Icon icon="search" />
         </button>
-        <button
-          v-if="!disabled && modelValue"
-          class="btn btn-outline-danger"
-          type="button"
-          @click="clearValue"
-        >
-          <i class="fas fa-times"></i>
+        <button v-if="!disabled && modelValue" class="btn btn-outline-danger" type="button" @click="clearValue">
+          <Icon icon="x" />
         </button>
       </div>
       <SearchInterface
@@ -51,9 +36,7 @@
           </slot>
         </template>
         <template #suggestion="{ suggestion }">
-          <slot name="suggestion" :suggestion="suggestion">{{
-            (suggestion as Choosable).label
-          }}</slot>
+          <slot name="suggestion" :suggestion="suggestion">{{ suggestion.label }}</slot>
         </template>
       </SearchInterface>
     </template>
@@ -62,24 +45,18 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag, Choosable, SearchResultPage } from "../main";
+import type { MessageBag, Choosable, SearchResultPage, FieldProps, UsesSearchesFieldProps } from "../types";
 import { computed, ref, toRefs, watchEffect, inject } from "vue";
-import { commonProps, useFormField, useSearches, symbols } from "../main";
+import useFormField from "../lib/useFormField";
+import injectionSymbols from "../lib/injection-symbols";
 import SearchInterface from "./SearchInterface.vue";
+import FieldWrapper from "./FieldWrapper.vue";
+import useSearches from "../lib/useSearches";
+import Icon from "./Icon.vue";
 
 type IdType = string | number | undefined;
 
-const props = defineProps(
-  Object.assign({}, commonProps, {
-    directory: {
-      type: String,
-      required: true,
-    },
-    extraParams: {
-      type: Object,
-    },
-  }),
-);
+const props = defineProps<FieldProps & UsesSearchesFieldProps>();
 
 const slots = defineSlots<{
   suggestion: (props: { suggestion: Choosable }) => any;
@@ -103,48 +80,32 @@ const coerceFn = (value: any): IdType => {
   return undefined;
 };
 
-const { modelValue, hasError, FieldWrapper, standardWrapperProps } =
-  useFormField<IdType>(coerceFn, emit, propRefs, {
-    fieldTypeSlug: "search",
-  });
+const { modelValue, field } = useFormField<IdType>(coerceFn, emit, propRefs);
 
-const provider = inject(symbols.choicesProvider);
+const provider = inject(injectionSymbols.choicesProvider, undefined);
 
 const currentItem = ref<Choosable | null>(null);
 
-watchEffect(() => {
+watchEffect(async () => {
   currentItem.value = null;
-  if (props.directory != null && provider != null && modelValue.value != null) {
-    provider.value
-      .lookup(props.directory, modelValue.value, props.extraParams)
-      .then((searchResult) => {
-        if (searchResult.status == "found") {
-          currentItem.value = searchResult.resource;
-        }
-      });
+  if (props.directory == null || provider == null || modelValue.value == null) {
+    return;
+  }
+  const searchResult = await provider.lookup(props.directory, modelValue.value, props.extraParams);
+  if (searchResult.status == "found") {
+    currentItem.value = searchResult.resource;
   }
 });
 
-const searchFn = (
-  page: number,
-): Promise<SearchResultPage<Choosable>> | null => {
+const searchFn = (page: number): Promise<SearchResultPage<Choosable>> | null => {
   if (props.directory == null || provider == null) {
-    console.log(
-      "Cannot perform search - directory or provider are not set",
-      props.directory,
-      provider,
-    );
+    console.log("Cannot perform search - directory or provider are not set", props.directory, provider);
     return null;
   }
   if (searchText.value.length < 3) {
     return null;
   }
-  return provider.value.search(
-    props.directory,
-    searchText.value,
-    page,
-    props.extraParams,
-  );
+  return provider.search(props.directory, searchText.value, page, props.extraParams);
 };
 
 const {

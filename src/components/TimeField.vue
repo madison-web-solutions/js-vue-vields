@@ -1,14 +1,14 @@
 <template>
-  <FieldWrapper v-bind="standardWrapperProps">
+  <FieldWrapper :field="field">
     <template #input>
       <input
         ref="inputEle"
-        :id="inputEleId"
-        :name="pathString"
+        :id="field.inputEleId"
+        :name="field.pathString"
         type="text"
         class="form-control"
-        :class="{ 'is-invalid': hasError }"
-        :disabled="disabled"
+        :class="{ 'is-invalid': field.hasError }"
+        :disabled="field.disabled"
         :placeholder="myPlaceholder"
         :value="displayValue"
         @change="change"
@@ -21,31 +21,19 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag, ParsesTextFieldOptions } from "../main";
+import type { FieldProps, MessageBag, ParsesTextFieldOptions } from "../types";
 import { computed, ref, toRefs } from "vue";
-import { commonProps, useFormField, useParsesTextField } from "../main";
+import useFormField from "../lib/useFormField";
+import useParsesTextField from "../lib/useParsesTextField";
 import { timeParse, timeFormat, timeSplit } from "../lib/time";
+import FieldWrapper from "./FieldWrapper.vue";
 
-const props = defineProps(
-  Object.assign({}, commonProps, {
-    withSeconds: {
-      type: Boolean,
-      default: false,
-    },
-    max: {
-      type: String,
-      required: false,
-    },
-    min: {
-      type: String,
-      required: false,
-    },
-    step: {
-      type: String,
-      required: false,
-    },
-  }),
-);
+const props = defineProps<FieldProps & {
+  withSeconds: boolean | undefined,
+  max?: string | undefined,
+  min?: string | undefined,
+  step?: string | undefined,
+}>();
 
 const inputEle = ref<HTMLInputElement | null>(null);
 
@@ -60,17 +48,7 @@ const coerceFn = (value: unknown): string | undefined => {
   return value == null || value === "" ? undefined : String(value);
 };
 
-const {
-  inputEleId,
-  pathString,
-  modelValue,
-  hasError,
-  FieldWrapper,
-  standardWrapperProps,
-  focus,
-} = useFormField<string | undefined>(coerceFn, emit, propRefs, {
-  fieldTypeSlug: "time",
-});
+const { modelValue, field } = useFormField<string | undefined>(coerceFn, emit, propRefs);
 
 const stepSeconds = computed((): number | undefined => {
   return props.step == null ? undefined : timeParse(props.step);
@@ -126,6 +104,4 @@ const { onFocus, onBlur, change, displayValue } = useParsesTextField<string>(
   inputEle,
   parsesTextFieldOptions,
 );
-
-defineExpose({ focus });
 </script>

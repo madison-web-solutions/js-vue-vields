@@ -1,14 +1,14 @@
 <template>
-  <FieldWrapper v-bind="standardWrapperProps">
+  <FieldWrapper :field="field">
     <template #input>
       <div class="input-group">
         <input
           ref="inputEle"
-          :id="inputEleId"
-          :name="pathString"
+          :id="field.inputEleId"
+          :name="field.pathString"
           type="text"
           class="form-control"
-          :class="{ 'is-invalid': hasError }"
+          :class="{ 'is-invalid': field.hasError }"
           :disabled="disabled"
           :placeholder="placeholder"
           :value="displayValue"
@@ -24,42 +24,22 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag, ParsesTextFieldOptions } from "../main";
+import type { FieldProps, MessageBag, ParsesTextFieldOptions } from "../types";
 import { computed, ref, toRefs } from "vue";
-import {
-  commonProps,
-  coerceToNumber,
-  useFormField,
-  useParsesTextField,
-} from "../main";
+import { coerceToNumber } from "../lib/type-utils";
+import useFormField from "../lib/useFormField";
+import FieldWrapper from "./FieldWrapper.vue";
+import useParsesTextField from "../lib/useParsesTextField";
 
-const props = defineProps(
-  Object.assign({}, commonProps, {
-    max: {
-      type: Number,
-    },
-    min: {
-      type: Number,
-    },
-    integersOnly: {
-      type: Boolean,
-      default: false,
-    },
-    decimals: {
-      type: Number,
-    },
-    step: {
-      type: Number,
-    },
-    unit: {
-      type: String,
-      required: false,
-    },
-    customDisplayValue: {
-      type: String,
-    },
-  }),
-);
+const props = defineProps<FieldProps & {
+  max?: number,
+  min?: number,
+  integersOnly?: boolean,
+  decimals?: number,
+  step?: number,
+  unit?: string,
+  customDisplayValue?: string,
+}>();
 
 const inputEle = ref<HTMLInputElement | null>(null);
 
@@ -70,17 +50,7 @@ const emit = defineEmits<{
 
 const propRefs = toRefs(props);
 
-const {
-  inputEleId,
-  pathString,
-  modelValue,
-  hasError,
-  FieldWrapper,
-  standardWrapperProps,
-  focus,
-} = useFormField<number | undefined>(coerceToNumber, emit, propRefs, {
-  fieldTypeSlug: "number",
-});
+const { modelValue, field } = useFormField<number | undefined>(coerceToNumber, emit, propRefs);
 
 const myStep = computed((): number | undefined => {
   if (props.step == null) {
@@ -148,11 +118,6 @@ const parsesTextFieldOptions: ParsesTextFieldOptions<number> = {
   },
 };
 
-const { onFocus, onBlur, change, displayValue } = useParsesTextField<number>(
-  modelValue,
-  inputEle,
-  parsesTextFieldOptions,
-);
+const { onFocus, onBlur, change, displayValue } = useParsesTextField<number>(modelValue, inputEle, parsesTextFieldOptions);
 
-defineExpose({ focus });
 </script>

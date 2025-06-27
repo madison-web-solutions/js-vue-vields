@@ -8,28 +8,17 @@
       v-model="searchText"
       @keydown.enter.prevent="emit('enterPress')"
     />
-    <div v-pclass="'search-field-results'" @scroll="handleScroll">
+    <div class="vfm-search-field-results" @scroll="handleScroll">
       <slot v-if="noResults" name="noResults" :searchText="searchText">
         <div class="form-text text-warning">No results</div>
       </slot>
       <div v-if="suggestions.length > 0" class="list-group">
-        <button
-          v-for="(suggestion, index) in suggestions"
-          class="list-group-item list-group-item-action"
-          type="button"
-          @click="emit('selected', index)"
-        >
+        <button v-for="(suggestion, index) in suggestions" class="list-group-item list-group-item-action" type="button" @click="emit('selected', index)">
           <slot name="suggestion" :suggestion="suggestion"></slot>
         </button>
       </div>
       <div v-if="canFetchMore">
-        <button
-          class="btn btn-link"
-          type="button"
-          @click="emit('fetchNextPage')"
-        >
-          more
-        </button>
+        <button class="btn btn-link" type="button" @click="emit('fetchNextPage')">more</button>
       </div>
       <div v-if="isSearching" class="form-text">Searching...</div>
     </div>
@@ -38,38 +27,22 @@
 
 <script setup lang="ts" generic="T extends Choosable">
 import { computed, ref, onMounted, onBeforeUnmount } from "vue";
-import type { Choosable } from "vue-fields-ms";
-import type { PropType } from "vue";
+import type { Choosable } from "../types"
 
-const props = defineProps({
-  modelValue: {
-    type: String,
-    required: false,
-  },
-  suggestions: {
-    type: Array as PropType<T[]>,
-    required: true,
-  },
-  isSearching: {
-    type: Boolean,
-    default: false,
-  },
-  noResults: {
-    type: Boolean,
-    default: false,
-  },
-  canFetchMore: {
-    type: Boolean,
-    default: false,
-  },
-});
+const props = defineProps<{
+  modelValue?: string | undefined,
+  suggestions: T[],
+  isSearching?: boolean | undefined,
+  noResults?: boolean | undefined,
+  canFetchMore?: boolean | undefined,
+}>();
 
 const emit = defineEmits<{
-  (e: "update:modelValue", value: string): void;
-  (e: "close"): void;
-  (e: "selected", index: number): void;
-  (e: "enterPress"): void;
-  (e: "fetchNextPage"): void;
+  "update:modelValue": [value: string],
+  close: [],
+  selected: [index: number],
+  enterPress: [],
+  fetchNextPage: [],
 }>();
 
 const slots = defineSlots<{
@@ -119,8 +92,7 @@ onBeforeUnmount(() => {
 const handleScroll = (e: Event) => {
   if (props.canFetchMore) {
     const ele = e.target as HTMLElement;
-    const scrollProportion =
-      (ele.scrollTop + ele.offsetHeight) / ele.scrollHeight;
+    const scrollProportion = (ele.scrollTop + ele.offsetHeight) / ele.scrollHeight;
     if (scrollProportion > 0.9) {
       emit("fetchNextPage");
     }

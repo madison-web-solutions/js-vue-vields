@@ -1,14 +1,14 @@
 <template>
-  <FieldWrapper v-bind="standardWrapperProps">
+  <FieldWrapper :field="field">
     <template #input>
       <input
-        :id="inputEleId"
-        :type="inputType"
-        :name="pathString"
+        :id="field.inputEleId"
+        :type="inputType ?? 'text'"
+        :name="field.pathString"
         class="form-control"
-        :class="{ 'is-invalid': hasError }"
-        :disabled="disabled"
-        :placeholder="placeholder"
+        :class="{ 'is-invalid': field.hasError }"
+        :disabled="field.disabled"
+        :placeholder="field.placeholder"
         :maxlength="max"
         v-model="modelValue"
         @keydown.enter="emit('enterPress')"
@@ -24,22 +24,16 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag } from "../main";
+import type { FieldProps, HasMaxCharsFieldProps, MessageBag } from "../types";
 import { toRefs } from "vue";
-import { commonProps, useFormField, useHasMaxChars } from "../main";
+import useFormField from "../lib/useFormField";
+import useHasMaxChars from "../lib/useHasMaxChars";
+import FieldWrapper from "./FieldWrapper.vue";
+import { coerceToString } from "../lib/type-utils";
 
-const props = defineProps(
-  Object.assign({}, commonProps, {
-    inputType: {
-      type: String,
-      default: "text",
-    },
-    max: {
-      type: Number,
-      required: false,
-    },
-  }),
-);
+const props = defineProps<FieldProps & HasMaxCharsFieldProps & {
+  inputType?: string,
+}>();
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: string): void;
@@ -49,26 +43,7 @@ const emit = defineEmits<{
 
 const propRefs = toRefs(props);
 
-const coerceToString = (value: any): string => {
-  return value ? String(value) : "";
-};
+const { modelValue, field } = useFormField<string>(coerceToString, emit, propRefs);
+const { remainingChars, showRemainingChars } = useHasMaxChars(modelValue, propRefs);
 
-const {
-  inputEleId,
-  pathString,
-  modelValue,
-  hasError,
-  FieldWrapper,
-  standardWrapperProps,
-  focus,
-} = useFormField<string>(coerceToString, emit, propRefs, {
-  fieldTypeSlug: "text",
-});
-
-const { remainingChars, showRemainingChars } = useHasMaxChars(
-  modelValue,
-  propRefs,
-);
-
-defineExpose({ focus });
 </script>

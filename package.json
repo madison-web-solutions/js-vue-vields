@@ -1,50 +1,42 @@
 {
   "name": "vue-fields-ms",
-  "version": "1.1.0-beta.11",
-  "main": "dist/vue-fields-ms.js",
-  "types": "dist/main.d.ts",
+  "version": "2.0.0",
   "repository": "github:madison-web-solutions/js-vue-vields",
   "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./scss/variables": {
+      "default": "./scss/variables.scss"
+    },
+    "./scss/main": {
+      "default": "./scss/main.scss"
+    }
+  },
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "prepare": "npm run build",
-    "format": "prettier ./demo ./scss ./src --write",
-    "tsc": "vue-tsc -b ./tsconfig.build.json"
+    "build": "vite build && vue-tsc --emitDeclarationOnly --outDir dist",
+    "type-check": "vue-tsc --noEmit"
+  },
+  "dependencies": {
+    "date-format-ms": "^1.2.1",
+    "vite": "^6.3.5"
   },
   "devDependencies": {
-    "@babel/types": "^7.25.2",
-    "@faker-js/faker": "^8.4.1",
-    "@rushstack/eslint-patch": "^1.10.4",
-    "@types/jsdom": "^21.1.7",
-    "@types/node": "^22.1.0",
-    "@vitejs/plugin-vue": "^5.1.2",
-    "@vue/eslint-config-prettier": "^9.0.0",
-    "@vue/eslint-config-typescript": "^13.0.0",
-    "@vue/test-utils": "^2.4.6",
-    "@vue/tsconfig": "^0.5.1",
-    "bootstrap": "5.2.*",
-    "ckeditor5": "^43.0.0",
-    "eslint": "^8.57.0",
-    "eslint-plugin-vue": "^9.27.0",
-    "jsdom": "^24.1.1",
-    "prettier": "3.3.3",
-    "sass": "^1.77.8",
-    "typescript": "5.4.2",
-    "vite": "^5.4.0",
-    "vite-plugin-dts": "^4.0.1",
-    "vitest": "^2.0.5",
-    "vue": "^3.4.36",
-    "vue-router": "^4.4.3",
-    "vue-tsc": "^2.0.29"
+    "@types/node": "^24.0.4",
+    "@vitejs/plugin-vue": "^6.0.0",
+    "typescript": "^5.8.3",
+    "vite-svg-loader": "^5.1.0",
+    "vue": "^3.5.17",
+    "vue-tsc": "^2.2.10"
   },
   "files": [
     "dist/**/*",
     "scss/**/*"
-  ],
-  "dependencies": {
-    "@popperjs/core": "^2.11.6",
-    "date-format-ms": "^1.2.1"
-  }
+  ]
 }

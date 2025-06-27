@@ -1,19 +1,17 @@
 <template>
-  <FieldWrapper v-bind="standardWrapperProps">
+  <FieldWrapper :field="field">
     <template #input>
       <div class="form-check form-switch">
         <input
           class="form-check-input"
           type="checkbox"
-          :id="inputEleId"
-          :name="pathString"
+          :id="field.inputEleId"
+          :name="field.pathString"
           v-model="modelValue"
-          :class="{ 'is-invalid': hasError }"
-          :disabled="disabled"
+          :class="{ 'is-invalid': field.hasError }"
+          :disabled="field.disabled"
         />
-        <label class="form-check-label" :for="inputEleId">{{
-          displayValue
-        }}</label>
+        <label class="form-check-label" :for="field.inputEleId">{{ displayValue }}</label>
       </div>
     </template>
     <template #viewMode>{{ displayValue }}</template>
@@ -21,22 +19,16 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag } from "../main";
+import type { MessageBag, FieldProps } from "../types";
 import { computed, toRefs } from "vue";
-import { commonProps, useFormField, coerceToBoolean } from "../main";
+import useFormField from "../lib/useFormField";
+import { coerceToBoolean } from "../lib/type-utils";
+import FieldWrapper from "./FieldWrapper.vue";
 
-const props = defineProps(
-  Object.assign({}, commonProps, {
-    trueLabel: {
-      type: String,
-      required: false,
-    },
-    falseLabel: {
-      type: String,
-      required: false,
-    },
-  }),
-);
+const props = defineProps<FieldProps & {
+  trueLabel?: string,
+  falseLabel?: string,
+}>();
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: boolean | undefined): void;
@@ -45,23 +37,14 @@ const emit = defineEmits<{
 
 const propRefs = toRefs(props);
 
-const {
-  inputEleId,
-  pathString,
-  modelValue,
-  hasError,
-  FieldWrapper,
-  standardWrapperProps,
-} = useFormField<boolean | undefined>(coerceToBoolean, emit, propRefs, {
-  fieldTypeSlug: "toggle",
-});
+const { modelValue, field } = useFormField<boolean | undefined>(coerceToBoolean, emit, propRefs);
 
 const displayValue = computed((): string => {
   if (modelValue.value === true) {
-    return props.trueLabel == null ? "On" : props.trueLabel;
+    return props.trueLabel ?? "On";
   }
   if (modelValue.value === false) {
-    return props.falseLabel == null ? "Off" : props.falseLabel;
+    return props.falseLabel ?? "Off";
   }
   return "";
 });

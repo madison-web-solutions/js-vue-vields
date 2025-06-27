@@ -1,6 +1,7 @@
 <template>
   <slot
     name="beforeLoop"
+    :field="field"
     :canAddRow="canAddRow"
     :appendRow="appendRow"
     :insertRowAt="insertRowAt"
@@ -9,6 +10,7 @@
   <slot :loopItems="loopItems"></slot>
   <slot
     name="afterLoop"
+    :field="field"
     :canAddRow="canAddRow"
     :appendRow="appendRow"
     :insertRowAt="insertRowAt"
@@ -17,29 +19,15 @@
 </template>
 
 <script setup lang="ts">
-import type {
-  MessageBag,
-  RepeaterFormValue,
-  EditMode,
-  Config,
-  RepeaterItem,
-} from "../main";
+import type { MessageBag, RepeaterFormValue, EditMode, Config, RepeaterItem, FieldProps, RepeaterFieldProps, Loose, FieldState} from "../types";
 import { toRefs } from "vue";
-import {
-  useRepeaterField,
-  useExtendsEditMode,
-  useExtendsConfig,
-} from "../main";
+import useRepeaterField from "../lib/useRepeaterField";
+import useExtendsConfig from "../lib/useExtendsConfig";
 
-const props = defineProps<{
-  modelValue?: any;
-  errors?: MessageBag;
-  name?: string;
-  index?: number;
-  min?: number;
-  max?: number;
-  editMode?: EditMode;
-  config?: Partial<Config>;
+//import { useExtendsEditMode };  why?
+
+const props = defineProps<FieldProps & RepeaterFieldProps & {
+  config?: Loose<Config>
 }>();
 
 const emit = defineEmits<{
@@ -50,12 +38,14 @@ const emit = defineEmits<{
 const slots = defineSlots<{
   default: (props: { loopItems: RepeaterItem[] }) => any;
   beforeLoop: (props: {
+    field: FieldState<RepeaterFormValue>;
     canAddRow: boolean;
     appendRow: () => void;
     insertRowAt: (index: number) => void;
     deleteRowAt: (index: number) => void;
   }) => any;
   afterLoop: (props: {
+    field: FieldState<RepeaterFormValue>;
     canAddRow: boolean;
     appendRow: () => void;
     insertRowAt: (index: number) => void;
@@ -65,9 +55,8 @@ const slots = defineSlots<{
 
 const propRefs = toRefs(props);
 
-const { canAddRow, appendRow, insertRowAt, deleteRowAt, loopItems } =
-  useRepeaterField(emit, propRefs);
+const { field, canAddRow, appendRow, insertRowAt, deleteRowAt, loopItems } = useRepeaterField(emit, propRefs);
 
-useExtendsEditMode(propRefs.editMode);
+//useExtendsEditMode(propRefs.editMode);
 useExtendsConfig(propRefs.config);
 </script>

@@ -1,6 +1,6 @@
 /*** Common to RepeaterField and RepeaterTableField ***/
 
-.#{$vfms-prefix}btn-repeater-move {
+.vfm-btn-repeater-move {
   cursor: move;
   background-image: none;
   &:hover {
@@ -8,8 +8,8 @@
   }
 }
 
-.#{$vfms-prefix}repeater-item-control,
-.#{$vfms-prefix}repeater-table-item-control {
+.vfm-repeater-item-control,
+.vfm-repeater-table-item-control {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -20,24 +20,24 @@
 
 /*** RepeaterField ***/
 
-.#{$vfms-prefix}repeater {
+.vfm-repeater {
   position: relative;
   --#{$variable-prefix}gutter-x: #{$repeater-row-spacing};
   --#{$variable-prefix}gutter-y: #{$repeater-row-spacing};
 }
 
-.#{$vfms-prefix}repeater-item {
+.vfm-repeater-item {
   position: relative;
   height: 100%;
-  &.#{$vfms-prefix}is-moving {
-    > .#{$vfms-prefix}repeater-item-content,
-    > .#{$vfms-prefix}repeater-item-control {
+  &.vfm-is-moving {
+    > .vfm-repeater-item-content,
+    > .vfm-repeater-item-control {
       opacity: 0.5;
     }
   }
 }
 
-.#{$vfms-prefix}repeater-item-content {
+.vfm-repeater-item-content {
   position: relative;
   padding: 1rem;
   border: 1px solid $border-color;
@@ -48,7 +48,7 @@
   }
 }
 
-.#{$vfms-prefix}repeater-item-control {
+.vfm-repeater-item-control {
   position: absolute;
   top: 0;
   right: 0;
@@ -59,7 +59,7 @@
   }
 }
 
-.#{$vfms-prefix}repeater-move-target {
+.vfm-repeater-move-target {
   position: absolute;
   z-index: 4; // lift above controls
   border: 0px dashed transparent;
@@ -67,18 +67,18 @@
     border-color: $repeater-move-indicator-color;
   }
 
-  &.#{$vfms-prefix}repeater-vertical-flow {
+  &.vfm-repeater-vertical-flow {
     // Moving targets top and bottom
     left: 0px;
     right: 0px;
-    &.#{$vfms-prefix}move-before {
+    &.vfm-move-before {
       top: calc(
         ($repeater-row-spacing * -0.5) + ($repeater-move-indicator-size * -0.5)
       );
       bottom: 50%;
       border-top-width: $repeater-move-indicator-size;
     }
-    &.#{$vfms-prefix}move-after {
+    &.vfm-move-after {
       top: 50%;
       bottom: calc(
         ($repeater-row-spacing * -0.5) + ($repeater-move-indicator-size * -0.5)
@@ -86,18 +86,18 @@
       border-bottom-width: $repeater-move-indicator-size;
     }
   }
-  &.#{$vfms-prefix}repeater-horizontal-flow {
+  &.vfm-repeater-horizontal-flow {
     // Moving targets left and right
     top: 0px;
     bottom: 0px;
-    &.#{$vfms-prefix}move-before {
+    &.vfm-move-before {
       left: calc(
         ($repeater-row-spacing * -0.5) + ($repeater-move-indicator-size * -0.5)
       );
       right: 50%;
       border-left-width: $repeater-move-indicator-size;
     }
-    &.#{$vfms-prefix}move-after {
+    &.vfm-move-after {
       left: 50%;
       right: calc(
         ($repeater-row-spacing * -0.5) + ($repeater-move-indicator-size * -0.5)
@@ -119,24 +119,24 @@ If there are no errors for the item, the errors row will be empty and have zero 
 A CSS variable --row-num is injected on each item which is the row number for the content row (so the errors row is --row-num + 1)
 */
 
-.#{$vfms-prefix}repeater-table {
+.vfm-repeater-table {
   position: relative;
   display: grid;
 
   grid-template-columns: [content-start] repeat(var(--num-cols), minmax(0, 1fr)) [content-end];
-  &.#{$vfms-prefix}has-index-col {
+  &.vfm-has-index-col {
     grid-template-columns: [index-start] min-content [content-start] repeat(
         var(--num-cols),
         minmax(0, 1fr)
       ) [content-end];
   }
-  &.#{$vfms-prefix}has-control-col {
+  &.vfm-has-control-col {
     grid-template-columns: [content-start] repeat(
         var(--num-cols),
         minmax(0, 1fr)
       ) [content-end] min-content [control-end];
   }
-  &.#{$vfms-prefix}has-index-col.#{$vfms-prefix}has-control-col {
+  &.vfm-has-index-col.vfm-has-control-col {
     grid-template-columns: [index-start] min-content [content-start] repeat(
         var(--num-cols),
         minmax(0, 1fr)
@@ -145,8 +145,8 @@ A CSS variable --row-num is injected on each item which is the row number for th
 }
 
 // Add an underlay div under each item (inc header) covering both grid rows in the pair - this will be used to add borders
-.#{$vfms-prefix}repeater-table-header::after,
-.#{$vfms-prefix}repeater-table-item::after {
+.vfm-repeater-table-header::after,
+.vfm-repeater-table-item::after {
   display: block;
   content: "";
   position: absolute;
@@ -157,10 +157,10 @@ A CSS variable --row-num is injected on each item which is the row number for th
   bottom: -$table-border-width;
 }
 
-.#{$vfms-prefix}repeater-table-item {
+.vfm-repeater-table-item {
   display: contents;
 
-  &.#{$vfms-prefix}is-moving > .#{$vfms-prefix}repeater-table-cell {
+  &.vfm-is-moving > .vfm-repeater-table-cell {
     opacity: 0.5;
   }
 
@@ -179,7 +179,7 @@ A CSS variable --row-num is injected on each item which is the row number for th
   }
 }
 
-.#{$vfms-prefix}repeater-table-header {
+.vfm-repeater-table-header {
   display: contents;
   font-weight: $repeater-table-header-font-weight;
   // Thick border under the header
@@ -191,11 +191,11 @@ A CSS variable --row-num is injected on each item which is the row number for th
   }
 }
 
-.#{$vfms-prefix}repeater-table-cell {
+.vfm-repeater-table-cell {
   padding: $table-cell-padding-y $table-cell-padding-x;
 }
 
-.#{$vfms-prefix}repeater-table-item-index {
+.vfm-repeater-table-item-index {
   // Specific named, col, spans both row in the pair (content + errors)
   grid-column: index-start / content-start;
   grid-row: var(--row-num) / span 2;
@@ -206,7 +206,7 @@ A CSS variable --row-num is injected on each item which is the row number for th
   align-items: center;
 }
 
-.#{$vfms-prefix}repeater-table-item-control {
+.vfm-repeater-table-item-control {
   // Specific named, col, spans both row in the pair (content + errors)
   grid-column: content-end / control-end;
   grid-row: var(--row-num) / span 2;
@@ -217,18 +217,18 @@ A CSS variable --row-num is injected on each item which is the row number for th
   }
 }
 
-.#{$vfms-prefix}repeater-table-item-content {
+.vfm-repeater-table-item-content {
   // Auto col, only the first row of the pair (content)
   grid-row: var(--row-num) / span 1;
 }
 
-.#{$vfms-prefix}repeater-table-item-errors {
+.vfm-repeater-table-item-errors {
   // Spans all the content cols, only the second row of the pair (errors)
   grid-column: content-start / content-end;
   grid-row: calc(var(--row-num) + 1) / span 1;
 }
 
-.#{$vfms-prefix}repeater-table-move-target {
+.vfm-repeater-table-move-target {
   // By using absolute position within the grid, we can use the grid lines to position the targets over the top of
   // existing grid content without them taking up any 'slots' in the grid
   position: absolute;
@@ -244,19 +244,19 @@ A CSS variable --row-num is injected on each item which is the row number for th
   // Moving targets top and bottom
   left: 0px;
   right: 0px;
-  &.#{$vfms-prefix}move-before {
+  &.vfm-move-before {
     top: calc($repeater-move-indicator-size * -0.5);
     bottom: 50%;
     border-top-width: $repeater-move-indicator-size;
   }
-  &.#{$vfms-prefix}move-after {
+  &.vfm-move-after {
     top: 50%;
     bottom: calc($repeater-move-indicator-size * -0.5);
     border-bottom-width: $repeater-move-indicator-size;
   }
 }
 
-.#{$vfms-prefix}repeater-table-append {
+.vfm-repeater-table-append {
   margin-top: calc($spacer * 0.5);
   grid-column: 1 / -1;
 }

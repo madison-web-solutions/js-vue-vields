@@ -1,102 +1,34 @@
 <template>
-  <div :data-field-type="fieldTypeSlug">
+  <div>
     <slot name="label">
-      <label v-if="label" :for="inputEleId" class="form-label"
-        >{{ label }}
-        <span v-if="required">*</span>
-        <i
-          v-if="tooltip"
-          ref="helpIconEle"
-          class="help-icon fas fa-question-circle"
-          @mouseenter="showTooltip"
-          @mouseleave="hideTooltip"
-          @click="toggleToolTip"
-        ></i>
+      <label v-if="field.label" :for="field.inputEleId" class="form-label">
+        {{ field.label }}<span v-if="field.required">*</span>
       </label>
     </slot>
     <slot name="preinput"></slot>
-    <div v-if="editMode == 'edit'" :class="inputWrapperCssClass">
+    <div v-if="field.editMode == 'edit'" :class="inputWrapperCssClass">
       <slot name="input"></slot>
     </div>
-    <slot v-if="editMode == 'edit'" name="errors">
-      <div v-if="hasError" class="invalid-feedback d-block">
-        <div class="error" v-for="msg in errors">{{ msg }}</div>
+    <slot v-if="field.editMode == 'edit'" name="errors">
+      <div v-if="field.hasError" class="invalid-feedback d-block" data-testid="field-error-messages">
+        <div class="error" v-for="msg in field.myErrors">{{ msg }}</div>
       </div>
     </slot>
-    <div v-if="editMode == 'view'">
-      <slot v-if="!hasNoValue" name="viewMode">
+    <div v-if="field.editMode == 'view'">
+      <slot name="viewMode">
         <slot name="input"></slot>
       </slot>
-      <slot v-if="hasNoValue" name="viewModeNoValue">
-        <span class="text-muted">{{ noValueLabel }}</span>
-      </slot>
     </div>
-    <small v-if="help" class="form-text text-muted">{{ help }}</small>
-    <div
-      v-if="tooltip"
-      ref="tooltipEle"
-      v-pclass="'tooltip'"
-      :class="{ active: tooltipOpen }"
-      :style="{ display: tooltipOpen ? 'inline-block' : 'none' }"
-    >
-      {{ tooltip }}
-    </div>
+    <small v-if="field.help" class="form-text text-muted">{{ field.help }}</small>
   </div>
 </template>
 
-<script setup lang="ts">
-import type { EditMode, Path } from "../main";
-import { computed, inject, ref, toRefs } from "vue";
-import { symbols } from "../main";
-import usePopperTooltip from "../lib/usePopperTooltip";
+<script setup lang="ts" generic="ValueType extends FormValue">
+import { FieldState, FormValue } from "../types";
 
-const props = withDefaults(
-  defineProps<{
-    inputEleId?: string;
-    label?: string;
-    required: boolean;
-    help?: string;
-    tooltip?: string;
-    modelValue?: any;
-    errors?: string[];
-    fieldTypeSlug?: string;
-    path?: Path;
-    editMode?: EditMode;
-    inputWrapperCssClass?: string | string[] | object;
-  }>(),
-  {
-    required: false,
-    inputWrapperCssClass: "position-relative",
-    editMode: "edit",
-  },
-);
-
-const slots = defineSlots<{
-  label: (props: {}) => any;
-  preinput: (props: {}) => any;
-  input: (props: {}) => any;
-  viewMode: (props: {}) => any;
-  viewModeNoValue: (props: {}) => any;
-  errors: (props: {}) => any;
+const props = defineProps<{
+  field: FieldState<ValueType>,
+  inputWrapperCssClass?: string | string[] | object,
 }>();
 
-const hasNoValue = computed(() => {
-  return (
-    props.modelValue == null ||
-    props.modelValue === "" ||
-    (Array.isArray(props.modelValue) && props.modelValue.length == 0)
-  );
-});
-const noValueLabel = inject(symbols.noValueLabel, ref("(None)"));
-
-const { errors } = toRefs(props);
-
-const hasError = computed(() => {
-  return errors != null && errors.value != null && errors.value.length > 0;
-});
-
-const helpIconEle = ref<HTMLElement | null>(null);
-const tooltipEle = ref<HTMLElement | null>(null);
-const { tooltipOpen, showTooltip, hideTooltip, toggleToolTip } =
-  usePopperTooltip(helpIconEle, tooltipEle);
 </script>
