@@ -77,6 +77,7 @@ const props = defineProps<FieldProps & RepeaterFieldProps & {
 
 const appendLabel = computed(() => props.appendLabel ?? 'Add row');
 const colCssClass = computed(() => props.colCssClass ?? 'col-12');
+const subValuesType = computed(() => props.subValuesType ?? 'compound');
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: RepeaterFormValue): void;
