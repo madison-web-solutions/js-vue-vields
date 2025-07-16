@@ -9,6 +9,7 @@ export default defineConfig({
     svgLoader(),
   ],
   build: {
+    cssCodeSplit: true,
     lib: {
       // Entrypoint in the source code
       entry: resolve(__dirname, 'src/index.ts'),
@@ -19,7 +20,7 @@ export default defineConfig({
     },
     rollupOptions: {
       // The following dependencies should not be bundled into the library
-      external: ['vue', 'date-format-ms'],
+      external: ['vue', 'date-format-ms', 'ckeditor'],
     },
     outDir: 'dist', // default, but explicit
     emptyOutDir: true

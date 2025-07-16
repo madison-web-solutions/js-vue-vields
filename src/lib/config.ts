@@ -8,6 +8,10 @@ export const defaultConfig: Config = {
   "textArea.numRows": 4,
   "currency.currencyCode": null,
   "currency.showCurrency": false,
+  "html.subSuperScript": false,
+  "html.code": false,
+  "html.tables": false,
+  "media.supportCropCenter": false,
 };
 
 export const getConfigValue = <K extends ConfigKey>(config: Partial<Config> | undefined, key: K): Config[K] => {

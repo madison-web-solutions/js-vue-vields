@@ -1,4 +1,5 @@
-import type { ComputedRef, Ref, WritableComputedRef } from "vue";
+import type { Ref } from "vue";
+import { iconMap } from "./lib/icons";
 
 export type Dict<T> = { [key: string]: T };
 
@@ -73,10 +74,37 @@ export type LookupNotFound = {
 };
 export type LookupResult<T> = LookupFound<T> | LookupNotFound;
 
+
+export type UpdateOk<T> = {
+  status: "ok";
+  resource: T;
+};
+export type UpdateFailed = {
+  status: "fail";
+  errors: MessageBag;
+};
+export type UpdateResult<T> = UpdateOk<T> | UpdateFailed;
+
+
 export type SearchResultPage<T> = {
   page: number;
   hasMore: boolean;
   suggestions: T[];
+};
+
+export type MediaItem = {
+  id: string | number;
+  status: "uploading" | "available" | "missing";
+  title: string;
+  extension: string;
+  src: string | null;
+  alt: string | null;
+  cropCenter?: { top: number; left: number };
+  // media type ?
+};
+
+export type ResizableMediaItem = MediaItem & {
+  src_thumb: string;
 };
 
 export type ChoicesProvider = {
@@ -97,11 +125,30 @@ export type ChoicesProvider = {
   ) => Promise<LookupResult<Choosable>>;
 };
 
+export type MediaProvider = {
+  search: (
+    searchText?: string,
+    page?: number,
+    extraParams?: object,
+  ) => Promise<SearchResultPage<MediaItem>>;
+  lookup: (key: number | string) => Promise<LookupResult<MediaItem>>;
+  upload: (
+    data: FormData,
+    progressCallback: (loaded: number, total: number) => void,
+  ) => Promise<UpdateResult<MediaItem>>;
+  delete: (key: number | string) => Promise<boolean>;
+  update: (
+    key: number | string,
+    data: object,
+  ) => Promise<UpdateResult<MediaItem>>;
+};
+
 export type PasswordStrengthProvider = {
   check: (password: string) => Promise<number>;
   maxStrength: number;
 };
 
+export type IconName = keyof typeof iconMap;
 
 // Type that props are expected to have (or extend) on a form field component
 export type FieldProps = {
@@ -197,13 +244,17 @@ export type Config = {
   "textArea.numRows": number;
   "currency.currencyCode": string | null;
   "currency.showCurrency": boolean;
+  'html.subSuperScript': boolean;
+  'html.code': boolean;
+  'html.tables': boolean;
+  "media.supportCropCenter": boolean,
 };
 
 export type ConfigKey = keyof Config;
 
-export type PluginOptions = {
+export type VueFieldsMsPluginOptions = {
   choicesProvider?: ChoicesProvider | undefined,
+  mediaProvider?: MediaProvider | undefined,
   passwordStrengthProvider?: PasswordStrengthProvider | undefined,
   config?: Partial<Config>
 };
-

@@ -6,7 +6,7 @@
           <slot v-if="currentChoice" :choice="currentChoice">{{currentChoice.label}}</slot>
           <slot v-if="nullSelected" name="nullSelected">{{placeholder || nbsp}}</slot>
         </div>
-        <div v-if="showDropdown" v-pclass="'custom-select-items'">
+        <div v-if="showDropdown" class="vfm-custom-select-items">
           <div v-if="nullSelected || !required" class="vfm-custom-select-item'" @click="selectNull()">
             <slot name="nullOption"><span class="text-muted">{{ noValueLabel }}</span></slot>
           </div>

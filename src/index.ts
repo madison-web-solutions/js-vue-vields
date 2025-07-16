@@ -1,3 +1,5 @@
+import { defineAsyncComponent } from "vue";
+
 import type {
   Dict,
   MessageBag,
@@ -12,6 +14,15 @@ import type {
   NamedLens,
   Lens,
   FieldProps,
+  Choosable,
+  LookupResult,
+  UpdateResult,
+  ChoicesProvider,
+  MediaProvider,
+  PasswordStrengthProvider,
+  Config,
+  ConfigKey,
+  VueFieldsMsPluginOptions,
 } from "./types";
 
 import injectionSymbols from "./lib/injection-symbols";
@@ -66,6 +77,15 @@ import TextField from "./components/TextField.vue";
 import TimeField from "./components/TimeField.vue";
 import ToggleField from "./components/ToggleField.vue";
 
+import MediaField from "./components/media/MediaField.vue";
+import MediaDetails from "./components/media/MediaDetails.vue";
+import MediaLibrary from "./components/media/MediaLibrary.vue";
+import MediaPreview from "./components/media/MediaPreview.vue";
+
+const HtmlField = defineAsyncComponent(
+  () => import("./components/HtmlField.vue"),
+);
+
 import { vueFieldsMsPlugin } from "./vuePlugin";
 
 export type {
@@ -82,6 +102,15 @@ export type {
   NamedLens,
   Lens,
   FieldProps,
+  Choosable,
+  LookupResult,
+  UpdateResult,
+  ChoicesProvider,
+  MediaProvider,
+  PasswordStrengthProvider,
+  Config,
+  ConfigKey,
+  VueFieldsMsPluginOptions,
 };
 
 export {
@@ -128,6 +157,11 @@ export {
   TextField,
   TimeField,
   ToggleField,
+  MediaField,
+  MediaDetails,
+  MediaLibrary,
+  MediaPreview,
+  HtmlField,
 
   vueFieldsMsPlugin,
 };
