@@ -11,6 +11,7 @@ import type {
   IndexedLens,
   NamedLens,
   Lens,
+  FieldProps,
 } from "./types";
 
 import injectionSymbols from "./lib/injection-symbols";
@@ -65,6 +66,8 @@ import TextField from "./components/TextField.vue";
 import TimeField from "./components/TimeField.vue";
 import ToggleField from "./components/ToggleField.vue";
 
+import { vueFieldsMsPlugin } from "./vuePlugin";
+
 export type {
   Dict,
   MessageBag,
@@ -78,6 +81,7 @@ export type {
   IndexedLens,
   NamedLens,
   Lens,
+  FieldProps,
 };
 
 export {
@@ -124,4 +128,6 @@ export {
   TextField,
   TimeField,
   ToggleField,
+
+  vueFieldsMsPlugin,
 };

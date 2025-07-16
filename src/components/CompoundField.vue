@@ -13,6 +13,7 @@ import useFormField from "../lib/useFormField";
 import useHasCompoundValue from "../lib/useHasCompoundValue";
 import useExtendsConfig from "../lib/useExtendsConfig";
 import { coerceToCompoundFormValue } from "../lib/type-utils";
+import FieldWrapper from "./FieldWrapper.vue";
 
 const props = defineProps<FieldProps & {
     config?: Loose<Config>

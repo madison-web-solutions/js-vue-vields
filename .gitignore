@@ -24,6 +24,5 @@ package-lock.json
 !/.
 
 # Standard Windows system files to ignore
-Icon?
 ehthumbs.db
 Thumbs.db
