@@ -9,6 +9,9 @@ export const vueFieldsMsPlugin = (app: App, opts: VueFieldsMsPluginOptions): voi
   if (opts.choicesProvider) {
     app.provide(injectionSymbols.choicesProvider, opts.choicesProvider);
   }
+  if (opts.linksProvider) {
+    app.provide(injectionSymbols.linksProvider, opts.linksProvider);
+  }
   if (opts.mediaProvider) {
     app.provide(injectionSymbols.mediaProvider, opts.mediaProvider);
   }

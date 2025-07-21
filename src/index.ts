@@ -64,6 +64,7 @@ import FieldArray from "./components/FieldArray.vue";
 import FieldArrayItem from "./components/FieldArrayItem.vue";
 import FieldGroup from "./components/FieldGroup.vue";
 import FieldWrapper from "./components/FieldWrapper.vue";
+import LinkField from "./components/LinkField.vue";
 import NumberField from "./components/NumberField.vue";
 import PasswordField from "./components/PasswordField.vue";
 import PasswordStrengthMeter from "./components/PasswordStrengthMeter.vue";
@@ -145,6 +146,7 @@ export {
   FieldArrayItem,
   FieldGroup,
   FieldWrapper,
+  LinkField,
   NumberField,
   PasswordField,
   PasswordStrengthMeter,

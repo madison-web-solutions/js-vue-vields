@@ -92,6 +92,13 @@ export type SearchResultPage<T> = {
   suggestions: T[];
 };
 
+export type LinkAlias = {
+  scheme: string;
+  key: string | number;
+  label: string;
+  url: string;
+};
+
 export type MediaItem = {
   id: string | number;
   status: "uploading" | "available" | "missing";
@@ -125,6 +132,17 @@ export type ChoicesProvider = {
   ) => Promise<LookupResult<Choosable>>;
 };
 
+export type LinksProvider = {
+  search: (
+    scheme: string,
+    searchText: string,
+    page?: number,
+    extraParams?: object,
+  ) => Promise<SearchResultPage<LinkAlias>>;
+  lookup: (scheme: string, key: string) => Promise<LookupResult<LinkAlias>>;
+  schemes: { key: string; label: string }[];
+};
+
 export type MediaProvider = {
   search: (
     searchText?: string,
@@ -147,6 +165,7 @@ export type PasswordStrengthProvider = {
   check: (password: string) => Promise<number>;
   maxStrength: number;
 };
+
 
 export type IconName = keyof typeof iconMap;
 
@@ -254,6 +273,7 @@ export type ConfigKey = keyof Config;
 
 export type VueFieldsMsPluginOptions = {
   choicesProvider?: ChoicesProvider | undefined,
+  linksProvider?: LinksProvider | undefined,
   mediaProvider?: MediaProvider | undefined,
   passwordStrengthProvider?: PasswordStrengthProvider | undefined,
   config?: Partial<Config>
