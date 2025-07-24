@@ -62,6 +62,7 @@ import CurrencyField from "./components/CurrencyField.vue";
 import CustomRadioField from "./components/CustomRadioField.vue";
 import CustomSelectField from "./components/CustomSelectField.vue";
 import DateField from "./components/DateField.vue";
+import DateTimeField from "./components/DateTimeField.vue";
 import FieldArray from "./components/FieldArray.vue";
 import FieldArrayItem from "./components/FieldArrayItem.vue";
 import FieldGroup from "./components/FieldGroup.vue";
@@ -78,6 +79,7 @@ import SelectField from "./components/SelectField.vue";
 import TextAreaField from "./components/TextAreaField.vue";
 import TextField from "./components/TextField.vue";
 import TimeField from "./components/TimeField.vue";
+import TimestampField from "./components/TimestampField.vue";
 import ToggleField from "./components/ToggleField.vue";
 
 import MediaField from "./components/media/MediaField.vue";
@@ -146,6 +148,7 @@ export {
   CustomRadioField,
   CustomSelectField,
   DateField,
+  DateTimeField,
   FieldArray,
   FieldArrayItem,
   FieldGroup,
@@ -162,6 +165,7 @@ export {
   TextAreaField,
   TextField,
   TimeField,
+  TimestampField,
   ToggleField,
   MediaField,
   MediaDetails,
