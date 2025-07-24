@@ -1,11 +1,7 @@
 <template>
   <FieldWrapper :field="field" :inputWrapperCssClass="inline ? 'd-flex flex-wrap' : ''">
     <template #input>
-      <div
-        v-for="choice in choicesNormalized"
-        :key="choice.key"
-        :class="inline ? 'me-3' : ''"
-      >
+      <div v-for="choice in choicesNormalized" :key="choice.key" :class="inline ? 'me-3' : ''">
         <div :class="{'form-check': true, 'vfm-checked': isOn(choice.key)}">
           <input
             class="form-check-input"
@@ -17,14 +13,10 @@
             :class="{ 'is-invalid': hasSubErrors(choice.key) }"
             :disabled="disabled"
           />
-          <label class="form-check-label" :for="field.inputEleId + choice.key">{{
-            choice.label
-          }}</label>
+          <label class="form-check-label" :for="field.inputEleId + choice.key">{{ choice.label }}</label>
         </div>
         <div v-if="hasSubErrors(choice.key)" class="invalid-feedback d-block">
-          <div class="error" v-for="msg in subErrors[choice.key]">
-            {{ msg }}
-          </div>
+          <div class="error" v-for="msg in subErrors[choice.key]">{{ msg }}</div>
         </div>
       </div>
     </template>
@@ -40,7 +32,6 @@
 import type { MessageBag, FieldProps, HasChoicesMultipleFieldProps, KeyListFormValue, BooleansMapFormValue } from "../types";
 import { computed, toRefs } from "vue";
 import useFormFieldWithChoicesMultiple from "../lib/useFormFieldWithChoicesMultiple";
-import FieldWrapper from "./FieldWrapper.vue";
 
 const props = defineProps<FieldProps & HasChoicesMultipleFieldProps & {
   inline?: boolean | undefined,
@@ -60,6 +51,7 @@ const propRefs = toRefs(props);
 
 const {
   field,
+  FieldWrapper,
   choicesNormalized,
   toggle,
   isOn,

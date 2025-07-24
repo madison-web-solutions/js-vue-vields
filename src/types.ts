@@ -1,5 +1,6 @@
 import type { Ref } from "vue";
 import { iconMap } from "./lib/icons";
+import FieldWrapper from "./components/FieldWrapper.vue";
 
 export type Dict<T> = { [key: string]: T };
 
@@ -276,5 +277,6 @@ export type VueFieldsMsPluginOptions = {
   linksProvider?: LinksProvider | undefined,
   mediaProvider?: MediaProvider | undefined,
   passwordStrengthProvider?: PasswordStrengthProvider | undefined,
+  fieldWrapperComponent?: typeof FieldWrapper | undefined,
   config?: Partial<Config>
 };

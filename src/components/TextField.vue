@@ -28,7 +28,6 @@ import type { FieldProps, HasMaxCharsFieldProps, MessageBag } from "../types";
 import { toRefs } from "vue";
 import useFormField from "../lib/useFormField";
 import useHasMaxChars from "../lib/useHasMaxChars";
-import FieldWrapper from "./FieldWrapper.vue";
 import { coerceToString } from "../lib/type-utils";
 
 const props = defineProps<FieldProps & HasMaxCharsFieldProps & {
@@ -43,7 +42,7 @@ const emit = defineEmits<{
 
 const propRefs = toRefs(props);
 
-const { modelValue, field } = useFormField<string>(coerceToString, emit, propRefs);
+const { modelValue, field, FieldWrapper } = useFormField<string>(coerceToString, emit, propRefs);
 const { remainingChars, showRemainingChars } = useHasMaxChars(modelValue, propRefs);
 
 </script>

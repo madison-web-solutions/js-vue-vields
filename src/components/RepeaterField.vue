@@ -63,7 +63,6 @@ import { computed, toRefs } from "vue";
 import useRepeaterField from "../lib/useRepeaterField";
 import useExtendsConfig from "../lib/useExtendsConfig";
 import FieldGroup from "./FieldGroup.vue";
-import FieldWrapper from "./FieldWrapper.vue";
 import FieldArrayItem from "./FieldArrayItem.vue";
 import Icon from "./Icon.vue";
 
@@ -99,6 +98,7 @@ useExtendsConfig(propRefs.config);
 
 const {
   field,
+  FieldWrapper,
   movable,
   isMoving,
   canAddRow,

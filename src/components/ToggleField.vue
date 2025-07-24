@@ -23,7 +23,6 @@ import type { MessageBag, FieldProps } from "../types";
 import { computed, toRefs } from "vue";
 import useFormField from "../lib/useFormField";
 import { coerceToBoolean } from "../lib/type-utils";
-import FieldWrapper from "./FieldWrapper.vue";
 
 const props = defineProps<FieldProps & {
   trueLabel?: string,
@@ -37,7 +36,7 @@ const emit = defineEmits<{
 
 const propRefs = toRefs(props);
 
-const { modelValue, field } = useFormField<boolean | undefined>(coerceToBoolean, emit, propRefs);
+const { modelValue, field, FieldWrapper } = useFormField<boolean | undefined>(coerceToBoolean, emit, propRefs);
 
 const displayValue = computed((): string => {
   if (modelValue.value === true) {

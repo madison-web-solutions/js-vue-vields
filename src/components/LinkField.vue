@@ -44,7 +44,6 @@ import type { FieldProps, LinkAlias, MessageBag, LookupResult, SearchResultPage 
 import { computed, ref, inject, toRefs, watchEffect, watch } from "vue";
 import SearchInterface from "./SearchInterface.vue";
 import useFormField from "../lib/useFormField";
-import FieldWrapper from "./FieldWrapper.vue";
 import { coerceToString } from "../lib/type-utils";
 import injectionSymbols from "../lib/injection-symbols";
 import useSearches from "../lib/useSearches";
@@ -64,7 +63,7 @@ const emit = defineEmits<{
 
 const propRefs = toRefs(props);
 
-const { modelValue, field } = useFormField<string|null>(coerceToString, emit, propRefs);
+const { modelValue, field, FieldWrapper } = useFormField<string|null>(coerceToString, emit, propRefs);
 
 const provider = inject(injectionSymbols.linksProvider);
 

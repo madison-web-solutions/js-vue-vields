@@ -28,7 +28,6 @@ import type { FieldProps, MessageBag, ParsesTextFieldOptions } from "../types";
 import { computed, ref, toRefs } from "vue";
 import { coerceToNumber } from "../lib/type-utils";
 import useFormField from "../lib/useFormField";
-import FieldWrapper from "./FieldWrapper.vue";
 import useParsesTextField from "../lib/useParsesTextField";
 
 const props = defineProps<FieldProps & {
@@ -50,7 +49,7 @@ const emit = defineEmits<{
 
 const propRefs = toRefs(props);
 
-const { modelValue, field } = useFormField<number | undefined>(coerceToNumber, emit, propRefs);
+const { modelValue, field, FieldWrapper } = useFormField<number | undefined>(coerceToNumber, emit, propRefs);
 
 const myStep = computed((): number | undefined => {
   if (props.step == null) {

@@ -28,7 +28,6 @@ import { onMounted, onBeforeUnmount, ref, toRefs } from "vue";
 import useFormField from "../lib/useFormField";
 import useHasChoicesSingle from "../lib/useHasChoicesSingle";
 import { getConfigRef } from "../lib/config";
-import FieldWrapper from "./FieldWrapper.vue";
 
 type IdType = string | number | undefined;
 
@@ -59,7 +58,7 @@ const coerceFn = (value: any): IdType => {
   return undefined;
 };
 
-const { modelValue, field } = useFormField<IdType>(coerceFn, emit, propRefs);
+const { modelValue, field, FieldWrapper } = useFormField<IdType>(coerceFn, emit, propRefs);
 
 const { choicesNormalized, currentChoice, nullSelected, displayValue } = useHasChoicesSingle(modelValue, propRefs);
 

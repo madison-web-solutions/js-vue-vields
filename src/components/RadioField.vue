@@ -12,11 +12,7 @@
           :disabled="disabled"
           @change="change(choice)"
         />
-        <label
-          class="form-check-label"
-          :for="field.inputEleId + String(choice.key)"
-          >{{ choice.label }}</label
-        >
+        <label class="form-check-label" :for="field.inputEleId + String(choice.key)">{{ choice.label }}</label>
       </div>
     </template>
     <template #viewMode>{{ displayValue }}</template>
@@ -28,7 +24,6 @@ import type { Choosable, FieldProps, HasChoicesFieldProps, MessageBag } from "..
 import { toRefs } from "vue";
 import useFormField from "../lib/useFormField";
 import useHasChoicesSingle from "../lib/useHasChoicesSingle";
-import FieldWrapper from "./FieldWrapper.vue";
 
 type IdType = string | number | undefined;
 
@@ -53,7 +48,7 @@ const coerceFn = (value: any): IdType => {
   return undefined;
 };
 
-const { modelValue, field } = useFormField<IdType>(coerceFn, emit, propRefs);
+const { modelValue, field, FieldWrapper } = useFormField<IdType>(coerceFn, emit, propRefs);
 const { choicesNormalized, currentChoice, displayValue } = useHasChoicesSingle(modelValue, propRefs);
 
 const change = (newChoice: Choosable) => {

@@ -23,11 +23,11 @@ import type { MessageBag, RepeaterFormValue, EditMode, Config, RepeaterItem, Fie
 import { toRefs } from "vue";
 import useRepeaterField from "../lib/useRepeaterField";
 import useExtendsConfig from "../lib/useExtendsConfig";
-
-//import { useExtendsEditMode };  why?
+import useExtendsEditMode from "../lib/useExtendsEditMode";
 
 const props = defineProps<FieldProps & RepeaterFieldProps & {
-  config?: Loose<Config>
+  config?: Loose<Config>;
+  editMode?: EditMode;
 }>();
 
 const emit = defineEmits<{
@@ -55,8 +55,8 @@ const slots = defineSlots<{
 
 const propRefs = toRefs(props);
 
-const { field, canAddRow, appendRow, insertRowAt, deleteRowAt, loopItems } = useRepeaterField(emit, propRefs);
-
-//useExtendsEditMode(propRefs.editMode);
 useExtendsConfig(propRefs.config);
+useExtendsEditMode(propRefs.editMode);
+
+const { field, canAddRow, appendRow, insertRowAt, deleteRowAt, loopItems } = useRepeaterField(emit, propRefs);
 </script>

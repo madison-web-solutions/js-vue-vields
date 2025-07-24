@@ -1,7 +1,16 @@
 <template>
-  <div ref="editorContainerEle" class="vfm-html-field" :class="{ 'is-invalid': field.hasError }">
-    <div ref="editorEle"></div>
-  </div>
+  <FieldWrapper :field="field">
+    <template #input>
+      <div ref="editorContainerEle" class="vfm-html-field" :class="{ 'is-invalid': field.hasError }">
+        <div ref="editorEle"></div>
+      </div>
+    </template>
+    <template #viewMode>
+      <div class="card">
+        <div v-html="modelValue" class="card-body"></div>
+      </div>
+    </template>
+  </FieldWrapper>
 </template>
 
 <script setup lang="ts">
@@ -52,7 +61,7 @@ const emit = defineEmits<{
 
 const propRefs = toRefs(props);
 
-const { modelValue, field } = useFormField<string | undefined>(coerceToString, emit, propRefs);
+const { modelValue, field, FieldWrapper } = useFormField<string | undefined>(coerceToString, emit, propRefs);
 
 const INPUT_DEBOUNCE_WAIT: number = 300;
 

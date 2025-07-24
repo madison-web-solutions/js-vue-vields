@@ -26,10 +26,9 @@ import { computed, ref, toRefs } from "vue";
 import useFormField from "../lib/useFormField";
 import useParsesTextField from "../lib/useParsesTextField";
 import { timeParse, timeFormat, timeSplit } from "../lib/time";
-import FieldWrapper from "./FieldWrapper.vue";
 
 const props = defineProps<FieldProps & {
-  withSeconds: boolean | undefined,
+  withSeconds?: boolean | undefined,
   max?: string | undefined,
   min?: string | undefined,
   step?: string | undefined,
@@ -48,7 +47,7 @@ const coerceFn = (value: unknown): string | undefined => {
   return value == null || value === "" ? undefined : String(value);
 };
 
-const { modelValue, field } = useFormField<string | undefined>(coerceFn, emit, propRefs);
+const { modelValue, field, FieldWrapper } = useFormField<string | undefined>(coerceFn, emit, propRefs);
 
 const stepSeconds = computed((): number | undefined => {
   return props.step == null ? undefined : timeParse(props.step);

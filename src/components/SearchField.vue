@@ -2,12 +2,7 @@
   <FieldWrapper :field="field">
     <template #input>
       <div class="input-group">
-        <div
-          class="form-control"
-          :class="{ 'is-invalid': field.hasError }"
-          :disabled="field.disabled"
-          @click="maybeToggleOpenSearch"
-        >
+        <div class="form-control" :class="{ 'is-invalid': field.hasError }" :disabled="field.disabled" @click="maybeToggleOpenSearch">
           <slot v-if="currentItem" name="suggestion" :suggestion="currentItem">{{ displayValue }}</slot>
           <span v-if="field.placeholder && !currentItem">{{ field.placeholder }}</span>
         </div>
@@ -50,7 +45,6 @@ import { computed, ref, toRefs, watchEffect, inject } from "vue";
 import useFormField from "../lib/useFormField";
 import injectionSymbols from "../lib/injection-symbols";
 import SearchInterface from "./SearchInterface.vue";
-import FieldWrapper from "./FieldWrapper.vue";
 import useSearches from "../lib/useSearches";
 import Icon from "./Icon.vue";
 
@@ -80,7 +74,7 @@ const coerceFn = (value: any): IdType => {
   return undefined;
 };
 
-const { modelValue, field } = useFormField<IdType>(coerceFn, emit, propRefs);
+const { modelValue, field, FieldWrapper } = useFormField<IdType>(coerceFn, emit, propRefs);
 
 const provider = inject(injectionSymbols.choicesProvider, undefined);
 

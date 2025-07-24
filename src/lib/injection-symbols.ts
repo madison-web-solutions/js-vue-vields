@@ -1,6 +1,7 @@
 import type { Ref, InjectionKey } from "vue";
 import type { Path, Lens, FormValue, MessageBag, EditMode, ChoicesProvider, LinksProvider, MediaProvider, PasswordStrengthProvider, Config } from "../types";
 import { link } from "fs";
+import type FieldWrapper from "../components/FieldWrapper.vue";
 
 const symbols = {
   config: Symbol() as InjectionKey<Ref<Config>>,
@@ -12,6 +13,7 @@ const symbols = {
   linksProvider: Symbol() as InjectionKey<LinksProvider | undefined>,
   mediaProvider: Symbol() as InjectionKey<MediaProvider | undefined>,
   passwordStrengthProvider: Symbol() as InjectionKey<PasswordStrengthProvider | undefined>,
+  fieldWrapperComponent: Symbol() as InjectionKey<typeof FieldWrapper | undefined>,
 } as const;
 Object.freeze(symbols);
 export default symbols;

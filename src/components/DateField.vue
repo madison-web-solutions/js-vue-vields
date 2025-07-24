@@ -28,7 +28,6 @@ import type { FieldProps, MessageBag } from "../types";
 import { computed, ref, toRefs } from "vue";
 import useFormField from "../lib/useFormField";
 import { dateToUtcFormat, ymdToFormat } from "date-format-ms";
-import FieldWrapper from "./FieldWrapper.vue";
 
 const props = defineProps<FieldProps & {
   displayFormat?: string | undefined,
@@ -51,7 +50,7 @@ const coerceFn = (value: any): string | undefined => {
   return ymdToFormat(String(value), "Y-m-d") || undefined;
 };
 
-const { modelValue, field } = useFormField<string | undefined>(coerceFn, emit, propRefs);
+const { modelValue, field, FieldWrapper } = useFormField<string | undefined>(coerceFn, emit, propRefs);
 
 const todayUtc: Date = ((): Date => {
   const now: Date = new Date();

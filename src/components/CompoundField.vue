@@ -13,7 +13,6 @@ import useFormField from "../lib/useFormField";
 import useHasCompoundValue from "../lib/useHasCompoundValue";
 import useExtendsConfig from "../lib/useExtendsConfig";
 import { coerceToCompoundFormValue } from "../lib/type-utils";
-import FieldWrapper from "./FieldWrapper.vue";
 
 const props = defineProps<FieldProps & {
     config?: Loose<Config>
@@ -31,6 +30,6 @@ const slots = defineSlots<{
 const propRefs = toRefs(props);
 
 useExtendsConfig(propRefs.config);
-const { modelValue, errors, field } = useFormField<CompoundFormValue>(coerceToCompoundFormValue, emit, propRefs);
+const { modelValue, errors, field, FieldWrapper } = useFormField<CompoundFormValue>(coerceToCompoundFormValue, emit, propRefs);
 useHasCompoundValue(modelValue, errors);
 </script>

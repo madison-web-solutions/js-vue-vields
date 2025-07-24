@@ -37,7 +37,7 @@ export default function useRepeaterField(
     return out;
   };
 
-  const { modelValue, errors, field } = useFormField<RepeaterFormValue>(coerceFn, emit, propRefs);
+  const { modelValue, errors, field, FieldWrapper } = useFormField<RepeaterFormValue>(coerceFn, emit, propRefs);
 
   const addEnoughRows = (value: RepeaterFormValue) => {
     if (propRefs.min?.value != null) {
@@ -252,6 +252,7 @@ export default function useRepeaterField(
     modelValue,
     errors,
     field,
+    FieldWrapper,
     canAddRow,
     appendRow,
     insertRowAt,

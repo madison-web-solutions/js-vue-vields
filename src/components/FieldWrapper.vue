@@ -24,7 +24,7 @@
 </template>
 
 <script setup lang="ts" generic="ValueType extends FormValue">
-import { FieldState, FormValue } from "../types";
+import type { FieldState, FormValue } from "../types";
 
 const props = defineProps<{
   field: FieldState<ValueType>,

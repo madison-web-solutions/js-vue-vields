@@ -33,7 +33,7 @@ export default function useFormFieldWithChoicesMultiple(
     }
   };
 
-  const { modelValue, errors, field } = useFormField<KeyListFormValue | BooleansMapFormValue>(coerceFn, emit, propRefs);
+  const { modelValue, errors, field, FieldWrapper } = useFormField<KeyListFormValue | BooleansMapFormValue>(coerceFn, emit, propRefs);
 
   const toggle = (key: string | number): void => {
     if (valueIs.value == "array") {
@@ -106,6 +106,7 @@ export default function useFormFieldWithChoicesMultiple(
     modelValue,
     errors,
     field,
+    FieldWrapper,
     choicesNormalized,
     possibleValues,
     valueIs,

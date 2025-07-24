@@ -22,7 +22,6 @@ import type { FieldProps, HasMaxCharsFieldProps, MessageBag } from "../types";
 import { toRefs } from "vue";
 import useFormField from "../lib/useFormField";
 import useHasMaxChars from "../lib/useHasMaxChars";
-import FieldWrapper from "./FieldWrapper.vue";
 import { coerceToString } from "../lib/type-utils";
 import { getConfigRef } from "../lib/config";
 
@@ -39,6 +38,6 @@ const propRefs = toRefs(props);
 
 const rows = getConfigRef('textArea.numRows', propRefs.rows);
 
-const { modelValue, field } = useFormField<string>(coerceToString, emit, propRefs);
+const { modelValue, field, FieldWrapper } = useFormField<string>(coerceToString, emit, propRefs);
 const { remainingChars, showRemainingChars } = useHasMaxChars(modelValue, propRefs);
 </script>

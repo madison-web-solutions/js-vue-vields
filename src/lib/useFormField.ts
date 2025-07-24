@@ -2,6 +2,7 @@ import type { FormValue, MessageBag, FieldEmitType, FieldProps, FieldState, Edit
 import { computed, inject, ref, useId } from "vue";
 import injectionSymbols from "./injection-symbols";
 import useExtendsPath from "./useExtendsPath";
+import StandardFieldWrapper from "../components/FieldWrapper.vue";
 
 export default function useFormField<ValueType extends FormValue>(
   valueCoerceFn: (val: unknown) => ValueType,
@@ -121,6 +122,8 @@ export default function useFormField<ValueType extends FormValue>(
 
   const inputEleId = useId();
 
+  const FieldWrapper = inject(injectionSymbols.fieldWrapperComponent) || StandardFieldWrapper;
+
   const field = computed((): FieldState<ValueType> => {
     return {
         path: path.value,
@@ -145,5 +148,6 @@ export default function useFormField<ValueType extends FormValue>(
     modelValue,
     errors,
     field,
+    FieldWrapper,
   };
 }

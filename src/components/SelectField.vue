@@ -9,12 +9,8 @@
         :disabled="field.disabled"
         @change="change"
       >
-        <option ref="nullOption" :disabled="field.required" :selected="nullSelected">
-          {{ nullOptionLabel }}
-        </option>
-        <option v-for="choice in choicesNormalized" :selected="modelValue === choice.key">
-          {{ choice.label }}
-        </option>
+        <option ref="nullOption" :disabled="field.required" :selected="nullSelected">{{ nullOptionLabel }}</option>
+        <option v-for="choice in choicesNormalized" :selected="modelValue === choice.key">{{ choice.label }}</option>
       </select>
     </template>
     <template #viewMode>{{ displayValue }}</template>
@@ -26,7 +22,6 @@ import type { FieldProps, MessageBag, HasChoicesFieldProps } from "../types";
 import { computed, toRefs } from "vue";
 import useFormField from "../lib/useFormField";
 import useHasChoicesSingle from "../lib/useHasChoicesSingle";
-import FieldWrapper from "./FieldWrapper.vue";
 
 type IdType = string | number | undefined;
 
@@ -49,7 +44,7 @@ const coerceFn = (value: any): IdType => {
   return undefined;
 };
 
-const { modelValue, field } = useFormField<IdType>(coerceFn, emit, propRefs);
+const { modelValue, field, FieldWrapper } = useFormField<IdType>(coerceFn, emit, propRefs);
 
 const { choicesNormalized, nullSelected, displayValue } = useHasChoicesSingle(modelValue, propRefs);
 

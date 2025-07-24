@@ -11,12 +11,7 @@
           :class="{ 'is-invalid': field.hasError }"
           :disabled="disabled"
         />
-        <label
-          v-if="label && inlineLabel"
-          class="form-check-label"
-          :for="field.inputEleId"
-          >{{ label }}</label
-        >
+        <label v-if="label && inlineLabel" class="form-check-label" :for="field.inputEleId">{{ label }}</label>
       </div>
     </template>
     <template #viewMode>
@@ -30,7 +25,6 @@ import type { MessageBag, FieldProps } from "../types";
 import { computed, toRefs } from "vue";
 import useFormField from "../lib/useFormField";
 import { coerceToBoolean } from "../lib/type-utils";
-import FieldWrapper from "./FieldWrapper.vue";
 
 const props = defineProps<FieldProps & {
   inlineLabel?: boolean | undefined,
@@ -52,7 +46,7 @@ const coerceFn = (value: unknown): boolean => {
   return coerceToBoolean(value) === true;
 };
 
-const { modelValue, field } = useFormField<boolean>(coerceFn, emit, propRefs);
+const { modelValue, field, FieldWrapper } = useFormField<boolean>(coerceFn, emit, propRefs);
 
 const displayValue = computed((): string => {
   if (modelValue.value === true) {

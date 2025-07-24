@@ -31,7 +31,6 @@ import { computed, ref, toRefs } from "vue";
 import useFormField from "../lib/useFormField";
 import useParsesTextField from "../lib/useParsesTextField";
 import { getConfigRef } from "../lib/config";
-import FieldWrapper from "./FieldWrapper.vue";
 
 const props = defineProps<FieldProps & {
   currencyCode?: string | undefined,
@@ -64,7 +63,7 @@ const coerceToNumber = (value: unknown): number | undefined => {
   return undefined;
 };
 
-const { modelValue, field } = useFormField<number | undefined>(coerceToNumber, emit, propRefs);
+const { modelValue, field, FieldWrapper } = useFormField<number | undefined>(coerceToNumber, emit, propRefs);
 
 const numberFormatter = computed((): Intl.NumberFormat => {
   if (currencyCode.value) {

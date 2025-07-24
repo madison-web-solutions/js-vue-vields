@@ -27,7 +27,6 @@ import type { MessageBag, FieldProps } from "../types";
 import { toRefs } from "vue";
 import useFormField from "../lib/useFormField";
 import PasswordStrengthMeter from "./PasswordStrengthMeter.vue";
-import FieldWrapper from "./FieldWrapper.vue";
 import { coerceToString } from "../lib/type-utils";
 
 const props = defineProps<FieldProps & {
@@ -41,5 +40,5 @@ const emit = defineEmits<{
 
 const propRefs = toRefs(props);
 
-const {modelValue, field} = useFormField<string>(coerceToString, emit, propRefs);
+const { modelValue, field, FieldWrapper } = useFormField<string>(coerceToString, emit, propRefs);
 </script>

@@ -18,6 +18,9 @@ export const vueFieldsMsPlugin = (app: App, opts: VueFieldsMsPluginOptions): voi
   if (opts.passwordStrengthProvider) {
     app.provide(injectionSymbols.passwordStrengthProvider, opts.passwordStrengthProvider);
   }
+  if (opts.fieldWrapperComponent) {
+    app.provide(injectionSymbols.fieldWrapperComponent, opts.fieldWrapperComponent);
+  }
 
   const config: Config = Object.assign(defaultConfig, opts.config);
   app.provide(injectionSymbols.config, ref(config));
