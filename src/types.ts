@@ -19,6 +19,11 @@ export type Choosable = {
   label: string;
 };
 
+export type PendingChoosable = {
+  pending: true;
+  key: number | string;
+};
+
 export type ScalarFormValue = number | string | boolean | undefined | null;
 
 // Type used for things like CheckBoxesField where the value is a list of the selected keys
@@ -248,6 +253,16 @@ export type RepeaterItem = {
   startMove: () => void;
   completeMoveBefore: () => void;
   completeMoveAfter: () => void;
+};
+
+export type RepeaterTableColOpts = {
+  name: string;
+  label?: string | null | undefined;
+};
+
+export type RepeaterTableCol = {
+  name: string;
+  label: string;
 };
 
 export type ParsesTextFieldOptions<T> = {

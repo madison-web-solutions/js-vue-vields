@@ -28,10 +28,10 @@ import useParsesTextField from "../lib/useParsesTextField";
 import { timeParse, timeFormat, timeSplit } from "../lib/time";
 
 const props = defineProps<FieldProps & {
-  withSeconds?: boolean | undefined,
-  max?: string | undefined,
-  min?: string | undefined,
-  step?: string | undefined,
+  withSeconds?: boolean,
+  max?: string,
+  min?: string,
+  step?: string,
 }>();
 
 const inputEle = ref<HTMLInputElement | null>(null);

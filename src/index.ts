@@ -15,6 +15,10 @@ import type {
   NamedLens,
   Lens,
   FieldProps,
+  FieldState,
+  RepeaterItem,
+  RepeaterTableColOpts,
+  RepeaterTableCol,
   Choosable,
   LookupResult,
   UpdateResult,
@@ -73,6 +77,7 @@ import PasswordField from "./components/PasswordField.vue";
 import PasswordStrengthMeter from "./components/PasswordStrengthMeter.vue";
 import RadioField from "./components/RadioField.vue";
 import RepeaterField from "./components/RepeaterField.vue";
+import RepeaterTableField from "./components/RepeaterTableField.vue";
 import SearchInterface from "./components/SearchInterface.vue";
 import SearchField from "./components/SearchField.vue";
 import SelectField from "./components/SelectField.vue";
@@ -81,6 +86,7 @@ import TextField from "./components/TextField.vue";
 import TimeField from "./components/TimeField.vue";
 import TimestampField from "./components/TimestampField.vue";
 import ToggleField from "./components/ToggleField.vue";
+import TokensField from "./components/TokensField.vue";
 
 import MediaField from "./components/media/MediaField.vue";
 import MediaDetails from "./components/media/MediaDetails.vue";
@@ -108,6 +114,10 @@ export type {
   NamedLens,
   Lens,
   FieldProps,
+  FieldState,
+  RepeaterItem,
+  RepeaterTableColOpts,
+  RepeaterTableCol,
   Choosable,
   LookupResult,
   UpdateResult,
@@ -141,6 +151,7 @@ export {
   useHasCompoundValue,
   useHasMaxChars,
   useExtendsPath,
+
   CheckboxesField,
   CheckboxField,
   CompoundField,
@@ -159,6 +170,7 @@ export {
   PasswordStrengthMeter,
   RadioField,
   RepeaterField,
+  RepeaterTableField,
   SearchInterface,
   SearchField,
   SelectField,
@@ -167,10 +179,13 @@ export {
   TimeField,
   TimestampField,
   ToggleField,
+  TokensField,
+
   MediaField,
   MediaDetails,
   MediaLibrary,
   MediaPreview,
+
   HtmlField,
 
   vueFieldsMsPlugin,

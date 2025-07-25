@@ -49,7 +49,7 @@
       <slot name="appendRow" :canAddRow="canAddRow">
         <div v-if="editable && canAddRow" class="vfm-repeater-append">
           <button class="btn btn-primary" @click="appendRow">
-            <i class="fas fa-plus"></i> {{ appendLabel }}
+            <Icon icon="plus" /> {{ appendLabel }}
           </button>
         </div>
       </slot>
@@ -66,17 +66,17 @@ import FieldGroup from "./FieldGroup.vue";
 import FieldArrayItem from "./FieldArrayItem.vue";
 import Icon from "./Icon.vue";
 
-const props = defineProps<FieldProps & RepeaterFieldProps & {
-  appendLabel?: string | undefined,
-  colCssClass?: string | undefined,
-  horizontalFlow?: boolean | undefined,
-  subValuesType?: 'simple' | 'compound' | undefined,
+const props = withDefaults(defineProps<FieldProps & RepeaterFieldProps & {
+  appendLabel?: string,
+  colCssClass?: string,
+  horizontalFlow?: boolean,
+  subValuesType?: 'simple' | 'compound',
   config?: Loose<Config>
-}>();
-
-const appendLabel = computed(() => props.appendLabel ?? 'Add row');
-const colCssClass = computed(() => props.colCssClass ?? 'col-12');
-const subValuesType = computed(() => props.subValuesType ?? 'compound');
+}>(), {
+  appendLabel: 'Add Row',
+  colCssClass: 'col-12',
+  subValuesType: 'compound',
+});
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: RepeaterFormValue): void;

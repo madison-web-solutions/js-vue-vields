@@ -10,7 +10,6 @@ export default function useHasChoices(props: RefsOf<HasChoicesFieldProps>) {
 
   const directoryChoices = ref<Choosable[]>([]);
 
-  // @todo how do we make this SSR-safe?  Or is that none of our business in the library?
   watchEffect(async () => {
     directoryChoices.value = [];
     if (directory == null || directory.value == null) {
