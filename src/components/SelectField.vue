@@ -7,6 +7,7 @@
         :id="field.inputEleId"
         :name="field.pathString"
         :disabled="field.disabled"
+        :autocomplete="field.autocomplete"
         @change="change"
       >
         <option ref="nullOption" :disabled="field.required" :selected="nullSelected">{{ nullOptionLabel }}</option>

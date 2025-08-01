@@ -9,7 +9,7 @@
           :name="field.pathString"
           v-model="modelValue"
           :class="{ 'is-invalid': field.hasError }"
-          :disabled="disabled"
+          :disabled="field.disabled"
         />
         <label v-if="label && inlineLabel" class="form-check-label" :for="field.inputEleId">{{ label }}</label>
       </div>

@@ -5,14 +5,14 @@
         v-if="editable && searchable && directory"
         v-model="temp"
         placeholder="Search"
-        :disabled="disabled"
+        :disabled="field.disabled"
         :directory="directory"
       />
       <SelectField
         v-if="editable && !searchable"
         v-model="temp"
         placeholder="Select"
-        :disabled="disabled"
+        :disabled="field.disabled"
         :choices="choices"
         :directory="directory"
       />

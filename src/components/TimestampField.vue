@@ -11,7 +11,7 @@
         <DateField
           v-model="dateValue"
           :errors="errors"
-          :disabled="disabled"
+          :disabled="field.disabled"
           :min="minDateYmd"
           :max="maxDateYmd"
           ref="firstField"
@@ -20,7 +20,7 @@
           v-model="timeValue"
           :errors="errors"
           :withSeconds="true"
-          :disabled="disabled"
+          :disabled="field.disabled"
           :min="minTimeHis"
           :max="maxTimeHis"
         />
@@ -116,7 +116,7 @@ const ymdHisToDate = (ymdHis: string): Date|null => {
   return (timeZone.value == 'local' ? localYmdHisToDate : utcYmdHisToDate)(ymdHis);
 };
 
-const { modelValue, field, FieldWrapper } = useFormField<number | undefined>(coerceToNumber, emit, propRefs);
+const { modelValue, errors, field, FieldWrapper } = useFormField<number | undefined>(coerceToNumber, emit, propRefs);
 
 provide(injectionSymbols.fieldWrapperComponent, EmptyFieldWrapper);
 

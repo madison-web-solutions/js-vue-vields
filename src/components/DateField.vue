@@ -9,6 +9,7 @@
         class="form-control"
         :class="{ 'is-invalid': field.hasError }"
         :disabled="field.disabled"
+        :autocomplete="field.autocomplete"
         :placeholder="myPlaceholder"
         :value="modelValue"
         :min="minDateYmd"

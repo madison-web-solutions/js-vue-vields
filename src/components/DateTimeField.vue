@@ -11,7 +11,7 @@
         <DateField
           v-model="dateValue"
           :errors="errors"
-          :disabled="disabled"
+          :disabled="field.disabled"
           :min="minDateYmd"
           :max="maxDateYmd"
           ref="firstField"
@@ -19,7 +19,7 @@
         <TimeField
           v-model="timeValue"
           :errors="errors"
-          :disabled="disabled"
+          :disabled="field.disabled"
           :min="minTimeHis"
           :max="maxTimeHis"
         />
@@ -61,7 +61,7 @@ const coerceFn = (value: any): string | undefined => {
   return value == null ? "" : String(value);
 };
 
-const { modelValue, field, FieldWrapper } = useFormField<string | undefined>(coerceFn, emit, propRefs);
+const { modelValue, errors, field, FieldWrapper } = useFormField<string | undefined>(coerceFn, emit, propRefs);
 
 provide(injectionSymbols.fieldWrapperComponent, EmptyFieldWrapper);
 

@@ -9,10 +9,12 @@
           :id="field.inputEleId + String(choice.key)"
           :name="field.pathString"
           :checked="modelValue === choice.key"
-          :disabled="disabled"
+          :disabled="field.disabled"
           @change="change(choice)"
         />
-        <label class="form-check-label" :for="field.inputEleId + String(choice.key)">{{ choice.label }}</label>
+        <label class="form-check-label" :for="field.inputEleId + String(choice.key)">
+          <slot :choice="choice" :selected="modelValue === choice.key">{{ choice.label }}</slot>
+        </label>
       </div>
     </template>
     <template #viewMode>{{ displayValue }}</template>

@@ -139,6 +139,7 @@ export default function useFormField<ValueType extends FormValue>(
         label: propRefs.label?.value,
         required: propRefs.required?.value ?? false,
         disabled: propRefs.disabled?.value ?? false,
+        autocomplete: propRefs.autocomplete?.value,
         help: propRefs.help?.value,
         placeholder: propRefs.placeholder?.value,
     };

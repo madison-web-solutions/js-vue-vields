@@ -9,6 +9,7 @@
         :class="{ 'is-invalid': field.hasError }"
         :disabled="field.disabled"
         :placeholder="field.placeholder"
+        :autocomplete="field.autocomplete"
         :maxlength="max"
         v-model="modelValue"
         @keydown.enter="emit('enterPress')"

@@ -11,7 +11,7 @@
             :checked="isOn(choice.key)"
             @change="toggle(choice.key)"
             :class="{ 'is-invalid': hasSubErrors(choice.key) }"
-            :disabled="disabled"
+            :disabled="field.disabled"
           />
           <label class="form-check-label" :for="field.inputEleId + choice.key">{{ choice.label }}</label>
         </div>

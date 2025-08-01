@@ -186,6 +186,7 @@ export type FieldProps = {
   help?: string | undefined;
   placeholder?: string | undefined;
   disabled?: boolean | undefined;
+  autocomplete?: string | undefined;
 };
 
 export type RepeaterFieldProps = {
@@ -237,6 +238,7 @@ export type FieldState<ValueType extends FormValue> = {
   disabled: boolean,
   help: string|undefined,
   placeholder: string|undefined,
+  autocomplete: string|undefined,
 };
 
 export type RepeaterItem = {

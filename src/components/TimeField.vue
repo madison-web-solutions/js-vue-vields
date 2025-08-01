@@ -10,6 +10,7 @@
         :class="{ 'is-invalid': field.hasError }"
         :disabled="field.disabled"
         :placeholder="myPlaceholder"
+        :autocomplete="field.autocomplete"
         :value="displayValue"
         @change="change"
         @focus="onFocus"
