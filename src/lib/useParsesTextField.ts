@@ -1,7 +1,7 @@
 import { computed, ref, type Ref } from "vue";
 import type { ParsesTextFieldOptions } from "../types";
 
-export default function useParsesTextField<T>(modelValue: Ref<T | undefined>, inputEle: Ref<HTMLInputElement | null>, opts: ParsesTextFieldOptions<T>) {
+export default function useParsesTextField<T>(modelValue: Ref<T | null>, inputEle: Ref<HTMLInputElement | null>, opts: ParsesTextFieldOptions<T>) {
 
   const tempClear = ref<boolean>(false);
 

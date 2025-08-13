@@ -3,7 +3,7 @@ import { computed } from "vue";
 import { Choosable, HasChoicesFieldProps, RefsOf } from "../types";
 import useHasChoices from "./useHasChoices";
 
-export default function useHasChoicesSingle (modelValue: Ref<string | number | undefined>, props: RefsOf<HasChoicesFieldProps>) {
+export default function useHasChoicesSingle (modelValue: Ref<string | number | null>, props: RefsOf<HasChoicesFieldProps>) {
   const { choicesNormalized, possibleValues } = useHasChoices(props);
 
   const currentChoice = computed((): Choosable | null => {

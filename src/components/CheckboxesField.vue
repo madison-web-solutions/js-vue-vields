@@ -13,7 +13,9 @@
             :class="{ 'is-invalid': hasSubErrors(choice.key) }"
             :disabled="field.disabled"
           />
-          <label class="form-check-label" :for="field.inputEleId + choice.key">{{ choice.label }}</label>
+          <label class="form-check-label" :for="field.inputEleId + choice.key">
+            <slot name="label" :choice="choice" :checked="isOn(choice.key)">{{ choice.label }}</slot>
+          </label>
         </div>
         <div v-if="hasSubErrors(choice.key)" class="invalid-feedback d-block">
           <div class="error" v-for="msg in subErrors[choice.key]">{{ msg }}</div>
@@ -22,7 +24,10 @@
     </template>
     <template #viewMode>
       <div v-for="choice in choicesNormalized" :key="choice.key">
-        {{ choice.label }}: {{ isOn(choice.key) ? trueLabel : falseLabel }}
+        <div class="d-inline-block">
+            <slot name="label" :choice="choice" :checked="isOn(choice.key)">{{ choice.label }}</slot>
+        </div>
+        : {{ isOn(choice.key) ? trueLabel : falseLabel }}
       </div>
     </template>
   </FieldWrapper>

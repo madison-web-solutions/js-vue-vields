@@ -57,7 +57,7 @@ const displayFormat = computed(() => props.displayFormat ?? 'd/m/Y H:i');
 const timeZone = computed(() => props.timeZone ?? 'local');
 
 const emit = defineEmits<{
-  (e: "update:modelValue", value: number | undefined): void;
+  (e: "update:modelValue", value: number | null): void;
   (e: "update:errors", value: MessageBag): void;
 }>();
 
@@ -116,7 +116,7 @@ const ymdHisToDate = (ymdHis: string): Date|null => {
   return (timeZone.value == 'local' ? localYmdHisToDate : utcYmdHisToDate)(ymdHis);
 };
 
-const { modelValue, errors, field, FieldWrapper } = useFormField<number | undefined>(coerceToNumber, emit, propRefs);
+const { modelValue, errors, field, FieldWrapper } = useFormField<number | null>(coerceToNumber, emit, propRefs);
 
 provide(injectionSymbols.fieldWrapperComponent, EmptyFieldWrapper);
 
@@ -132,7 +132,7 @@ const dateValue = ref<string | undefined>(undefined);
 const timeValue = ref<string | undefined>(undefined);
 
 // Set dateVale and timeValue from the modelValue timestamp (and update when modelValue changes)
-const updateLocalVals = (newTs: number | undefined) => {
+const updateLocalVals = (newTs: number | null) => {
   if (newTs == null) {
     dateValue.value = undefined;
     timeValue.value = undefined;
@@ -157,7 +157,7 @@ watch([dateValue, timeValue], ([newDate, newTime]) => {
   }
   if (!newDate && !newTime) {
     // If both are cleared, unset modelValue
-    modelValue.value = undefined;
+    modelValue.value = null;
   }
 });
 

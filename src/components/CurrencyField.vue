@@ -44,7 +44,7 @@ const props = defineProps<FieldProps & {
 const inputEle = ref<HTMLInputElement | null>(null);
 
 const emit = defineEmits<{
-  (e: "update:modelValue", value: number | undefined): void;
+  (e: "update:modelValue", value: number | null): void;
   (e: "update:errors", value: MessageBag): void;
 }>();
 
@@ -53,18 +53,18 @@ const propRefs = toRefs(props);
 const showCurrency = getConfigRef("currency.showCurrency", propRefs.showCurrency);
 const currencyCode = getConfigRef("currency.currencyCode", propRefs.currencyCode);
 
-const coerceToNumber = (value: unknown): number | undefined => {
+const coerceToNumber = (value: unknown): number | null => {
   switch (typeof value) {
     case "number":
       return value;
     case "string":
       const num = parseFloat(value);
-      return isNaN(num) ? undefined : num;
+      return isNaN(num) ? null : num;
   }
-  return undefined;
+  return null;
 };
 
-const { modelValue, field, FieldWrapper } = useFormField<number | undefined>(coerceToNumber, emit, propRefs);
+const { modelValue, field, FieldWrapper } = useFormField<number | null>(coerceToNumber, emit, propRefs);
 
 const numberFormatter = computed((): Intl.NumberFormat => {
   if (currencyCode.value) {

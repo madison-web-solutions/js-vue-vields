@@ -29,7 +29,7 @@ import useFormField from "../lib/useFormField";
 import useHasChoicesSingle from "../lib/useHasChoicesSingle";
 import { getConfigRef } from "../lib/config";
 
-type IdType = string | number | undefined;
+type IdType = string | number | null;
 
 const nbsp = "\xa0";
 
@@ -55,7 +55,7 @@ const coerceFn = (value: any): IdType => {
     case "number":
       return value;
   }
-  return undefined;
+  return null;
 };
 
 const { modelValue, field, FieldWrapper } = useFormField<IdType>(coerceFn, emit, propRefs);
@@ -103,7 +103,7 @@ const selectNull = () => {
   if (field.value.disabled) {
     return;
   }
-  modelValue.value = undefined;
+  modelValue.value = null;
   closeDropdown();
 };
 

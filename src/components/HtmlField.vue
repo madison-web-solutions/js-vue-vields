@@ -55,13 +55,13 @@ const props = defineProps<FieldProps & {
 }>();
 
 const emit = defineEmits<{
-  (e: "update:modelValue", value: string | undefined): void;
+  (e: "update:modelValue", value: string | null): void;
   (e: "update:errors", value: MessageBag): void;
 }>();
 
 const propRefs = toRefs(props);
 
-const { modelValue, field, FieldWrapper } = useFormField<string | undefined>(coerceToString, emit, propRefs);
+const { modelValue, field, FieldWrapper } = useFormField<string | null>(coerceToString, emit, propRefs);
 
 const INPUT_DEBOUNCE_WAIT: number = 300;
 

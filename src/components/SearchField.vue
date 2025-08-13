@@ -48,7 +48,7 @@ import SearchInterface from "./SearchInterface.vue";
 import useSearches from "../lib/useSearches";
 import Icon from "./Icon.vue";
 
-type IdType = string | number | undefined;
+type IdType = string | number | null;
 
 const props = defineProps<FieldProps & UsesSearchesFieldProps>();
 
@@ -71,7 +71,7 @@ const coerceFn = (value: any): IdType => {
     case "number":
       return value;
   }
-  return undefined;
+  return null;
 };
 
 const { modelValue, field, FieldWrapper } = useFormField<IdType>(coerceFn, emit, propRefs);
@@ -135,7 +135,7 @@ const clearValue = () => {
     return;
   }
   closeSearch();
-  modelValue.value = undefined;
+  modelValue.value = null;
 };
 
 const displayValue = computed((): string => {

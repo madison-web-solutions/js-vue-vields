@@ -50,18 +50,18 @@ export const coerceToString = (value: unknown): string => {
   return value ? String(value) : "";
 };
 
-export const coerceToNumber = (value: unknown): number | undefined => {
+export const coerceToNumber = (value: unknown): number | null => {
   switch (typeof value) {
     case "number":
       return value;
     case "string":
       const num = parseFloat(value);
-      return isNaN(num) ? undefined : num;
+      return isNaN(num) ? null : num;
   }
-  return undefined;
+  return null;
 };
 
-export const coerceToBoolean = (value: unknown): boolean | undefined => {
+export const coerceToBoolean = (value: unknown): boolean | null => {
   switch (typeof value) {
     case "boolean":
       return value;
@@ -82,7 +82,7 @@ export const coerceToBoolean = (value: unknown): boolean | undefined => {
         case "0":
           return false;
       }
-      return undefined;
+      return null;
     case "number":
       if (value === 1) {
         return true;
@@ -90,9 +90,9 @@ export const coerceToBoolean = (value: unknown): boolean | undefined => {
       if (value === 0) {
         return false;
       }
-      return undefined;
+      return null;
   }
-  return undefined;
+  return null;
 };
 
 export const coerceToBooleansNativeMap = (value: any): Map<string | number, boolean> => {

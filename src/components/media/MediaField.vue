@@ -54,7 +54,7 @@ import useFormField from "../../lib/useFormField";
 import injectionSymbols from "../../lib/injection-symbols";
 import Icon from "../Icon.vue";
 
-type IdType = string | number | undefined;
+type IdType = string | number | null;
 
 const props = defineProps<FieldProps & {
   extraParams?: Record<string, any>;
@@ -74,7 +74,7 @@ const coerceFn = (value: unknown): IdType => {
     case "number":
       return value;
   }
-  return undefined;
+  return null;
 };
 
 const { modelValue, field } = useFormField<IdType>(coerceFn, emit, propRefs);
@@ -103,7 +103,7 @@ const choosing = ref<boolean>(false);
 const inspecting = ref<boolean>(false);
 
 const remove = () => {
-  modelValue.value = undefined;
+  modelValue.value = null;
 };
 
 const updateValue = (newId: IdType) => {

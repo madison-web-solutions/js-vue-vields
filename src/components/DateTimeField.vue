@@ -51,17 +51,17 @@ const props = defineProps<FieldProps & {
 const displayFormat = computed(() => props.displayFormat ?? 'd/m/Y H:i');
 
 const emit = defineEmits<{
-  (e: "update:modelValue", value: string | undefined): void;
+  (e: "update:modelValue", value: string | null): void;
   (e: "update:errors", value: MessageBag): void;
 }>();
 
 const propRefs = toRefs(props);
 
-const coerceFn = (value: any): string | undefined => {
+const coerceFn = (value: any): string | null => {
   return value == null ? "" : String(value);
 };
 
-const { modelValue, errors, field, FieldWrapper } = useFormField<string | undefined>(coerceFn, emit, propRefs);
+const { modelValue, errors, field, FieldWrapper } = useFormField<string | null>(coerceFn, emit, propRefs);
 
 provide(injectionSymbols.fieldWrapperComponent, EmptyFieldWrapper);
 

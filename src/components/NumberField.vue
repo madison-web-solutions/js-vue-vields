@@ -44,13 +44,13 @@ const props = defineProps<FieldProps & {
 const inputEle = ref<HTMLInputElement | null>(null);
 
 const emit = defineEmits<{
-  (e: "update:modelValue", value: number | undefined): void;
+  (e: "update:modelValue", value: number | null): void;
   (e: "update:errors", value: MessageBag): void;
 }>();
 
 const propRefs = toRefs(props);
 
-const { modelValue, field, FieldWrapper } = useFormField<number | undefined>(coerceToNumber, emit, propRefs);
+const { modelValue, field, FieldWrapper } = useFormField<number | null>(coerceToNumber, emit, propRefs);
 
 const myStep = computed((): number | undefined => {
   if (props.step == null) {

@@ -41,17 +41,17 @@ const displayFormat = computed(() => props.displayFormat ?? "d/m/Y");
 const inputEle = ref<HTMLInputElement | null>(null);
 
 const emit = defineEmits<{
-  (e: "update:modelValue", value: string | undefined): void;
+  (e: "update:modelValue", value: string | null): void;
   (e: "update:errors", value: MessageBag): void;
 }>();
 
 const propRefs = toRefs(props);
 
-const coerceFn = (value: any): string | undefined => {
-  return ymdToFormat(String(value), "Y-m-d") || undefined;
+const coerceFn = (value: any): string | null => {
+  return ymdToFormat(String(value), "Y-m-d") || null;
 };
 
-const { modelValue, field, FieldWrapper } = useFormField<string | undefined>(coerceFn, emit, propRefs);
+const { modelValue, field, FieldWrapper } = useFormField<string | null>(coerceFn, emit, propRefs);
 
 const todayUtc: Date = ((): Date => {
   const now: Date = new Date();
@@ -112,7 +112,7 @@ const updateFromInput = (clamped: boolean) => {
   const inputValue: string = inputEle.value?.value || "";
   let newDate = utcYmdToDate(inputValue);
   if (newDate == null) {
-    modelValue.value = undefined;
+    modelValue.value = null;
   } else {
     if (clamped !== false) {
       newDate = clampValue(newDate);

@@ -30,13 +30,13 @@ const props = defineProps<FieldProps & {
 }>();
 
 const emit = defineEmits<{
-  (e: "update:modelValue", value: boolean | undefined): void;
+  (e: "update:modelValue", value: boolean | null): void;
   (e: "update:errors", value: MessageBag): void;
 }>();
 
 const propRefs = toRefs(props);
 
-const { modelValue, field, FieldWrapper } = useFormField<boolean | undefined>(coerceToBoolean, emit, propRefs);
+const { modelValue, field, FieldWrapper } = useFormField<boolean | null>(coerceToBoolean, emit, propRefs);
 
 const displayValue = computed((): string => {
   if (modelValue.value === true) {
