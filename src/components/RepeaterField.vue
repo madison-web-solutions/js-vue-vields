@@ -74,6 +74,7 @@ const props = withDefaults(defineProps<FieldProps & RepeaterFieldProps & {
   config?: Loose<Config>
 }>(), {
   appendLabel: 'Add Row',
+  movable: true,
   colCssClass: 'col-12',
   subValuesType: 'compound',
 });
