@@ -4,7 +4,7 @@ import type { MediaItem, ResizableMediaItem } from "../main";
 export const isMediaItemResizable = (
   item: MediaItem,
 ): item is ResizableMediaItem => {
-  return "src_thumb" in item;
+  return ("src_thumb" in item) && (typeof item.src_thumb == 'string') && (item.src_thumb != '');
 };
 
 export const getIconCssClass = function (item: MediaItem): string | null {
