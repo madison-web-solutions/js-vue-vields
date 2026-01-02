@@ -3,6 +3,7 @@
   width: $media-preview-width;
   height: $media-preview-height;
   background: no-repeat center / cover;
+  background-color: $input-bg;
   position: relative;
   border: $input-border-width solid $input-border-color;
   border-radius: $media-preview-border-radius;
@@ -10,7 +11,6 @@
 }
 
 .vfm-media-add-button {
-  background-color: $input-bg;
   transition: background-color 0.2s ease-in-out;
   &:hover,
   &:focus {
@@ -60,6 +60,13 @@
     color: $red;
     overflow-wrap: break-word;
     font-size: $media-preview-font-size;
+  }
+
+  &[data-vfm-media-status="none"] {
+    cursor: default;
+    .vfm-media-preview-status {
+      color: $gray-500;
+    }
   }
 
   &.vfm-has-thumb {

@@ -8,6 +8,13 @@ export default defineConfig({
     vuePlugin(),
     svgLoader(),
   ],
+  resolve: {
+    alias: {
+      // This is only needed for running the demo app
+      // It means within the demo app, we can import from 'vue-fields-ms' just like we would do when using the library in a project.
+      'vue-fields-ms': resolve(__dirname, 'src/index.ts'),
+    },
+  },
   build: {
     cssCodeSplit: true,
     lib: {

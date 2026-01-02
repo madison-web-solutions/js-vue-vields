@@ -42,7 +42,7 @@ import {
 } from "ckeditor5";
 import type { EditorConfig, ImageConfig, TableConfig } from "ckeditor5";
 import type { FieldProps, MessageBag } from "../types";
-import { onBeforeUnmount, onMounted, ref, toRefs, watch } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, toRefs, watch } from "vue";
 import useFormField from "../lib/useFormField";
 import { coerceToString } from "../lib/type-utils";
 import "ckeditor5/ckeditor5.css";
@@ -76,6 +76,8 @@ const editorEle = ref<HTMLElement | null>(null);
 const enableSubSuperScript = getConfigRef("html.subSuperScript", propRefs.subSuperScript);
 const enableCode = getConfigRef("html.code", propRefs.code);
 const enableTables = getConfigRef("html.tables", propRefs.tables);
+
+const editorRequired = computed(() => field.value.editMode === 'edit' && editorContainerEle.value != null && editorEle.value != null);
 
 const ckEditorConfig = (): EditorConfig => {
   const plugins: PluginConstructor<Editor>[] = [
@@ -206,8 +208,13 @@ const destroyEditor = async () => {
   }
 };
 
-onMounted(() => {
-  createEditor();
+// Create or destroy editor as appropriate
+watch(editorRequired, (newVal) => {
+  if (newVal) {
+    createEditor();
+  } else {
+    destroyEditor();
+  }
 });
 
 onBeforeUnmount(async () => {

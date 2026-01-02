@@ -81,10 +81,16 @@ const { modelValue, field } = useFormField<IdType>(coerceFn, emit, propRefs);
 
 const provider = inject(injectionSymbols.mediaProvider);
 
-const currentItem = ref<MediaItem | undefined>(undefined);
+// False means there is no item selected (the modelValue is null)
+// Undefined means there is an item (modelValue is not null) but it is not yet loaded
+const currentItem = ref<MediaItem | undefined | false>(modelValue.value == null ? false : undefined);
 
 // Watch the modelValue and load up the correct MediaItem when it changes
 watchEffect(() => {
+  if (modelValue.value == null) {
+    currentItem.value = false;
+    return;
+  }
   if (currentItem.value && currentItem.value.id === modelValue.value) {
     // We already have the correct item loaded
     return;
