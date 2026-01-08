@@ -33,13 +33,15 @@ import useFormField from "../lib/useFormField";
 import useParsesTextField from "../lib/useParsesTextField";
 import { getConfigRef } from "../lib/config";
 
-const props = defineProps<FieldProps & {
+const props = withDefaults(defineProps<FieldProps & {
   currencyCode?: string | undefined,
   max?: number | undefined,
   min?: number | undefined,
   step?: number | undefined,
   showCurrency?: boolean | undefined,
-}>();
+}>(), {
+  showCurrency: undefined,
+});
 
 const inputEle = ref<HTMLInputElement | null>(null);
 

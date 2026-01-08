@@ -48,11 +48,15 @@ import { coerceToString } from "../lib/type-utils";
 import "ckeditor5/ckeditor5.css";
 import { getConfigRef } from "../lib/config";
 
-const props = defineProps<FieldProps & {
-  subSuperScript?: boolean,
-  code?: boolean,
-  tables?: boolean,
-}>();
+const props = withDefaults(defineProps<FieldProps & {
+  subSuperScript?: boolean|undefined,
+  code?: boolean|undefined,
+  tables?: boolean|undefined,
+}>(), {
+  subSuperScript: undefined,
+  code: undefined,
+  tables: undefined,
+});
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: string | null): void;
