@@ -40,7 +40,7 @@
               </div>
             </FieldArrayItem>
             <template v-if="editable && isMoving">
-              <div :class="['vfm-repeater-move-target', horizontalFlow ? 'vfm-repeater-horizontal-flow' : 'repeater-vertical-flow', 'vfm-move-before']" @click="item.completeMoveBefore"></div>
+              <div :class="['vfm-repeater-move-target', horizontalFlow ? 'vfm-repeater-horizontal-flow' : 'vfm-repeater-vertical-flow', 'vfm-move-before']" @click="item.completeMoveBefore"></div>
               <div :class="['vfm-repeater-move-target', horizontalFlow ? 'vfm-repeater-horizontal-flow' : 'vfm-repeater-vertical-flow', 'vfm-move-after']" @click="item.completeMoveAfter"></div>
             </template>
           </div>

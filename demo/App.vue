@@ -6,13 +6,19 @@
     <FieldGroup v-model="vals" v-model:errors="errors" :editMode="editMode">
         <HtmlField name="bio" />
         <MediaField name="image_id" />
+        <RepeaterField name="items" subValuesType="simple">
+            <template #default="{ index, subVal }">
+                <input type="text" />
+            </template>
+        </RepeaterField>
     </FieldGroup>
     <pre>{{ vals }}</pre>
 </template>
 
 <script setup lang="ts">
     import { ref } from "vue";
-    import { FieldGroup, HtmlField, MediaField } from "vue-fields-ms";
+    import { FieldGroup, HtmlField, MediaField, RepeaterField } from "vue-fields-ms";
+    import type { EditMode } from "vue-fields-ms";
 
     const editMode = ref<EditMode>("view");
     const vals = ref({
