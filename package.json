@@ -1,6 +1,6 @@
 {
   "name": "vue-fields-ms",
-  "version": "2.0.0-alpha.3",
+  "version": "2.0.0-alpha.4",
   "repository": "github:madison-web-solutions/js-vue-vields",
   "type": "module",
   "main": "dist/index.js",
