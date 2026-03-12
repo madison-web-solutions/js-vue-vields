@@ -156,7 +156,7 @@ export function useFormField<ValueType extends FormValue> (valueCoerceFn: (val: 
         return {
             inputEleId: inputEleId.value,
             label: propRefs?.label?.value,
-            required: propRefs?.required?.value,
+            required: propRefs?.required?.value ?? false,
             help: propRefs?.help?.value,
             errors: myErrors.value,
             modelValue: modelValue.value,
@@ -251,7 +251,7 @@ export const useHasChoices = (props: UseHasChoicePropRefs) => {
 };
 
 
-export const useHasChoicesSingle = (modelValue: Ref<string | number | undefined>, props: UseHasChoicePropRefs) => {
+export const useHasChoicesSingle = (modelValue: Ref<string | number | null>, props: UseHasChoicePropRefs) => {
 
     const { choicesNormalized, possibleValues } = useHasChoices(props);
 
@@ -335,7 +335,7 @@ export const useHasChoicesMultiple = (modelValue: Ref<KeysList>, errors: Ref<Mes
 
 
 export type ParsesTextFieldOptions<T> = {
-    coerceNotEmpty: (val: string) => T | undefined,
+    coerceNotEmpty: (val: string) => T | null,
     isValid?: (val: T) => boolean,
     clamp?: (val: T) => T,
     formatForReading?: (val: T) => string,
@@ -343,7 +343,7 @@ export type ParsesTextFieldOptions<T> = {
     formatForEditing?: (val: T) => string,
 };
 
-export function useParsesTextField<T>(modelValue: Ref<T | undefined>, inputEle: Ref<HTMLInputElement | null>, opts: ParsesTextFieldOptions<T>) {
+export function useParsesTextField<T>(modelValue: Ref<T | null>, inputEle: Ref<HTMLInputElement | null>, opts: ParsesTextFieldOptions<T>) {
 
     const tempClear = ref<boolean>(false);
     const focused = ref<boolean>(false);
@@ -367,16 +367,16 @@ export function useParsesTextField<T>(modelValue: Ref<T | undefined>, inputEle: 
         const inputTextValue: string = (inputEle.value.value || '').replace(/\s/g, '');
         if (inputTextValue == '') {
             // No value
-            updateAfterClearing(undefined);
+            updateAfterClearing(null);
         } else {
-            const coercedValue: T | undefined = opts.coerceNotEmpty(inputTextValue);
+            const coercedValue: T | null = opts.coerceNotEmpty(inputTextValue);
             if (coercedValue == null) {
-                updateAfterClearing(undefined);
+                updateAfterClearing(null);
                 return;
             }
             const clampedValue: T = opts.clamp ? opts.clamp(coercedValue) : coercedValue;
             if (opts.isValid && !opts.isValid(clampedValue)) {
-                updateAfterClearing(undefined);
+                updateAfterClearing(null);
                 return;
             }
             updateAfterClearing(clampedValue);

@@ -28,13 +28,13 @@ const props = defineProps(Object.assign({}, commonProps, {
 }));
 
 const emit = defineEmits<{
-    (e: 'update:modelValue', value: boolean | undefined): void
+    (e: 'update:modelValue', value: boolean | null): void
     (e: 'update:errors', value: MessageBag): void
 }>();
 
 const propRefs = toRefs(props);
 
-const { inputEleId, pathString, modelValue, hasError, standardWrapperProps } = useFormField<boolean | undefined>(coerceToBoolean, emit, propRefs);
+const { inputEleId, pathString, modelValue, hasError, standardWrapperProps } = useFormField<boolean | null>((val) => coerceToBoolean(val) ?? null, emit, propRefs);
 
 const displayValue = computed((): string => {
     if (modelValue.value === true) {

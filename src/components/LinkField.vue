@@ -46,7 +46,7 @@ const props = defineProps(Object.assign({}, commonProps, {
 }));
 
 const emit = defineEmits<{
-    (e: 'update:modelValue', value: string | undefined): void
+    (e: 'update:modelValue', value: string | null): void
     (e: 'update:errors', value: MessageBag): void
 }>();
 
@@ -56,7 +56,7 @@ const coerceFn = (value: unknown): string => {
     return value ? String(value) : '';
 };
 
-const { modelValue, hasError, standardWrapperProps } = useFormField<string | undefined>(coerceFn, emit, propRefs);
+const { modelValue, hasError, standardWrapperProps } = useFormField<string | null>(coerceFn, emit, propRefs);
 
 const provider = inject(symbols.linksProvider);
 

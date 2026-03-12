@@ -38,32 +38,32 @@ const props = defineProps(Object.assign({}, commonProps, {
 const inputEle = ref<HTMLInputElement | null>(null);
 
 const emit = defineEmits<{
-    (e: 'update:modelValue', value: number | undefined): void
+    (e: 'update:modelValue', value: number | null): void
     (e: 'update:errors', value: MessageBag): void
 }>();
 
 const propRefs = toRefs(props);
 
-const coerceToNumber = (value: unknown): number | undefined => {
+const coerceToNumber = (value: unknown): number | null => {
     switch (typeof value) {
         case 'number':
             return value;
         case 'string':
             const num = parseFloat(value);
-            return isNaN(num) ? undefined : num;
+            return isNaN(num) ? null : num;
     }
-    return undefined;
+    return null;
 };
 
-const { inputEleId, pathString, modelValue, hasError, standardWrapperProps } = useFormField<number | undefined>(coerceToNumber, emit, propRefs);
+const { inputEleId, pathString, modelValue, hasError, standardWrapperProps } = useFormField<number | null>(coerceToNumber, emit, propRefs);
 
-const myStep = computed((): number | undefined => {
+const myStep = computed((): number | null => {
     if (props.step == null) {
         if (props.integersOnly) {
             return 1;
         } else {
             if (props.decimals == null) {
-                return undefined
+                return null
             } else {
                 return Math.pow(10, -props.decimals);
             }
@@ -85,9 +85,9 @@ const localeStringOpts = computed((): Intl.NumberFormatOptions => {
 });
 
 const parsesTextFieldOptions: ParsesTextFieldOptions<number> = {
-    coerceNotEmpty: (textInput: string): number | undefined => {
+    coerceNotEmpty: (textInput: string): number | null => {
         const num = parseFloat(textInput);
-        return isFinite(num) ? num : undefined;
+        return isFinite(num) ? num : null;
     },
     clamp: (num: number): number => {
         if (myStep.value != null) {

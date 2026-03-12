@@ -26,7 +26,7 @@ import { computed, ref, toRefs, watchEffect, inject } from 'vue';
 import { commonProps, useFormField, symbols } from '@/main';
 import { FieldWrapper, MediaPreview, MediaLibrary, MediaDetails } from '@/main';
 
-type IdType = string | number | undefined;
+type IdType = string | number | null;
 
 const props = defineProps(Object.assign({}, commonProps, {
     extraParams: {
@@ -48,7 +48,7 @@ const coerceFn = (value: any): IdType => {
         case 'number':
             return value;
     }
-    return undefined;
+    return null;
 };
 
 const { modelValue, standardWrapperProps } = useFormField<IdType>(coerceFn, emit, propRefs);
@@ -77,7 +77,7 @@ const choosing = ref<boolean>(false);
 const inspecting = ref<boolean>(false);
 
 const remove = () => {
-    modelValue.value = undefined;
+    modelValue.value = null;
 };
 
 const updateValue = (newId: IdType) => {

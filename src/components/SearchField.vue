@@ -41,7 +41,7 @@ import { commonProps, useFormField, useSearches, symbols } from '@/main';
 import { FieldWrapper } from '@/main';
 import SearchInterface from './SearchInterface.vue';
 
-type IdType = string | number | undefined;
+type IdType = string | number | null;
 
 const props = defineProps(Object.assign({}, commonProps, {
     directory: {
@@ -67,7 +67,7 @@ const coerceFn = (value: any): IdType => {
         case 'number':
             return value;
     }
-    return undefined;
+    return null;
 };
 
 const { modelValue, hasError, standardWrapperProps } = useFormField<IdType>(coerceFn, emit, propRefs);
@@ -120,7 +120,7 @@ const clearValue = () => {
         return;
     }
     closeSearch();
-    modelValue.value = undefined;
+    modelValue.value = null;
 }
 
 const displayValue = computed((): string => {

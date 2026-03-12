@@ -36,17 +36,17 @@ const props = defineProps(Object.assign({}, commonProps, {
 const inputEle = ref<HTMLInputElement | null>(null);
 
 const emit = defineEmits<{
-    (e: 'update:modelValue', value: string | undefined): void
+    (e: 'update:modelValue', value: string | null): void
     (e: 'update:errors', value: MessageBag): void
 }>();
 
 const propRefs = toRefs(props);
 
-const coerceFn = (value: unknown): string | undefined => {
-    return (value == null || value === '') ? undefined : String(value);
+const coerceFn = (value: unknown): string | null => {
+    return (value == null || value === '') ? null : String(value);
 };
 
-const { inputEleId, pathString, modelValue, hasError, standardWrapperProps } = useFormField<string | undefined>(coerceFn, emit, propRefs);
+const { inputEleId, pathString, modelValue, hasError, standardWrapperProps } = useFormField<string | null>(coerceFn, emit, propRefs);
 
 const stepSeconds = computed((): number | undefined => {
     return props.step == null ? undefined : timeParse(props.step);
@@ -59,10 +59,10 @@ const maxSeconds = computed((): number | undefined => {
 });
 
 const parsesTextFieldOptions: ParsesTextFieldOptions<string> = {
-    coerceNotEmpty: (val: string): string | undefined => {
+    coerceNotEmpty: (val: string): string | null => {
         const secsSinceMidnight: number | undefined = timeParse(val);
         if (secsSinceMidnight == null) {
-            return undefined;
+            return null;
         }
         const [hours, mins, secs] = timeSplit(secsSinceMidnight);
         return timeFormat(hours, mins, props.withSeconds ? secs : undefined);

@@ -35,7 +35,7 @@ import { computed, onMounted, onBeforeUnmount, ref, toRefs, inject } from 'vue';
 import { commonProps, useFormField, useHasChoicesSingle, symbols } from '@/main';
 import { FieldWrapper } from '@/main';
 
-type IdType = string | number | undefined;
+type IdType = string | number | null;
 
 const props = defineProps(Object.assign({}, commonProps, {
     directory: {
@@ -63,7 +63,7 @@ const coerceFn = (value: any): IdType => {
         case 'number':
             return value;
     }
-    return undefined;
+    return null;
 };
 
 const { modelValue, standardWrapperProps } = useFormField<IdType>(coerceFn, emit, propRefs);
@@ -98,7 +98,7 @@ onMounted(() => document.addEventListener('click', maybeCloseDropdown));
 onBeforeUnmount(() => document.removeEventListener('click', maybeCloseDropdown));
 
 const selectNull = () => {
-    modelValue.value = undefined;
+    modelValue.value = null;
     closeDropdown();
 };
 

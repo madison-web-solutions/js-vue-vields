@@ -16,7 +16,7 @@ import { computed, toRefs } from 'vue';
 import { commonProps, useFormField, useHasChoicesSingle } from '@/main';
 import { FieldWrapper } from '@/main';
 
-type IdType = string | number | undefined;
+type IdType = string | number | null;
 
 const props = defineProps(Object.assign({}, commonProps, {
     directory: {
@@ -44,7 +44,7 @@ const coerceFn = (value: any): IdType => {
         case 'number':
             return value;
     }
-    return undefined;
+    return null;
 };
 
 const { inputEleId, pathString, modelValue, hasError, standardWrapperProps } = useFormField<IdType>(coerceFn, emit, propRefs);
@@ -60,7 +60,7 @@ const change = (e: Event) => {
     const target = e.target as HTMLSelectElement;
     var index = target.selectedIndex;
     if (index === 0) {
-        modelValue.value = undefined;
+        modelValue.value = null;
     } else {
         modelValue.value = choicesNormalized.value[index - 1].key;
     }
