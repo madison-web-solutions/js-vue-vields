@@ -27,6 +27,7 @@
           :editable="true"
           :deletable="false"
           @close="inspecting = false"
+          @updated="onUpdated"
         />
       </Modal>
     </template>
@@ -104,6 +105,10 @@ watchEffect(() => {
     });
   }
 });
+
+const onUpdated = (item: MediaItem) => {
+  currentItem.value = item;
+};
 
 const choosing = ref<boolean>(false);
 const inspecting = ref<boolean>(false);

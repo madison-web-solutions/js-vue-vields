@@ -44,7 +44,7 @@
 
 <script setup lang="ts">
 import type { MediaItem, LookupResult, UpdateResult } from "../../types";
-import { computed, ref, inject, watchEffect, onMounted } from "vue";
+import { computed, ref, inject, watchEffect, onMounted, provide } from "vue";
 import { IconName } from "../../types";
 import { getMediaItemIcon } from "../../lib/media";
 import FieldGroup from "../FieldGroup.vue";
@@ -64,6 +64,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: "close"): void;
   (e: "delete"): void;
+  (e: "updated", item: MediaItem): void;
 }>();
 
 type MediaVals = {
@@ -71,6 +72,15 @@ type MediaVals = {
   alt: string;
   cropCenter?: { top: number; left: number };
 };
+
+// @todo This is a bit of a hack.
+// If we have a MediaField in a FieldGroup, the FieldGroup will provide a valueLens and errorsLens
+// This will then prevent the FieldGroup above from being able to access vals
+// Really what I need to do is make it so that when a FieldGroup is given vals via v-model, the values always come from that instead of a valueLens which happened to be provided by some ancestor component
+// But I haven't been able to come up with a way to do this yet
+// For now, clearing the valueLens and errorsLens here enables the FieldGroup above to access vals
+provide(injectionSymbols.valueLens, undefined);
+provide(injectionSymbols.errorsLens, undefined);
 
 const vals = ref<MediaVals>({ title: "", alt: "" });
 const errors = ref({});
@@ -310,6 +320,7 @@ const saveUpdates = () => {
         if (result.status == "ok") {
           item.value = result.resource;
           reset();
+          emit("updated", result.resource);
         } else {
           errors.value = result.errors;
         }
