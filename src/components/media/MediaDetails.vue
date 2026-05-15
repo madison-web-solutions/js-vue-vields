@@ -28,17 +28,22 @@
           </CompoundField>
         </FieldGroup>
         <div class="mb-2">
-          <button v-if="deletable" type="button" class="btn btn-link text-danger" @click.stop="emit('delete')">Delete</button>
-        </div>
-        <div v-if="canReplace" class="vfm-media-upload-form mb-2">
-          <input ref="replaceFileInput" type="file" @change="replaceFileSelected" />
-          <button v-if="replaceStatus !== 'replacing'" type="button" class="btn btn-secondary" @click.stop="triggerReplace"><Icon icon="upload" class="me-2" />Replace File</button>
-          <p v-if="replaceStatus === 'replacing'" class="mb-0">Replacing... {{ replaceProgress }}%</p>
-          <p v-if="replaceStatus === 'error'" class="mb-0 text-danger">{{ replaceErrorMessage }}</p>
-        </div>
-        <div class="mb-2">
           <button v-if="editable && isDirty" type="button" @click.stop="saveUpdates" class="btn btn-primary">Save Changes</button>
         </div>
+        <div class="mb-2">
+          <button v-if="deletable" type="button" class="btn btn-link text-danger" @click.stop="emit('delete')">Delete</button>
+        </div>
+        <template v-if="canReplace">
+          <hr />
+          <div class="vfm-media-upload-form mb-2">
+            <label v-if="replaceStatus !== 'replacing'" class="btn btn-secondary">
+              <input ref="replaceFileInput" type="file" @change="replaceFileSelected" />
+              <Icon icon="upload" class="me-2" />Replace File
+            </label>
+            <p v-if="replaceStatus === 'replacing'" class="mb-0">Replacing... {{ replaceProgress }}%</p>
+            <p v-if="replaceStatus === 'error'" class="mb-0 text-danger">{{ replaceErrorMessage }}</p>
+          </div>
+        </template>
       </div>
       <div class="col-12" data-name="url">
         URL: <a v-if="item && item.src" :href="item.src" target="_blank">{{item.src}}</a>
@@ -327,10 +332,6 @@ const replaceProgress = ref(0);
 const replaceErrorMessage = ref('');
 
 const canReplace = computed(() => !!provider?.replace);
-
-const triggerReplace = () => {
-  replaceFileInput.value?.click();
-};
 
 const replaceFileSelected = () => {
   const file = replaceFileInput.value?.files?.[0];
