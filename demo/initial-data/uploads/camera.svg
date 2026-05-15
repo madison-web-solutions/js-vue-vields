@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#e8e8e8"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="800" fill="url(#glow)"/>
+  <ellipse cx="400" cy="720" rx="260" ry="30" fill="#ccc" opacity="0.5"/>
+  <rect x="140" y="280" width="520" height="360" rx="32" fill="#222"/>
+  <rect x="560" y="248" width="130" height="400" rx="22" fill="#111"/>
+  <circle cx="340" cy="460" r="155" fill="#111"/>
+  <circle cx="340" cy="460" r="128" fill="#1a3a5c"/>
+  <circle cx="340" cy="460" r="95" fill="#0d1f35"/>
+  <circle cx="340" cy="460" r="70" fill="#152a45"/>
+  <circle cx="316" cy="436" r="22" fill="white" opacity="0.12"/>
+  <circle cx="588" cy="290" r="26" fill="#cc4400"/>
+  <rect x="160" y="300" width="85" height="52" rx="8" fill="#444"/>
+  <rect x="398" y="258" width="110" height="28" rx="10" fill="#333"/>
+  <rect x="248" y="258" width="70" height="28" rx="10" fill="#333"/>
+  <rect x="180" y="370" width="38" height="22" rx="4" fill="#ffd700" opacity="0.8"/>
+</svg>

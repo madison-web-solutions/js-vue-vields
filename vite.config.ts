@@ -2,11 +2,13 @@ import { defineConfig } from 'vite';
 import vuePlugin from '@vitejs/plugin-vue';
 import svgLoader from 'vite-svg-loader';
 import { resolve } from 'path';
+import { mockServerPlugin } from './demo/mock-server';
 
 export default defineConfig({
   plugins: [
     vuePlugin(),
     svgLoader(),
+    mockServerPlugin(),
   ],
   resolve: {
     alias: {

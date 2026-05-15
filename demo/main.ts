@@ -1,24 +1,24 @@
-import { createApp } from "vue";
-import App from "./App.vue";
-import { vueFieldsMsPlugin, type VueFieldsMsPluginOptions } from "vue-fields-ms";
+import { createApp } from 'vue'
+import App from './App.vue'
+import { vueFieldsMsPlugin, type VueFieldsMsPluginOptions } from 'vue-fields-ms'
+import { choicesProvider, linksProvider, mediaProvider, passwordStrengthProvider } from './providers'
 
-import "./scss/app.scss";
+import './scss/app.scss'
 
-const app = createApp(App);
+const app = createApp(App)
 
-// Set up vue-fields-ms
 const vfmOpts: VueFieldsMsPluginOptions = {
-    config: {
-        'textArea.numRows': 3,
-        'currency.currencyCode': 'GBP',
-        'currency.showCurrency': false,
-    }
-};
-app.use(vueFieldsMsPlugin, vfmOpts);
+  choicesProvider,
+  linksProvider,
+  mediaProvider,
+  passwordStrengthProvider,
+  config: {
+    'textArea.numRows': 4,
+    'currency.currencyCode': 'GBP',
+    'currency.showCurrency': false,
+    'media.supportCropCenter': true,
+  },
+}
 
-/*
-import router from "./router";
-app.use(router);
-*/
-
-app.mount("#app");
+app.use(vueFieldsMsPlugin, vfmOpts)
+app.mount('#app')

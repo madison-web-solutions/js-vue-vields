@@ -23,6 +23,9 @@ package-lock.json
 !/.vscode/extensions.json
 !/.
 
+# Demo app data (uploads and persisted db — not committed)
+/demo/data/
+
 # Standard Windows system files to ignore
 ehthumbs.db
 Thumbs.db

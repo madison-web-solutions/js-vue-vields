@@ -24,7 +24,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build && vue-tsc --emitDeclarationOnly --outDir dist",
-    "type-check": "vue-tsc --noEmit"
+    "type-check": "vue-tsc --noEmit",
+    "demo:reset": "rm -rf demo/data"
   },
   "dependencies": {
     "ckeditor5": "^43.0.0",
@@ -35,6 +36,7 @@
     "@vitejs/plugin-vue": "^6.0.0",
     "bootstrap": "^5.3.8",
     "sass": "1.77.6",
+    "sharp": "^0.34.5",
     "typescript": "^5.8.3",
     "vite": "^6.3.5",
     "vite-svg-loader": "^5.1.0",
