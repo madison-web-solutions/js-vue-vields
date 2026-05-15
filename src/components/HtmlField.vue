@@ -133,7 +133,7 @@ const ckEditorConfig = (): EditorConfig => {
   });
 
   const config: EditorConfig = {
-    //licenseKey: 'GPL',
+    licenseKey: 'GPL',
     plugins: plugins,
     toolbar: {
       items: toolbarItems,

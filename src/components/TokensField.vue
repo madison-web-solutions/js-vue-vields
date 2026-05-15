@@ -24,7 +24,7 @@
             }}</slot>
             <slot name="pendingTokenContent" v-if="isPending(token)" :token="token">{{ token.key }}</slot>
           </div>
-          <div v-if="editable" v-pclass="'token-delete'" @click="removeToken(token.key)">
+          <div v-if="editable" class="token-delete" @click="removeToken(token.key)">
             <button class="btn btn-sm btn-outline-danger">
               <Icon icon="x" />
             </button>

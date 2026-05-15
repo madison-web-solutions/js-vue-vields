@@ -1,4 +1,4 @@
-import { ButtonView, icons, Plugin } from "ckeditor5";
+import { ButtonView, IconImageAssetManager, Plugin } from "ckeditor5";
 import type { MediaItem, ResizableMediaItem, IconName } from "../types";
 
 export const isMediaItemResizable = (item: MediaItem): item is ResizableMediaItem => {
@@ -46,7 +46,7 @@ export class CkEditorMediaLibraryPlugin extends Plugin {
       const button = new ButtonView();
       button.set({
         label: "Media Library",
-        icon: icons.imageAssetManager,
+        icon: IconImageAssetManager,
       });
       button.on("execute", () => {
         this.openMediaLibrary && this.openMediaLibrary();
