@@ -30,6 +30,12 @@
         <div class="mb-2">
           <button v-if="deletable" type="button" class="btn btn-link text-danger" @click.stop="emit('delete')">Delete</button>
         </div>
+        <div v-if="canReplace" class="vfm-media-upload-form mb-2">
+          <input ref="replaceFileInput" type="file" @change="replaceFileSelected" />
+          <button v-if="replaceStatus !== 'replacing'" type="button" class="btn btn-secondary" @click.stop="triggerReplace"><Icon icon="upload" class="me-2" />Replace File</button>
+          <p v-if="replaceStatus === 'replacing'" class="mb-0">Replacing... {{ replaceProgress }}%</p>
+          <p v-if="replaceStatus === 'error'" class="mb-0 text-danger">{{ replaceErrorMessage }}</p>
+        </div>
         <div class="mb-2">
           <button v-if="editable && isDirty" type="button" @click.stop="saveUpdates" class="btn btn-primary">Save Changes</button>
         </div>
@@ -45,6 +51,7 @@
 <script setup lang="ts">
 import type { MediaItem, LookupResult, UpdateResult } from "../../types";
 import { computed, ref, inject, watchEffect, onMounted, provide } from "vue";
+import { messageBagToString } from "../../lib/message-bag";
 import { IconName } from "../../types";
 import { getMediaItemIcon } from "../../lib/media";
 import FieldGroup from "../FieldGroup.vue";
@@ -168,12 +175,15 @@ const isImage = computed((): boolean => {
   return false;
 });
 
+const imageCacheBust = ref<number | null>(null);
+
 const imageSrc = computed((): string | undefined => {
   if (item.value && isImage.value && item.value.src) {
-    return item.value.src;
-  } else {
-    return undefined;
+    return imageCacheBust.value != null
+      ? `${item.value.src}?_cb=${imageCacheBust.value}`
+      : item.value.src;
   }
+  return undefined;
 });
 
 const iconName = computed((): IconName | null => {
@@ -310,6 +320,47 @@ watchEffect(() => {
     img.src = imageWithDimensionsUrl.value;
   }
 });
+
+const replaceFileInput = ref<HTMLInputElement | null>(null);
+const replaceStatus = ref<'idle' | 'replacing' | 'error'>('idle');
+const replaceProgress = ref(0);
+const replaceErrorMessage = ref('');
+
+const canReplace = computed(() => !!provider?.replace);
+
+const triggerReplace = () => {
+  replaceFileInput.value?.click();
+};
+
+const replaceFileSelected = () => {
+  const file = replaceFileInput.value?.files?.[0];
+  if (!file || !provider?.replace) return;
+
+  const data = new FormData();
+  data.append('file', file);
+
+  replaceStatus.value = 'replacing';
+  replaceProgress.value = 0;
+  replaceErrorMessage.value = '';
+
+  provider
+    .replace(props.itemId, data, (loaded: number, total: number) => {
+      replaceProgress.value = Math.round((100 * loaded) / total);
+    })
+    .then((result: UpdateResult<MediaItem>) => {
+      if (result.status === 'ok') {
+        item.value = result.resource;
+        imageCacheBust.value = Date.now();
+        reset();
+        emit('updated', result.resource);
+        replaceStatus.value = 'idle';
+      } else {
+        replaceErrorMessage.value = messageBagToString(result.errors);
+        replaceStatus.value = 'error';
+      }
+      if (replaceFileInput.value) replaceFileInput.value.value = '';
+    });
+};
 
 const saveUpdates = () => {
   errors.value = {};

@@ -160,6 +160,11 @@ export type MediaProvider = {
     data: FormData,
     progressCallback: (loaded: number, total: number) => void,
   ) => Promise<UpdateResult<MediaItem>>;
+  replace?: (
+    key: number | string,
+    data: FormData,
+    progressCallback: (loaded: number, total: number) => void,
+  ) => Promise<UpdateResult<MediaItem>>;
   delete: (key: number | string) => Promise<boolean>;
   update: (
     key: number | string,
