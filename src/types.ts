@@ -113,6 +113,7 @@ export type MediaItem = {
   src: string | null;
   alt: string | null;
   cropCenter?: { top: number; left: number };
+  src_thumb?: string | null;
   // media type ?
 };
 

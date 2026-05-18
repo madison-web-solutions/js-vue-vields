@@ -2,7 +2,7 @@ import { ButtonView, IconImageAssetManager, Plugin } from "ckeditor5";
 import type { MediaItem, ResizableMediaItem, IconName } from "../types";
 
 export const isMediaItemResizable = (item: MediaItem): item is ResizableMediaItem => {
-  return "src_thumb" in item;
+  return item.src_thumb != null;
 };
 
 // Null is returned when the image or thumbnail can be used instead of an icon
