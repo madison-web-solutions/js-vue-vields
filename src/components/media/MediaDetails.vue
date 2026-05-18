@@ -7,7 +7,7 @@
       <div ref="previewContainer" class="vfm-media-details-preview col-8">
         <img v-if="imageSrc" ref="previewImage" :src="imageSrc" @click="maybeSetCropCenter" />
         <div v-if="iconName" class="vfm-media-details-overlay">
-          <Icon :icon="iconName"></Icon>
+          <Icon class="vfm-media-preview-icon" :icon="iconName"></Icon>
         </div>
         <Icon v-if="supportCropCenter && isImage" class="vfm-media-details-crop-center-left-pointer" :style="cropCenterMarkerStyle.left" icon="chevronDown" />
         <Icon v-if="supportCropCenter && isImage" class="vfm-media-details-crop-center-top-pointer" :style="cropCenterMarkerStyle.top" icon="chevronRight" />
@@ -55,7 +55,7 @@
 
 <script setup lang="ts">
 import type { MediaItem, LookupResult, UpdateResult } from "../../types";
-import { computed, ref, inject, watchEffect, onMounted, provide } from "vue";
+import { computed, ref, inject, watchEffect, onMounted, provide, onUnmounted } from "vue";
 import { messageBagToString } from "../../lib/message-bag";
 import { IconName } from "../../types";
 import { getMediaItemIcon } from "../../lib/media";
@@ -276,20 +276,25 @@ const cropCenterMarkerStyle = computed(() => {
   }
 });
 
-onMounted(() => {
-  // We can use a ResizeObsever to catch changes in size/position of the image or the container, and use that to trigger repositionCropCenterMarkers()
-  let resizeObverver = new ResizeObserver(() => {
-    // We can 'trick' cropCenterMarkerStyle to be recomputed by increasing this dummy value that is referenced in the computed function
-    resizeCount.value++;
-  });
-
+// We can use a ResizeObsever to catch changes in size/position of the image or the container, and use that to trigger repositionCropCenterMarkers()
+const resizeObverver = new ResizeObserver(() => {
+  // We can 'trick' cropCenterMarkerStyle to be recomputed by increasing this dummy value that is referenced in the computed function
+  resizeCount.value++;
+});
+watchEffect(() => {
   // Attach the image and container elements to the observer
-  if (supportCropCenter.value && previewImage.value instanceof HTMLImageElement && previewContainer.value instanceof HTMLElement) {
+  if (previewImage.value instanceof HTMLElement) {
     resizeObverver.observe(previewImage.value);
+  }
+  if (previewContainer.value instanceof HTMLElement) {
     resizeObverver.observe(previewContainer.value);
-  } else {
+  }
+  if (previewContainer.value == null && previewImage.value == null) {
     resizeObverver.disconnect();
   }
+});
+onUnmounted(() => {
+  resizeObverver.disconnect();
 });
 
 // Function to set the crop center of an image when a user alt-clicks on it

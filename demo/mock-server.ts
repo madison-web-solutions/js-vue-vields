@@ -4,17 +4,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as crypto from 'crypto'
 import sharp from 'sharp'
-
-type MediaItem = {
-  id: string
-  status: 'available' | 'missing'
-  title: string
-  extension: string
-  src: string | null
-  src_thumb?: string
-  alt: string | null
-  cropCenter?: { top: number; left: number }
-}
+import type { MediaItem } from '../src/types'
 
 type DB = {
   record: Record<string, unknown>
