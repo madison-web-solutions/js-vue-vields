@@ -122,7 +122,7 @@ export default function useFormField<ValueType extends FormValue>(
 
   const inputEleId = useId();
 
-  const FieldWrapper = inject(injectionSymbols.fieldWrapperComponent) || StandardFieldWrapper;
+  const FieldWrapper = inject(injectionSymbols.fieldWrapperComponent, undefined) || StandardFieldWrapper;
 
   const field = computed((): FieldState<ValueType> => {
     return {
