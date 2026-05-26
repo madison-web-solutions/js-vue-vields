@@ -10,6 +10,7 @@
         :disabled="field.disabled"
         :placeholder="field.placeholder"
         :autocomplete="field.autocomplete"
+        :maxlength="max"
         v-model="modelValue"
       ></textarea>
       <span v-if="showRemainingChars" class="position-absolute bottom-0 end-0 p-1 small text-muted">{{ remainingChars }}</span>
