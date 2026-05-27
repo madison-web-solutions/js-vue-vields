@@ -8,14 +8,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 npm run dev        # Start Vite dev server with demo app
 npm run build      # Build library (Vite + vue-tsc for type declarations)
 npm run type-check # Type-check only, no emit
+npm test           # Run the unit test suite once (vitest run)
+npm run test:watch # Run the unit tests in watch mode
 npm run demo:reset # Delete demo/data/ so the demo reseeds on next dev start
 ```
 
-There are no tests. There is no lint command.
+There is no lint command. See **Testing** below for the test suite — run `npm test` and `npm run type-check` after making changes.
 
 ## What This Is
 
 **vue-fields-ms** is a Vue 3 form field component library published as an ES-only npm package. It ships `dist/index.js` + `dist/index.d.ts`. The `src/demo/` app exists solely for manual development testing — run `npm run dev` and open the browser to try components interactively.
+
+## Testing
+
+Comprehensive unit suite (Vitest + jsdom + `@vue/test-utils`) in `tests/` covering every field, the composables, the `lib/` utilities, and the lens paths. Run `npm test` and `npm run type-check` after changes. Providers are mocked inline and injected via `injectionSymbols`. Shared behaviours run through `describe.each` fixtures (`scalar-`/`choice-field-`/`compound-`/`repeater-behaviors`) — for a new field variant add a fixture rather than duplicating tests. Otherwise, follow the patterns in the nearest existing test file.
 
 ## Architecture
 
