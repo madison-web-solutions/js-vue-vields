@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, test, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { defineComponent, nextTick, provide, ref } from 'vue';
 import { lastEmittedValue, settle } from './utils';
@@ -7,9 +7,6 @@ import injectionSymbols from '../src/lib/injection-symbols';
 import NumberField from '../src/components/NumberField.vue';
 
 describe('NumberField', () => {
-  beforeEach(() => { vi.useFakeTimers(); });
-  afterEach(() => { vi.useRealTimers(); });
-
   test('renders a text input', () => {
     const wrapper = mount(NumberField);
     expect(wrapper.find('input').attributes('type')).toBe('text');
@@ -119,10 +116,9 @@ describe('NumberField', () => {
     expect(wrapper.find('.input-group-text').exists()).toBe(false);
   });
 
-  // This test documents the updateAfterClearing mechanism. When the user types a value
-  // that the clamp maps to the same number as the current modelValue, Vue's reactivity
-  // would normally skip re-evaluating displayValue, leaving "200" visible in the input.
-  // The tempClear flag forces a re-evaluation so the input resets to the clamped value.
+  // When the user types a value that the clamp maps to the same number as the current
+  // modelValue, Vue's :value diff is a no-op and would leave "200" visible in the input.
+  // commit() writes the canonical string straight to the DOM so the input resets.
   test('DOM resets to canonical value when typed input clamps to current modelValue', async () => {
     const Parent = defineComponent({
       components: { NumberField },

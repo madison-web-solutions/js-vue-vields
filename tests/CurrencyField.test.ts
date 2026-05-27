@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, test, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { defineComponent, nextTick, provide, ref } from 'vue';
 import { lastEmittedValue, settle } from './utils';
@@ -8,9 +8,6 @@ import CurrencyField from '../src/components/CurrencyField.vue';
 
 // CurrencyField stores values in minor units (e.g. cents): £12.50 → 1250, 1 KWD → 1000.
 describe('CurrencyField', () => {
-  beforeEach(() => { vi.useFakeTimers(); });
-  afterEach(() => { vi.useRealTimers(); });
-
   test('renders a text input', () => {
     const wrapper = mount(CurrencyField);
     expect(wrapper.find('input').attributes('type')).toBe('text');
@@ -110,9 +107,9 @@ describe('CurrencyField', () => {
     expect((wrapper.find('input').element as HTMLInputElement).value).toBe('12.5');
   });
 
-  // DOM reset: type a value that clamps to the same as the current modelValue. Without
-  // updateAfterClearing, Vue would skip re-rendering displayValue and leave the typed
-  // text in the input.
+  // DOM reset: type a value that clamps to the same as the current modelValue. Vue's
+  // :value diff is a no-op here, so commit() writes the canonical string straight to
+  // the input rather than leaving the typed text in place.
   test('DOM resets to canonical value when typed input clamps to current modelValue', async () => {
     const Parent = defineComponent({
       components: { CurrencyField },

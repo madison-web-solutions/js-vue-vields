@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, test, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { defineComponent, provide, ref } from 'vue';
 import { lastEmittedValue, settle } from './utils';
@@ -7,9 +7,6 @@ import injectionSymbols from '../src/lib/injection-symbols';
 import TimeField from '../src/components/TimeField.vue';
 
 describe('TimeField', () => {
-  beforeEach(() => { vi.useFakeTimers(); });
-  afterEach(() => { vi.useRealTimers(); });
-
   test('renders a text input', () => {
     const wrapper = mount(TimeField);
     expect(wrapper.find('input').attributes('type')).toBe('text');
@@ -104,8 +101,8 @@ describe('TimeField', () => {
     expect(wrapper.find('input').attributes('placeholder')).toBe('hh:mm:ss');
   });
 
-  // DOM reset: type a time that clamps to the current modelValue. Without updateAfterClearing,
-  // Vue would skip re-evaluating displayValue and leave the typed text in the input.
+  // DOM reset: type a time that clamps to the current modelValue. Vue's :value diff is a
+  // no-op here, so commit() writes the canonical string straight to the input.
   test('DOM resets to canonical value when typed input clamps to current modelValue', async () => {
     const Parent = defineComponent({
       components: { TimeField },

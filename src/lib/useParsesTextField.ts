@@ -3,8 +3,6 @@ import type { ParsesTextFieldOptions } from "../types";
 
 export default function useParsesTextField<T>(modelValue: Ref<T | null>, inputEle: Ref<HTMLInputElement | null>, opts: ParsesTextFieldOptions<T>) {
 
-  const tempClear = ref<boolean>(false);
-
   const focused = ref<boolean>(false);
 
   const onFocus = () => {
@@ -15,50 +13,7 @@ export default function useParsesTextField<T>(modelValue: Ref<T | null>, inputEl
     focused.value = false;
   };
 
-  // When the clamped/parsed result equals the current modelValue, Vue detects no
-  // change and skips re-evaluating displayValue, leaving the DOM input showing
-  // whatever the user typed. Fix: briefly set tempClear=true (forcing displayValue
-  // to "") then restore it, guaranteeing a re-evaluation regardless of whether
-  // modelValue actually changed.
-  const updateAfterClearing = (value: any) => {
-    if (typeof setTimeout !== 'undefined') {
-      tempClear.value = true;
-      setTimeout(() => {
-        modelValue.value = value;
-        tempClear.value = false;
-      }, 10);
-    } else {
-      modelValue.value = value;
-    }
-  };
-
-  const change = () => {
-    if (inputEle.value == null) {
-      return;
-    }
-    const inputTextValue: string = (inputEle.value.value || "").replace(/\s/g, "");
-    if (inputTextValue == "") {
-      // No value
-      updateAfterClearing(null);
-    } else {
-      const coercedValue: T | undefined = opts.coerceNotEmpty(inputTextValue);
-      if (coercedValue == null) {
-        updateAfterClearing(null);
-        return;
-      }
-      const clampedValue: T = opts.clamp ? opts.clamp(coercedValue) : coercedValue;
-      if (opts.isValid && !opts.isValid(clampedValue)) {
-        updateAfterClearing(null);
-        return;
-      }
-      updateAfterClearing(clampedValue);
-    }
-  };
-
   const displayValue = computed((): string => {
-    if (tempClear.value) {
-      return "";
-    }
     if (modelValue.value == null) {
       if (!focused.value && opts.formatNullForReading) {
         return opts.formatNullForReading();
@@ -75,12 +30,46 @@ export default function useParsesTextField<T>(modelValue: Ref<T | null>, inputEl
     return String(modelValue.value);
   });
 
+  // Assign the canonical value, then force the input to show displayValue.
+  // When the parsed result equals the current modelValue, Vue's :value diff is a
+  // no-op and won't repaint the DOM, leaving the user's raw text on screen.
+  // Reading displayValue here recomputes synchronously, so writing it to the input
+  // guarantees the correct value regardless of whether modelValue changed.
+  const commit = (value: T | null) => {
+    modelValue.value = value;
+    if (inputEle.value != null) {
+      inputEle.value.value = displayValue.value;
+    }
+  };
+
+  const change = () => {
+    if (inputEle.value == null) {
+      return;
+    }
+    const inputTextValue: string = (inputEle.value.value || "").replace(/\s/g, "");
+    if (inputTextValue == "") {
+      // No value
+      commit(null);
+    } else {
+      const coercedValue: T | undefined = opts.coerceNotEmpty(inputTextValue);
+      if (coercedValue == null) {
+        commit(null);
+        return;
+      }
+      const clampedValue: T = opts.clamp ? opts.clamp(coercedValue) : coercedValue;
+      if (opts.isValid && !opts.isValid(clampedValue)) {
+        commit(null);
+        return;
+      }
+      commit(clampedValue);
+    }
+  };
+
   return {
     focused,
     onFocus,
     onBlur,
     change,
-    updateAfterClearing,
     displayValue,
   };
 }

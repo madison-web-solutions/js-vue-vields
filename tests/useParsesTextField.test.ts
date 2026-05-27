@@ -1,4 +1,4 @@
-import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, test, expect } from 'vitest';
 import { ref } from 'vue';
 import useParsesTextField from '../src/lib/useParsesTextField';
 import type { ParsesTextFieldOptions } from '../src/types';
@@ -19,10 +19,8 @@ const setup = (initial: number | null, opts: ParsesTextFieldOptions<number> = nu
   return { modelValue, inputEle, ...api };
 };
 
-// updateAfterClearing applies the value via a 10ms setTimeout, so fake timers are used throughout.
+// change() commits synchronously and writes the canonical string straight to the input DOM.
 describe('useParsesTextField', () => {
-  beforeEach(() => { vi.useFakeTimers(); });
-  afterEach(() => { vi.useRealTimers(); });
 
   // ─── displayValue formatting ────────────────────────────────────────────────
 
@@ -52,7 +50,6 @@ describe('useParsesTextField', () => {
     const { modelValue, inputEle, change } = setup(50);
     inputEle.value!.value = '';
     change();
-    vi.advanceTimersByTime(10);
     expect(modelValue.value).toBeNull();
   });
 
@@ -60,7 +57,6 @@ describe('useParsesTextField', () => {
     const { modelValue, inputEle, change } = setup(null);
     inputEle.value!.value = '150';
     change();
-    vi.advanceTimersByTime(10);
     expect(modelValue.value).toBe(100); // clamped to the max of 100
   });
 
@@ -68,7 +64,6 @@ describe('useParsesTextField', () => {
     const { modelValue, inputEle, change } = setup(null);
     inputEle.value!.value = '4 2';
     change();
-    vi.advanceTimersByTime(10);
     expect(modelValue.value).toBe(42);
   });
 
@@ -76,7 +71,6 @@ describe('useParsesTextField', () => {
     const { modelValue, inputEle, change } = setup(50);
     inputEle.value!.value = 'abc';
     change();
-    vi.advanceTimersByTime(10);
     expect(modelValue.value).toBeNull();
   });
 
@@ -85,18 +79,19 @@ describe('useParsesTextField', () => {
     const { modelValue, inputEle, change } = setup(null, opts);
     inputEle.value!.value = '3.5';
     change();
-    vi.advanceTimersByTime(10);
     expect(modelValue.value).toBeNull();
   });
 
-  // ─── updateAfterClearing re-evaluation trick ─────────────────────────────────
+  // ─── direct DOM reset on commit ──────────────────────────────────────────────
 
-  test('updateAfterClearing blanks the display, then applies the value', () => {
-    const { modelValue, displayValue, updateAfterClearing } = setup(null);
-    updateAfterClearing(75);
-    expect(displayValue.value).toBe(''); // tempClear active during the 10ms window
-    vi.advanceTimersByTime(10);
-    expect(modelValue.value).toBe(75);
-    expect(displayValue.value).toBe('75 pts'); // re-evaluated once the value is applied
+  // When typed input clamps to the value already in modelValue, Vue's :value diff
+  // is a no-op, so change() writes the canonical string straight to the input DOM.
+  test('change resets the input DOM value when the clamped result equals modelValue', () => {
+    const { inputEle, modelValue, change, onFocus } = setup(100);
+    onFocus(); // focused: change fires before blur
+    inputEle.value!.value = '200';
+    change();
+    expect(modelValue.value).toBe(100); // clamped, unchanged
+    expect(inputEle.value!.value).toBe('100'); // DOM reset directly, no timers
   });
 });
