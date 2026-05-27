@@ -21,6 +21,10 @@ describe('getMediaItemIcon', () => {
     expect(getMediaItemIcon(makeResizableItem())).toBeNull();
   });
 
+  test('returns null for a non-image file that supplies a thumbnail (e.g. a PDF with src_thumb), so the thumbnail is shown instead of the file icon', () => {
+    expect(getMediaItemIcon(makeMediaItem({ extension: 'pdf', src_thumb: '/media/1-thumb.jpg' }))).toBeNull();
+  });
+
   test('maps document extensions to fileText', () => {
     for (const ext of ['pdf', 'doc', 'docx']) {
       expect(getMediaItemIcon(makeMediaItem({ extension: ext, src_thumb: null }))).toBe('fileText');

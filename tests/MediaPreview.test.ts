@@ -52,6 +52,16 @@ describe('MediaPreview', () => {
     expect(w.find('.vfm-media-preview-title').text()).toBe('Report');
   });
 
+  test('a non-image file that supplies a src_thumb shows the thumbnail, not the file icon (e.g. a PDF with a generated thumbnail)', () => {
+    const w = mount(MediaPreview, {
+      props: { item: makeMediaItem({ extension: 'pdf', title: 'Report', src: '/media/1.pdf', src_thumb: '/media/1-thumb.jpg' }) },
+    });
+    expect(status(w)).toBe('available');
+    expect(preview(w).classes()).toContain('vfm-has-thumb');
+    expect(preview(w).attributes('style')).toContain('/media/1-thumb.jpg');
+    expect(w.find('.vfm-media-preview-overlay').exists()).toBe(false);
+  });
+
   test('a missing item shows the alert icon', () => {
     const w = mount(MediaPreview, {
       props: { item: makeMediaItem({ status: 'missing', src_thumb: null }) },
