@@ -15,15 +15,10 @@ export default function useExtendsPath(
   const parentPath = inject(injectionSymbols.path, undefined);
 
   const path = computed((): Path => {
-    if (nameOrIndex?.value == null) {
-      return [];
-    } else {
-      if (parentPath) {
-        return parentPath.value.concat(nameOrIndex.value);
-      } else {
-        return [nameOrIndex.value];
-      }
-    }
+    // Levels without a name/index (e.g. FieldGroup) must pass the parent path through
+    // unchanged rather than resetting it, so nested fields keep their fully-qualified path.
+    const base = parentPath?.value ?? [];
+    return nameOrIndex?.value == null ? base : base.concat(nameOrIndex.value);
   });
 
   const pathString = computed((): string => {
