@@ -7,7 +7,7 @@
     :insertRowAt="insertRowAt"
     :deleteRowAt="deleteRowAt"
   ></slot>
-  <slot :loopItems="loopItems"></slot>
+  <slot :loopItems="loopItems" :isMoving="isMoving" :movingIndex="movingIndex"></slot>
   <slot
     name="afterLoop"
     :field="field"
@@ -25,10 +25,12 @@ import useRepeaterField from "../lib/useRepeaterField";
 import useExtendsConfig from "../lib/useExtendsConfig";
 import useExtendsEditMode from "../lib/useExtendsEditMode";
 
-const props = defineProps<FieldProps & RepeaterFieldProps & {
+const props = withDefaults(defineProps<FieldProps & RepeaterFieldProps & {
   config?: Loose<Config>;
   editMode?: EditMode;
-}>();
+}>(), {
+  movable: true,
+});
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: RepeaterFormValue): void;
@@ -36,7 +38,7 @@ const emit = defineEmits<{
 }>();
 
 const slots = defineSlots<{
-  default: (props: { loopItems: RepeaterItem[] }) => any;
+  default: (props: { loopItems: RepeaterItem[]; isMoving: boolean; movingIndex: number | undefined }) => any;
   beforeLoop: (props: {
     field: FieldState<RepeaterFormValue>;
     canAddRow: boolean;
@@ -58,5 +60,5 @@ const propRefs = toRefs(props);
 useExtendsConfig(propRefs.config);
 useExtendsEditMode(propRefs.editMode);
 
-const { field, canAddRow, appendRow, insertRowAt, deleteRowAt, loopItems } = useRepeaterField(emit, propRefs);
+const { field, canAddRow, appendRow, insertRowAt, deleteRowAt, loopItems, isMoving, movingIndex } = useRepeaterField(emit, propRefs);
 </script>
