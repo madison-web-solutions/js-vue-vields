@@ -17,6 +17,8 @@ import CheckboxField from '../src/components/CheckboxField.vue';
 import NumberField from '../src/components/NumberField.vue';
 import CurrencyField from '../src/components/CurrencyField.vue';
 import TimeField from '../src/components/TimeField.vue';
+import ToggleField from '../src/components/ToggleField.vue';
+import DateField from '../src/components/DateField.vue';
 
 type ScalarFixture = {
   label: string;
@@ -30,8 +32,10 @@ const fixtures: ScalarFixture[] = [
   { label: 'TextAreaField', component: TextAreaField, initialValue: 'test', controlSel: 'textarea' },
   { label: 'CheckboxField', component: CheckboxField, initialValue: false,  controlSel: 'input'    },
   { label: 'NumberField',   component: NumberField,   initialValue: 42,     controlSel: 'input'    },
-  { label: 'CurrencyField', component: CurrencyField, initialValue: 1250,   controlSel: 'input'    },
-  { label: 'TimeField',     component: TimeField,     initialValue: '14:30', controlSel: 'input'   },
+  { label: 'CurrencyField', component: CurrencyField, initialValue: 1250,        controlSel: 'input' },
+  { label: 'TimeField',     component: TimeField,     initialValue: '14:30',     controlSel: 'input' },
+  { label: 'ToggleField',   component: ToggleField,   initialValue: false,        controlSel: 'input' },
+  { label: 'DateField',     component: DateField,     initialValue: '2024-01-15', controlSel: 'input' },
 ];
 
 describe.each(fixtures)('$label', (f) => {
