@@ -1,9 +1,12 @@
 // Shared FieldWrapper behaviour tests for all scalar field components.
 //
-// Every scalar field (TextField, TextAreaField, CheckboxField, and future additions)
-// uses useFormField + FieldWrapper, which provides label rendering, error display,
-// disabled state, and view mode. Running these tests against every fixture ensures
+// Every scalar field uses useFormField + FieldWrapper, which provides label rendering, error
+// display, disabled state, and view mode. Running these tests against every fixture ensures
 // coverage is not contingent on which component happens to be tested individually.
+//
+// extraProps: some components (e.g. RadioField) need additional props to render a usable
+//   control — these are merged into the props at mount time.
+// skipTests: names of tests that are structurally inapplicable for a given component.
 
 import { describe, test, expect } from 'vitest';
 import { defineComponent, provide, ref } from 'vue';
@@ -20,24 +23,40 @@ import TimeField from '../src/components/TimeField.vue';
 import ToggleField from '../src/components/ToggleField.vue';
 import DateField from '../src/components/DateField.vue';
 import PasswordField from '../src/components/PasswordField.vue';
+import SelectField from '../src/components/SelectField.vue';
+import RadioField from '../src/components/RadioField.vue';
 
 type ScalarFixture = {
   label: string;
   component: Component;
   initialValue: unknown;
   controlSel: string;
+  extraProps?: Record<string, unknown>;
+  skipTests?: string[];
 };
 
 const fixtures: ScalarFixture[] = [
-  { label: 'TextField',     component: TextField,     initialValue: 'test', controlSel: 'input'    },
-  { label: 'TextAreaField', component: TextAreaField, initialValue: 'test', controlSel: 'textarea' },
-  { label: 'CheckboxField', component: CheckboxField, initialValue: false,  controlSel: 'input'    },
-  { label: 'NumberField',   component: NumberField,   initialValue: 42,     controlSel: 'input'    },
-  { label: 'CurrencyField', component: CurrencyField, initialValue: 1250,        controlSel: 'input' },
-  { label: 'TimeField',     component: TimeField,     initialValue: '14:30',     controlSel: 'input' },
-  { label: 'ToggleField',   component: ToggleField,   initialValue: false,        controlSel: 'input' },
-  { label: 'DateField',     component: DateField,     initialValue: '2024-01-15', controlSel: 'input' },
-  { label: 'PasswordField', component: PasswordField, initialValue: 'secret',     controlSel: 'input' },
+  { label: 'TextField',     component: TextField,     initialValue: 'test',       controlSel: 'input'    },
+  { label: 'TextAreaField', component: TextAreaField, initialValue: 'test',       controlSel: 'textarea' },
+  { label: 'CheckboxField', component: CheckboxField, initialValue: false,        controlSel: 'input'    },
+  { label: 'NumberField',   component: NumberField,   initialValue: 42,           controlSel: 'input'    },
+  { label: 'CurrencyField', component: CurrencyField, initialValue: 1250,         controlSel: 'input'    },
+  { label: 'TimeField',     component: TimeField,     initialValue: '14:30',      controlSel: 'input'    },
+  { label: 'ToggleField',   component: ToggleField,   initialValue: false,        controlSel: 'input'    },
+  { label: 'DateField',     component: DateField,     initialValue: '2024-01-15', controlSel: 'input'    },
+  { label: 'PasswordField', component: PasswordField, initialValue: 'secret',     controlSel: 'input'    },
+  { label: 'SelectField',   component: SelectField,   initialValue: null,         controlSel: 'select'   },
+  {
+    label: 'RadioField',
+    component: RadioField,
+    initialValue: 'a',
+    controlSel: 'input[type="radio"]',
+    // Choices are required — without them no radio inputs render and errors/disabled tests fail.
+    extraProps: { choices: [{ key: 'a', label: 'A' }, { key: 'b', label: 'B' }] },
+    // FieldWrapper label's `for` points to field.inputEleId, but radio inputs have IDs
+    // field.inputEleId + choiceKey, so there is no single element that matches.
+    skipTests: ['label-for'],
+  },
 ];
 
 describe.each(fixtures)('$label', (f) => {
@@ -49,8 +68,8 @@ describe.each(fixtures)('$label', (f) => {
     expect(wrapper.find('label').text()).toContain('Test label');
   });
 
-  test('label for attribute matches the control id', () => {
-    const wrapper = mount(f.component, { props: { label: 'Test label' } });
+  test.skipIf(f.skipTests?.includes('label-for'))('label for attribute matches the control id', () => {
+    const wrapper = mount(f.component, { props: { label: 'Test label', ...f.extraProps } });
     const controlId = wrapper.find(f.controlSel).attributes('id');
     expect(controlId).toBeTruthy();
     expect(wrapper.find('label').attributes('for')).toBe(controlId);
@@ -59,7 +78,7 @@ describe.each(fixtures)('$label', (f) => {
   // ─── Error prop ───────────────────────────────────────────────────────────
 
   test('errors prop adds is-invalid to the control and shows the message', async () => {
-    const wrapper = mount(f.component, { props: { modelValue: f.initialValue } });
+    const wrapper = mount(f.component, { props: { modelValue: f.initialValue, ...f.extraProps } });
     expect(wrapper.find(f.controlSel).classes()).not.toContain('is-invalid');
     expect(wrapper.find('[data-testid="field-error-messages"]').exists()).toBe(false);
 
@@ -75,7 +94,7 @@ describe.each(fixtures)('$label', (f) => {
   // ─── Disabled ─────────────────────────────────────────────────────────────
 
   test('disabled prop enables and disables the control', async () => {
-    const wrapper = mount(f.component, { props: { modelValue: f.initialValue, disabled: false } });
+    const wrapper = mount(f.component, { props: { modelValue: f.initialValue, disabled: false, ...f.extraProps } });
     expect((wrapper.find(f.controlSel).element as HTMLInputElement).disabled).toBe(false);
 
     await wrapper.setProps({ disabled: true });
