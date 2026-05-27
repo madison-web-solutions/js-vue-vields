@@ -15,6 +15,11 @@ export default function useParsesTextField<T>(modelValue: Ref<T | null>, inputEl
     focused.value = false;
   };
 
+  // When the clamped/parsed result equals the current modelValue, Vue detects no
+  // change and skips re-evaluating displayValue, leaving the DOM input showing
+  // whatever the user typed. Fix: briefly set tempClear=true (forcing displayValue
+  // to "") then restore it, guaranteeing a re-evaluation regardless of whether
+  // modelValue actually changed.
   const updateAfterClearing = (value: any) => {
     if (typeof setTimeout !== 'undefined') {
       tempClear.value = true;
@@ -34,16 +39,16 @@ export default function useParsesTextField<T>(modelValue: Ref<T | null>, inputEl
     const inputTextValue: string = (inputEle.value.value || "").replace(/\s/g, "");
     if (inputTextValue == "") {
       // No value
-      updateAfterClearing(undefined);
+      updateAfterClearing(null);
     } else {
       const coercedValue: T | undefined = opts.coerceNotEmpty(inputTextValue);
       if (coercedValue == null) {
-        updateAfterClearing(undefined);
+        updateAfterClearing(null);
         return;
       }
       const clampedValue: T = opts.clamp ? opts.clamp(coercedValue) : coercedValue;
       if (opts.isValid && !opts.isValid(clampedValue)) {
-        updateAfterClearing(undefined);
+        updateAfterClearing(null);
         return;
       }
       updateAfterClearing(clampedValue);
