@@ -1,5 +1,9 @@
 import type { MessageBag } from "../types";
 
+/**
+ * Clone a MessageBag, copying each message array so the result can be mutated without
+ * affecting the original.
+ */
 export const copyMessageBag = (bag: MessageBag): MessageBag => {
   const bagCopy: MessageBag = {};
   for (const key in bag) {
@@ -8,6 +12,11 @@ export const copyMessageBag = (bag: MessageBag): MessageBag => {
   return bagCopy;
 };
 
+/**
+ * Extract the messages nested under `prefix`, with the prefix stripped from each key (the
+ * key exactly equal to `prefix` becomes ""). An empty prefix returns a full copy. Used to
+ * scope a parent's errors down to a child field/group.
+ */
 export const sliceMessageBag = (
   bag: MessageBag,
   prefix: string
@@ -27,6 +36,11 @@ export const sliceMessageBag = (
   return filtered;
 };
 
+/**
+ * Return a copy of `bag` with all messages under `prefix` replaced by `newSubBag` (re-prefixed).
+ * Messages outside the prefix are preserved. The inverse of sliceMessageBag — used to merge a
+ * child's updated errors back into the parent bag.
+ */
 export const spliceMessageBag = (
   bag: MessageBag,
   prefix: string,
@@ -50,6 +64,9 @@ export const spliceMessageBag = (
   return bagCopy;
 };
 
+/**
+ * Render a MessageBag as a human-readable string — one "key: msg, msg" line per entry.
+ */
 export const messageBagToString = (bag: MessageBag): string => {
   return Object.entries(bag)
     .map(([key, msgs]) => {

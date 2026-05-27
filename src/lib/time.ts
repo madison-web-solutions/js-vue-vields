@@ -1,3 +1,4 @@
+/** Left-pad a string or number with zeros up to `minLen` characters. */
 const padZeros = function (str: string | number, minLen: number): string {
   str = String(str);
   while (str.length < minLen) {
@@ -6,6 +7,11 @@ const padZeros = function (str: string | number, minLen: number): string {
   return str;
 };
 
+/**
+ * Parse a loosely-formatted time string into seconds since midnight, or undefined if it
+ * can't be parsed. Accepts "HHMM", "H:M", and "H:M:S"; whitespace is stripped and "." or ","
+ * are treated as ":". Does not range-check, so e.g. "25:00" yields 90000 — use timeSplit to wrap.
+ */
 export const timeParse = function (
   input: string | undefined | null,
 ): number | undefined {
@@ -32,6 +38,10 @@ export const timeParse = function (
   return secs + mins * 60 + hours * 60 * 60;
 };
 
+/**
+ * Split seconds-since-midnight into [hours, mins, secs], wrapping onto a 24-hour clock.
+ * Out-of-range and negative inputs wrap around (e.g. 90000 → [1, 0, 0]; -60 → [23, 59, 0]).
+ */
 export const timeSplit = function (
   secondsSinceMidnight: number,
 ): [hours: number, mins: number, secs: number] {
@@ -53,6 +63,10 @@ export const timeSplit = function (
   return [hours, mins, secs];
 };
 
+/**
+ * Format hours and minutes (and optional seconds) as a zero-padded "HH:MM" or "HH:MM:SS"
+ * string. Seconds are omitted entirely when null/undefined.
+ */
 export const timeFormat = function (
   hours: number,
   mins: number,
