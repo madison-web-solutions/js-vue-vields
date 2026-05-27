@@ -17,11 +17,20 @@
     >
       All Fields
     </button>
+    <button
+      type="button"
+      class="nav-link px-3"
+      :class="currentView === 'login' ? 'text-white' : 'text-white-50'"
+      @click="currentView = 'login'"
+    >
+      Login Form
+    </button>
   </nav>
 
   <div class="container-fluid py-4">
     <ArticleView v-if="currentView === 'article'" />
     <AllFieldsView v-if="currentView === 'fields'" />
+    <LoginView v-if="currentView === 'login'" />
   </div>
 </template>
 
@@ -29,6 +38,7 @@
 import { ref } from 'vue'
 import ArticleView from './views/ArticleView.vue'
 import AllFieldsView from './views/AllFieldsView.vue'
+import LoginView from './views/LoginView.vue'
 
-const currentView = ref<'article' | 'fields'>('article')
+const currentView = ref<'article' | 'fields' | 'login'>('article')
 </script>
