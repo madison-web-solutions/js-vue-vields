@@ -6,6 +6,7 @@
         :name="field.pathString"
         type="hidden"
         :value="modelValue"
+        data-testid="value-input"
       />
       <div class="input-group">
         <DateField
@@ -131,7 +132,7 @@ const displayValue = computed((): string => {
 const dateValue = ref<string | undefined>(undefined);
 const timeValue = ref<string | undefined>(undefined);
 
-// Set dateVale and timeValue from the modelValue timestamp (and update when modelValue changes)
+// Set dateValue and timeValue from the modelValue timestamp (and update when modelValue changes)
 const updateLocalVals = (newTs: number | null) => {
   if (newTs == null) {
     dateValue.value = undefined;
@@ -171,13 +172,13 @@ const maxDateYmd = computed((): string | undefined => {
 
 const minTimeHis = computed((): string | undefined => {
   if (props.min && dateValue.value && dateValue.value == minDateYmd.value) {
-    return tsToFormat(props.min, "H-i-s") || undefined;
+    return tsToFormat(props.min, "H:i:s") || undefined;
   }
 });
 
 const maxTimeHis = computed((): string | undefined => {
   if (props.max && dateValue.value && dateValue.value == maxDateYmd.value) {
-    return tsToFormat(props.max, "H-i-s") || undefined;
+    return tsToFormat(props.max, "H:i:s") || undefined;
   }
 });
 

@@ -6,6 +6,7 @@
         :name="field.pathString"
         type="hidden"
         :value="modelValue"
+        data-testid="value-input"
       />
       <div class="input-group">
         <DateField
@@ -34,7 +35,7 @@
  * ModelValue is a string representation of a DateTime
  */
 import type { FieldProps, MessageBag } from "../types";
-import { computed, toRefs, provide } from "vue";
+import { computed, toRefs, provide, ref, watch } from "vue";
 import EmptyFieldWrapper from "./EmptyFieldWrapper.vue";
 import DateField from "./DateField.vue";
 import TimeField from "./TimeField.vue";
@@ -58,7 +59,7 @@ const emit = defineEmits<{
 const propRefs = toRefs(props);
 
 const coerceFn = (value: any): string | null => {
-  return value == null ? "" : String(value);
+  return value == null || value === "" ? null : String(value);
 };
 
 const { modelValue, errors, field, FieldWrapper } = useFormField<string | null>(coerceFn, emit, propRefs);
@@ -69,44 +70,37 @@ const displayValue = computed(() => {
   return ymdHisToFormat(modelValue.value, displayFormat.value) || modelValue.value;
 });
 
-const modelValueParts = computed(
-  (): [string | undefined, string | undefined] => {
-    const parts = modelValue.value?.split(" ") || [];
-    if (parts.length == 0) {
-      return [undefined, undefined];
-    } else if (parts.length == 1) {
-      // try to work out whether it's a date or a time
-      if (parts[0].match(":")) {
-        return [undefined, parts[0]];
-      } else {
-        return [parts[0], undefined];
-      }
+const dateValue = ref<string | undefined>(undefined);
+const timeValue = ref<string | undefined>(undefined);
+
+const updateLocalVals = (newVal: string | null) => {
+  const parts = newVal?.split(" ") || [];
+  if (parts.length === 0) {
+    dateValue.value = undefined;
+    timeValue.value = undefined;
+  } else if (parts.length === 1) {
+    if (parts[0].match(":")) {
+      dateValue.value = undefined;
+      timeValue.value = parts[0];
     } else {
-      return [parts[0], parts[1]];
+      dateValue.value = parts[0];
+      timeValue.value = undefined;
     }
-  },
-);
+  } else {
+    dateValue.value = parts[0];
+    timeValue.value = parts[1];
+  }
+};
+updateLocalVals(modelValue.value);
+watch(modelValue, updateLocalVals);
 
-const dateValue = computed({
-  get: (): string | undefined => {
-    return modelValueParts.value[0];
-  },
-  set: (newVal: string | undefined) => {
-    modelValue.value = [newVal, timeValue.value]
-      .filter((part) => !!part)
-      .join(" ");
-  },
-});
-
-const timeValue = computed({
-  get: (): string | undefined => {
-    return modelValueParts.value[1];
-  },
-  set: (newVal: string | undefined) => {
-    modelValue.value = [dateValue.value, newVal]
-      .filter((part) => !!part)
-      .join(" ");
-  },
+watch([dateValue, timeValue], ([newDate, newTime]) => {
+  if (newDate && newTime) {
+    modelValue.value = newDate + " " + newTime;
+  }
+  if (!newDate && !newTime) {
+    modelValue.value = null;
+  }
 });
 
 const minDateYmd = computed((): string | undefined => {
@@ -119,13 +113,13 @@ const maxDateYmd = computed((): string | undefined => {
 
 const minTimeHis = computed((): string | undefined => {
   if (props.min && dateValue.value && dateValue.value == minDateYmd.value) {
-    return ymdHisToFormat(props.min, "H-i-s") || undefined;
+    return ymdHisToFormat(props.min, "H:i:s") || undefined;
   }
 });
 
 const maxTimeHis = computed((): string | undefined => {
   if (props.max && dateValue.value && dateValue.value == maxDateYmd.value) {
-    return ymdHisToFormat(props.max, "H-i-s") || undefined;
+    return ymdHisToFormat(props.max, "H:i:s") || undefined;
   }
 });
 
