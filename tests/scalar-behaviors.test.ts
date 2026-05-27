@@ -14,6 +14,9 @@ import injectionSymbols from '../src/lib/injection-symbols';
 import TextField from '../src/components/TextField.vue';
 import TextAreaField from '../src/components/TextAreaField.vue';
 import CheckboxField from '../src/components/CheckboxField.vue';
+import NumberField from '../src/components/NumberField.vue';
+import CurrencyField from '../src/components/CurrencyField.vue';
+import TimeField from '../src/components/TimeField.vue';
 
 type ScalarFixture = {
   label: string;
@@ -26,6 +29,9 @@ const fixtures: ScalarFixture[] = [
   { label: 'TextField',     component: TextField,     initialValue: 'test', controlSel: 'input'    },
   { label: 'TextAreaField', component: TextAreaField, initialValue: 'test', controlSel: 'textarea' },
   { label: 'CheckboxField', component: CheckboxField, initialValue: false,  controlSel: 'input'    },
+  { label: 'NumberField',   component: NumberField,   initialValue: 42,     controlSel: 'input'    },
+  { label: 'CurrencyField', component: CurrencyField, initialValue: 1250,   controlSel: 'input'    },
+  { label: 'TimeField',     component: TimeField,     initialValue: '14:30', controlSel: 'input'   },
 ];
 
 describe.each(fixtures)('$label', (f) => {
