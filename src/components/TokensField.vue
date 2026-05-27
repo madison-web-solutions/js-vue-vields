@@ -68,7 +68,7 @@ const editable = computed((): boolean => {
   return field.value.editMode == "edit" && !props.disabled;
 });
 
-const provider = inject(injectionSymbols.choicesProvider);
+const provider = inject(injectionSymbols.choicesProvider, undefined);
 
 const searchCache = ref<Record<string, Choosable>>({});
 
