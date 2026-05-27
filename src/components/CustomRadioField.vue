@@ -1,8 +1,10 @@
 <template>
   <FieldWrapper :field="field">
     <template #input>
-      <div v-for="choice in choicesNormalized" @click="selectOption(choice)">
-        <slot :choice="choice" :selected="modelValue === choice.key">{{ choice.label }}</slot>
+      <div class="vfm-custom-radio" :class="{ 'is-invalid': field.hasError }" :data-vfm-disabled="field.disabled ? '' : undefined">
+        <div v-for="choice in choicesNormalized" class="vfm-custom-radio-item" @click="selectOption(choice)">
+          <slot :choice="choice" :selected="modelValue === choice.key">{{ choice.label }}</slot>
+        </div>
       </div>
     </template>
     <template #viewMode>{{ displayValue }}</template>

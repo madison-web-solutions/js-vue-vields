@@ -25,6 +25,8 @@ import DateField from '../src/components/DateField.vue';
 import PasswordField from '../src/components/PasswordField.vue';
 import SelectField from '../src/components/SelectField.vue';
 import RadioField from '../src/components/RadioField.vue';
+import CustomRadioField from '../src/components/CustomRadioField.vue';
+import CustomSelectField from '../src/components/CustomSelectField.vue';
 
 type ScalarFixture = {
   label: string;
@@ -56,6 +58,23 @@ const fixtures: ScalarFixture[] = [
     // FieldWrapper label's `for` points to field.inputEleId, but radio inputs have IDs
     // field.inputEleId + choiceKey, so there is no single element that matches.
     skipTests: ['label-for'],
+  },
+  {
+    label: 'CustomRadioField',
+    component: CustomRadioField,
+    initialValue: 'a',
+    controlSel: '.vfm-custom-radio',
+    extraProps: { choices: [{ key: 'a', label: 'A' }, { key: 'b', label: 'B' }] },
+    // No single labelled input (no id on div), and div elements have no .disabled DOM property.
+    skipTests: ['label-for', 'disabled'],
+  },
+  {
+    label: 'CustomSelectField',
+    component: CustomSelectField,
+    initialValue: null,
+    controlSel: '.form-select',
+    // No id on the trigger div, and div elements have no .disabled DOM property.
+    skipTests: ['label-for', 'disabled'],
   },
 ];
 
@@ -93,7 +112,7 @@ describe.each(fixtures)('$label', (f) => {
 
   // ─── Disabled ─────────────────────────────────────────────────────────────
 
-  test('disabled prop enables and disables the control', async () => {
+  test.skipIf(f.skipTests?.includes('disabled'))('disabled prop enables and disables the control', async () => {
     const wrapper = mount(f.component, { props: { modelValue: f.initialValue, disabled: false, ...f.extraProps } });
     expect((wrapper.find(f.controlSel).element as HTMLInputElement).disabled).toBe(false);
 

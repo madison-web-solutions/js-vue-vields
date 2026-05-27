@@ -15,6 +15,8 @@ import { lastEmittedValue } from './utils';
 import injectionSymbols from '../src/lib/injection-symbols';
 import RadioField from '../src/components/RadioField.vue';
 import SelectField from '../src/components/SelectField.vue';
+import CustomRadioField from '../src/components/CustomRadioField.vue';
+import CustomSelectField from '../src/components/CustomSelectField.vue';
 
 const TEST_CHOICES: Choosable[] = [
   { key: 'red',   label: 'Red'   },
@@ -35,6 +37,9 @@ type ChoiceFixture = {
   getChoiceControls: (wrapper: VueWrapper) => DOMWrapper[];
   triggerSelectAtIndex: (wrapper: VueWrapper, index: number) => Promise<void>;
   getErrorControl: (wrapper: VueWrapper) => DOMWrapper;
+  // Called before getChoiceControls in count tests — use when choices only appear after interaction
+  openForCount?: (wrapper: VueWrapper) => Promise<void>;
+  skipTests?: string[];
 };
 
 const fixtures: ChoiceFixture[] = [
@@ -55,6 +60,26 @@ const fixtures: ChoiceFixture[] = [
     },
     getErrorControl: (w) => w.find('select'),
   },
+  {
+    label: 'CustomRadioField',
+    component: CustomRadioField,
+    getChoiceControls: (w) => w.findAll('.vfm-custom-radio-item'),
+    triggerSelectAtIndex: async (w, i) => { await w.findAll('.vfm-custom-radio-item')[i].trigger('click'); },
+    getErrorControl: (w) => w.find('.vfm-custom-radio'),
+    skipTests: ['disabled'],
+  },
+  {
+    label: 'CustomSelectField',
+    component: CustomSelectField,
+    openForCount: async (w) => { await w.find('.form-select').trigger('click'); },
+    getChoiceControls: (w) => w.findAll('.vfm-custom-select-item'),
+    triggerSelectAtIndex: async (w, i) => {
+      await w.find('.form-select').trigger('click');
+      await w.findAll('.vfm-custom-select-item')[i].trigger('click');
+    },
+    getErrorControl: (w) => w.find('.form-select'),
+    skipTests: ['disabled'],
+  },
 ];
 
 describe.each(fixtures)('$label', (f) => {
@@ -71,8 +96,9 @@ describe.each(fixtures)('$label', (f) => {
       global: { provide: { [injectionSymbols.choicesProvider as symbol]: mockProvider } },
     });
 
-  test('renders one control per choice', () => {
+  test('renders one control per choice', async () => {
     const wrapper = mountWithChoices();
+    if (f.openForCount) { await f.openForCount(wrapper); }
     expect(f.getChoiceControls(wrapper).length).toBe(TEST_CHOICES.length);
   });
 
@@ -91,6 +117,7 @@ describe.each(fixtures)('$label', (f) => {
   test('choices from provider in directory mode', async () => {
     const wrapper = mountWithProvider({ directory: 'colors' });
     await flushPromises();
+    if (f.openForCount) { await f.openForCount(wrapper); }
     expect(f.getChoiceControls(wrapper).length).toBe(TEST_CHOICES.length);
   });
 
@@ -120,7 +147,7 @@ describe.each(fixtures)('$label', (f) => {
     expect(f.getErrorControl(wrapper).classes()).not.toContain('is-invalid');
   });
 
-  test('disabled marks the control as disabled', async () => {
+  test.skipIf(f.skipTests?.includes('disabled'))('disabled marks the control as disabled', async () => {
     const wrapper = mountWithChoices({ modelValue: null, disabled: false });
     expect((f.getErrorControl(wrapper).element as HTMLInputElement).disabled).toBe(false);
 

@@ -1,13 +1,13 @@
 <template>
   <FieldWrapper :field="field">
     <template #input>
-      <div class="vfm-custom-select" ref="container">
-        <div class="form-select" @click="toggleDropdown">
+      <div class="vfm-custom-select" :data-vfm-disabled="field.disabled ? '' : undefined" ref="container">
+        <div class="form-select" :class="{ 'is-invalid': field.hasError }" @click="toggleDropdown">
           <slot v-if="currentChoice" :choice="currentChoice">{{currentChoice.label}}</slot>
           <slot v-if="nullSelected" name="nullSelected">{{placeholder || nbsp}}</slot>
         </div>
         <div v-if="showDropdown" class="vfm-custom-select-items">
-          <div v-if="nullSelected || !required" class="vfm-custom-select-item'" @click="selectNull()">
+          <div v-if="nullSelected || !required" class="vfm-custom-select-null-item" @click="selectNull()">
             <slot name="nullOption"><span class="text-muted">{{ noValueLabel }}</span></slot>
           </div>
           <div v-for="choice in choicesNormalized" class="vfm-custom-select-item" @click="selectOption(choice)">
