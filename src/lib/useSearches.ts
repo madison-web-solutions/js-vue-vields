@@ -54,23 +54,24 @@ export default function useSearches<T>(searchFn: (page: number) => Promise<Searc
 
   let searchCount: number = 1;
   const doSearch = (page: number) => {
-    const searchId = searchCount++;
-    searchingId.value = searchId;
     const promise = searchFn(page);
     if (promise == null) {
       // search was not attempted - for example if search string is too short
-    } else {
-      promise.then((result: SearchResultPage<T>) => {
-        if (searchingId.value === searchId) {
-          // only act on the results if this is still the most recent search operation
-          if (fetchedPages.value == null) {
-            fetchedPages.value = [];
-          }
-          fetchedPages.value.push(result);
-          searchingId.value = null;
-        }
-      });
+      searchingId.value = null;
+      return;
     }
+    const searchId = searchCount++;
+    searchingId.value = searchId;
+    promise.then((result: SearchResultPage<T>) => {
+      if (searchingId.value === searchId) {
+        // only act on the results if this is still the most recent search operation
+        if (fetchedPages.value == null) {
+          fetchedPages.value = [];
+        }
+        fetchedPages.value.push(result);
+        searchingId.value = null;
+      }
+    });
   };
 
   const isSearching = computed((): boolean => {

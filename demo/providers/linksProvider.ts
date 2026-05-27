@@ -4,7 +4,6 @@ export const linksProvider: LinksProvider = {
   schemes: [
     { key: 'page', label: 'Page' },
     { key: 'post', label: 'Post' },
-    { key: 'url', label: 'External URL' },
   ],
 
   async search(scheme, searchText, page = 1, _extraParams) {
