@@ -19,6 +19,7 @@ import CurrencyField from '../src/components/CurrencyField.vue';
 import TimeField from '../src/components/TimeField.vue';
 import ToggleField from '../src/components/ToggleField.vue';
 import DateField from '../src/components/DateField.vue';
+import PasswordField from '../src/components/PasswordField.vue';
 
 type ScalarFixture = {
   label: string;
@@ -36,6 +37,7 @@ const fixtures: ScalarFixture[] = [
   { label: 'TimeField',     component: TimeField,     initialValue: '14:30',     controlSel: 'input' },
   { label: 'ToggleField',   component: ToggleField,   initialValue: false,        controlSel: 'input' },
   { label: 'DateField',     component: DateField,     initialValue: '2024-01-15', controlSel: 'input' },
+  { label: 'PasswordField', component: PasswordField, initialValue: 'secret',     controlSel: 'input' },
 ];
 
 describe.each(fixtures)('$label', (f) => {

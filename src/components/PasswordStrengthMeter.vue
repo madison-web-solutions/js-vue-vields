@@ -1,5 +1,5 @@
 <template>
-  <div v-if="strength != null" class="progress">
+  <div v-if="strength != null" class="progress" :data-strength="strength">
     <div
       class="progress-bar"
       :class="{ 'bg-success': passwordOk, 'bg-danger': !passwordOk }"
