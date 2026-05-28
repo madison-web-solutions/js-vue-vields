@@ -33,10 +33,12 @@ Comprehensive unit suite (Vitest + jsdom + `@vue/test-utils`) in `tests/` coveri
 
 Every field component supports two binding modes:
 
-1. **v-model** — direct `modelValue` / `update:modelValue` props
+1. **v-model** — direct `modelValue` / `update:modelValue` props (and the parallel `errors` / `update:errors` pair)
 2. **Lens injection** — a `Lens` object injected from a parent (e.g. `RepeaterField`, `FieldGroup`) that owns the data and propagates updates up
 
 The three lens types (`FixedLens`, `IndexedLens`, `NamedLens`) are in `src/types.ts`. `useFormField()` in `src/lib/useFormField.ts` is the core composable used by every field; it abstracts over both binding modes so components don't need to care which is active.
+
+**Binding precedence.** An explicit `v-model` on a field always overrides any ancestor lens. Such a field becomes the root of a fresh data context — its path resets and any container provides a new lens to its descendants derived from the v-model. The same rule applies independently to `v-model:errors`. "Explicit" is detected as `modelValue !== undefined`, so `v-model="ref(undefined)"` opts out and inherits from the lens — consumers wanting the v-model to own an empty field should use `null` or `""`. Preserve this `undefined`-sentinel invariant when editing `useFormField`.
 
 ### Composable hierarchy
 
