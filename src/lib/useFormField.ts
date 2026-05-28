@@ -23,15 +23,31 @@ export default function useFormField<ValueType extends FormValue>(
       : name.value;
   });
 
-  const { path, pathString } = useExtendsPath(pathPart);
+  // Binding precedence: an explicit v-model / v-model:errors on this field
+  // takes priority over any lens an ancestor has injected, and the field
+  // becomes the root of a new data context (its descendants see a fresh path
+  // and the new NamedLens that container fields provide from this v-model).
+  //
+  // We treat "value defined" as "explicit binding" — the simplest signal that
+  // can be tracked reactively. The trade-off is that `v-model="ref(undefined)"`
+  // is interpreted as "no binding, inherit from the lens". Users who want the
+  // v-model ref to own the field even when empty should initialise it to
+  // `null` or an empty string rather than `undefined`.
+  const hasExplicitValueBinding = computed((): boolean => {
+    return propRefs?.modelValue?.value !== undefined;
+  });
+  const hasExplicitErrorsBinding = computed((): boolean => {
+    return propRefs?.errors?.value !== undefined;
+  });
+
+  const { path, pathString } = useExtendsPath(pathPart, hasExplicitValueBinding);
 
   const valueLens = inject(injectionSymbols.valueLens, undefined);
 
-  // @todo
-  // Warn of ambiguities about the data bindings from incorrect use
-  // For example if there's both a v-model and a name, or an indexedLens with no index, etc
-
   const rawValue = computed(() => {
+    if (hasExplicitValueBinding.value) {
+      return propRefs.modelValue!.value;
+    }
     if (valueLens && valueLens.lensType == "fixed") {
       return valueLens.get();
     }
@@ -41,10 +57,14 @@ export default function useFormField<ValueType extends FormValue>(
     if (index.value != null && valueLens && valueLens.lensType == "indexed") {
       return valueLens.get(index.value);
     }
-    return propRefs?.modelValue?.value;
+    return undefined;
   });
 
   const setNewValue = (newVal: ValueType) => {
+    if (hasExplicitValueBinding.value) {
+      emit("update:modelValue", newVal);
+      return;
+    }
     if (valueLens && valueLens.lensType == "fixed") {
       valueLens.set(newVal);
     } else if (name.value && valueLens && valueLens.lensType == "named") {
@@ -74,6 +94,9 @@ export default function useFormField<ValueType extends FormValue>(
   // All error messages for this field and any nested subfields
   const errors = computed({
     get: (): MessageBag => {
+      if (hasExplicitErrorsBinding.value) {
+        return propRefs.errors!.value!;
+      }
       if (errorsLens && errorsLens.lensType == "fixed") {
         return errorsLens.get();
       }
@@ -87,9 +110,13 @@ export default function useFormField<ValueType extends FormValue>(
       ) {
         return errorsLens.get(index.value);
       }
-      return propRefs?.errors?.value || {};
+      return {};
     },
     set: (newErrors: MessageBag) => {
+      if (hasExplicitErrorsBinding.value) {
+        emit("update:errors", newErrors);
+        return;
+      }
       if (errorsLens && errorsLens.lensType == "fixed") {
         errorsLens.set(newErrors);
       } else if (name.value && errorsLens && errorsLens.lensType == "named") {
