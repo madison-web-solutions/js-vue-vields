@@ -17,7 +17,7 @@ There is no lint command. See **Testing** below for the test suite — run `npm 
 
 ## What This Is
 
-**vue-fields-ms** is a Vue 3 form field component library published as an ES-only npm package. It ships `dist/index.js` + `dist/index.d.ts`. The `src/demo/` app exists solely for manual development testing — run `npm run dev` and open the browser to try components interactively.
+**vue-fields-ms** is a Vue 3 form field component library published as an ES-only npm package. It ships `dist/index.js` + `dist/index.d.ts`. The `demo/` app exists for development and testing, and as a way to see how the library is used — run `npm run dev` and open the browser to try components interactively.
 
 ## Testing
 
@@ -73,7 +73,7 @@ The `fieldWrapperComponent` injection allows apps to swap in a custom wrapper ar
 
 ### Styling
 
-All components use Bootstrap 5 utility classes. SCSS lives in `scss/` (published) and `src/demo/scss/` (demo only). Import `vue-fields-ms/scss/main` in consuming apps. Variables are exposed via `vue-fields-ms/scss/variables`.
+All components use Bootstrap 5 utility classes. SCSS lives in `scss/` (published) and `demo/scss/` (demo only). Import `vue-fields-ms/scss/main` in consuming apps. Variables are exposed via `vue-fields-ms/scss/variables`.
 
 ### TypeScript conventions
 

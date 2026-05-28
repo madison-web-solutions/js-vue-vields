@@ -22,3 +22,35 @@
   width: auto;
 }
 
+.vfm-custom-select {
+  position: relative;
+}
+
+.vfm-custom-select-items {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  z-index: $zindex-dropdown;
+  overflow-y: auto;
+  background: $custom-select-bg;
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+
+  &.vfm-drop-up {
+    top: auto;
+    bottom: 100%;
+  }
+}
+
+.vfm-custom-select-item,
+.vfm-custom-select-null-item {
+  padding: 0.375rem 0.75rem;
+  cursor: pointer;
+
+  &:hover {
+    background: $custom-select-hover-bg;
+  }
+}
+

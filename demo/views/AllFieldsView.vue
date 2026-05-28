@@ -54,6 +54,12 @@
             <div class="card-body">
               <SelectField name="select" label="SelectField (static)" :choices="colourChoices" class="mb-3" />
               <SelectField name="selectDir" label="SelectField (directory)" directory="statuses" class="mb-3" />
+              <CustomSelectField name="customSelect" label="CustomSelectField (colour swatches)" :choices="colourChoices" class="mb-3">
+                <template #default="{ choice }">
+                  <span class="d-inline-block rounded border me-2" :style="{ width: '1rem', height: '1rem', background: String(choice.key), verticalAlign: '-2px' }"></span>
+                  {{ choice.label }}
+                </template>
+              </CustomSelectField>
               <RadioField name="radio" label="RadioField" :choices="colourChoices" class="mb-3" />
               <CheckboxesField name="checkboxes" label="CheckboxesField" :choices="colourChoices" class="mb-3" />
               <TokensField name="tokensStatic" label="TokensField (static)" :choices="colourChoices" class="mb-3" />
@@ -93,6 +99,18 @@
             </div>
           </div>
 
+          <div class="card mb-3">
+            <div class="card-header fw-semibold">Bottom-of-page CustomSelect (flip-up test)</div>
+            <div class="card-body">
+              <CustomSelectField name="customSelectBottom" label="Should flip upward when viewport is short" :choices="colourChoices">
+                <template #default="{ choice }">
+                  <span class="d-inline-block rounded border me-2" :style="{ width: '1rem', height: '1rem', background: String(choice.key), verticalAlign: '-2px' }"></span>
+                  {{ choice.label }}
+                </template>
+              </CustomSelectField>
+            </div>
+          </div>
+
         </FieldGroup>
       </div>
 
@@ -127,6 +145,7 @@ import {
   CheckboxField,
   ToggleField,
   SelectField,
+  CustomSelectField,
   RadioField,
   CheckboxesField,
   TokensField,

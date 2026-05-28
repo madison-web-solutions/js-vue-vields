@@ -102,6 +102,60 @@ describe('CustomSelectField', () => {
     expect(wrapper.text()).toContain('Green');
   });
 
+  test('drops upward when there is not enough room below the trigger', async () => {
+    const originalInnerHeight = Object.getOwnPropertyDescriptor(window, 'innerHeight');
+    Object.defineProperty(window, 'innerHeight', { configurable: true, value: 750 });
+
+    const wrapper = mount(CustomSelectField, {
+      attachTo: document.body,
+      props: { choices: TEST_CHOICES },
+    });
+
+    const containerEl = wrapper.find('.vfm-custom-select').element as HTMLElement;
+    containerEl.getBoundingClientRect = () => ({
+      top: 700, bottom: 730, left: 0, right: 100, width: 100, height: 30, x: 0, y: 700,
+      toJSON: () => ({}),
+    } as DOMRect);
+
+    await trigger(wrapper).trigger('click');
+
+    const items = dropdown(wrapper);
+    expect(items.exists()).toBe(true);
+    expect(items.classes()).toContain('vfm-drop-up');
+    expect((items.element as HTMLElement).style.maxHeight).toBe('256px');
+
+    wrapper.unmount();
+    if (originalInnerHeight) {
+      Object.defineProperty(window, 'innerHeight', originalInnerHeight);
+    }
+  });
+
+  test('drops downward when there is plenty of room below the trigger', async () => {
+    const originalInnerHeight = Object.getOwnPropertyDescriptor(window, 'innerHeight');
+    Object.defineProperty(window, 'innerHeight', { configurable: true, value: 750 });
+
+    const wrapper = mount(CustomSelectField, {
+      attachTo: document.body,
+      props: { choices: TEST_CHOICES },
+    });
+
+    const containerEl = wrapper.find('.vfm-custom-select').element as HTMLElement;
+    containerEl.getBoundingClientRect = () => ({
+      top: 20, bottom: 50, left: 0, right: 100, width: 100, height: 30, x: 0, y: 20,
+      toJSON: () => ({}),
+    } as DOMRect);
+
+    await trigger(wrapper).trigger('click');
+
+    const items = dropdown(wrapper);
+    expect(items.classes()).not.toContain('vfm-drop-up');
+
+    wrapper.unmount();
+    if (originalInnerHeight) {
+      Object.defineProperty(window, 'innerHeight', originalInnerHeight);
+    }
+  });
+
   test('choices from provider in directory mode', async () => {
     const mockGetAll = vi.fn().mockResolvedValue({ status: 'found', resource: TEST_CHOICES });
     const mockProvider: ChoicesProvider = { getAll: mockGetAll, search: vi.fn(), lookup: vi.fn() };
