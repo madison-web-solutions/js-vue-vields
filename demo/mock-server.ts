@@ -41,6 +41,18 @@ const STATIC_CHOICES: Record<string, { key: string | number; label: string }[]> 
     { key: 7, label: 'Finance' },
     { key: 8, label: 'Travel' },
   ],
+  country: [
+    { key: 'GB', label: 'United Kingdom' },
+    { key: 'IE', label: 'Ireland' },
+    { key: 'FR', label: 'France' },
+    { key: 'DE', label: 'Germany' },
+    { key: 'ES', label: 'Spain' },
+    { key: 'IT', label: 'Italy' },
+    { key: 'NL', label: 'Netherlands' },
+    { key: 'US', label: 'United States' },
+    { key: 'CA', label: 'Canada' },
+    { key: 'AU', label: 'Australia' },
+  ],
 }
 
 const STATIC_LINKS: Record<string, { key: string | number; label: string; url: string }[]> = {

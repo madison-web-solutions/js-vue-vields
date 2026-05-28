@@ -54,6 +54,8 @@ import {
   valueAtPath,
 } from "./lib/utils";
 
+import { pickPropsFor } from "./lib/pick-props-for";
+
 import useFormField from "./lib/useFormField";
 import useHasCompoundValue from "./lib/useHasCompoundValue";
 import useHasMaxChars from "./lib/useHasMaxChars";
@@ -148,6 +150,7 @@ export {
   reindexErrors,
   startCase,
   valueAtPath,
+  pickPropsFor,
   useFormField,
   useHasCompoundValue,
   useHasMaxChars,
