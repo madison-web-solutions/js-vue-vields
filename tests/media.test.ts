@@ -43,12 +43,16 @@ describe('getMediaItemIcon', () => {
   });
 
   test('returns a document icon for non-image extensions even when a thumbnail is supplied (e.g. a PDF with a generated thumbnail)', () => {
-    expect(getMediaItemIcon(makeMediaItem({ extension: 'pdf', src_thumb: '/media/1-thumb.jpg' }))).toBe('fileText');
+    expect(getMediaItemIcon(makeMediaItem({ extension: 'pdf', src_thumb: '/media/1-thumb.jpg' }))).toBe('filePdf');
     expect(getMediaItemIcon(makeMediaItem({ extension: 'docx', src_thumb: '/media/1-thumb.jpg' }))).toBe('fileText');
   });
 
-  test('maps document extensions to fileText', () => {
-    for (const ext of ['pdf', 'doc', 'docx']) {
+  test('maps pdf to filePdf', () => {
+    expect(getMediaItemIcon(makeMediaItem({ extension: 'pdf', src_thumb: null }))).toBe('filePdf');
+  });
+
+  test('maps doc/docx to fileText', () => {
+    for (const ext of ['doc', 'docx']) {
       expect(getMediaItemIcon(makeMediaItem({ extension: ext, src_thumb: null }))).toBe('fileText');
     }
   });

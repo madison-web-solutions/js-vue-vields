@@ -1,6 +1,9 @@
 .vfm-icon {
-  height: 1em;
-  vertical-align:-0.125em;
+  height: 1.2em;
+  vertical-align:-0.22em;
+  path {
+    vector-effect: non-scaling-stroke;
+  }
 }
 
 @keyframes vfm-spin {

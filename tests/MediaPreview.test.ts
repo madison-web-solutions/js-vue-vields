@@ -54,7 +54,7 @@ describe('MediaPreview', () => {
       props: { item: makeMediaItem({ extension: 'pdf', title: 'Report', src_thumb: null }) },
     });
     expect(preview(w).classes()).not.toContain('vfm-has-thumb');
-    expect(overlayIconName(w)).toBe('fileText');
+    expect(overlayIconName(w)).toBe('filePdf');
     expect(filename(w).text()).toBe('Report.pdf');
   });
 
@@ -66,7 +66,7 @@ describe('MediaPreview', () => {
     expect(preview(w).classes()).toContain('vfm-has-thumb');
     expect(preview(w).attributes('style')).toContain('/media/1-thumb.jpg');
     expect(w.find('.vfm-media-preview-overlay').exists()).toBe(true);
-    expect(overlayIconName(w)).toBe('fileText');
+    expect(overlayIconName(w)).toBe('filePdf');
     expect(filename(w).text()).toBe('Report.pdf');
   });
 

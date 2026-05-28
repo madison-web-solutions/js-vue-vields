@@ -21,6 +21,7 @@ export const getMediaItemIcon = (item: MediaItem): IconName | null => {
   }
   switch (item.extension.toLowerCase()) {
     case "pdf":
+      return "filePdf";
     case "doc":
     case "docx":
       return "fileText";
