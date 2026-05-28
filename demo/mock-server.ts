@@ -161,6 +161,7 @@ export const mockServerPlugin = (): Plugin => {
       if (!fs.existsSync(dbFile)) {
         const initialDataDir = path.resolve(process.cwd(), 'demo', 'initial-data');
         const seedUploadsDir = path.join(initialDataDir, 'uploads');
+        const seedPdfThumbsDir = path.join(initialDataDir, 'pdf-thumbs');
         const altTextFile = path.join(initialDataDir, 'alt-text.json');
 
         const altText: Record<string, string> = fs.existsSync(altTextFile)
@@ -175,18 +176,27 @@ export const mockServerPlugin = (): Plugin => {
           fs.copyFileSync(path.join(seedUploadsDir, filename), path.join(uploadsDir, filename));
         }
 
-        // Generate one thumbnail per raster source file (shared across all repeated copies)
+        // Generate one thumbnail per source file (shared across all repeated copies).
+        // For raster images sharp can render it directly; for non-raster files (e.g. PDFs)
+        // we look for a pre-baked sidecar at initial-data/pdf-thumbs/{filename}.png.
         const thumbUrls: Record<string, string> = {};
         for (const filename of sourceFiles) {
           const ext = path.extname(filename).slice(1).toLowerCase();
+          const base = path.basename(filename, path.extname(filename));
           if (RASTER_EXTS.has(ext)) {
-            const base = path.basename(filename, path.extname(filename));
             const thumbFilename = `${base}-thumb.${ext}`;
             const thumbUrl = await generateThumbnail(
               path.join(uploadsDir, filename),
               path.join(uploadsDir, thumbFilename),
             );
             if (thumbUrl) thumbUrls[filename] = thumbUrl;
+          } else {
+            const sidecarPath = path.join(seedPdfThumbsDir, `${filename}.png`);
+            if (fs.existsSync(sidecarPath)) {
+              const thumbFilename = `${base}-thumb.png`;
+              fs.copyFileSync(sidecarPath, path.join(uploadsDir, thumbFilename));
+              thumbUrls[filename] = `/uploads/${thumbFilename}`;
+            }
           }
         }
 

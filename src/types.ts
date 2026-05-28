@@ -114,10 +114,9 @@ export type MediaItem = {
   alt: string | null;
   cropCenter?: { top: number; left: number };
   src_thumb?: string | null;
-  // media type ?
 };
 
-export type ResizableMediaItem = MediaItem & {
+export type MediaItemWithThumbnail = MediaItem & {
   src_thumb: string;
 };
 

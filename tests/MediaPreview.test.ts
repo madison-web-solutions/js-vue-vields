@@ -4,34 +4,40 @@ import MediaPreview from '../src/components/media/MediaPreview.vue';
 import { makeMediaItem, makeResizableItem } from './media-utils';
 
 // MediaPreview is purely presentational: it maps a MediaItem (or null=loading / false=none) to a
-// thumbnail-or-icon-or-overlay and emits inspect/remove/select. The overlay icon name is read from
-// the rendered Icon component's `icon` prop via findComponent on the overlay icon's class.
+// thumbnail-or-icon-or-overlay, an always-on filename caption underneath, and emits
+// inspect/remove/select. The overlay icon name is read from the rendered Icon component's `icon`
+// prop via findComponent on the overlay icon's class.
 
 const preview = (w: ReturnType<typeof mount>) => w.find('.vfm-media-preview');
 const status = (w: ReturnType<typeof mount>) => preview(w).attributes('data-vfm-media-status');
 const overlayIconName = (w: ReturnType<typeof mount>) =>
   w.findComponent('.vfm-media-preview-icon').props('icon');
+const filename = (w: ReturnType<typeof mount>) => w.find('.vfm-media-preview-filename');
 
 describe('MediaPreview', () => {
-  test('item=false renders the none state with no thumbnail', () => {
+  test('item=false renders the none state with no thumbnail and no filename', () => {
     const w = mount(MediaPreview, { props: { item: false } });
     expect(status(w)).toBe('none');
     expect(preview(w).classes()).not.toContain('vfm-has-thumb');
+    expect(filename(w).exists()).toBe(false);
   });
 
-  test('item=null renders the loading state with a loader icon', () => {
+  test('item=null renders the loading state with a loader icon and no filename', () => {
     const w = mount(MediaPreview, { props: { item: null } });
     expect(status(w)).toBe('loading');
     expect(w.find('.vfm-media-preview-overlay').exists()).toBe(true);
     expect(overlayIconName(w)).toBe('loaderCircle');
+    expect(filename(w).exists()).toBe(false);
   });
 
-  test('a resizable available item shows a thumbnail and no overlay', () => {
-    const w = mount(MediaPreview, { props: { item: makeResizableItem() } });
+  test('a resizable image item shows a thumbnail, no icon overlay, and the filename (with extension) underneath', () => {
+    const w = mount(MediaPreview, { props: { item: makeResizableItem({ title: 'My Photo' }) } });
     expect(status(w)).toBe('available');
     expect(preview(w).classes()).toContain('vfm-has-thumb');
     expect(preview(w).attributes('style')).toContain('/media/1-thumb.jpg');
     expect(w.find('.vfm-media-preview-overlay').exists()).toBe(false);
+    expect(filename(w).text()).toBe('My Photo.jpg');
+    expect(filename(w).attributes('title')).toBe('My Photo.jpg');
   });
 
   test('an svg item uses its src as the background image', () => {
@@ -43,23 +49,25 @@ describe('MediaPreview', () => {
     expect(w.find('.vfm-media-preview-overlay').exists()).toBe(false);
   });
 
-  test('a non-resizable file shows an icon and its title in the overlay', () => {
+  test('a non-resizable file shows the file icon and the filename underneath', () => {
     const w = mount(MediaPreview, {
       props: { item: makeMediaItem({ extension: 'pdf', title: 'Report', src_thumb: null }) },
     });
     expect(preview(w).classes()).not.toContain('vfm-has-thumb');
     expect(overlayIconName(w)).toBe('fileText');
-    expect(w.find('.vfm-media-preview-title').text()).toBe('Report');
+    expect(filename(w).text()).toBe('Report.pdf');
   });
 
-  test('a non-image file that supplies a src_thumb shows the thumbnail, not the file icon (e.g. a PDF with a generated thumbnail)', () => {
+  test('a non-image file that supplies a src_thumb shows the thumbnail AND the file icon overlay (so it stays identifiable as a document)', () => {
     const w = mount(MediaPreview, {
       props: { item: makeMediaItem({ extension: 'pdf', title: 'Report', src: '/media/1.pdf', src_thumb: '/media/1-thumb.jpg' }) },
     });
     expect(status(w)).toBe('available');
     expect(preview(w).classes()).toContain('vfm-has-thumb');
     expect(preview(w).attributes('style')).toContain('/media/1-thumb.jpg');
-    expect(w.find('.vfm-media-preview-overlay').exists()).toBe(false);
+    expect(w.find('.vfm-media-preview-overlay').exists()).toBe(true);
+    expect(overlayIconName(w)).toBe('fileText');
+    expect(filename(w).text()).toBe('Report.pdf');
   });
 
   test('a missing item shows the alert icon', () => {

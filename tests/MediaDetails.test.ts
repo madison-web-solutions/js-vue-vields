@@ -170,6 +170,32 @@ describe('MediaDetails', () => {
     expect(saveButton(w).exists()).toBe(false);
   });
 
+  test('a non-image item with a thumbnail renders the thumbnail as the preview image without any icon overlay (the File Type line conveys the type instead)', async () => {
+    mockLookup.mockResolvedValue({
+      status: 'found',
+      resource: makeMediaItem({ id: 1, extension: 'pdf', src: '/media/1.pdf', src_thumb: '/media/1-thumb.jpg' }),
+    });
+    const w = mountDetails({ itemId: 1 });
+    await flushPromises();
+    const img = w.find('.vfm-media-details-preview img');
+    expect(img.exists()).toBe(true);
+    expect(img.attributes('src')).toBe('/media/1-thumb.jpg');
+    expect(w.find('.vfm-media-details-overlay').exists()).toBe(false);
+    expect(w.text()).toContain('File Type:');
+    expect(w.text()).toContain('PDF');
+  });
+
+  test('a non-image item with no thumbnail still shows the file icon overlay', async () => {
+    mockLookup.mockResolvedValue({
+      status: 'found',
+      resource: makeMediaItem({ id: 1, extension: 'pdf', src: '/media/1.pdf', src_thumb: null }),
+    });
+    const w = mountDetails({ itemId: 1 });
+    await flushPromises();
+    expect(w.find('.vfm-media-details-preview img').exists()).toBe(false);
+    expect(w.find('.vfm-media-details-overlay').exists()).toBe(true);
+  });
+
   test('crop center fields appear only when the config enables them', async () => {
     mockLookup.mockResolvedValue({ status: 'found', resource: makeResizableItem({ id: 1, extension: 'jpg' }) });
 

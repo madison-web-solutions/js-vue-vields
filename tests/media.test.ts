@@ -1,12 +1,32 @@
 import { describe, test, expect } from 'vitest';
-import { isMediaItemResizable, getMediaItemIcon } from '../src/lib/media';
+import { hasThumbnail, getMediaItemIcon, isImageMediaItem, imageExtensions } from '../src/lib/media';
 import { makeMediaItem, makeResizableItem } from './media-utils';
 
-describe('isMediaItemResizable', () => {
+describe('hasThumbnail', () => {
   test('is true when src_thumb is set, false otherwise', () => {
-    expect(isMediaItemResizable(makeResizableItem())).toBe(true);
-    expect(isMediaItemResizable(makeMediaItem({ src_thumb: null }))).toBe(false);
-    expect(isMediaItemResizable(makeMediaItem({ src_thumb: undefined }))).toBe(false);
+    expect(hasThumbnail(makeResizableItem())).toBe(true);
+    expect(hasThumbnail(makeMediaItem({ src_thumb: null }))).toBe(false);
+    expect(hasThumbnail(makeMediaItem({ src_thumb: undefined }))).toBe(false);
+  });
+});
+
+describe('isImageMediaItem', () => {
+  test('returns true for each known image extension', () => {
+    for (const ext of imageExtensions) {
+      expect(isImageMediaItem(makeMediaItem({ extension: ext }))).toBe(true);
+    }
+  });
+
+  test('is case-insensitive', () => {
+    expect(isImageMediaItem(makeMediaItem({ extension: 'JPG' }))).toBe(true);
+    expect(isImageMediaItem(makeMediaItem({ extension: 'PNG' }))).toBe(true);
+  });
+
+  test('returns false for non-image extensions, even when a thumbnail is supplied', () => {
+    expect(isImageMediaItem(makeMediaItem({ extension: 'pdf' }))).toBe(false);
+    expect(isImageMediaItem(makeMediaItem({ extension: 'pdf', src_thumb: '/media/1-thumb.jpg' }))).toBe(false);
+    expect(isImageMediaItem(makeMediaItem({ extension: 'docx' }))).toBe(false);
+    expect(isImageMediaItem(makeMediaItem({ extension: 'zip' }))).toBe(false);
   });
 });
 
@@ -16,13 +36,15 @@ describe('getMediaItemIcon', () => {
     expect(getMediaItemIcon(makeResizableItem({ status: 'missing' }))).toBe('triangleAlert');
   });
 
-  test('returns null for svg and for resizable (thumbnailable) items', () => {
+  test('returns null for image extensions, with or without a thumbnail', () => {
     expect(getMediaItemIcon(makeMediaItem({ extension: 'svg', src_thumb: null }))).toBeNull();
+    expect(getMediaItemIcon(makeMediaItem({ extension: 'png', src_thumb: null }))).toBeNull();
     expect(getMediaItemIcon(makeResizableItem())).toBeNull();
   });
 
-  test('returns null for a non-image file that supplies a thumbnail (e.g. a PDF with src_thumb), so the thumbnail is shown instead of the file icon', () => {
-    expect(getMediaItemIcon(makeMediaItem({ extension: 'pdf', src_thumb: '/media/1-thumb.jpg' }))).toBeNull();
+  test('returns a document icon for non-image extensions even when a thumbnail is supplied (e.g. a PDF with a generated thumbnail)', () => {
+    expect(getMediaItemIcon(makeMediaItem({ extension: 'pdf', src_thumb: '/media/1-thumb.jpg' }))).toBe('fileText');
+    expect(getMediaItemIcon(makeMediaItem({ extension: 'docx', src_thumb: '/media/1-thumb.jpg' }))).toBe('fileText');
   });
 
   test('maps document extensions to fileText', () => {

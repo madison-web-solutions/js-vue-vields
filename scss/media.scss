@@ -35,6 +35,17 @@
   font-size: 2rem;
 }
 
+.vfm-media-preview-wrapper {
+  width: $media-preview-width;
+}
+
+.vfm-media-preview-filename {
+  font-size: $media-preview-font-size;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .vfm-media-preview {
   overflow: hidden;
 
@@ -48,12 +59,6 @@
 
   .vfm-media-preview-overlay {
     text-align: center;
-  }
-
-  .vfm-media-preview-title {
-    color: $body-color;
-    overflow-wrap: break-word;
-    font-size: $media-preview-font-size;
   }
 
   .vfm-media-preview-status {
@@ -75,10 +80,6 @@
       background-color: $black;
       padding: 0.4rem 0.8rem;
       opacity: 0.6;
-    }
-
-    .vfm-media-preview-title {
-      display: none;
     }
   }
 

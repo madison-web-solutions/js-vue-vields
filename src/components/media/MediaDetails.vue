@@ -13,8 +13,9 @@
         <Icon v-if="supportCropCenter && isImage" class="vfm-media-details-crop-center-top-pointer" :style="cropCenterMarkerStyle.top" icon="chevronRight" />
       </div>
       <div class="col-4" data-name="details">
-        <div class="mb-2">
-          <p class="mb-0"><strong>Status:</strong> {{ status }}</p>
+        <div class="mb-3">
+          <p class="mb-0"><strong>Status:</strong> {{ startCase(status) }}</p>
+          <p class="mb-0" v-if="item"><strong>File Type:</strong> {{ item.extension.toUpperCase() }}</p>
           <p class="mb-0" v-if="imgWidth && imgHeight"><strong>Dimensions:</strong> {{ imgWidth }}px x {{ imgHeight }}px</p>
         </div>
         <FieldGroup v-model="vals" v-model:errors="errors">
@@ -58,7 +59,7 @@ import type { MediaItem, LookupResult, UpdateResult } from "../../types";
 import { computed, ref, inject, watchEffect, onMounted, provide, onUnmounted } from "vue";
 import { messageBagToString } from "../../lib/message-bag";
 import { IconName } from "../../types";
-import { getMediaItemIcon } from "../../lib/media";
+import { getMediaItemIcon, isImageMediaItem, hasThumbnail } from "../../lib/media";
 import FieldGroup from "../FieldGroup.vue";
 import TextField from "../TextField.vue";
 import CompoundField from "../CompoundField.vue";
@@ -66,6 +67,7 @@ import NumberField from "../NumberField.vue";
 import Icon from "../Icon.vue";
 import { getConfigRef } from "../../lib/config";
 import injectionSymbols from "../../lib/injection-symbols";
+import { startCase } from "../../lib/utils";
 
 const props = defineProps<{
   itemId: number | string;
@@ -166,29 +168,22 @@ const reset = () => {
 };
 
 const isImage = computed((): boolean => {
-  switch (item.value?.extension || "none") {
-    case "jpg":
-    case "jpeg":
-    case "png":
-    case "tif":
-    case "tiff":
-    case "gif":
-    case "webp":
-    case "svg":
-      return true;
-  }
-  return false;
+  return item.value != null && isImageMediaItem(item.value);
 });
 
 const imageCacheBust = ref<number | null>(null);
 
+// Use the full src for images, fall back to the thumbnail for non-images (e.g. a PDF that
+// supplies a generated thumbnail), so the details view still has something to show.
 const imageSrc = computed((): string | undefined => {
-  if (item.value && isImage.value && item.value.src) {
-    return imageCacheBust.value != null
-      ? `${item.value.src}?_cb=${imageCacheBust.value}`
-      : item.value.src;
+  if (item.value == null) {
+    return undefined;
   }
-  return undefined;
+  const src = isImage.value ? item.value.src : item.value.src_thumb;
+  if (!src) {
+    return undefined;
+  }
+  return imageCacheBust.value != null ? `${src}?_cb=${imageCacheBust.value}` : src;
 });
 
 const iconName = computed((): IconName | null => {
@@ -198,13 +193,15 @@ const iconName = computed((): IconName | null => {
     } else {
       return "triangleAlert";
     }
-  } else {
-    return getMediaItemIcon(item.value);
   }
+  if (hasThumbnail(item.value)) {
+    return null;
+  }
+  return getMediaItemIcon(item.value);
 });
 
 const imageWithDimensionsUrl = computed((): string | undefined => {
-  return imageSrc.value && item.value?.extension != "svg"
+  return imageSrc.value && isImage.value && item.value?.extension != "svg"
     ? imageSrc.value
     : undefined;
 });
