@@ -62,7 +62,7 @@ describe('MediaDetails', () => {
     mockLookup.mockResolvedValue({ status: 'not-found' });
     const w = mountDetails({ itemId: 1 });
     await flushPromises();
-    expect(w.text()).toContain('missing');
+    expect(w.text()).toContain('Missing');
   });
 
   test('the save button appears only after an edit', async () => {
