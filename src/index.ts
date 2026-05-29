@@ -56,6 +56,8 @@ import {
 
 import { pickPropsFor } from "./lib/pick-props-for";
 
+import { getCurrentValue, getCurrentErrors } from "./lib/current-context";
+
 import useFormField from "./lib/useFormField";
 import useHasCompoundValue from "./lib/useHasCompoundValue";
 import useHasMaxChars from "./lib/useHasMaxChars";
@@ -151,6 +153,8 @@ export {
   startCase,
   valueAtPath,
   pickPropsFor,
+  getCurrentValue,
+  getCurrentErrors,
   useFormField,
   useHasCompoundValue,
   useHasMaxChars,
