@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import type { FieldProps, MessageBag, HasChoicesFieldProps } from "../types";
+import type { FieldEmitType, FieldProps, HasChoicesFieldProps } from "../types";
 import { computed, toRefs } from "vue";
 import useFormField from "../lib/useFormField";
 import useHasChoicesSingle from "../lib/useHasChoicesSingle";
@@ -28,10 +28,7 @@ type IdType = string | number | null;
 
 const props = defineProps<FieldProps & HasChoicesFieldProps>();
 
-const emit = defineEmits<{
-  (e: "update:modelValue", value: IdType): void;
-  (e: "update:errors", value: MessageBag): void;
-}>();
+const emit = defineEmits<FieldEmitType<IdType>>();
 
 const propRefs = toRefs(props);
 

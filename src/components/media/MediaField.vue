@@ -44,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import type { FieldProps, MediaItem, MessageBag } from "../../types";
+import type { FieldEmitType, FieldProps, MediaItem } from "../../types";
 import { ref, toRefs, watchEffect, inject } from "vue";
 import FieldWrapper from "../FieldWrapper.vue";
 import MediaPreview from "./MediaPreview.vue";
@@ -61,10 +61,7 @@ const props = defineProps<FieldProps & {
   extraParams?: Record<string, any>;
 }>();
 
-const emit = defineEmits<{
-  (e: "update:modelValue", value: IdType): void;
-  (e: "update:errors", value: MessageBag): void;
-}>();
+const emit = defineEmits<FieldEmitType<IdType>>();
 
 const propRefs = toRefs(props);
 

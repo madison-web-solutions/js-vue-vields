@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import type { FieldProps, MessageBag } from "../types";
+import type { FieldEmitType, FieldProps } from "../types";
 import { computed, ref, toRefs } from "vue";
 import useFormField from "../lib/useFormField";
 import { dateToUtcFormat, ymdToFormat } from "date-format-ms";
@@ -40,10 +40,7 @@ const displayFormat = computed(() => props.displayFormat ?? "d/m/Y");
 
 const inputEle = ref<HTMLInputElement | null>(null);
 
-const emit = defineEmits<{
-  (e: "update:modelValue", value: string | null): void;
-  (e: "update:errors", value: MessageBag): void;
-}>();
+const emit = defineEmits<FieldEmitType<string | null>>();
 
 const propRefs = toRefs(props);
 

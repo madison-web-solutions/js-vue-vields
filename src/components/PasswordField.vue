@@ -24,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag, FieldProps } from "../types";
+import type { FieldEmitType, FieldProps } from "../types";
 import { toRefs } from "vue";
 import useFormField from "../lib/useFormField";
 import PasswordStrengthMeter from "./PasswordStrengthMeter.vue";
@@ -34,10 +34,7 @@ const props = defineProps<FieldProps & {
   minStrength?: number | undefined
 }>();
 
-const emit = defineEmits<{
-  (e: "update:modelValue", value: string): void;
-  (e: "update:errors", value: MessageBag): void;
-}>();
+const emit = defineEmits<FieldEmitType<string>>();
 
 const propRefs = toRefs(props);
 

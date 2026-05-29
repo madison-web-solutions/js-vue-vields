@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import type { FieldProps, MessageBag, Choosable, RepeaterFormValue, FormValue } from "../types";
+import type { FieldEmitType, FieldProps, Choosable, RepeaterFormValue, FormValue } from "../types";
 import RepeaterField from "./RepeaterField.vue";
 import SelectField from "./SelectField.vue";
 
@@ -50,10 +50,7 @@ const props = defineProps<FieldProps & {
 
 const slots = defineSlots<Record<string, (props: {index: number; subVals: FormValue}) => any>>();
 
-const emit = defineEmits<{
-  (e: "update:modelValue", value: RepeaterFormValue): void;
-  (e: "update:errors", value: MessageBag): void;
-}>();
+const emit = defineEmits<FieldEmitType<RepeaterFormValue>>();
 
 const isValidSection = (value: string): boolean => {
   for (const choice of props.sectionChoices) {

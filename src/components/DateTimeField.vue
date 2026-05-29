@@ -34,7 +34,7 @@
 /*
  * ModelValue is a string representation of a DateTime
  */
-import type { FieldProps, MessageBag } from "../types";
+import type { FieldEmitType, FieldProps } from "../types";
 import { computed, toRefs, provide, ref, watch } from "vue";
 import EmptyFieldWrapper from "./EmptyFieldWrapper.vue";
 import DateField from "./DateField.vue";
@@ -51,10 +51,7 @@ const props = defineProps<FieldProps & {
 
 const displayFormat = computed(() => props.displayFormat ?? 'd/m/Y H:i');
 
-const emit = defineEmits<{
-  (e: "update:modelValue", value: string | null): void;
-  (e: "update:errors", value: MessageBag): void;
-}>();
+const emit = defineEmits<FieldEmitType<string | null>>();
 
 const propRefs = toRefs(props);
 

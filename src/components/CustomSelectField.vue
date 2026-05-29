@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag, Choosable, FieldProps, HasChoicesFieldProps } from "../types";
+import type { FieldEmitType, Choosable, FieldProps, HasChoicesFieldProps } from "../types";
 import { onMounted, onBeforeUnmount, ref, toRefs } from "vue";
 import useFormField from "../lib/useFormField";
 import useHasChoicesSingle from "../lib/useHasChoicesSingle";
@@ -40,10 +40,7 @@ const nbsp = "\xa0";
 
 const props = defineProps<FieldProps & HasChoicesFieldProps>();
 
-const emit = defineEmits<{
-  (e: "update:modelValue", value: IdType): void;
-  (e: "update:errors", value: MessageBag): void;
-}>();
+const emit = defineEmits<FieldEmitType<IdType>>();
 
 const slots = defineSlots<{
   default: (props: { choice: Choosable }) => any;

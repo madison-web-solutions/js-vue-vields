@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag, FieldProps, HasChoicesMultipleFieldProps, KeyListFormValue, BooleansMapFormValue } from "../types";
+import type { FieldEmitType, FieldProps, HasChoicesMultipleFieldProps, KeyListFormValue, BooleansMapFormValue } from "../types";
 import { computed, toRefs } from "vue";
 import useFormFieldWithChoicesMultiple from "../lib/useFormFieldWithChoicesMultiple";
 
@@ -47,10 +47,7 @@ const props = defineProps<FieldProps & HasChoicesMultipleFieldProps & {
 const trueLabel = computed(() => props.trueLabel ?? 'Yes');
 const falseLabel = computed(() => props.falseLabel ?? 'No');
 
-const emit = defineEmits<{
-  (e: "update:modelValue", value: KeyListFormValue | BooleansMapFormValue): void;
-  (e: "update:errors", value: MessageBag): void;
-}>();
+const emit = defineEmits<FieldEmitType<KeyListFormValue | BooleansMapFormValue>>();
 
 const propRefs = toRefs(props);
 

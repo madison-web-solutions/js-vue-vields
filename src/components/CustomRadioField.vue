@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Choosable, FieldProps, HasChoicesFieldProps, MessageBag } from "../types";
+import type { FieldEmitType, Choosable, FieldProps, HasChoicesFieldProps } from "../types";
 import { toRefs } from "vue";
 import useFormField from "../lib/useFormField";
 import useHasChoicesSingle from "../lib/useHasChoicesSingle";
@@ -23,10 +23,7 @@ const props = defineProps<FieldProps & HasChoicesFieldProps & {
   inline?: boolean,
 }>();
 
-const emit = defineEmits<{
-  (e: "update:modelValue", value: IdType): void;
-  (e: "update:errors", value: MessageBag): void;
-}>();
+const emit = defineEmits<FieldEmitType<IdType>>();
 
 const slots = defineSlots<{
   default: (props: { choice: Choosable, selected: boolean }) => any;

@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag, Choosable, SearchResultPage, FieldProps, UsesSearchesFieldProps } from "../types";
+import type { FieldEmitType, Choosable, SearchResultPage, FieldProps, UsesSearchesFieldProps } from "../types";
 import { computed, ref, toRefs, watchEffect, inject } from "vue";
 import useFormField from "../lib/useFormField";
 import injectionSymbols from "../lib/injection-symbols";
@@ -57,10 +57,7 @@ const slots = defineSlots<{
   noResults: (props: { searchText: string }) => any;
 }>();
 
-const emit = defineEmits<{
-  (e: "update:modelValue", value: IdType): void;
-  (e: "update:errors", value: MessageBag): void;
-}>();
+const emit = defineEmits<FieldEmitType<IdType>>();
 
 const propRefs = toRefs(props);
 

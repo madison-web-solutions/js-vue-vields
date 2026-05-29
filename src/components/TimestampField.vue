@@ -35,7 +35,7 @@
 /*
  * ModelValue is a timestamp in _milliseconds_ (number)
  */
-import type { FieldProps, MessageBag } from "../types";
+import type { FieldEmitType, FieldProps } from "../types";
 import { computed, toRefs, provide, ref, watch } from "vue";
 import EmptyFieldWrapper from "./EmptyFieldWrapper.vue";
 import DateField from "./DateField.vue";
@@ -57,10 +57,7 @@ const props = defineProps<FieldProps & {
 const displayFormat = computed(() => props.displayFormat ?? 'd/m/Y H:i');
 const timeZone = computed(() => props.timeZone ?? 'local');
 
-const emit = defineEmits<{
-  (e: "update:modelValue", value: number | null): void;
-  (e: "update:errors", value: MessageBag): void;
-}>();
+const emit = defineEmits<FieldEmitType<number | null>>();
 
 const propRefs = toRefs(props);
 

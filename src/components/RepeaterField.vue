@@ -58,7 +58,7 @@
 </template>
 
 <script setup lang="ts">
-import type { RepeaterFormValue, MessageBag, Config, Loose, FormValue, FieldProps, RepeaterFieldProps } from "../types";
+import type { FieldEmitType, RepeaterFormValue, Config, Loose, FormValue, FieldProps, RepeaterFieldProps } from "../types";
 import { computed, toRefs } from "vue";
 import useRepeaterField from "../lib/useRepeaterField";
 import useExtendsConfig from "../lib/useExtendsConfig";
@@ -79,10 +79,7 @@ const props = withDefaults(defineProps<FieldProps & RepeaterFieldProps & {
   subValuesType: 'compound',
 });
 
-const emit = defineEmits<{
-  (e: "update:modelValue", value: RepeaterFormValue): void;
-  (e: "update:errors", value: MessageBag): void;
-}>();
+const emit = defineEmits<FieldEmitType<RepeaterFormValue>>();
 
 const slots = defineSlots<{
   default: (props: {

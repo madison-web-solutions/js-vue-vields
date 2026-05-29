@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag, RepeaterFormValue, EditMode, Config, RepeaterItem, FieldProps, RepeaterFieldProps, Loose, FieldState} from "../types";
+import type { FieldEmitType, RepeaterFormValue, EditMode, Config, RepeaterItem, FieldProps, RepeaterFieldProps, Loose, FieldState} from "../types";
 import { toRefs } from "vue";
 import useRepeaterField from "../lib/useRepeaterField";
 import useExtendsConfig from "../lib/useExtendsConfig";
@@ -32,10 +32,7 @@ const props = withDefaults(defineProps<FieldProps & RepeaterFieldProps & {
   movable: true,
 });
 
-const emit = defineEmits<{
-  (e: "update:modelValue", value: RepeaterFormValue): void;
-  (e: "update:errors", value: MessageBag): void;
-}>();
+const emit = defineEmits<FieldEmitType<RepeaterFormValue>>();
 
 const slots = defineSlots<{
   default: (props: { loopItems: RepeaterItem[]; isMoving: boolean; movingIndex: number | undefined }) => any;

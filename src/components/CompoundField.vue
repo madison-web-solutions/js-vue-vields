@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag, CompoundFormValue, FieldProps, Loose, Config } from "../types";
+import type { FieldEmitType, CompoundFormValue, FieldProps, Loose, Config } from "../types";
 import { toRefs } from "vue";
 import useFormField from "../lib/useFormField";
 import useHasCompoundValue from "../lib/useHasCompoundValue";
@@ -18,10 +18,7 @@ const props = defineProps<FieldProps & {
     config?: Loose<Config>
 }>();
 
-const emit = defineEmits<{
-  (e: "update:modelValue", value: CompoundFormValue): void;
-  (e: "update:errors", value: MessageBag): void;
-}>();
+const emit = defineEmits<FieldEmitType<CompoundFormValue>>();
 
 const slots = defineSlots<{
   default: (props: { subVals: CompoundFormValue }) => any;

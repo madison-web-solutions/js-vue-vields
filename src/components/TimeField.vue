@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import type { FieldProps, MessageBag, ParsesTextFieldOptions } from "../types";
+import type { FieldEmitType, FieldProps, ParsesTextFieldOptions } from "../types";
 import { computed, ref, toRefs } from "vue";
 import useFormField from "../lib/useFormField";
 import useParsesTextField from "../lib/useParsesTextField";
@@ -37,10 +37,7 @@ const props = defineProps<FieldProps & {
 
 const inputEle = ref<HTMLInputElement | null>(null);
 
-const emit = defineEmits<{
-  (e: "update:modelValue", value: string | null): void;
-  (e: "update:errors", value: MessageBag): void;
-}>();
+const emit = defineEmits<FieldEmitType<string | null>>();
 
 const propRefs = toRefs(props);
 

@@ -21,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag, FieldProps } from "../types";
+import type { FieldEmitType, FieldProps } from "../types";
 import { computed, toRefs } from "vue";
 import useFormField from "../lib/useFormField";
 import { coerceToBoolean } from "../lib/type-utils";
@@ -35,10 +35,7 @@ const props = defineProps<FieldProps & {
 const trueLabel = computed(() => props.trueLabel ?? 'Yes');
 const falseLabel = computed(() => props.falseLabel ?? 'No');
 
-const emit = defineEmits<{
-  (e: "update:modelValue", value: boolean): void;
-  (e: "update:errors", value: MessageBag): void;
-}>();
+const emit = defineEmits<FieldEmitType<boolean>>();
 
 const propRefs = toRefs(props);
 

@@ -36,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import type { FieldProps, HasChoicesFieldProps, MessageBag, KeyListFormValue, Choosable, PendingChoosable } from "../types";
+import type { FieldEmitType, FieldProps, HasChoicesFieldProps, KeyListFormValue, Choosable, PendingChoosable } from "../types";
 import { computed, ref, toRefs, watch, watchEffect, inject } from "vue";
 import { coerceToKeyListFormValue } from "../lib/type-utils";
 import SearchField from "./SearchField.vue";
@@ -55,10 +55,7 @@ const slots = defineSlots<{
   pendingTokenContent: (props: { token: PendingChoosable }) => any;
 }>();
 
-const emit = defineEmits<{
-  (e: "update:modelValue", value: KeyListFormValue): void;
-  (e: "update:errors", value: MessageBag): void;
-}>();
+const emit = defineEmits<FieldEmitType<KeyListFormValue>>();
 
 const propRefs = toRefs(props);
 

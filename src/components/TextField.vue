@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import type { FieldProps, HasMaxCharsFieldProps, MessageBag } from "../types";
+import type { FieldProps, HasMaxCharsFieldProps, FieldEmitType } from "../types";
 import { toRefs } from "vue";
 import useFormField from "../lib/useFormField";
 import useHasMaxChars from "../lib/useHasMaxChars";
@@ -35,11 +35,7 @@ const props = defineProps<FieldProps & HasMaxCharsFieldProps & {
   inputType?: string,
 }>();
 
-const emit = defineEmits<{
-  (e: "update:modelValue", value: string): void;
-  (e: "update:errors", value: MessageBag): void;
-  (e: "enterPress"): void;
-}>();
+const emit = defineEmits<FieldEmitType<string> & { (e: "enterPress"): void }>();
 
 const propRefs = toRefs(props);
 

@@ -41,7 +41,7 @@ import {
   ImageStyle
 } from "ckeditor5";
 import type { EditorConfig, ImageConfig, TableConfig } from "ckeditor5";
-import type { FieldProps, MessageBag } from "../types";
+import type { FieldEmitType, FieldProps } from "../types";
 import { computed, onBeforeUnmount, onMounted, ref, toRefs, watch } from "vue";
 import useFormField from "../lib/useFormField";
 import { coerceToString } from "../lib/type-utils";
@@ -58,10 +58,7 @@ const props = withDefaults(defineProps<FieldProps & {
   tables: undefined,
 });
 
-const emit = defineEmits<{
-  (e: "update:modelValue", value: string | null): void;
-  (e: "update:errors", value: MessageBag): void;
-}>();
+const emit = defineEmits<FieldEmitType<string | null>>();
 
 const propRefs = toRefs(props);
 

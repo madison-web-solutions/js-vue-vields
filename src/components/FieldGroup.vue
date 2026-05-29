@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag, EditMode, CompoundFormValue, Config, Loose } from "../types";
+import type { FieldEmitType, MessageBag, EditMode, CompoundFormValue, Config, Loose } from "../types";
 import { toRef } from "vue";
 import useFormField from '../lib/useFormField';
 import useHasCompoundValue from '../lib/useHasCompoundValue';
@@ -18,10 +18,7 @@ const props = defineProps<{
   config?: Loose<Config>;
 }>();
 
-const emit = defineEmits<{
-  (e: "update:modelValue", value: CompoundFormValue): void;
-  (e: "update:errors", value: MessageBag): void;
-}>();
+const emit = defineEmits<FieldEmitType<CompoundFormValue>>();
 
 const propRefs = {
   modelValue: toRef(props, 'modelValue'),

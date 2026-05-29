@@ -55,7 +55,7 @@
 
 <script setup lang="ts">
 import type { StyleValue } from "vue";
-import type { FieldProps, FormValue, RepeaterFormValue, MessageBag, RepeaterTableCol, RepeaterTableColOpts, Config, Loose, RepeaterFieldProps} from "../types";
+import type { FieldEmitType, FieldProps, FormValue, RepeaterFormValue, RepeaterTableCol, RepeaterTableColOpts, Config, Loose, RepeaterFieldProps} from "../types";
 import { computed, toRefs } from "vue";
 import useRepeaterField from "../lib/useRepeaterField";
 import useExtendsConfig from "../lib/useExtendsConfig";
@@ -83,10 +83,7 @@ const slots = defineSlots<
   } & Record<string, (props: { index: number; subVals: FormValue }) => any>
 >();
 
-const emit = defineEmits<{
-  (e: "update:modelValue", value: RepeaterFormValue): void;
-  (e: "update:errors", value: MessageBag): void;
-}>();
+const emit = defineEmits<FieldEmitType<RepeaterFormValue>>();
 
 const propRefs = toRefs(props);
 

@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import type { FieldProps, LinkAlias, MessageBag, LookupResult, SearchResultPage } from "../types";
+import type { FieldEmitType, FieldProps, LinkAlias, LookupResult, SearchResultPage } from "../types";
 import { computed, ref, inject, toRefs, watchEffect, watch } from "vue";
 import SearchInterface from "./SearchInterface.vue";
 import useFormField from "../lib/useFormField";
@@ -56,10 +56,7 @@ const slots = defineSlots<{
   suggestion: (props: { suggestion: LinkAlias }) => any;
 }>();
 
-const emit = defineEmits<{
-  (e: "update:modelValue", value: string | null): void;
-  (e: "update:errors", value: MessageBag): void;
-}>();
+const emit = defineEmits<FieldEmitType<string | null>>();
 
 const propRefs = toRefs(props);
 
