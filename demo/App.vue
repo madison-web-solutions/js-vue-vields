@@ -1,64 +1,29 @@
 <template>
   <nav class="bg-dark px-3 py-1 d-flex align-items-center gap-1">
     <span class="text-secondary me-3 small fw-semibold">vue-fields-ms demo</span>
-    <button
-      type="button"
-      class="nav-link px-3"
-      :class="currentView === 'article' ? 'text-white' : 'text-white-50'"
-      @click="currentView = 'article'"
+    <RouterLink
+      v-for="link in navLinks"
+      :key="link.to"
+      :to="link.to"
+      class="nav-link px-3 text-white-50"
+      active-class="text-white"
     >
-      Article Form
-    </button>
-    <button
-      type="button"
-      class="nav-link px-3"
-      :class="currentView === 'fields' ? 'text-white' : 'text-white-50'"
-      @click="currentView = 'fields'"
-    >
-      All Fields
-    </button>
-    <button
-      type="button"
-      class="nav-link px-3"
-      :class="currentView === 'login' ? 'text-white' : 'text-white-50'"
-      @click="currentView = 'login'"
-    >
-      Login Form
-    </button>
-    <button
-      type="button"
-      class="nav-link px-3"
-      :class="currentView === 'repeaters' ? 'text-white' : 'text-white-50'"
-      @click="currentView = 'repeaters'"
-    >
-      Repeaters
-    </button>
-    <button
-      type="button"
-      class="nav-link px-3"
-      :class="currentView === 'addresses' ? 'text-white' : 'text-white-50'"
-      @click="currentView = 'addresses'"
-    >
-      Addresses
-    </button>
+      {{ link.label }}
+    </RouterLink>
   </nav>
 
   <div class="container-fluid py-4">
-    <ArticleView v-if="currentView === 'article'" />
-    <AllFieldsView v-if="currentView === 'fields'" />
-    <LoginView v-if="currentView === 'login'" />
-    <RepeatersView v-if="currentView === 'repeaters'" />
-    <AddressesView v-if="currentView === 'addresses'" />
+    <RouterView />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import ArticleView from './views/ArticleView.vue'
-import AllFieldsView from './views/AllFieldsView.vue'
-import LoginView from './views/LoginView.vue'
-import RepeatersView from './views/RepeatersView.vue'
-import AddressesView from './views/AddressesView.vue'
+import { RouterLink, RouterView } from 'vue-router'
+import { routes } from './router'
 
-const currentView = ref<'article' | 'fields' | 'login' | 'repeaters' | 'addresses'>('article')
+// Build the top nav from the routes that have a title, so adding a page is a one-line change
+// in router.ts.
+const navLinks = routes
+  .filter(route => typeof route.path === 'string' && route.meta?.title)
+  .map(route => ({ to: route.path as string, label: route.meta!.title as string }))
 </script>

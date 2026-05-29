@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import { vueFieldsMsPlugin, type VueFieldsMsPluginOptions } from 'vue-fields-ms'
 import { choicesProvider, linksProvider, mediaProvider, passwordStrengthProvider } from './providers'
+import { router } from './router'
 
 import './scss/app.scss'
 
@@ -20,5 +21,6 @@ const vfmOpts: VueFieldsMsPluginOptions = {
   },
 }
 
+app.use(router)
 app.use(vueFieldsMsPlugin, vfmOpts)
 app.mount('#app')

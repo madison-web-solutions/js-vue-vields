@@ -61,9 +61,18 @@
                 </template>
               </CustomSelectField>
               <RadioField name="radio" label="RadioField" :choices="colourChoices" class="mb-3" />
-              <CheckboxesField name="checkboxes" label="CheckboxesField" :choices="colourChoices" class="mb-3" />
+              <CustomRadioField name="customRadio" label="CustomRadioField (button group)" :choices="planChoices" class="mb-3">
+                <template #default="{ choice, selected }">
+                  <button type="button" class="btn w-100 py-3" :class="selected ? 'btn-primary' : 'btn-outline-primary'">
+                    <span class="fw-semibold">{{ choice.label }}</span>
+                  </button>
+                </template>
+              </CustomRadioField>
+              <CheckboxesField name="checkboxes" label="CheckboxesField (array value)" :choices="colourChoices" class="mb-3" />
+              <CheckboxesField name="checkboxesMap" label="CheckboxesField (booleans-map value)" valueIs="object" :choices="colourChoices" class="mb-3" />
               <TokensField name="tokensStatic" label="TokensField (static)" :choices="colourChoices" class="mb-3" />
               <TokensField name="tokensDir" label="TokensField (searchable, directory)" directory="categories" :searchable="true" class="mb-3" />
+              <SearchField name="search" label="SearchField (searchable, directory)" directory="categories" class="mb-3" />
             </div>
           </div>
 
@@ -90,12 +99,17 @@
                   <TextField :index="index" label="Item" />
                 </template>
               </RepeaterField>
-              <RepeaterField name="compoundRepeater" label="RepeaterField (compound)" subValuesType="compound" appendLabel="Add Row">
+              <RepeaterField name="compoundRepeater" label="RepeaterField (compound)" subValuesType="compound" appendLabel="Add Row" class="mb-4">
                 <template #default>
                   <TextField name="title" label="Title" class="mb-2" />
                   <NumberField name="count" label="Count" />
                 </template>
               </RepeaterField>
+              <RepeaterTableField name="tableRepeater" label="RepeaterTableField" appendLabel="Add Row" :cols="tableCols">
+                <template #product><TextField name="product" /></template>
+                <template #qty><NumberField name="qty" /></template>
+                <template #price><CurrencyField name="price" /></template>
+              </RepeaterTableField>
             </div>
           </div>
 
@@ -116,10 +130,30 @@
 
       <div class="col-xl-4">
         <div class="sticky-top" style="top: 1rem">
-          <div class="card">
+          <div class="card mb-3">
             <div class="card-header fw-semibold">Live Values</div>
             <div class="card-body p-2">
-              <pre class="mb-0" style="font-size: 0.72rem; max-height: 70vh; overflow: auto">{{ JSON.stringify(vals, null, 2) }}</pre>
+              <pre class="mb-0" style="font-size: 0.72rem; max-height: 50vh; overflow: auto">{{ JSON.stringify(vals, null, 2) }}</pre>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header d-flex align-items-center flex-wrap gap-2">
+              <span class="fw-semibold me-auto">Validation Errors</span>
+              <button type="button" class="btn btn-sm btn-outline-warning py-0" @click="toggleErrors">
+                {{ hasErrors ? 'Clear' : 'Simulate' }}
+              </button>
+              <button type="button" class="btn btn-sm btn-primary py-0" @click="applyErrors">Apply</button>
+            </div>
+            <div class="card-body p-2">
+              <textarea
+                v-model="errorsText"
+                class="form-control font-monospace"
+                rows="14"
+                spellcheck="false"
+                style="font-size: 0.72rem"
+              ></textarea>
+              <div v-if="parseError" class="small mt-1 text-danger">{{ parseError }}</div>
+              <div class="form-text mt-1">Edit the JSON directly, then click Apply.</div>
             </div>
           </div>
         </div>
@@ -129,8 +163,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import type { EditMode, MessageBag, Choosable } from 'vue-fields-ms'
+import { ref, computed } from 'vue'
+import type { EditMode, MessageBag, Choosable, RepeaterTableColOpts } from 'vue-fields-ms'
+import { makeFakeErrors } from '../fakeErrors'
 import {
   FieldGroup,
   TextField,
@@ -147,17 +182,91 @@ import {
   SelectField,
   CustomSelectField,
   RadioField,
+  CustomRadioField,
   CheckboxesField,
   TokensField,
+  SearchField,
   MediaField,
   LinkField,
   HtmlField,
   RepeaterField,
+  RepeaterTableField,
 } from 'vue-fields-ms'
 
+// A representative, fully-shaped set of values. Every field key is present (mostly empty)
+// so "Simulate errors" can attach a message to each, and the two repeaters start with a
+// couple of rows so their row-level and sub-field errors have somewhere to render.
+const makeSeed = (): Record<string, unknown> => ({
+  text: 'Some text',
+  textArea: '',
+  password: '',
+  maxChars: '',
+  number: 42,
+  numberRange: null,
+  currency: null,
+  date: null,
+  time: null,
+  dateTime: null,
+  timestamp: null,
+  checkbox: false,
+  toggle: false,
+  select: null,
+  selectDir: null,
+  customSelect: null,
+  radio: null,
+  customRadio: 'pro',
+  checkboxes: ['green', 'blue'],
+  checkboxesMap: { red: true, green: false, blue: true, yellow: false, purple: false },
+  tokensStatic: ['red', 'blue'],
+  tokensDir: [1, 3],
+  search: null,
+  media: null,
+  link: null,
+  html: '',
+  simpleRepeater: ['First item', 'Second item'],
+  compoundRepeater: [
+    { title: 'Alpha', count: 1 },
+    { title: 'Beta', count: 2 },
+  ],
+  tableRepeater: [
+    { product: 'Widget', qty: 3, price: 9.99 },
+    { product: 'Gadget', qty: 1, price: 19.5 },
+  ],
+  customSelectBottom: null,
+});
+
 const editMode = ref<EditMode>('edit')
-const vals = ref<Record<string, unknown>>({})
+const vals = ref<Record<string, unknown>>(makeSeed())
 const errors = ref<MessageBag>({})
+
+// Editable JSON buffer for the Validation Errors panel. It is kept in sync with `errors`
+// only when we Simulate/Clear/Apply — not on every field keystroke — so manual edits aren't
+// clobbered while typing.
+const errorsText = ref('{}');
+const parseError = ref<string | null>(null);
+
+const hasErrors = computed(() => Object.keys(errors.value).length > 0);
+
+const setErrors = (bag: MessageBag) => {
+  errors.value = bag;
+  errorsText.value = JSON.stringify(bag, null, 2);
+  parseError.value = null;
+};
+
+const applyErrors = () => {
+  try {
+    const parsed = JSON.parse(errorsText.value);
+    if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
+      parseError.value = 'Expected a JSON object mapping field paths to arrays of messages.';
+      return;
+    }
+    errors.value = parsed as MessageBag;
+    parseError.value = null;
+    editMode.value = 'edit';
+  } catch (err) {
+    parseError.value = err instanceof Error ? err.message : 'Invalid JSON.';
+  }
+};
 
 const colourChoices: Choosable[] = [
   { key: 'red', label: 'Red' },
@@ -167,12 +276,55 @@ const colourChoices: Choosable[] = [
   { key: 'purple', label: 'Purple' },
 ]
 
+const planChoices: Choosable[] = [
+  { key: 'basic', label: 'Basic' },
+  { key: 'pro', label: 'Pro' },
+  { key: 'enterprise', label: 'Enterprise' },
+]
+
+const tableCols: RepeaterTableColOpts[] = [
+  { name: 'product', label: 'Product' },
+  { name: 'qty', label: 'Qty' },
+  { name: 'price', label: 'Price' },
+]
+
 const toggleMode = () => {
   editMode.value = editMode.value === 'edit' ? 'view' : 'edit';
 };
 
+const toggleErrors = () => {
+  if (hasErrors.value) {
+    setErrors({});
+  } else {
+    setErrors(makeFakeErrors(vals.value, {
+      multiValueKeys: ['checkboxes', 'checkboxesMap', 'tokensStatic', 'tokensDir'],
+      leafObjectKeys: ['link'],
+    }));
+    editMode.value = 'edit';
+  }
+};
+
 const resetVals = () => {
-  vals.value = {};
-  errors.value = {};
+  vals.value = makeSeed();
+  setErrors({});
 };
 </script>
+
+<style scoped>
+/* CustomRadioField is headless — the demo lays its items out as a Bootstrap button group of
+   equal-width buttons, and draws a red box around the group when it has a whole-field error
+   (matching the CheckboxesField group treatment). */
+:deep(.vfm-custom-radio) {
+  display: flex;
+  gap: 0.5rem;
+}
+:deep(.vfm-custom-radio-item) {
+  flex: 1 1 0;
+  cursor: pointer;
+}
+:deep(.vfm-custom-radio.is-invalid) {
+  outline: 1px solid var(--bs-danger);
+  outline-offset: 0.375rem;
+  border-radius: var(--bs-border-radius);
+}
+</style>
