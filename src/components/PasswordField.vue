@@ -11,6 +11,7 @@
         :placeholder="field.placeholder"
         :autocomplete="field.autocomplete"
         v-model="modelValue"
+        @keydown.enter="emit('enterPress')"
       />
       <PasswordStrengthMeter
         v-if="minStrength != null"
@@ -24,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import type { FieldEmitType, FieldProps } from "../types";
+import type { FieldEmitType, EnterPressEmitType, FieldProps } from "../types";
 import { toRefs } from "vue";
 import useFormField from "../lib/useFormField";
 import PasswordStrengthMeter from "./PasswordStrengthMeter.vue";
@@ -34,7 +35,7 @@ const props = defineProps<FieldProps & {
   minStrength?: number | undefined
 }>();
 
-const emit = defineEmits<FieldEmitType<string>>();
+const emit = defineEmits<FieldEmitType<string> & EnterPressEmitType>();
 
 const propRefs = toRefs(props);
 

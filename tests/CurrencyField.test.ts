@@ -140,4 +140,10 @@ describe('CurrencyField', () => {
     expect(wrapper.find('input').exists()).toBe(false);
     expect(wrapper.text()).toContain('12');
   });
+
+  test('emits enterPress when Enter is pressed', async () => {
+    const wrapper = mount(CurrencyField, { props: { modelValue: 1250 } });
+    await wrapper.find('input').trigger('keydown.enter');
+    expect(wrapper.emitted('enterPress')).toBeTruthy();
+  });
 });

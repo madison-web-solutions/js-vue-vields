@@ -155,4 +155,10 @@ describe('NumberField', () => {
     await nextTick();
     expect(wrapper.text()).toContain('99');
   });
+
+  test('emits enterPress when Enter is pressed', async () => {
+    const wrapper = mount(NumberField, { props: { modelValue: 42 } });
+    await wrapper.find('input').trigger('keydown.enter');
+    expect(wrapper.emitted('enterPress')).toBeTruthy();
+  });
 });

@@ -136,4 +136,13 @@ describe('DateTimeField', () => {
     const wrapper = mount(Parent);
     expect(wrapper.text()).toContain('2024-06-15 14:30');
   });
+
+  test('forwards enterPress from its sub-inputs', async () => {
+    const wrapper = mount(DateTimeField, { props: { modelValue: '2024-06-15 14:30:00' } });
+    await dateInput(wrapper).trigger('keydown.enter');
+    expect(wrapper.emitted('enterPress')).toBeTruthy();
+
+    await timeInput(wrapper).trigger('keydown.enter');
+    expect(wrapper.emitted('enterPress')).toHaveLength(2);
+  });
 });

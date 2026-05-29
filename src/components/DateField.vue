@@ -15,7 +15,7 @@
         :min="minDateYmd"
         :max="maxDateYmd"
         @change="onChange"
-        @keydown.enter="onEnterPress"
+        @keydown.enter="onEnterKey"
         @keydown.tab="onEnterPress"
         @blur="onBlur"
       />
@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import type { FieldEmitType, FieldProps } from "../types";
+import type { FieldEmitType, EnterPressEmitType, FieldProps } from "../types";
 import { computed, ref, toRefs } from "vue";
 import useFormField from "../lib/useFormField";
 import { dateToUtcFormat, ymdToFormat } from "date-format-ms";
@@ -40,7 +40,7 @@ const displayFormat = computed(() => props.displayFormat ?? "d/m/Y");
 
 const inputEle = ref<HTMLInputElement | null>(null);
 
-const emit = defineEmits<FieldEmitType<string | null>>();
+const emit = defineEmits<FieldEmitType<string | null> & EnterPressEmitType>();
 
 const propRefs = toRefs(props);
 
@@ -124,6 +124,10 @@ const onChange = () => {
 };
 const onEnterPress = () => {
   updateFromInput(true);
+};
+const onEnterKey = () => {
+  onEnterPress();
+  emit("enterPress");
 };
 const onBlur = () => {
   updateFromInput(true);

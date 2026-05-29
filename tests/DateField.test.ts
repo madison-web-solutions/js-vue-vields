@@ -112,4 +112,10 @@ describe('DateField', () => {
     const wrapper = mount(Parent);
     expect(wrapper.text()).toContain('2024-06-15');
   });
+
+  test('emits enterPress when Enter is pressed', async () => {
+    const wrapper = mount(DateField, { props: { modelValue: '2024-06-15' } });
+    await wrapper.find('input').trigger('keydown.enter');
+    expect(wrapper.emitted('enterPress')).toBeTruthy();
+  });
 });

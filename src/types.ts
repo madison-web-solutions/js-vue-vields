@@ -227,6 +227,15 @@ export type FieldEmitType<ValueType> = {
   (e: "update:errors", value: MessageBag): void;
 };
 
+// Optional extra emit for fields that fire an event when the user presses Enter
+// while focused on the input (e.g. to trigger a form submit). Combine with
+// FieldEmitType only on fields that actually emit it, so the emit signature
+// reflects what a field really does:
+//   defineEmits<FieldEmitType<T> & EnterPressEmitType>()
+export type EnterPressEmitType = {
+  (e: "enterPress"): void;
+};
+
 export type FieldState<ValueType extends FormValue> = {
   path: Path,
   pathString: string,

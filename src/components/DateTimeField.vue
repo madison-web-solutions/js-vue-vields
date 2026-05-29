@@ -16,6 +16,7 @@
           :min="minDateYmd"
           :max="maxDateYmd"
           ref="firstField"
+          @enterPress="emit('enterPress')"
         />
         <TimeField
           v-model="timeValue"
@@ -23,6 +24,7 @@
           :disabled="field.disabled"
           :min="minTimeHis"
           :max="maxTimeHis"
+          @enterPress="emit('enterPress')"
         />
       </div>
     </template>
@@ -34,7 +36,7 @@
 /*
  * ModelValue is a string representation of a DateTime
  */
-import type { FieldEmitType, FieldProps } from "../types";
+import type { FieldEmitType, EnterPressEmitType, FieldProps } from "../types";
 import { computed, toRefs, provide, ref, watch } from "vue";
 import EmptyFieldWrapper from "./EmptyFieldWrapper.vue";
 import DateField from "./DateField.vue";
@@ -51,7 +53,7 @@ const props = defineProps<FieldProps & {
 
 const displayFormat = computed(() => props.displayFormat ?? 'd/m/Y H:i');
 
-const emit = defineEmits<FieldEmitType<string | null>>();
+const emit = defineEmits<FieldEmitType<string | null> & EnterPressEmitType>();
 
 const propRefs = toRefs(props);
 

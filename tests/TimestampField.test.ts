@@ -152,4 +152,13 @@ describe('TimestampField', () => {
     const wrapper = mount(Parent);
     expect(wrapper.text()).toContain('2024-06-15 14:30');
   });
+
+  test('forwards enterPress from its sub-inputs', async () => {
+    const wrapper = mount(TimestampField, { props: { modelValue: TS_2024_06_15_14_30, timeZone: 'utc' } });
+    await dateInput(wrapper).trigger('keydown.enter');
+    expect(wrapper.emitted('enterPress')).toBeTruthy();
+
+    await timeInput(wrapper).trigger('keydown.enter');
+    expect(wrapper.emitted('enterPress')).toHaveLength(2);
+  });
 });

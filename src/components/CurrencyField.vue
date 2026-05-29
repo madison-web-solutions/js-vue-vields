@@ -19,6 +19,7 @@
           @change="change"
           @focus="onFocus"
           @blur="onBlur"
+          @keydown.enter="emit('enterPress')"
         />
       </div>
     </template>
@@ -27,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import type { FieldEmitType, FieldProps, ParsesTextFieldOptions } from "../types";
+import type { FieldEmitType, EnterPressEmitType, FieldProps, ParsesTextFieldOptions } from "../types";
 import { computed, ref, toRefs } from "vue";
 import useFormField from "../lib/useFormField";
 import useParsesTextField from "../lib/useParsesTextField";
@@ -45,7 +46,7 @@ const props = withDefaults(defineProps<FieldProps & {
 
 const inputEle = ref<HTMLInputElement | null>(null);
 
-const emit = defineEmits<FieldEmitType<number | null>>();
+const emit = defineEmits<FieldEmitType<number | null> & EnterPressEmitType>();
 
 const propRefs = toRefs(props);
 
