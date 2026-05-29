@@ -1,5 +1,5 @@
 <template>
-  <FieldWrapper :field="field" :inputWrapperCssClass="inline ? 'd-flex flex-wrap' : ''">
+  <FieldWrapper :field="field" :inputWrapperCssClass="{ 'vfm-checkboxes-group': true, 'd-flex': inline, 'flex-wrap': inline, 'is-invalid': field.hasError }">
     <template #input>
       <div v-for="choice in choicesNormalized" :key="choice.key" :class="inline ? 'me-3' : ''">
         <div :class="{'form-check': true, 'vfm-checked': isOn(choice.key)}">

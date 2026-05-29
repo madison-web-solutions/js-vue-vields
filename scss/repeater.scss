@@ -121,6 +121,10 @@ A CSS variable --row-num is injected on each item which is the row number for th
 
 .vfm-repeater-table {
   position: relative;
+  // The row/header borders are drawn by negative z-index ::after underlays. Establish a
+  // stacking context here so they paint above any opaque ancestor background (e.g. a
+  // Bootstrap card) instead of escaping behind it and disappearing.
+  isolation: isolate;
   display: grid;
 
   grid-template-columns: [content-start] repeat(var(--num-cols), minmax(0, 1fr)) [content-end];
@@ -154,7 +158,9 @@ A CSS variable --row-num is injected on each item which is the row number for th
   top: 0px;
   left: 0;
   right: 0;
-  bottom: -$table-border-width;
+  // calc(-1 * …) rather than -$table-border-width, so this is valid whether the variable is
+  // a Sass length (e.g. 1px) or a CSS var (Bootstrap 5.3 defaults it to var(--bs-border-width)).
+  bottom: calc(-1 * #{$table-border-width});
 }
 
 .vfm-repeater-table-item {

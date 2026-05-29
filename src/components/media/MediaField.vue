@@ -1,7 +1,7 @@
 <template>
   <FieldWrapper :field="field">
     <template #input>
-      <div v-if="!inspecting && !choosing" class="vfm-media-preview-list">
+      <div v-if="!inspecting && !choosing" class="vfm-media-preview-list" :class="{ 'is-invalid': field.hasError }">
         <MediaPreview
           v-if="modelValue != null"
           :item="currentItem"

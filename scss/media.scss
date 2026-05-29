@@ -29,6 +29,13 @@
 .vfm-media-preview-list {
   max-height: 60vh;
   overflow-y: auto;
+
+  // Bootstrap-style invalid state: the add button (unselected) and the preview tile
+  // (selected) both carry the border that should turn red.
+  &.is-invalid .vfm-media-add-button,
+  &.is-invalid .vfm-media-preview {
+    border-color: $danger;
+  }
 }
 
 .vfm-media-preview-icon {

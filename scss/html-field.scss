@@ -1,0 +1,8 @@
+// CKEditor draws its borders from inheriting CSS custom properties, so to give the field a
+// Bootstrap-style invalid state we override those properties on the wrapper. CKEditor has no
+// `.form-control` for `.is-invalid` to act on, hence this rule.
+.vfm-html-field.is-invalid {
+  --ck-color-base-border: #{$danger};
+  --ck-color-toolbar-border: #{$danger};
+  --ck-color-focus-border: #{$danger};
+}
