@@ -70,7 +70,7 @@ import { ref, computed, toRefs, inject, reactive, onBeforeUnmount } from "vue";
 import useFormField from "../lib/useFormField";
 import injectionSymbols from "../lib/injection-symbols";
 import { createUploadedFileCache, cacheFile } from "../lib/uploadedFileCache";
-import { reindexErrors } from "../lib/utils";
+import { reindexErrors } from "../lib/message-bag";
 import { defaultConfig } from "../lib/config";
 import Icon from "./Icon.vue";
 

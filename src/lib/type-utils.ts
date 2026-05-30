@@ -5,6 +5,7 @@ import type {
   RepeaterFormValue,
   CompoundFormValue,
   FormValue,
+  Path,
 } from "../types";
 
 export function mergeLoose<T>(defaults: T, overrides: Loose<T>): T {
@@ -256,4 +257,35 @@ export const copyFormValue = (val: FormValue): FormValue => {
   } else {
     return val;
   }
+};
+
+/*** Path traversal ***/
+
+/**
+ * Walk `path` into a nested FormValue and return the value found there, or undefined if
+ * any segment is missing. An empty path returns the value itself. Only own properties are
+ * traversed (inherited members like `toString` are not followed).
+ */
+export const valueAtPath = (value: FormValue, path: Path): FormValue => {
+  let curr: FormValue = value;
+  if (path.length == 0) {
+    return curr;
+  }
+  for (const nextPart of path) {
+    if (curr == null) {
+      return undefined;
+    }
+    if (Array.isArray(curr)) {
+      const index = coerceToArrayKey(nextPart);
+      curr = index == null ? undefined : curr[index];
+    } else if (
+      typeof curr == "object" &&
+      Object.prototype.hasOwnProperty.call(curr, nextPart)
+    ) {
+      curr = curr[nextPart];
+    } else {
+      return undefined;
+    }
+  }
+  return curr;
 };

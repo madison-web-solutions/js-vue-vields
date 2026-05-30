@@ -2,7 +2,7 @@ import type { ComputedRef } from "vue";
 import type { FormValue, MessageBag, Path } from "../types";
 import { computed, inject } from "vue";
 import injectionSymbols from "./injection-symbols";
-import { valueAtPath } from "./utils";
+import { valueAtPath } from "./type-utils";
 import { sliceMessageBag } from "./message-bag";
 
 // These helpers let a component read the value/errors of its surrounding data

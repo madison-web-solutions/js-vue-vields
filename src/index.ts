@@ -50,15 +50,12 @@ import {
   copyRepeaterFormValue,
   copyKeyListFormValue,
   copyFormValue,
+  valueAtPath,
 } from "./lib/type-utils";
 
-import {
-  reindexErrors,
-  startCase,
-  valueAtPath,
-} from "./lib/utils";
+import { reindexErrors } from "./lib/message-bag";
 
-import { pickPropsFor } from "./lib/pick-props-for";
+import { startCase, pickPropsFor } from "./lib/utils";
 
 import { getCurrentValue, getCurrentErrors } from "./lib/current-context";
 

@@ -1,4 +1,5 @@
 import type { MessageBag } from "../types";
+import { coerceToArrayKey } from "./type-utils";
 
 /**
  * Clone a MessageBag, copying each message array so the result can be mutated without
@@ -73,4 +74,31 @@ export const messageBagToString = (bag: MessageBag): string => {
       return key + ": " + msgs.join(", ");
     })
     .join("\n");
+};
+
+/**
+ * Remap the leading array-index segment of each error path through `indexMap`.
+ * Errors whose index maps to undefined are dropped; paths that don't begin with an
+ * array index are passed through unchanged. Used to keep error paths aligned when a
+ * repeater's rows are inserted, removed, or reordered.
+ */
+export const reindexErrors = (
+  errors: MessageBag,
+  indexMap: (index: number) => number | undefined
+): MessageBag => {
+  const errorsCopy: MessageBag = {};
+  for (const pathString in errors) {
+    const path = pathString.split(".");
+    const oldIndex = coerceToArrayKey(path[0]);
+    if (oldIndex != null) {
+      const newIndex = indexMap(oldIndex);
+      if (newIndex == null) {
+        continue;
+      } else {
+        path[0] = String(newIndex);
+      }
+    }
+    errorsCopy[path.join(".")] = errors[pathString];
+  }
+  return errorsCopy;
 };

@@ -13,7 +13,7 @@ import { computed, provide, ref, onBeforeUnmount } from "vue";
 import useFormField from './useFormField';
 import { sliceMessageBag, spliceMessageBag } from './message-bag';
 import { coerceToRepeaterFormValue, copyRepeaterFormValue } from "./type-utils";
-import { reindexErrors } from "./utils";
+import { reindexErrors } from "./message-bag";
 import injectionSymbols from "./injection-symbols";
 
 export default function useRepeaterField(

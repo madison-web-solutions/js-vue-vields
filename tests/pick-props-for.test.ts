@@ -4,7 +4,7 @@
 // wrappers should handle those via defineModel + v-model on the target.
 import { describe, test, expect } from 'vitest';
 import { defineComponent } from 'vue';
-import { pickPropsFor } from '../src/lib/pick-props-for';
+import { pickPropsFor } from '../src/lib/utils';
 import RepeaterField from '../src/components/RepeaterField.vue';
 
 describe('pickPropsFor', () => {

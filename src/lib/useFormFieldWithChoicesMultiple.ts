@@ -3,7 +3,7 @@ import { BooleansMapFormValue, FieldEmitType, FieldProps, HasChoicesMultipleFiel
 import useHasChoices from "./useHasChoices";
 import { coerceToBooleansNativeMap, coerceToKeyListFormValue } from "./type-utils";
 import useFormField from "./useFormField";
-import { reindexErrors } from "./utils";
+import { reindexErrors } from "./message-bag";
 
 export default function useFormFieldWithChoicesMultiple(
   emit: FieldEmitType<KeyListFormValue | BooleansMapFormValue>,

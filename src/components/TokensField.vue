@@ -51,7 +51,7 @@ import SelectField from "./SelectField.vue";
 import useFormField from "../lib/useFormField";
 import useHasChoices from "../lib/useHasChoices";
 import injectionSymbols from "../lib/injection-symbols";
-import { reindexErrors } from "../lib/utils";
+import { reindexErrors } from "../lib/message-bag";
 import Icon from "./Icon.vue";
 
 const props = defineProps<FieldProps & HasChoicesFieldProps & {

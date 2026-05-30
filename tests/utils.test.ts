@@ -1,5 +1,7 @@
 import { describe, test, expect } from 'vitest';
-import { clamp, reindexErrors, startCase, valueAtPath } from '../src/lib/utils';
+import { clamp, startCase } from '../src/lib/utils';
+import { reindexErrors } from '../src/lib/message-bag';
+import { valueAtPath } from '../src/lib/type-utils';
 
 describe('clamp', () => {
   test('constrains within both bounds', () => {
