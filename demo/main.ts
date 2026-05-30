@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import { vueFieldsMsPlugin, type VueFieldsMsPluginOptions } from 'vue-fields-ms'
-import { choicesProvider, linksProvider, mediaProvider, passwordStrengthProvider } from './providers'
+import { choicesProvider, linksProvider, mediaProvider, uploadProvider, passwordStrengthProvider } from './providers'
 import { router } from './router'
 
 import './scss/app.scss'
@@ -12,6 +12,7 @@ const vfmOpts: VueFieldsMsPluginOptions = {
   choicesProvider,
   linksProvider,
   mediaProvider,
+  uploadProvider,
   passwordStrengthProvider,
   config: {
     'textArea.numRows': 4,

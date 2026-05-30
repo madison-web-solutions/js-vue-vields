@@ -1,0 +1,97 @@
+.vfm-file-upload {
+  &.is-invalid .vfm-file-upload-picker {
+    border-color: $danger;
+  }
+}
+
+.vfm-file-upload-list {
+  list-style: none;
+  margin: 0 0 0.5em;
+  padding: 0;
+}
+
+.vfm-file-upload-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.4em 0.6em;
+  border: 1px solid $border-color;
+  border-radius: 0.4em;
+  background-color: $gray-100;
+
+  & + & {
+    margin-top: 0.3em;
+  }
+}
+
+.vfm-file-upload-thumb {
+  flex: 0 0 auto;
+  img {
+    display: block;
+    width: 2.5em;
+    height: 2.5em;
+    object-fit: cover;
+    border-radius: 0.25em;
+  }
+}
+
+.vfm-file-upload-meta {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.vfm-file-upload-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vfm-file-upload-size {
+  font-size: 0.8em;
+  color: $gray-600;
+}
+
+.vfm-file-upload-remove {
+  flex: 0 0 auto;
+}
+
+// The native file input is visually hidden; the styled label is the clickable target.
+.vfm-file-upload-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.4em 0.8em;
+  border: 1px dashed $border-color;
+  border-radius: 0.4em;
+  cursor: pointer;
+
+  .vfm-file-upload-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+  }
+}
+
+.vfm-file-upload-uploading {
+  list-style: none;
+  margin: 0 0 0.5em;
+  padding: 0;
+}
+
+.vfm-file-upload-progress {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.2em 0;
+
+  .vfm-file-upload-progress-bar {
+    flex: 1 1 auto;
+  }
+}

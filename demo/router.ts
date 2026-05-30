@@ -7,6 +7,7 @@ export const routes: RouteRecordRaw[] = [
   { path: '/article', name: 'article', component: () => import('./views/ArticleView.vue'), meta: { title: 'Article Form' } },
   { path: '/fields', name: 'fields', component: () => import('./views/AllFieldsView.vue'), meta: { title: 'All Fields' } },
   { path: '/login', name: 'login', component: () => import('./views/LoginView.vue'), meta: { title: 'Login Form' } },
+  { path: '/public-form', name: 'public-form', component: () => import('./views/PublicFormView.vue'), meta: { title: 'Public Form' } },
   { path: '/repeaters', name: 'repeaters', component: () => import('./views/RepeatersView.vue'), meta: { title: 'Repeaters' } },
   { path: '/addresses', name: 'addresses', component: () => import('./views/AddressesView.vue'), meta: { title: 'Addresses' } },
   { path: '/current-context', name: 'current-context', component: () => import('./views/CurrentContextView.vue'), meta: { title: 'Current Context' } },

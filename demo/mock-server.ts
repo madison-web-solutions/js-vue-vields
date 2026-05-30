@@ -104,6 +104,22 @@ const json = (res: ServerResponse, data: unknown, status = 200): void => {
   res.end(JSON.stringify(data));
 };
 
+// Equivalent of Laravel's data_set(): drop `value` into `obj` at a dotted path, creating
+// intermediate objects as needed. Used by /api/submit to reassemble uploaded files into the
+// data tree at their natural paths before "validating".
+const dataSet = (obj: Record<string, any>, dottedPath: string, value: unknown): void => {
+  const parts = dottedPath.split('.');
+  let curr: Record<string, any> = obj;
+  for (let i = 0; i < parts.length - 1; i++) {
+    const key = parts[i];
+    if (curr[key] == null || typeof curr[key] !== 'object') {
+      curr[key] = {};
+    }
+    curr = curr[key];
+  }
+  curr[parts[parts.length - 1]] = value;
+};
+
 const loadDb = (dbFile: string): DB => {
   try {
     return JSON.parse(fs.readFileSync(dbFile, 'utf-8'));
@@ -401,6 +417,49 @@ export const mockServerPlugin = (): Plugin => {
               saveDb(dbFile, db);
               return json(res, true);
             }
+          }
+
+          // POST /api/upload — FileUploadField `upload` mode. Stores the file and returns a token.
+          if (urlPath === '/api/upload' && method === 'POST') {
+            const body = await readBody(req);
+            const { name, type, base64 } = JSON.parse(body);
+            const ext = path.extname(name || '');
+            const token = crypto.randomUUID();
+            const storedFilename = `${token}${ext}`;
+            const buffer = Buffer.from(base64 || '', 'base64');
+            fs.writeFileSync(path.join(uploadsDir, storedFilename), buffer);
+            const resource = {
+              token,
+              name: name || storedFilename,
+              type: type || MIME_TYPES[ext.toLowerCase()] || 'application/octet-stream',
+              size: buffer.length,
+              url: `/uploads/${storedFilename}`,
+            };
+            return json(res, { status: 'ok', resource });
+          }
+
+          // POST /api/submit — the public-form demo. Accepts the JSON { data, files } envelope from
+          // useUploadedFiles().toJson, reassembles files into the tree at their paths, then
+          // "validates" and returns path-keyed errors that surface back onto the right fields.
+          if (urlPath === '/api/submit' && method === 'POST') {
+            const body = await readBody(req);
+            const payload = JSON.parse(body);
+            const data: Record<string, any> = payload.data ?? {};
+            const files: Record<string, { name: string; type: string; base64_contents: string }> = payload.files ?? {};
+
+            for (const [dottedPath, meta] of Object.entries(files)) {
+              const size = Buffer.from(meta.base64_contents || '', 'base64').length;
+              dataSet(data, dottedPath, { name: meta.name, type: meta.type, size });
+            }
+
+            const errors: Record<string, string[]> = {};
+            if (!data.full_name || !String(data.full_name).trim()) {
+              errors['full_name'] = ['Your name is required'];
+            }
+            if (!data.cv) {
+              errors['cv'] = ['Please attach your CV'];
+            }
+            return json(res, { ok: Object.keys(errors).length === 0, errors, received: data });
           }
 
           // GET /api/choices/:directory

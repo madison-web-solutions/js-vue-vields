@@ -177,6 +177,44 @@ export type PasswordStrengthProvider = {
   maxStrength: number;
 };
 
+// Metadata describing a file held by a FileUploadField. The field's bound value is only the
+// `token` string (a ScalarFormValue); this richer info lives in the app-scoped file cache (see
+// uploadedFileCache) and is returned by the upload provider. The bytes are never part of the value.
+export type UploadedFileInfo = {
+  token: string;    // 'vfmfile_<sha256>' for inline mode, or the server's reference for upload mode
+  name: string;     // original filename
+  type: string;     // mime type
+  size: number;     // bytes
+  url?: string;     // optional server-supplied preview/download URL (upload mode)
+};
+
+// Provider used by FileUploadField in `upload` mode: the file is sent to the server on selection
+// and the server returns a token (plus optional url) identifying the stored file. Mirrors the shape
+// of MediaProvider.upload so existing backends are easy to adapt.
+export type UploadProvider = {
+  upload: (
+    data: FormData,
+    progressCallback: (loaded: number, total: number) => void,
+  ) => Promise<UpdateResult<UploadedFileInfo>>;
+};
+
+// An entry in the uploaded-file cache: the file's metadata, plus the real File for `inline` mode
+// (absent for `upload` mode, where the file is already on the server).
+export type UploadedFileCacheEntry = {
+  info: UploadedFileInfo;
+  file?: File;
+};
+
+// Client-side registry mapping a token to its file/metadata. Provided per-app by the plugin; backs
+// FileUploadField's inline mode and is read by the useUploadedFiles submission helpers.
+export type UploadedFileCache = {
+  put: (info: UploadedFileInfo, file?: File) => void;
+  get: (token: string) => UploadedFileCacheEntry | undefined;
+  has: (token: string) => boolean;
+  release: (token: string) => void;
+  clear: () => void;
+};
+
 
 export type IconName = keyof typeof iconMap;
 
@@ -307,6 +345,7 @@ export type VueFieldsMsPluginOptions = {
   choicesProvider?: ChoicesProvider | undefined,
   linksProvider?: LinksProvider | undefined,
   mediaProvider?: MediaProvider | undefined,
+  uploadProvider?: UploadProvider | undefined,
   passwordStrengthProvider?: PasswordStrengthProvider | undefined,
   fieldWrapperComponent?: typeof FieldWrapper | undefined,
   config?: Partial<Config>

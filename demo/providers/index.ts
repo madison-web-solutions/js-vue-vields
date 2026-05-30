@@ -1,4 +1,5 @@
 export { choicesProvider } from './choicesProvider'
 export { linksProvider } from './linksProvider'
 export { mediaProvider } from './mediaProvider'
+export { uploadProvider } from './uploadProvider'
 export { passwordStrengthProvider } from './passwordProvider'

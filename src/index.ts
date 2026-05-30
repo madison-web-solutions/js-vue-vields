@@ -25,6 +25,10 @@ import type {
   ChoicesProvider,
   LinksProvider,
   MediaProvider,
+  UploadProvider,
+  UploadedFileInfo,
+  UploadedFileCache,
+  UploadedFileCacheEntry,
   PasswordStrengthProvider,
   Config,
   ConfigKey,
@@ -62,6 +66,7 @@ import useFormField from "./lib/useFormField";
 import useHasCompoundValue from "./lib/useHasCompoundValue";
 import useHasMaxChars from "./lib/useHasMaxChars";
 import useExtendsPath from "./lib/useExtendsPath";
+import useUploadedFiles from "./lib/useUploadedFiles";
 
 import CheckboxesField from "./components/CheckboxesField.vue";
 import CheckboxField from "./components/CheckboxField.vue";
@@ -92,6 +97,7 @@ import TimeField from "./components/TimeField.vue";
 import TimestampField from "./components/TimestampField.vue";
 import ToggleField from "./components/ToggleField.vue";
 import TokensField from "./components/TokensField.vue";
+import FileUploadField from "./components/FileUploadField.vue";
 
 import MediaField from "./components/media/MediaField.vue";
 import MediaDetails from "./components/media/MediaDetails.vue";
@@ -159,6 +165,7 @@ export {
   useHasCompoundValue,
   useHasMaxChars,
   useExtendsPath,
+  useUploadedFiles,
 
   CheckboxesField,
   CheckboxField,
@@ -189,6 +196,7 @@ export {
   TimestampField,
   ToggleField,
   TokensField,
+  FileUploadField,
 
   MediaField,
   MediaDetails,
