@@ -17,6 +17,14 @@ import {
   copyRepeaterFormValue,
   copyKeyListFormValue,
   copyFormValue,
+  valueAtPath,
+  valueAt,
+  setValueAt,
+  arrayInsert,
+  arrayAppend,
+  arrayRemove,
+  arrayMove,
+  arraySwap,
 } from '../src/lib/type-utils';
 
 describe('mergeLoose', () => {
@@ -278,5 +286,126 @@ describe('copyCompoundFormValue / copyRepeaterFormValue / copyFormValue', () => 
     expect(copyFormValue(null)).toBeNull();
     expect(copyFormValue(5)).toBe(5);
     expect(copyFormValue('x')).toBe('x');
+  });
+});
+
+describe('valueAtPath', () => {
+  test('returns the whole value for an empty path', () => {
+    const v = { a: 1 };
+    expect(valueAtPath(v, [])).toBe(v);
+  });
+
+  test('walks object keys and array indices', () => {
+    const v = { a: { b: ['x', 'y'] }, items: [{ name: 'Ada' }] };
+    expect(valueAtPath(v, ['a', 'b', 1])).toBe('y');
+    expect(valueAtPath(v, ['items', 0, 'name'])).toBe('Ada');
+    expect(valueAtPath(v, ['items', '0', 'name'])).toBe('Ada');
+  });
+
+  test('returns undefined for a missing or non-traversable segment', () => {
+    expect(valueAtPath({ a: 1 }, ['b'])).toBeUndefined();
+    expect(valueAtPath({ a: 1 }, ['a', 'b'])).toBeUndefined();
+    expect(valueAtPath(null, ['a'])).toBeUndefined();
+    expect(valueAtPath([1, 2], ['x'])).toBeUndefined();
+    expect(valueAtPath([1, 2], [5])).toBeUndefined();
+  });
+});
+
+describe('valueAt (single-key read)', () => {
+  test('a string reads an object property; a number reads an array index', () => {
+    expect(valueAt({ name: 'Ada', age: 3 }, 'name')).toBe('Ada');
+    expect(valueAt(['a', 'b', 'c'], 1)).toBe('b');
+  });
+
+  test('a missing key / out-of-range index reads undefined', () => {
+    expect(valueAt({ a: 1 }, 'b')).toBeUndefined();
+    expect(valueAt(['a'], 5)).toBeUndefined();
+  });
+
+  test('a type mismatch (string↔array, number↔object, into a scalar) reads undefined', () => {
+    expect(valueAt(['a', 'b'], 'name')).toBeUndefined(); // string into array
+    expect(valueAt({ 0: 'a' }, 0)).toBeUndefined(); // number into object
+    expect(valueAt('scalar', 'length')).toBeUndefined();
+    expect(valueAt(null, 'x')).toBeUndefined();
+  });
+});
+
+describe('setValueAt (single-key immutable write)', () => {
+  test('sets an object property without mutating the original', () => {
+    const orig = { a: 1, b: 2 };
+    const next = setValueAt(orig, 'b', 99) as typeof orig;
+    expect(next).toEqual({ a: 1, b: 99 });
+    expect(orig.b).toBe(2);
+    expect(next).not.toBe(orig);
+  });
+
+  test('sets an in-range array index, copying the array', () => {
+    const orig = ['a', 'b', 'c'];
+    const next = setValueAt(orig, 1, 'B') as string[];
+    expect(next).toEqual(['a', 'B', 'c']);
+    expect(orig[1]).toBe('b');
+    expect(next).not.toBe(orig);
+  });
+
+  test('materialises a fresh object when the container is null/undefined (string key)', () => {
+    expect(setValueAt(null, 'a', 1)).toEqual({ a: 1 });
+    expect(setValueAt(undefined, 'a', 1)).toEqual({ a: 1 });
+  });
+
+  test('ignores an out-of-range array index (the repeater stale-update guard)', () => {
+    const orig = [{ name: 'Ada' }];
+    expect(setValueAt(orig, 3, { name: 'Zed' })).toBe(orig);
+    expect(setValueAt(orig, -1, { name: 'Zed' })).toBe(orig);
+  });
+
+  test('a type mismatch on a non-null container is a no-op (not a clobber)', () => {
+    const arr = ['a', 'b'];
+    expect(setValueAt(arr, 'name', 'x')).toBe(arr); // string key into array → unchanged
+    const num = 7;
+    expect(setValueAt(num, 'name', 'x')).toBe(num); // string key into scalar → unchanged
+    expect(setValueAt({ a: 1 }, 0, 'x')).toEqual({ a: 1 }); // number key into object → unchanged
+  });
+});
+
+describe('array operations', () => {
+  test('arrayInsert inserts at an index and clamps out-of-range', () => {
+    expect(arrayInsert(['a', 'b'], 1, 'x')).toEqual(['a', 'x', 'b']);
+    expect(arrayInsert(['a', 'b'], 0, 'x')).toEqual(['x', 'a', 'b']);
+    expect(arrayInsert(['a', 'b'], 99, 'x')).toEqual(['a', 'b', 'x']);
+    expect(arrayInsert(['a', 'b'], -5, 'x')).toEqual(['x', 'a', 'b']);
+  });
+
+  test('arrayAppend appends', () => {
+    expect(arrayAppend(['a'], 'b')).toEqual(['a', 'b']);
+  });
+
+  test('arrayRemove removes at an index; out-of-range is a no-op copy', () => {
+    expect(arrayRemove(['a', 'b', 'c'], 1)).toEqual(['a', 'c']);
+    const orig = ['a', 'b'];
+    expect(arrayRemove(orig, 5)).toEqual(['a', 'b']);
+    expect(arrayRemove(orig, 5)).not.toBe(orig);
+  });
+
+  test('arrayMove reorders; out-of-range/equal is a no-op copy', () => {
+    expect(arrayMove(['a', 'b', 'c'], 0, 2)).toEqual(['b', 'c', 'a']);
+    expect(arrayMove(['a', 'b', 'c'], 2, 0)).toEqual(['c', 'a', 'b']);
+    expect(arrayMove(['a', 'b', 'c'], 1, 1)).toEqual(['a', 'b', 'c']);
+    expect(arrayMove(['a', 'b', 'c'], 1, 9)).toEqual(['a', 'b', 'c']);
+  });
+
+  test('arraySwap swaps two items; out-of-range/equal is a no-op copy', () => {
+    expect(arraySwap(['a', 'b', 'c'], 0, 2)).toEqual(['c', 'b', 'a']);
+    expect(arraySwap(['a', 'b', 'c'], 1, 1)).toEqual(['a', 'b', 'c']);
+    expect(arraySwap(['a', 'b', 'c'], 0, 9)).toEqual(['a', 'b', 'c']);
+  });
+
+  test('array operations never mutate the input', () => {
+    const orig = ['a', 'b', 'c'];
+    arrayInsert(orig, 1, 'x');
+    arrayAppend(orig, 'x');
+    arrayRemove(orig, 0);
+    arrayMove(orig, 0, 2);
+    arraySwap(orig, 0, 2);
+    expect(orig).toEqual(['a', 'b', 'c']);
   });
 });

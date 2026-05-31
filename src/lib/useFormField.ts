@@ -1,137 +1,74 @@
 import type { FormValue, MessageBag, FieldEmitType, FieldProps, FieldState, EditMode, RefsOf } from "../types";
-import { computed, inject, ref, useId } from "vue";
+import { computed, inject, useId } from "vue";
 import injectionSymbols from "./injection-symbols";
 import useExtendsPath from "./useExtendsPath";
+import { useFieldBinding, formValueStrategy, formErrorsStrategy } from "./context";
 import StandardFieldWrapper from "../components/FieldWrapper.vue";
 
-export default function useFormField<ValueType extends FormValue>(
+const useFormField = <ValueType extends FormValue>(
   valueCoerceFn: (val: unknown) => ValueType,
   emit: FieldEmitType<ValueType>,
   propRefs: RefsOf<FieldProps>
-) {
+) => {
   const name = computed((): string | undefined => {
     return propRefs?.name?.value;
   });
   const index = computed((): number | undefined => {
     return propRefs?.index?.value;
   });
-  const pathPart = computed((): string | undefined => {
-    return name.value == null
-      ? index.value == null
-        ? undefined
-        : String(index.value)
-      : name.value;
+  // The single key by which this field addresses its value within the parent's provided
+  // value: a string (from `name`) addresses an object property, a number (from `index`) an
+  // array index. Keep the real type — do not stringify the index.
+  const nameOrIndex = computed((): string | number | undefined => {
+    return name.value ?? index.value;
   });
 
-  // Binding precedence: an explicit v-model / v-model:errors on this field
-  // takes priority over any lens an ancestor has injected, and the field
-  // becomes the root of a new data context (its descendants see a fresh path
-  // and the new NamedLens that container fields provide from this v-model).
+  // Binding precedence: an explicit v-model / v-model:errors on this field takes priority over
+  // the parent context — the field becomes the owner of its own value/errors (its descendants
+  // bind into that value instead). A field that owns its value is the root of a fresh context.
   //
-  // We treat "value defined" as "explicit binding" — the simplest signal that
-  // can be tracked reactively. The trade-off is that `v-model="ref(undefined)"`
-  // is interpreted as "no binding, inherit from the lens". Users who want the
-  // v-model ref to own the field even when empty should initialise it to
-  // `null` or an empty string rather than `undefined`.
-  const hasExplicitValueBinding = computed((): boolean => {
+  // We treat "value defined" as "explicit binding" — the simplest signal that can be tracked
+  // reactively. The trade-off is that `v-model="ref(undefined)"` is read as "no binding, inherit
+  // from the parent". Callers who want the v-model ref to own the field even when empty should
+  // initialise it to `null` or an empty string rather than `undefined`.
+  const ownsValue = computed((): boolean => {
     return propRefs?.modelValue?.value !== undefined;
   });
-  const hasExplicitErrorsBinding = computed((): boolean => {
-    return propRefs?.errors?.value !== undefined;
+  // Owning the value also resets the errors context: a v-model ignores the field's name, which
+  // severs the name-based route to the parent's errors. So errors then come from v-model:errors
+  // (if given) or are empty — never inherited by the (now-ignored) name. v-model:errors owns
+  // errors on its own too.
+  const ownsErrors = computed((): boolean => {
+    return ownsValue.value || propRefs?.errors?.value !== undefined;
   });
 
-  const { path, pathString } = useExtendsPath(pathPart, hasExplicitValueBinding);
+  const { path, pathString } = useExtendsPath(nameOrIndex, ownsValue);
 
-  const valueLens = inject(injectionSymbols.valueLens, undefined);
-
-  const rawValue = computed(() => {
-    if (hasExplicitValueBinding.value) {
-      return propRefs.modelValue!.value;
-    }
-    if (valueLens && valueLens.lensType == "fixed") {
-      return valueLens.get();
-    }
-    if (name.value && valueLens && valueLens.lensType == "named") {
-      return valueLens.get(name.value);
-    }
-    if (index.value != null && valueLens && valueLens.lensType == "indexed") {
-      return valueLens.get(index.value);
-    }
-    return undefined;
-  });
-
-  const setNewValue = (newVal: ValueType) => {
-    if (hasExplicitValueBinding.value) {
-      emit("update:modelValue", newVal);
-      return;
-    }
-    if (valueLens && valueLens.lensType == "fixed") {
-      valueLens.set(newVal);
-    } else if (name.value && valueLens && valueLens.lensType == "named") {
-      valueLens.set(name.value, newVal);
-    } else if (
-      index.value != null &&
-      valueLens &&
-      valueLens.lensType == "indexed"
-    ) {
-      valueLens.set(index.value, newVal);
-    } else {
-      emit("update:modelValue", newVal);
-    }
-  };
+  const rawValue = useFieldBinding(
+    formValueStrategy,
+    nameOrIndex,
+    ownsValue,
+    () => propRefs.modelValue?.value,
+    (newVal) => emit("update:modelValue", newVal as ValueType)
+  );
 
   const modelValue = computed({
     get: (): ValueType => {
       return valueCoerceFn(rawValue.value);
     },
     set: (newVal: ValueType) => {
-      setNewValue(newVal);
+      rawValue.value = newVal;
     },
   });
-
-  const errorsLens = inject(injectionSymbols.errorsLens, undefined);
 
   // All error messages for this field and any nested subfields
-  const errors = computed({
-    get: (): MessageBag => {
-      if (hasExplicitErrorsBinding.value) {
-        return propRefs.errors!.value!;
-      }
-      if (errorsLens && errorsLens.lensType == "fixed") {
-        return errorsLens.get();
-      }
-      if (name.value && errorsLens && errorsLens.lensType == "named") {
-        return errorsLens.get(name.value);
-      }
-      if (
-        index.value != null &&
-        errorsLens &&
-        errorsLens.lensType == "indexed"
-      ) {
-        return errorsLens.get(index.value);
-      }
-      return {};
-    },
-    set: (newErrors: MessageBag) => {
-      if (hasExplicitErrorsBinding.value) {
-        emit("update:errors", newErrors);
-        return;
-      }
-      if (errorsLens && errorsLens.lensType == "fixed") {
-        errorsLens.set(newErrors);
-      } else if (name.value && errorsLens && errorsLens.lensType == "named") {
-        errorsLens.set(name.value, newErrors);
-      } else if (
-        index.value != null &&
-        errorsLens &&
-        errorsLens.lensType == "indexed"
-      ) {
-        errorsLens.set(index.value, newErrors);
-      } else {
-        emit("update:errors", newErrors);
-      }
-    },
-  });
+  const errors = useFieldBinding(
+    formErrorsStrategy,
+    nameOrIndex,
+    ownsErrors,
+    () => propRefs.errors?.value ?? {},
+    (newErrors) => emit("update:errors", newErrors)
+  );
 
   // Error messages specifically for this field
   const myErrors = computed((): string[] => {
@@ -178,4 +115,6 @@ export default function useFormField<ValueType extends FormValue>(
     field,
     FieldWrapper,
   };
-}
+};
+
+export default useFormField;

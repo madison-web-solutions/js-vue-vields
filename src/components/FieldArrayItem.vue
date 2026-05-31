@@ -3,10 +3,9 @@
 </template>
 
 <script setup lang="ts">
-import type { MessageBag, FormValue, FixedLens } from "../types";
-import { toRef, provide, inject } from "vue";
+import { toRef } from "vue";
 import useExtendsPath from "../lib/useExtendsPath";
-import { injectionSymbols } from "..";
+import { provideFormValuesAt } from "../lib/context";
 
 const props = defineProps<{
   index: number;
@@ -18,45 +17,8 @@ const slots = defineSlots<{
 
 const index = toRef(props, "index");
 
+// Scope the surrounding form values to this row by its index, so the row's contents bind into
+// it. Replaces the per-row fixed lenses that used to bridge the parent indexed lens to one row.
 useExtendsPath(index);
-
-const parentValueLens = inject(injectionSymbols.valueLens, undefined);
-
-const valueLens: FixedLens<FormValue> = {
-  lensType: "fixed",
-  get: (): FormValue => {
-    if (parentValueLens && parentValueLens.lensType == "indexed") {
-      return parentValueLens.get(index.value);
-    } else {
-      return undefined;
-    }
-  },
-  set: (newVal: FormValue) => {
-    if (parentValueLens && parentValueLens.lensType == "indexed") {
-      parentValueLens.set(index.value, newVal);
-    }
-  },
-};
-
-provide(injectionSymbols.valueLens, valueLens);
-
-const parentErrorsLens = inject(injectionSymbols.errorsLens, undefined);
-
-const errorsLens: FixedLens<MessageBag> = {
-  lensType: "fixed",
-  get: (): MessageBag => {
-    if (parentErrorsLens && parentErrorsLens.lensType == "indexed") {
-      return parentErrorsLens.get(index.value);
-    } else {
-      return {};
-    }
-  },
-  set: (newErrors: MessageBag) => {
-    if (parentErrorsLens && parentErrorsLens.lensType == "indexed") {
-      parentErrorsLens.set(index.value, newErrors);
-    }
-  },
-};
-
-provide(injectionSymbols.errorsLens, errorsLens);
+provideFormValuesAt(index);
 </script>

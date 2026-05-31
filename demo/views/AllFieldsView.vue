@@ -95,8 +95,8 @@
             <div class="card-header fw-semibold">Repeater Fields</div>
             <div class="card-body">
               <RepeaterField name="simpleRepeater" label="RepeaterField (simple strings)" subValuesType="simple" appendLabel="Add Item" class="mb-4">
-                <template #default="{ index }">
-                  <TextField :index="index" label="Item" />
+                <template #default>
+                  <TextField label="Item" />
                 </template>
               </RepeaterField>
               <RepeaterField name="compoundRepeater" label="RepeaterField (compound)" subValuesType="compound" appendLabel="Add Row" class="mb-4">

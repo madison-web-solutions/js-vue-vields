@@ -15,13 +15,20 @@
 // never contributes to the lens-lookup or to field.pathString. Tests that need
 // a path-contributing wrapper use CompoundField instead.
 
-import { describe, test, expect } from 'vitest';
+import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
 import { defineComponent, nextTick, ref } from 'vue';
 import { mount } from '@vue/test-utils';
 import type { MessageBag } from '../src/types';
 import FieldGroup from '../src/components/FieldGroup.vue';
 import CompoundField from '../src/components/CompoundField.vue';
 import TextField from '../src/components/TextField.vue';
+
+// Several tests here deliberately combine v-model with a name to assert the precedence
+// behaviour; that combination is contradictory and logs a dev warning. Capture it so it
+// doesn't clutter the test output (and so individual tests can assert it when relevant).
+let warnSpy: ReturnType<typeof vi.spyOn>;
+beforeEach(() => { warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {}); });
+afterEach(() => { warnSpy.mockRestore(); });
 
 // ─── Value binding precedence ────────────────────────────────────────────────
 
@@ -178,17 +185,18 @@ describe('explicit v-model:errors overrides an injected errorsLens', () => {
 
 // ─── Path resetting ──────────────────────────────────────────────────────────
 
-describe('field.pathString resets when v-model is explicit', () => {
+describe('a v-model field is a fresh root and ignores its own name', () => {
 
-  test('a v-model on a nested CompoundField makes its descendants report a fresh path', () => {
+  test('descendants report the value path from the new root (own name ignored), and it warns', () => {
     // <FG v-model="outer">
     //   <CompoundField name="profile">       ← contributes 'profile'
     //     <CompoundField v-model="inner" name="reset">
-    //                                         ← v-model: drops ancestor path; keeps own name
-    //       <TextField name="bio" />          ← path should be 'reset.bio', NOT 'profile.reset.bio'
+    //                                         ← v-model: fresh root; own name 'reset' is ignored
+    //       <TextField name="bio" />          ← path is 'bio' (inner.bio), the value path from root
     //     </CompoundField>
     //   </CompoundField>
     // </FG>
+    // The input `name` matches the value's path from its root: bio lives at inner.bio, so 'bio'.
     const outer = ref<Record<string, unknown>>({ profile: { reset: { bio: 'IGNORE' } } });
     const inner = ref<Record<string, string>>({ bio: 'about me' });
 
@@ -209,7 +217,9 @@ describe('field.pathString resets when v-model is explicit', () => {
     const wrapper = mount(Parent);
     // TextField renders its pathString as the `name` attribute on the input.
     const input = wrapper.find('input');
-    expect(input.attributes('name')).toBe('reset.bio');
+    expect(input.attributes('name')).toBe('bio');
+    // The contradictory v-model + name on the inner CompoundField is flagged.
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('contradictory'));
   });
 
   test('without v-model the path chain is unbroken (regression check)', () => {

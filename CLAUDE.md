@@ -21,7 +21,7 @@ There is no lint command. See **Testing** below for the test suite — run `npm 
 
 ## Testing
 
-Comprehensive unit suite (Vitest + jsdom + `@vue/test-utils`) in `tests/` covering every field, the composables, the `lib/` utilities, and the lens paths. Run `npm test` and `npm run type-check` after changes. Providers are mocked inline and injected via `injectionSymbols`. Shared behaviours run through `describe.each` fixtures (`scalar-`/`choice-field-`/`compound-`/`repeater-behaviors`) — for a new field variant add a fixture rather than duplicating tests. Otherwise, follow the patterns in the nearest existing test file.
+Comprehensive unit suite (Vitest + jsdom + `@vue/test-utils`) in `tests/` covering every field, the composables, the `lib/` utilities, and the binding paths. Run `npm test` and `npm run type-check` after changes. Providers are mocked inline and injected via `injectionSymbols`. Shared behaviours run through `describe.each` fixtures (`scalar-`/`choice-field-`/`compound-`/`repeater-behaviors`) — for a new field variant add a fixture rather than duplicating tests. Otherwise, follow the patterns in the nearest existing test file.
 
 ## Architecture
 
@@ -29,16 +29,11 @@ Comprehensive unit suite (Vitest + jsdom + `@vue/test-utils`) in `tests/` coveri
 
 `src/index.ts` re-exports everything consumers use. `src/vuePlugin.ts` defines the Vue plugin installed via `app.use(vueFieldsMsPlugin, options)`.
 
-### The lens pattern
+### Field binding (per-level)
 
-Every field component supports two binding modes:
+`useFormField()` (`src/lib/useFormField.ts`) is the core composable every field uses; it returns the field's two-way `value`/`errors` refs plus `field` state. Binding is **per level** (`src/lib/context.ts`): a container provides its value and errors to descendants with `provideFormValues` (injected as `parentValue`/`parentErrors`), and a child addresses its parent's value by a single key — its `name` (a string ⟹ an object) or `index` (a number ⟹ an array), or keyless ⟹ the whole parent value. There is no multi-segment value addressing; the only real paths are the display path (`useExtendsPath` → input `name`) and `getCurrentValue`'s relative dotted query.
 
-1. **v-model** — direct `modelValue` / `update:modelValue` props (and the parallel `errors` / `update:errors` pair)
-2. **Lens injection** — a `Lens` object injected from a parent (e.g. `RepeaterField`, `FieldGroup`) that owns the data and propagates updates up
-
-The three lens types (`FixedLens`, `IndexedLens`, `NamedLens`) are in `src/types.ts`. `useFormField()` in `src/lib/useFormField.ts` is the core composable used by every field; it abstracts over both binding modes so components don't need to care which is active.
-
-**Binding precedence.** An explicit `v-model` on a field always overrides any ancestor lens. Such a field becomes the root of a fresh data context — its path resets and any container provides a new lens to its descendants derived from the v-model. The same rule applies independently to `v-model:errors`. "Explicit" is detected as `modelValue !== undefined`, so `v-model="ref(undefined)"` opts out and inherits from the lens — consumers wanting the v-model to own an empty field should use `null` or `""`. Preserve this `undefined`-sentinel invariant when editing `useFormField`.
+**v-model precedence.** An explicit `v-model` makes a field own its value — the root of a fresh context — and ignore any `name`/`index`; `v-model:errors` does the same for errors. "Explicit" means `modelValue !== undefined`, so `v-model="ref(undefined)"` opts out and inherits from the parent; use `null`/`""` for an owned-but-empty field. Preserve this `undefined`-sentinel invariant when editing `useFormField`.
 
 ### Composable hierarchy
 
@@ -78,7 +73,7 @@ All components use Bootstrap 5 utility classes. SCSS lives in `scss/` (published
 ### TypeScript conventions
 
 - All SFCs use `<script setup lang="ts">`
-- `src/types.ts` is the canonical type file — `FormValue`, `Lens`, `FieldProps`, provider interfaces, `MessageBag`
+- `src/types.ts` is the canonical type file — `FormValue`, `Path`, `FieldProps`, provider interfaces, `MessageBag`
 - Path alias `vue-fields-ms` resolves to `./src/main.ts` inside this repo (for the demo app)
 - Strict mode is on
 - **Prefer `const f = () => {}` over `function f() {}`** for all function definitions — this applies everywhere including module-level helpers, exported functions, and `<script setup>` handlers. The `function` declaration syntax is not used in this codebase.

@@ -10,10 +10,6 @@ import type {
   FormValue,
   EditMode,
   Path,
-  FixedLens,
-  IndexedLens,
-  NamedLens,
-  Lens,
   FieldProps,
   FieldState,
   RepeaterItem,
@@ -51,6 +47,11 @@ import {
   copyKeyListFormValue,
   copyFormValue,
   valueAtPath,
+  arrayInsert,
+  arrayAppend,
+  arrayRemove,
+  arrayMove,
+  arraySwap,
 } from "./lib/type-utils";
 
 import { reindexErrors } from "./lib/message-bag";
@@ -58,9 +59,9 @@ import { reindexErrors } from "./lib/message-bag";
 import { startCase, pickPropsFor } from "./lib/utils";
 
 import { getCurrentValue, getCurrentErrors } from "./lib/current-context";
+import { provideFormValues, provideFormValuesAt } from "./lib/context";
 
 import useFormField from "./lib/useFormField";
-import useHasCompoundValue from "./lib/useHasCompoundValue";
 import useHasMaxChars from "./lib/useHasMaxChars";
 import useExtendsPath from "./lib/useExtendsPath";
 import useUploadedFiles from "./lib/useUploadedFiles";
@@ -117,10 +118,6 @@ export type {
   FormValue,
   EditMode,
   Path,
-  FixedLens,
-  IndexedLens,
-  NamedLens,
-  Lens,
   FieldProps,
   FieldState,
   RepeaterItem,
@@ -155,11 +152,17 @@ export {
   reindexErrors,
   startCase,
   valueAtPath,
+  arrayInsert,
+  arrayAppend,
+  arrayRemove,
+  arrayMove,
+  arraySwap,
   pickPropsFor,
   getCurrentValue,
   getCurrentErrors,
+  provideFormValues,
+  provideFormValuesAt,
   useFormField,
-  useHasCompoundValue,
   useHasMaxChars,
   useExtendsPath,
   useUploadedFiles,

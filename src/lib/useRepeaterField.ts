@@ -1,25 +1,28 @@
 import type {
   FieldEmitType,
   FormValue,
-  IndexedLens,
-  MessageBag,
   RepeaterFormValue,
   FieldProps,
   RepeaterFieldProps,
   RepeaterItem,
   RefsOf,
 } from "../types";
-import { computed, provide, ref, onBeforeUnmount } from "vue";
+import { computed, ref, onBeforeUnmount } from "vue";
 import useFormField from './useFormField';
-import { sliceMessageBag, spliceMessageBag } from './message-bag';
-import { coerceToRepeaterFormValue, copyRepeaterFormValue } from "./type-utils";
-import { reindexErrors } from "./message-bag";
-import injectionSymbols from "./injection-symbols";
+import { provideFormValues } from "./context";
+import { sliceMessageBag, reindexErrors } from './message-bag';
+import {
+  coerceToRepeaterFormValue,
+  arrayAppend,
+  arrayInsert,
+  arrayRemove,
+  arrayMove,
+} from "./type-utils";
 
-export default function useRepeaterField(
+const useRepeaterField = (
   emit: FieldEmitType<RepeaterFormValue>,
   propRefs: RefsOf<FieldProps & RepeaterFieldProps>,
-) {
+) => {
   const newRowValue = (): FormValue => {
     return null;
   };
@@ -48,25 +51,11 @@ export default function useRepeaterField(
   };
 
   const appendRow = (): void => {
-    // make a copy of our array
-    const modelValueCopy: RepeaterFormValue = copyRepeaterFormValue(
-      modelValue.value,
-    );
-    // add the new row
-    modelValueCopy.push(newRowValue());
-    // set our new value
-    modelValue.value = modelValueCopy;
+    modelValue.value = arrayAppend(modelValue.value, newRowValue());
   };
 
-  const insertRowAt = function (index: number): void {
-    // make a copy of our array
-    const modelValueCopy: RepeaterFormValue = copyRepeaterFormValue(
-      modelValue.value,
-    );
-    // insert the new row at index
-    modelValueCopy.splice(index, 0, newRowValue());
-    // set our new value
-    modelValue.value = modelValueCopy;
+  const insertRowAt = (index: number): void => {
+    modelValue.value = arrayInsert(modelValue.value, index, newRowValue());
 
     // update indices in error messages so that errors remain attached to the right row
     errors.value = reindexErrors(errors.value, (oldIndex) => {
@@ -80,16 +69,10 @@ export default function useRepeaterField(
   };
 
   const deleteRowAt = (index: number): void => {
-    // make a copy of our array
-    const modelValueCopy: RepeaterFormValue = copyRepeaterFormValue(
-      modelValue.value,
-    );
-    // remove the row at index
-    modelValueCopy.splice(index, 1);
+    const next = arrayRemove(modelValue.value, index);
     // add rows if necessary to meet minimum requirement
-    addEnoughRows(modelValueCopy);
-    // set our new value
-    modelValue.value = modelValueCopy;
+    addEnoughRows(next);
+    modelValue.value = next;
 
     // update indices in error messages so that errors remain attached to the right row
     errors.value = reindexErrors(errors.value, (oldIndex) => {
@@ -118,15 +101,7 @@ export default function useRepeaterField(
     if (movable.value == false || from === to) {
       return;
     }
-    // make a copy of our array
-    const modelValueCopy: RepeaterFormValue = copyRepeaterFormValue(
-      modelValue.value,
-    );
-    // move the row to it's new position
-    const itemBeingMoved: FormValue = modelValueCopy.splice(from, 1)[0];
-    modelValueCopy.splice(to, 0, itemBeingMoved);
-    // set our new value
-    modelValue.value = modelValueCopy;
+    modelValue.value = arrayMove(modelValue.value, from, to);
 
     // update indices in error messages so that errors remain attached to the right row
     errors.value = reindexErrors(errors.value, (oldIndex) => {
@@ -142,53 +117,10 @@ export default function useRepeaterField(
     });
   };
 
-  const valueLens: IndexedLens<FormValue> = {
-    lensType: "indexed",
-    get: (index: number): FormValue => {
-      return modelValue.value[index];
-    },
-    getAll: (): FormValue[] => {
-      return modelValue.value;
-    },
-    set: (index: number, newVal: FormValue) => {
-      if (index < 0 || index >= modelValue.value.length) {
-        // Don't allow a rogue child to set a value outside of the array range.
-        // This has been a problem in particular when an item is removed from the array, but the child component makes
-        // some kind of update to the value prior to it being dismounted, which results in the row not being deleted
-        return;
-      }
-      // make a copy of our value
-      const modelValueCopy: RepeaterFormValue = copyRepeaterFormValue(
-        modelValue.value,
-      );
-      // set the new value
-      modelValueCopy[index] = newVal;
-      modelValue.value = modelValueCopy;
-    },
-  };
-
-  provide(injectionSymbols.valueLens, valueLens);
-
-  const errorsLens: IndexedLens<MessageBag> = {
-    lensType: "indexed",
-    get: (index: number): MessageBag => {
-      return sliceMessageBag(errors.value, String(index));
-    },
-    getAll: (): MessageBag[] => {
-      return modelValue.value.map(
-        (_, index): MessageBag => sliceMessageBag(errors.value, String(index)),
-      );
-    },
-    set: (index: number, newSubErrors: MessageBag) => {
-      errors.value = spliceMessageBag(
-        errors.value,
-        String(index),
-        newSubErrors,
-      );
-    },
-  };
-
-  provide(injectionSymbols.errorsLens, errorsLens);
+  // Provide our (coerced, min-padded) array as the value the rows bind into. Each
+  // FieldArrayItem focuses it at its index; the out-of-range guard in setValueAt
+  // ignores stale writes from a row that has just been removed.
+  provideFormValues(modelValue, errors);
 
   const movingIndex = ref<number | undefined>(undefined);
   const isMoving = computed((): boolean => {
@@ -266,4 +198,6 @@ export default function useRepeaterField(
     cancelMove,
     loopItems,
   };
-}
+};
+
+export default useRepeaterField;

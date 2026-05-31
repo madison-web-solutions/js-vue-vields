@@ -1,15 +1,15 @@
 // Tests for the getCurrentValue / getCurrentErrors helpers, which let a component
-// read the value/errors of its surrounding container context via the injected lens.
-// A small Probe component renders the helpers' output so the resolved values can be
-// read back from the DOM. The named context uses a real FieldGroup (so the helper's
-// error-bag flattening is validated against the lens FieldGroup actually provides);
-// the fixed and indexed branches use directly-injected lenses, as in lens.test.ts.
+// read the value/errors of its surrounding container context via the injected
+// value/errors roots. A small Probe component renders the helpers' output so the
+// resolved values can be read back from the DOM. The named context uses a real
+// FieldGroup (so the helpers are validated against the roots FieldGroup actually
+// provides); the object/array branches inject roots directly.
 
 import { describe, test, expect } from 'vitest';
 import { defineComponent, h, nextTick, ref } from 'vue';
 import { mount } from '@vue/test-utils';
 import type { VueWrapper } from '@vue/test-utils';
-import type { FixedLens, FormValue, IndexedLens, MessageBag } from '../src/types';
+import type { FormValue, MessageBag } from '../src/types';
 import injectionSymbols from '../src/lib/injection-symbols';
 import FieldGroup from '../src/components/FieldGroup.vue';
 import { getCurrentValue, getCurrentErrors } from '../src/lib/current-context';
@@ -97,50 +97,36 @@ describe('getCurrentValue / getCurrentErrors in a named context (FieldGroup)', (
   });
 });
 
-describe('getCurrentValue / getCurrentErrors in a fixed context', () => {
-  const mountWithFixed = (value: FormValue, errors: MessageBag, probeProps: Record<string, unknown>) => {
-    const valueLens: FixedLens<FormValue> = { lensType: 'fixed', get: () => value, set: () => {} };
-    const errorsLens: FixedLens<MessageBag> = { lensType: 'fixed', get: () => errors, set: () => {} };
+describe('getCurrentValue / getCurrentErrors against a directly-injected root', () => {
+  const mountWithRoots = (value: FormValue, errors: MessageBag, probeProps: Record<string, unknown>) => {
     return mount(Probe, {
       props: probeProps,
       global: {
         provide: {
-          [injectionSymbols.valueLens]: valueLens,
-          [injectionSymbols.errorsLens]: errorsLens,
+          [injectionSymbols.parentValue]: ref(value),
+          [injectionSymbols.parentErrors]: ref(errors),
         },
       },
     });
   };
 
-  test('reads a value by path relative to the fixed value', () => {
-    const wrapper = mountWithFixed({ name: 'Bob' }, {}, { valuePath: 'name' });
+  test('reads a value by path relative to the root value', () => {
+    const wrapper = mountWithRoots({ name: 'Bob' }, {}, { valuePath: 'name' });
     expect(readVal(wrapper)).toBe('Bob');
   });
 
-  test('returns the whole fixed value when no path is given', () => {
-    const wrapper = mountWithFixed({ name: 'Bob' }, {}, {});
+  test('returns the whole root value when no path is given', () => {
+    const wrapper = mountWithRoots({ name: 'Bob' }, {}, {});
     expect(readVal(wrapper)).toEqual({ name: 'Bob' });
   });
 
-  test('scopes errors by path against the fixed bag', () => {
-    const wrapper = mountWithFixed({}, { name: ['Required'] }, { errorPath: 'name' });
+  test('scopes errors by path against the root bag', () => {
+    const wrapper = mountWithRoots({}, { name: ['Required'] }, { errorPath: 'name' });
     expect(readErr(wrapper)).toEqual({ '': ['Required'] });
   });
-});
 
-describe('getCurrentValue in an indexed context', () => {
-  test('reads into the array via a dotted path', () => {
-    const value: FormValue = [{ name: 'Ada' }, { name: 'Bob' }];
-    const valueLens: IndexedLens<FormValue> = {
-      lensType: 'indexed',
-      get: (i) => (value as FormValue[])[i],
-      set: () => {},
-      getAll: () => value as FormValue[],
-    };
-    const wrapper = mount(Probe, {
-      props: { valuePath: '1.name' },
-      global: { provide: { [injectionSymbols.valueLens]: valueLens } },
-    });
+  test('reads into an array root via a dotted path', () => {
+    const wrapper = mountWithRoots([{ name: 'Ada' }, { name: 'Bob' }], {}, { valuePath: '1.name' });
     expect(readVal(wrapper)).toBe('Bob');
   });
 });

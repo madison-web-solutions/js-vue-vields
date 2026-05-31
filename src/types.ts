@@ -46,28 +46,6 @@ export type FormValue =
 
 export type Path = (string | number)[];
 
-export type FixedLens<T> = {
-  get: () => T;
-  set: (newVal: T) => void;
-  lensType: "fixed";
-};
-
-export type IndexedLens<T> = {
-  get: (index: number) => T;
-  set: (index: number, newVal: T) => void;
-  getAll: () => T[];
-  lensType: "indexed";
-};
-
-export type NamedLens<T> = {
-  get: (name: string) => T;
-  set: (name: string, newVal: T) => void;
-  getAll: () => Dict<T>;
-  lensType: "named";
-};
-
-export type Lens<T> = FixedLens<T> | IndexedLens<T> | NamedLens<T>;
-
 export type EditMode = 'edit' | 'view';
 
 

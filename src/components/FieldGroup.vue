@@ -6,7 +6,7 @@
 import type { FieldEmitType, MessageBag, EditMode, CompoundFormValue, Config, Loose } from "../types";
 import { toRef } from "vue";
 import useFormField from '../lib/useFormField';
-import useHasCompoundValue from '../lib/useHasCompoundValue';
+import { provideFormValues } from '../lib/context';
 import { coerceToCompoundFormValue } from '../lib/type-utils';
 import useExtendsConfig from "../lib/useExtendsConfig";
 import useExtendsEditMode from "../lib/useExtendsEditMode";
@@ -32,6 +32,6 @@ useExtendsConfig(propRefs.config);
 useExtendsEditMode(propRefs.editMode);
 
 const { modelValue, errors } = useFormField<CompoundFormValue>(coerceToCompoundFormValue, emit, propRefs);
-useHasCompoundValue(modelValue, errors);
+provideFormValues(modelValue, errors);
 
 </script>
