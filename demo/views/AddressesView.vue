@@ -1,12 +1,13 @@
 <template>
-  <ExampleLayout title="Reusable Address Field" :code="sources" :values="liveVals">
+  <ExampleLayout title="Reusable Field-Group Components" :code="sources" :values="liveVals">
     <template #description>
       <p>
-        A common pattern: bundle a fixed set of sub-fields into a single reusable
-        component so the same shape can be dropped in anywhere it's needed. Here
-        <code>AddressField</code> wraps <code>CompoundField</code> around six
-        sub-fields (line 1/2, city, county, postcode, country) and exposes a few
-        layout switches (<code>singleCol</code>, <code>border</code>).
+        This page is really about a <em>technique</em>, not a particular field: bundling a
+        fixed set of sub-fields into a single reusable component, so the same shape can be
+        dropped in anywhere it's needed. A postal address is just a convenient example. Here
+        <code>AddressField</code> wraps <code>CompoundField</code> around six sub-fields
+        (line 1/2, city, county, postcode, country) and exposes a few layout switches
+        (<code>singleCol</code>, <code>border</code>).
       </p>
       <p class="mb-0">
         The same <code>AddressField</code> is reused three times below: once as a

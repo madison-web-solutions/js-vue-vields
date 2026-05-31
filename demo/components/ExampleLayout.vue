@@ -5,6 +5,11 @@
       <slot name="description" />
     </div>
 
+    <!-- Optional full-width band above the form, e.g. load / save / edit-mode controls -->
+    <div v-if="$slots.toolbar" class="mb-4">
+      <slot name="toolbar" />
+    </div>
+
     <div class="row g-4">
       <div class="col-xl-7">
         <div class="card mb-4">
@@ -43,6 +48,11 @@
             <div class="card-body p-2">
               <pre class="mb-0" style="font-size: 0.78rem; max-height: 70vh; overflow: auto">{{ formatted }}</pre>
             </div>
+          </div>
+
+          <!-- Optional extra panel(s) below Live Values, e.g. a validation-errors view -->
+          <div v-if="$slots.aside" class="mt-3">
+            <slot name="aside" />
           </div>
         </div>
       </div>
