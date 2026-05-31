@@ -9,6 +9,7 @@ export const routes: RouteRecordRaw[] = [
   { path: '/login', name: 'login', component: () => import('./views/LoginView.vue'), meta: { title: 'Login Form' } },
   { path: '/public-form', name: 'public-form', component: () => import('./views/PublicFormView.vue'), meta: { title: 'Public Form' } },
   { path: '/repeaters', name: 'repeaters', component: () => import('./views/RepeatersView.vue'), meta: { title: 'Repeaters' } },
+  { path: '/conditional', name: 'conditional', component: () => import('./views/ConditionalView.vue'), meta: { title: 'Conditional Logic' } },
   { path: '/addresses', name: 'addresses', component: () => import('./views/AddressesView.vue'), meta: { title: 'Addresses' } },
   { path: '/current-context', name: 'current-context', component: () => import('./views/CurrentContextView.vue'), meta: { title: 'Current Context' } },
 ];
