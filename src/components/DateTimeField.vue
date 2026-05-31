@@ -43,6 +43,7 @@ import DateField from "./DateField.vue";
 import TimeField from "./TimeField.vue";
 import injectionSymbols from "../lib/injection-symbols";
 import useFormField from "../lib/useFormField";
+import { getConfigRef } from "../lib/config";
 import { ymdHisToFormat } from "date-format-ms";
 
 const props = defineProps<FieldProps & {
@@ -51,11 +52,11 @@ const props = defineProps<FieldProps & {
   max?: string,
 }>();
 
-const displayFormat = computed(() => props.displayFormat ?? 'd/m/Y H:i');
-
 const emit = defineEmits<FieldEmitType<string | null> & EnterPressEmitType>();
 
 const propRefs = toRefs(props);
+
+const displayFormat = getConfigRef("dateTime.displayFormat", propRefs.displayFormat);
 
 const coerceFn = (value: any): string | null => {
   return value == null || value === "" ? null : String(value);

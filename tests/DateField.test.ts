@@ -113,6 +113,36 @@ describe('DateField', () => {
     expect(wrapper.text()).toContain('2024-06-15');
   });
 
+  test('config date.displayFormat changes the default view mode format', () => {
+    const editMode = ref<EditMode>('view');
+    const Parent = defineComponent({
+      components: { DateField },
+      setup() {
+        provide(injectionSymbols.editMode, editMode);
+        provide(injectionSymbols.config, ref({ 'date.displayFormat': 'm/d/Y' }));
+        return { value: ref('2024-06-15') };
+      },
+      template: '<DateField v-model="value" />',
+    });
+    const wrapper = mount(Parent);
+    expect(wrapper.text()).toContain('06/15/2024');
+  });
+
+  test('displayFormat prop overrides config date.displayFormat', () => {
+    const editMode = ref<EditMode>('view');
+    const Parent = defineComponent({
+      components: { DateField },
+      setup() {
+        provide(injectionSymbols.editMode, editMode);
+        provide(injectionSymbols.config, ref({ 'date.displayFormat': 'm/d/Y' }));
+        return { value: ref('2024-06-15') };
+      },
+      template: '<DateField v-model="value" displayFormat="Y-m-d" />',
+    });
+    const wrapper = mount(Parent);
+    expect(wrapper.text()).toContain('2024-06-15');
+  });
+
   test('emits enterPress when Enter is pressed', async () => {
     const wrapper = mount(DateField, { props: { modelValue: '2024-06-15' } });
     await wrapper.find('input').trigger('keydown.enter');

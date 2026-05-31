@@ -137,6 +137,21 @@ describe('DateTimeField', () => {
     expect(wrapper.text()).toContain('2024-06-15 14:30');
   });
 
+  test('config dateTime.displayFormat changes the default view mode format', () => {
+    const editMode = ref<EditMode>('view');
+    const Parent = defineComponent({
+      components: { DateTimeField },
+      setup() {
+        provide(injectionSymbols.editMode, editMode);
+        provide(injectionSymbols.config, ref({ 'dateTime.displayFormat': 'Y-m-d H:i' }));
+        return { value: ref('2024-06-15 14:30:00') };
+      },
+      template: '<DateTimeField v-model="value" />',
+    });
+    const wrapper = mount(Parent);
+    expect(wrapper.text()).toContain('2024-06-15 14:30');
+  });
+
   test('forwards enterPress from its sub-inputs', async () => {
     const wrapper = mount(DateTimeField, { props: { modelValue: '2024-06-15 14:30:00' } });
     await dateInput(wrapper).trigger('keydown.enter');

@@ -153,6 +153,21 @@ describe('TimestampField', () => {
     expect(wrapper.text()).toContain('2024-06-15 14:30');
   });
 
+  test('config timestamp.displayFormat changes the default view mode format', () => {
+    const editMode = ref<EditMode>('view');
+    const Parent = defineComponent({
+      components: { TimestampField },
+      setup() {
+        provide(injectionSymbols.editMode, editMode);
+        provide(injectionSymbols.config, ref({ 'timestamp.displayFormat': 'Y-m-d H:i' }));
+        return { value: ref(TS_2024_06_15_14_30) };
+      },
+      template: '<TimestampField v-model="value" timeZone="utc" />',
+    });
+    const wrapper = mount(Parent);
+    expect(wrapper.text()).toContain('2024-06-15 14:30');
+  });
+
   test('forwards enterPress from its sub-inputs', async () => {
     const wrapper = mount(TimestampField, { props: { modelValue: TS_2024_06_15_14_30, timeZone: 'utc' } });
     await dateInput(wrapper).trigger('keydown.enter');

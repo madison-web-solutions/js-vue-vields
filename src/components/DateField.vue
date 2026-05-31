@@ -28,6 +28,7 @@
 import type { FieldEmitType, EnterPressEmitType, FieldProps } from "../types";
 import { computed, ref, toRefs } from "vue";
 import useFormField from "../lib/useFormField";
+import { getConfigRef } from "../lib/config";
 import { dateToUtcFormat, ymdToFormat } from "date-format-ms";
 
 const props = defineProps<FieldProps & {
@@ -36,13 +37,13 @@ const props = defineProps<FieldProps & {
   max?: string | undefined,
 }>();
 
-const displayFormat = computed(() => props.displayFormat ?? "d/m/Y");
-
 const inputEle = ref<HTMLInputElement | null>(null);
 
 const emit = defineEmits<FieldEmitType<string | null> & EnterPressEmitType>();
 
 const propRefs = toRefs(props);
+
+const displayFormat = getConfigRef("date.displayFormat", propRefs.displayFormat);
 
 const coerceFn = (value: any): string | null => {
   return ymdToFormat(String(value), "Y-m-d") || null;

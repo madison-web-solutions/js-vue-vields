@@ -6,6 +6,9 @@ import injectionSymbols from "./injection-symbols";
 export const defaultConfig: Config = {
   noValueLabel: "(none)",
   "textArea.numRows": 4,
+  "date.displayFormat": "d/m/Y",
+  "dateTime.displayFormat": "d/m/Y H:i",
+  "timestamp.displayFormat": "d/m/Y H:i",
   "currency.currencyCode": null,
   "currency.showCurrency": false,
   "html.subSuperScript": false,

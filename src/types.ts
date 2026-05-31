@@ -309,6 +309,9 @@ export type ParsesTextFieldOptions<T> = {
 export type Config = {
   noValueLabel: string;
   "textArea.numRows": number;
+  "date.displayFormat": string;
+  "dateTime.displayFormat": string;
+  "timestamp.displayFormat": string;
   "currency.currencyCode": string | null;
   "currency.showCurrency": boolean;
   'html.subSuperScript': boolean;
