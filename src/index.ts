@@ -1,31 +1,52 @@
 import { defineAsyncComponent } from "vue";
 
 import type {
+  // General
   Dict,
   MessageBag,
+  EditMode,
+  Path,
+  // Form value shapes
   ScalarFormValue,
   KeyListFormValue,
+  BooleansMapFormValue,
   CompoundFormValue,
   RepeaterFormValue,
   FormValue,
-  EditMode,
-  Path,
-  FieldProps,
-  FieldState,
-  RepeaterItem,
-  RepeaterTableColOpts,
-  RepeaterTableCol,
+  // Choices
   Choosable,
+  PendingChoosable,
+  // Provider support types
   LookupResult,
   UpdateResult,
+  SearchResultPage,
+  LinkAlias,
+  MediaItem,
+  MediaItemWithThumbnail,
+  UploadedFileInfo,
+  UploadedFileCache,
+  UploadedFileCacheEntry,
+  // Provider interfaces
   ChoicesProvider,
   LinksProvider,
   MediaProvider,
   UploadProvider,
-  UploadedFileInfo,
-  UploadedFileCache,
-  UploadedFileCacheEntry,
   PasswordStrengthProvider,
+  // Field building blocks (for authoring custom fields / repeaters)
+  FieldProps,
+  FieldState,
+  FieldEmitType,
+  EnterPressEmitType,
+  RepeaterFieldProps,
+  HasChoicesFieldProps,
+  HasChoicesMultipleFieldProps,
+  HasMaxCharsFieldProps,
+  UsesSearchesFieldProps,
+  ParsesTextFieldOptions,
+  RepeaterItem,
+  RepeaterTableColOpts,
+  RepeaterTableCol,
+  // Config / plugin
   Config,
   ConfigKey,
   VueFieldsMsPluginOptions,
@@ -61,9 +82,19 @@ import { startCase, pickPropsFor } from "./lib/utils";
 import { getCurrentValue, getCurrentErrors } from "./lib/current-context";
 import { provideFormValues, provideFormValuesAt } from "./lib/context";
 
+// Core field composables. These are the building blocks the shipped fields are made from, and
+// are exported so consumers can author their own field / repeater / choice / container variants.
 import useFormField from "./lib/useFormField";
 import useHasMaxChars from "./lib/useHasMaxChars";
+import useHasChoices from "./lib/useHasChoices";
+import useHasChoicesSingle from "./lib/useHasChoicesSingle";
+import useFormFieldWithChoicesMultiple from "./lib/useFormFieldWithChoicesMultiple";
+import useRepeaterField from "./lib/useRepeaterField";
+import useSearches from "./lib/useSearches";
+import useParsesTextField from "./lib/useParsesTextField";
 import useExtendsPath from "./lib/useExtendsPath";
+import useExtendsEditMode from "./lib/useExtendsEditMode";
+import useExtendsConfig from "./lib/useExtendsConfig";
 import useUploadedFiles from "./lib/useUploadedFiles";
 
 import CheckboxesField from "./components/CheckboxesField.vue";
@@ -109,27 +140,52 @@ const HtmlField = defineAsyncComponent(
 import { vueFieldsMsPlugin } from "./vuePlugin";
 
 export type {
+  // General
   Dict,
   MessageBag,
+  EditMode,
+  Path,
+  // Form value shapes
   ScalarFormValue,
   KeyListFormValue,
+  BooleansMapFormValue,
   CompoundFormValue,
   RepeaterFormValue,
   FormValue,
-  EditMode,
-  Path,
-  FieldProps,
-  FieldState,
-  RepeaterItem,
-  RepeaterTableColOpts,
-  RepeaterTableCol,
+  // Choices
   Choosable,
+  PendingChoosable,
+  // Provider support types
   LookupResult,
   UpdateResult,
+  SearchResultPage,
+  LinkAlias,
+  MediaItem,
+  MediaItemWithThumbnail,
+  UploadedFileInfo,
+  UploadedFileCache,
+  UploadedFileCacheEntry,
+  // Provider interfaces
   ChoicesProvider,
   LinksProvider,
   MediaProvider,
+  UploadProvider,
   PasswordStrengthProvider,
+  // Field building blocks (for authoring custom fields / repeaters)
+  FieldProps,
+  FieldState,
+  FieldEmitType,
+  EnterPressEmitType,
+  RepeaterFieldProps,
+  HasChoicesFieldProps,
+  HasChoicesMultipleFieldProps,
+  HasMaxCharsFieldProps,
+  UsesSearchesFieldProps,
+  ParsesTextFieldOptions,
+  RepeaterItem,
+  RepeaterTableColOpts,
+  RepeaterTableCol,
+  // Config / plugin
   Config,
   ConfigKey,
   VueFieldsMsPluginOptions,
@@ -137,6 +193,8 @@ export type {
 
 export {
   injectionSymbols,
+
+  // Value / error helpers
   isArrayKey,
   coerceToArrayKey,
   coerceToBoolean,
@@ -162,11 +220,22 @@ export {
   getCurrentErrors,
   provideFormValues,
   provideFormValuesAt,
+
+  // Composables (field building blocks)
   useFormField,
   useHasMaxChars,
+  useHasChoices,
+  useHasChoicesSingle,
+  useFormFieldWithChoicesMultiple,
+  useRepeaterField,
+  useSearches,
+  useParsesTextField,
   useExtendsPath,
+  useExtendsEditMode,
+  useExtendsConfig,
   useUploadedFiles,
 
+  // Components
   CheckboxesField,
   CheckboxField,
   CompoundField,
