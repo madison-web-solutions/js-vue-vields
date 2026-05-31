@@ -29,7 +29,7 @@ export default defineConfig({
     },
     rollupOptions: {
       // The following dependencies should not be bundled into the library
-      external: ['vue', 'date-format-ms', 'ckeditor'],
+      external: [/^vue$/, /^date-format-ms(\/|$)/, /^ckeditor5(\/|$)/],
     },
     outDir: 'dist', // default, but explicit
     emptyOutDir: true

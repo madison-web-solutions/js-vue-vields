@@ -81,4 +81,4 @@ All components use Bootstrap 5 utility classes. SCSS lives in `scss/` (published
 
 ### Build output
 
-Vite builds a single ES module (`dist/index.js`). External peer deps not bundled: `vue`, `date-format-ms`, `ckeditor5`. CSS code-splitting is enabled; CKEditor CSS emits as `dist/HtmlField.css` and must be imported separately by consumers.
+Vite builds a single ES module (`dist/index.js`). Not bundled (externalized in `vite.config.ts`): `vue` (a peer dependency), `date-format-ms`, and `ckeditor5` (both regular dependencies). CSS code-splitting is enabled. The async `HtmlField` chunk imports `ckeditor5/ckeditor5.css` as an external reference, so CKEditor's styles load automatically from the consumer's own `ckeditor5` install when `HtmlField` is used — no separate CSS import is required.
