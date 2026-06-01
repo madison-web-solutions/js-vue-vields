@@ -128,11 +128,17 @@
 .vfm-media-details-preview {
   position: relative;
 
+  // The image is taken out of flow (absolutely positioned and centred) so it
+  // doesn't drive the height of this column — the column's height is dictated by
+  // the details column beside it. The image then scales to fill that available
+  // space, keeping its aspect ratio (so a tall, thin image gets narrower rather
+  // than forcing the preview window taller).
   > img {
-    display: block;
+    position: absolute;
+    inset: 0;
     margin: auto;
     max-width: 100%;
-    max-height: 20rem;
+    max-height: 100%;
   }
   .vfm-media-details-overlay {
     position: absolute;
