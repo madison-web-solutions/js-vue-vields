@@ -318,6 +318,7 @@ export type Config = {
   'html.code': boolean;
   'html.tables': boolean;
   "media.supportCropCenter": boolean,
+  "text.autofillReconcile": boolean;
 };
 
 export type ConfigKey = keyof Config;

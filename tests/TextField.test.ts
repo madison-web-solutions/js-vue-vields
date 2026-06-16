@@ -1,4 +1,4 @@
-import { describe, test, expect } from 'vitest';
+import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { defineComponent, nextTick, provide, ref } from 'vue';
 import { lastEmittedValue } from './utils';
@@ -88,6 +88,43 @@ describe('TextField', () => {
     const wrapper = mount(TextField, { props: { modelValue: 'test' } });
     await wrapper.find('input').trigger('keydown.enter');
     expect(wrapper.emitted('enterPress')).toBeTruthy();
+  });
+
+  // Firefox autofills text/email fields on page load without firing input or change, leaving
+  // v-model out of sync with the DOM. The opt-in autofillReconcile reads the input's DOM value
+  // shortly after mount and seeds the model from it.
+  describe('autofill reconciliation', () => {
+    // Simulate browser autofill: write the DOM value without dispatching an input event.
+    const autofill = (wrapper: ReturnType<typeof mount>, value: string) => {
+      (wrapper.find('input').element as HTMLInputElement).value = value;
+    };
+
+    beforeEach(() => vi.useFakeTimers());
+    afterEach(() => vi.useRealTimers());
+
+    test('does nothing when not enabled (default off)', async () => {
+      const wrapper = mount(TextField, { props: { modelValue: '' } });
+      autofill(wrapper, 'autofilled@example.com');
+      vi.advanceTimersByTime(100);
+      await nextTick();
+      expect(wrapper.emitted('update:modelValue')).toBeFalsy();
+    });
+
+    test('seeds the model shortly after mount for the silent page-load fill', async () => {
+      const wrapper = mount(TextField, { props: { modelValue: '', autofillReconcile: true } });
+      autofill(wrapper, 'autofilled@example.com');
+      vi.advanceTimersByTime(100);
+      await nextTick();
+      expect(lastEmittedValue(wrapper)).toBe('autofilled@example.com');
+    });
+
+    test('never clobbers a model that already has a value', async () => {
+      const wrapper = mount(TextField, { props: { modelValue: 'real value', autofillReconcile: true } });
+      autofill(wrapper, 'autofilled@example.com');
+      vi.advanceTimersByTime(100);
+      await nextTick();
+      expect(wrapper.emitted('update:modelValue')).toBeFalsy();
+    });
   });
 
   test('renders text value (not input) in view mode', async () => {

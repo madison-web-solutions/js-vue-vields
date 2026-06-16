@@ -15,6 +15,7 @@ export const defaultConfig: Config = {
   "html.code": false,
   "html.tables": false,
   "media.supportCropCenter": false,
+  "text.autofillReconcile": false,
 };
 
 export const getConfigValue = <K extends ConfigKey>(config: Partial<Config> | undefined, key: K): Config[K] => {
