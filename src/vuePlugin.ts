@@ -29,7 +29,9 @@ export const vueFieldsMsPlugin = (app: App, opts: VueFieldsMsPluginOptions): voi
   // cheap and stateless until used) so inline file uploads work with no extra configuration.
   app.provide(injectionSymbols.uploadedFileCache, createUploadedFileCache());
 
-  const config: Config = Object.assign(defaultConfig, opts.config);
+  // Merge into a fresh object — Object.assign(defaultConfig, ...) would mutate the shared
+  // defaultConfig that getConfigValue/useExtendsConfig fall back to elsewhere.
+  const config: Config = { ...defaultConfig, ...opts.config };
   app.provide(injectionSymbols.config, ref(config));
 };
 
