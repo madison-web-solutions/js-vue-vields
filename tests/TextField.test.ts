@@ -2,8 +2,9 @@ import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { defineComponent, nextTick, provide, ref } from 'vue';
 import { lastEmittedValue } from './utils';
-import type { EditMode } from '../src/types';
+import type { Config, EditMode } from '../src/types';
 import injectionSymbols from '../src/lib/injection-symbols';
+import { defaultConfig } from '../src/lib/config';
 import TextField from '../src/components/TextField.vue';
 
 describe('TextField', () => {
@@ -112,6 +113,21 @@ describe('TextField', () => {
 
     test('seeds the model shortly after mount for the silent page-load fill', async () => {
       const wrapper = mount(TextField, { props: { modelValue: '', autofillReconcile: true } });
+      autofill(wrapper, 'autofilled@example.com');
+      vi.advanceTimersByTime(100);
+      await nextTick();
+      expect(lastEmittedValue(wrapper)).toBe('autofilled@example.com');
+    });
+
+    // Regression: the prop must default to undefined (not Vue's Boolean-cast false), or the
+    // absent prop would shadow the injected config and the feature could only be turned on per
+    // field — never globally via the plugin config.
+    test('can be enabled via injected config when the prop is absent', async () => {
+      const config = ref<Config>({ ...defaultConfig, 'text.autofillReconcile': true });
+      const wrapper = mount(TextField, {
+        props: { modelValue: '' },
+        global: { provide: { [injectionSymbols.config as symbol]: config } },
+      });
       autofill(wrapper, 'autofilled@example.com');
       vi.advanceTimersByTime(100);
       await nextTick();

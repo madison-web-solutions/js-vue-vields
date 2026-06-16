@@ -33,10 +33,12 @@ import useHasMaxChars from "../lib/useHasMaxChars";
 import { getConfigRef } from "../lib/config";
 import { coerceToString } from "../lib/type-utils";
 
-const props = defineProps<FieldProps & HasMaxCharsFieldProps & {
+const props = withDefaults(defineProps<FieldProps & HasMaxCharsFieldProps & {
   inputType?: string,
-  autofillReconcile?: boolean,
-}>();
+  autofillReconcile?: boolean | undefined,
+}>(), {
+  autofillReconcile: undefined,
+});
 
 const emit = defineEmits<FieldEmitType<string> & EnterPressEmitType>();
 

@@ -78,6 +78,7 @@ All components use Bootstrap 5 utility classes. SCSS lives in `scss/` (published
 - Strict mode is on
 - **Prefer `const f = () => {}` over `function f() {}`** for all function definitions — this applies everywhere including module-level helpers, exported functions, and `<script setup>` handlers. The `function` declaration syntax is not used in this codebase.
 - **Always use semicolons** at the end of statements, even where they are optional.
+- Remember that Vue passes a value of false for any boolean prop which the caller omits (not the usual `undefined`).  If a prop should be true/false/undefined, then you **must** explicitly declare the prop default value as undefined.
 
 ### Build output
 
