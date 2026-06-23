@@ -8,6 +8,7 @@
           placeholder="Search"
           :disabled="field.disabled"
           :directory="directory"
+          :extraParams="extraParams"
         />
         <SelectField
           v-if="editable && !searchable"
@@ -16,6 +17,7 @@
           :disabled="field.disabled"
           :choices="choices"
           :directory="directory"
+          :extraParams="extraParams"
         />
       </div>
       <div class="vfm-tokens-list">
