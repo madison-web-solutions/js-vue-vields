@@ -130,19 +130,20 @@ const displayValue = computed((): string => {
   return formatted == null ? "" : formatted;
 });
 
-const dateValue = ref<string | undefined>(undefined);
-const timeValue = ref<string | undefined>(undefined);
+// Must be initialised to null rather than undefined because undefined is interpreted as "no model binding"
+const dateValue = ref<string | null>(null);
+const timeValue = ref<string | null>(null);
 
 // Set dateValue and timeValue from the modelValue timestamp (and update when modelValue changes)
 const updateLocalVals = (newTs: number | null) => {
   if (newTs == null) {
-    dateValue.value = undefined;
-    timeValue.value = undefined;
+    dateValue.value = null;
+    timeValue.value = null;
   } else {
     const dateYmd = tsToFormat(newTs, "Y-m-d");
-    dateValue.value = dateYmd ? dateYmd : undefined;
+    dateValue.value = dateYmd ? dateYmd : null;
     const timeHis = tsToFormat(newTs, "H:i:s");
-    timeValue.value = timeHis ? timeHis : undefined;
+    timeValue.value = timeHis ? timeHis : null;
   }
 };
 updateLocalVals(modelValue.value);

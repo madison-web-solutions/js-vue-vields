@@ -132,8 +132,9 @@ const tokens = computed((): (PendingChoosable | Choosable)[] => {
   });
 });
 
-// Temporary value used by the SearchField or SelectField
-const temp = ref<string | number | undefined>(undefined);
+// Temporary value used by the SearchField or SelectField.
+// Must be initialised to null rather than undefined because undefined is interpreted as "no model binding"
+const temp = ref<string | number | null>(null);
 
 // When the temp value changes, add the new token to the list, then reset it
 watch(temp, () => {
@@ -141,7 +142,7 @@ watch(temp, () => {
     addToken(temp.value);
   }
   window.setTimeout(() => {
-    temp.value = undefined;
+    temp.value = null;
   }, 10);
 });
 

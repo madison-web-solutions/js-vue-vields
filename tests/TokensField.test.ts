@@ -1,6 +1,7 @@
 import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
 import { mount, flushPromises } from '@vue/test-utils';
-import type { Choosable, ChoicesProvider } from '../src/types';
+import { ref } from 'vue';
+import type { Choosable, ChoicesProvider, FormValue, MessageBag } from '../src/types';
 import { lastEmittedValue, settle } from './utils';
 import injectionSymbols from '../src/lib/injection-symbols';
 import TokensField from '../src/components/TokensField.vue';
@@ -78,6 +79,42 @@ describe('TokensField — non-searchable', () => {
     });
     expect(wrapper.find('select').exists()).toBe(false);
     expect(wrapper.find('.token-delete').exists()).toBe(false);
+  });
+});
+
+// ─── Regression: nested in a parent context ─────────────────────────────────────
+//
+// The internal SelectField/SearchField used to pick a token is bound with `v-model="temp"`.
+// `temp` must own its own value (be initialised to `null`, not `undefined`) — otherwise that
+// keyless helper field is treated as un-owned and binds straight into TokensField's *parent*
+// context, so selecting a choice overwrites the entire parent value object rather than just
+// pushing onto this field's array. See the `temp` comment in TokensField.vue.
+
+describe('TokensField — nested in a parent context', () => {
+  beforeEach(() => { vi.useFakeTimers(); });
+  afterEach(() => { vi.useRealTimers(); });
+
+  test('selecting a token updates only this field and leaves sibling values intact', async () => {
+    const data = ref<FormValue>({ colors: [], other: 'keep me' });
+    const errorData = ref<MessageBag>({});
+
+    const wrapper = mount(TokensField, {
+      props: { name: 'colors', choices: TEST_CHOICES, searchable: false },
+      global: {
+        provide: {
+          [injectionSymbols.parentValue]: data,
+          [injectionSymbols.parentErrors]: errorData,
+        },
+      },
+    });
+
+    await selectChoice(wrapper, 0);
+
+    // The token is pushed onto this field's own array, and the sibling key is untouched —
+    // i.e. the whole parent value was NOT replaced by the selected key.
+    expect(data.value).toEqual({ colors: ['red'], other: 'keep me' });
+    // A field bound by name writes through the parent ref, not via update:modelValue.
+    expect(wrapper.emitted('update:modelValue')).toBeFalsy();
   });
 });
 

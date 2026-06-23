@@ -70,21 +70,22 @@ const displayValue = computed(() => {
   return ymdHisToFormat(modelValue.value, displayFormat.value) || modelValue.value;
 });
 
-const dateValue = ref<string | undefined>(undefined);
-const timeValue = ref<string | undefined>(undefined);
+// Must be initialised to null rather than undefined because undefined is interpreted as "no model binding"
+const dateValue = ref<string | null>(null);
+const timeValue = ref<string | null>(null);
 
 const updateLocalVals = (newVal: string | null) => {
   const parts = newVal?.split(" ") || [];
   if (parts.length === 0) {
-    dateValue.value = undefined;
-    timeValue.value = undefined;
+    dateValue.value = null;
+    timeValue.value = null;
   } else if (parts.length === 1) {
     if (parts[0].match(":")) {
-      dateValue.value = undefined;
+      dateValue.value = null;
       timeValue.value = parts[0];
     } else {
       dateValue.value = parts[0];
-      timeValue.value = undefined;
+      timeValue.value = null;
     }
   } else {
     dateValue.value = parts[0];

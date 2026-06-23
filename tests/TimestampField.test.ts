@@ -2,7 +2,7 @@ import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { defineComponent, provide, ref } from 'vue';
 import { lastEmittedValue, settle } from './utils';
-import type { EditMode } from '../src/types';
+import type { EditMode, FormValue, MessageBag } from '../src/types';
 import injectionSymbols from '../src/lib/injection-symbols';
 import TimestampField from '../src/components/TimestampField.vue';
 
@@ -175,5 +175,26 @@ describe('TimestampField', () => {
 
     await timeInput(wrapper).trigger('keydown.enter');
     expect(wrapper.emitted('enterPress')).toHaveLength(2);
+  });
+
+  // Regression: the inner DateField/TimeField are bound with `v-model` to the local
+  // dateValue/timeValue refs. Those must stay owned-but-empty (`null`, not `undefined`) so the
+  // keyless helpers never inherit TimestampField's parent context and overwrite the whole parent
+  // value with the date/time string. See the `dateValue`/`timeValue` note in TimestampField.vue.
+  test('setting the date when nested keeps sibling parent values intact', async () => {
+    const data = ref<FormValue>({ when: null, other: 'keep me' });
+    const wrapper = mount(TimestampField, {
+      props: { name: 'when', timeZone: 'utc' },
+      global: {
+        provide: {
+          [injectionSymbols.parentValue]: data,
+          [injectionSymbols.parentErrors]: ref<MessageBag>({}),
+        },
+      },
+    });
+    await dateInput(wrapper).setValue('2026-01-02');
+    // The whole parent value was NOT replaced by the bare date string.
+    expect(data.value).toMatchObject({ other: 'keep me' });
+    expect(wrapper.emitted('update:modelValue')).toBeFalsy();
   });
 });
