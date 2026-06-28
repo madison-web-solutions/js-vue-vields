@@ -17,6 +17,8 @@ import type {
   Choosable,
   PendingChoosable,
   // Provider support types
+  LookupFound,
+  LookupNotFound,
   LookupResult,
   UpdateResult,
   SearchResultPage,
@@ -156,6 +158,8 @@ export type {
   Choosable,
   PendingChoosable,
   // Provider support types
+  LookupFound,
+  LookupNotFound,
   LookupResult,
   UpdateResult,
   SearchResultPage,
