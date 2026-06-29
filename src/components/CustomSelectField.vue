@@ -3,7 +3,7 @@
     <template #input>
       <div class="vfm-custom-select" :data-vfm-disabled="field.disabled ? '' : undefined" ref="container">
         <div class="form-select" :class="{ 'is-invalid': field.hasError }" @click="toggleDropdown">
-          <slot v-if="currentChoice" :choice="currentChoice">{{currentChoice.label}}</slot>
+          <slot v-if="currentChoice" :choice="currentChoice" editMode="edit">{{currentChoice.label}}</slot>
           <slot v-if="nullSelected" name="nullSelected">{{placeholder || nbsp}}</slot>
         </div>
         <div
@@ -16,19 +16,24 @@
             <slot name="nullOption"><span class="text-muted">{{ noValueLabel }}</span></slot>
           </div>
           <div v-for="choice in choicesNormalized" class="vfm-custom-select-item" @click="selectOption(choice)">
-            <slot :choice="choice">{{ choice.label }}</slot>
+            <slot :choice="choice" editMode="edit">{{ choice.label }}</slot>
           </div>
         </div>
       </div>
     </template>
     <template #viewMode>
-      <slot name="viewMode" :choice="currentChoice">{{ displayValue }}</slot>
+      <div v-if="nullSelected">
+        <slot name="nullSelected"><span class="text-muted">{{ placeholder || nbsp }}</span></slot>
+      </div>
+      <div v-if="currentChoice">
+        <slot :choice="currentChoice" editMode="view">{{ currentChoice.label }}</slot>
+      </div>
     </template>
   </FieldWrapper>
 </template>
 
 <script setup lang="ts">
-import type { FieldEmitType, Choosable, FieldProps, HasChoicesFieldProps } from "../types";
+import type { FieldEmitType, Choosable, FieldProps, HasChoicesFieldProps, EditMode } from "../types";
 import { onMounted, onBeforeUnmount, ref, toRefs } from "vue";
 import useFormField from "../lib/useFormField";
 import useHasChoicesSingle from "../lib/useHasChoicesSingle";
@@ -43,10 +48,9 @@ const props = defineProps<FieldProps & HasChoicesFieldProps>();
 const emit = defineEmits<FieldEmitType<IdType>>();
 
 const slots = defineSlots<{
-  default: (props: { choice: Choosable }) => any;
+  default: (props: { choice: Choosable, editMode: EditMode }) => any;
   nullSelected: (props: {}) => any;
   nullOption: (props: {}) => any;
-  viewMode: (props: { choice: Choosable|null }) => any;
 }>();
 
 const propRefs = toRefs(props);
