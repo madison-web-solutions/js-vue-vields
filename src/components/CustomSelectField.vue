@@ -22,7 +22,7 @@
       </div>
     </template>
     <template #viewMode>
-      <template>{{ displayValue }}</template>
+      <slot name="viewMode" :choice="currentChoice">{{ displayValue }}</slot>
     </template>
   </FieldWrapper>
 </template>
@@ -46,6 +46,7 @@ const slots = defineSlots<{
   default: (props: { choice: Choosable }) => any;
   nullSelected: (props: {}) => any;
   nullOption: (props: {}) => any;
+  viewMode: (props: { choice: Choosable|null }) => any;
 }>();
 
 const propRefs = toRefs(props);
