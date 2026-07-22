@@ -25,7 +25,7 @@
       <div class="card-header fw-semibold">Content</div>
       <div class="card-body">
         <TextAreaField name="intro" label="Introduction" class="mb-3" />
-        <HtmlField name="body" label="Body" />
+        <HtmlField name="body" label="Body" tables />
       </div>
     </div>
 
@@ -34,7 +34,7 @@
       <div class="card-body">
         <FlexibleContentField name="content_blocks" :sectionChoices="blockChoices">
           <template #text>
-            <HtmlField name="content" label="Content" />
+            <HtmlField name="content" label="Content" tables />
           </template>
           <template #image>
             <MediaField name="image_id" label="Image" class="mb-3" />
