@@ -47,6 +47,7 @@ import {
   BlockQuote,
   HorizontalLine,
   Table,
+  TableToolbar,
   EditorConfig,
   Image,
   PluginConstructor,
@@ -154,7 +155,7 @@ const ckEditorConfig = (): EditorConfig => {
     toolbarGroups.blockFormat.push("codeBlock");
   }
   if (enableTables.value) {
-    plugins.push(Table);
+    plugins.push(Table, TableToolbar);
     toolbarGroups.blockFormat.push("insertTable");
     tableConfig = {
       contentToolbar: ["tableColumn", "tableRow", "mergeTableCells"],
