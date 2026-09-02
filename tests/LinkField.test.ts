@@ -58,6 +58,20 @@ describe('LinkField — no provider', () => {
     await wrapper.find('input[type="text"]').setValue('');
     expect(lastEmittedValue(wrapper)).toBeNull();
   });
+
+  test('focus() focuses the URL input', () => {
+    const wrapper = mount(LinkField, { props: {}, attachTo: document.body });
+    (wrapper.vm as unknown as { focus: () => void }).focus();
+    expect(document.activeElement).toBe(wrapper.find('input[type="text"]').element);
+    wrapper.unmount();
+  });
+
+  test('the URL input carries the field id, so the label points at it', () => {
+    const wrapper = mount(LinkField, { props: { label: 'Link' } });
+    const inputId = wrapper.find('input[type="text"]').attributes('id');
+    expect(inputId).toBeTruthy();
+    expect(wrapper.find('label').attributes('for')).toBe(inputId);
+  });
 });
 
 describe('LinkField — with provider', () => {
@@ -119,6 +133,33 @@ describe('LinkField — with provider', () => {
     await flushPromises();
     // "Searching..." should NOT be shown — isSearching should be false
     expect(wrapper.text()).not.toContain('Searching');
+  });
+
+  // In a non-URL scheme the value is shown in a read-only div which can't take focus, so focus()
+  // goes to the search button — the control the user needs in order to change the value.
+  test('focus() focuses the search button when the scheme is not URL', async () => {
+    const wrapper = mount(LinkField, {
+      props: { modelValue: 'page:42' },
+      global: { provide: { [injectionSymbols.linksProvider as symbol]: mockProvider } },
+      attachTo: document.body,
+    });
+    await flushPromises();
+    (wrapper.vm as unknown as { focus: () => void }).focus();
+    expect(document.activeElement).toBe(wrapper.find('.btn-outline-primary').element);
+    wrapper.unmount();
+  });
+
+  test('focus() follows the scheme selector back to the URL input', async () => {
+    const wrapper = mount(LinkField, {
+      props: { modelValue: 'page:42' },
+      global: { provide: { [injectionSymbols.linksProvider as symbol]: mockProvider } },
+      attachTo: document.body,
+    });
+    await flushPromises();
+    await wrapper.find('.vfm-link-field-scheme-select').setValue('url');
+    (wrapper.vm as unknown as { focus: () => void }).focus();
+    expect(document.activeElement).toBe(wrapper.find('input[type="text"]').element);
+    wrapper.unmount();
   });
 
   test('clear button in URL mode emits null', async () => {

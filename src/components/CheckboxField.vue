@@ -43,7 +43,7 @@ const coerceFn = (value: unknown): boolean => {
   return coerceToBoolean(value) === true;
 };
 
-const { modelValue, field, FieldWrapper } = useFormField<boolean>(coerceFn, emit, propRefs);
+const { modelValue, field, FieldWrapper, focus } = useFormField<boolean>(coerceFn, emit, propRefs);
 
 const displayValue = computed((): string => {
   if (modelValue.value === true) {
@@ -52,5 +52,7 @@ const displayValue = computed((): string => {
     return falseLabel.value;
   }
 });
+
+defineExpose({ focus });
 
 </script>

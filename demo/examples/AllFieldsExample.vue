@@ -4,45 +4,45 @@
     <div class="card mb-3">
       <div class="card-header fw-semibold">Text Fields</div>
       <div class="card-body">
-        <TextField name="text" label="TextField" placeholder="Plain text…" class="mb-3" />
-        <TextAreaField name="textArea" label="TextAreaField" class="mb-3" />
-        <PasswordField name="password" label="PasswordField" :minStrength="3" class="mb-3" />
-        <TextField name="maxChars" label="TextField with max chars" :max="50" class="mb-3" />
+        <TextField :ref="collectFocusable" name="text" label="TextField" placeholder="Plain text…" class="mb-3" />
+        <TextAreaField :ref="collectFocusable" name="textArea" label="TextAreaField" class="mb-3" />
+        <PasswordField :ref="collectFocusable" name="password" label="PasswordField" :minStrength="3" class="mb-3" />
+        <TextField :ref="collectFocusable" name="maxChars" label="TextField with max chars" :max="50" class="mb-3" />
       </div>
     </div>
 
     <div class="card mb-3">
       <div class="card-header fw-semibold">Numeric Fields</div>
       <div class="card-body">
-        <NumberField name="number" label="NumberField" class="mb-3" />
-        <NumberField name="numberRange" label="NumberField (min/max)" :min="0" :max="100" class="mb-3" />
-        <CurrencyField name="currency" label="CurrencyField" class="mb-3" />
+        <NumberField :ref="collectFocusable" name="number" label="NumberField" class="mb-3" />
+        <NumberField :ref="collectFocusable" name="numberRange" label="NumberField (min/max)" :min="0" :max="100" class="mb-3" />
+        <CurrencyField :ref="collectFocusable" name="currency" label="CurrencyField" class="mb-3" />
       </div>
     </div>
 
     <div class="card mb-3">
       <div class="card-header fw-semibold">Date &amp; Time Fields</div>
       <div class="card-body">
-        <DateField name="date" label="DateField" class="mb-3" />
-        <TimeField name="time" label="TimeField" class="mb-3" />
-        <DateTimeField name="dateTime" label="DateTimeField" class="mb-3" />
-        <TimestampField name="timestamp" label="TimestampField" class="mb-3" />
+        <DateField :ref="collectFocusable" name="date" label="DateField" class="mb-3" />
+        <TimeField :ref="collectFocusable" name="time" label="TimeField" class="mb-3" />
+        <DateTimeField :ref="collectFocusable" name="dateTime" label="DateTimeField" class="mb-3" />
+        <TimestampField :ref="collectFocusable" name="timestamp" label="TimestampField" class="mb-3" />
       </div>
     </div>
 
     <div class="card mb-3">
       <div class="card-header fw-semibold">Boolean Fields</div>
       <div class="card-body">
-        <CheckboxField name="checkbox" label="CheckboxField" class="mb-3" />
-        <ToggleField name="toggle" label="ToggleField" class="mb-3" />
+        <CheckboxField :ref="collectFocusable" name="checkbox" label="CheckboxField" class="mb-3" />
+        <ToggleField :ref="collectFocusable" name="toggle" label="ToggleField" class="mb-3" />
       </div>
     </div>
 
     <div class="card mb-3">
       <div class="card-header fw-semibold">Choice Fields</div>
       <div class="card-body">
-        <SelectField name="select" label="SelectField (static)" :choices="colourChoices" class="mb-3" />
-        <SelectField name="selectDir" label="SelectField (directory)" directory="statuses" class="mb-3" />
+        <SelectField :ref="collectFocusable" name="select" label="SelectField (static)" :choices="colourChoices" class="mb-3" />
+        <SelectField :ref="collectFocusable" name="selectDir" label="SelectField (directory)" directory="statuses" class="mb-3" />
         <CustomSelectField name="customSelect" label="CustomSelectField (colour swatches)" :choices="colourChoices" class="mb-3">
           <template #default="{ choice }">
             <span class="d-inline-block rounded border me-2" :style="{ width: '1rem', height: '1rem', background: String(choice.key), verticalAlign: '-2px' }"></span>
@@ -69,14 +69,14 @@
       <div class="card-header fw-semibold">Media &amp; Links</div>
       <div class="card-body">
         <MediaField name="media" label="MediaField" class="mb-3" />
-        <LinkField name="link" label="LinkField" class="mb-3" />
+        <LinkField :ref="collectFocusable" name="link" label="LinkField" class="mb-3" />
       </div>
     </div>
 
     <div class="card mb-3">
       <div class="card-header fw-semibold">Rich Text</div>
       <div class="card-body">
-        <HtmlField name="html" label="HtmlField" />
+        <HtmlField :ref="collectFocusable" name="html" label="HtmlField" />
       </div>
     </div>
 
@@ -213,6 +213,30 @@ const tableCols: RepeaterTableColOpts[] = [
   { name: 'price', label: 'Price' },
 ]
 
+// Every field above which exposes focus() registers itself here via :ref, in template order, so
+// the toolbar's "Focus next field" button can walk them all. This is the demo of focus(): most
+// fields just hand focus to their input and let the browser scroll, while HtmlField (CKEditor)
+// and DateTimeField / TimestampField (whose own input element is hidden) do their own thing.
+type FocusableField = { focus: () => void; $el: HTMLElement };
+const focusables: FocusableField[] = [];
+const collectFocusable = (instance: unknown) => {
+  const field = instance as FocusableField | null;
+  if (field && !focusables.includes(field)) {
+    focusables.push(field);
+  }
+};
+
+// Move to the field after whichever one currently holds focus, wrapping at the end. Starts from
+// the first field when focus is outside the form. Note this reads document.activeElement, so
+// whatever triggers it must not steal focus first — see the toolbar button in AllFieldsView.vue.
+const focusNext = () => {
+  const active = document.activeElement;
+  const currentIndex = active
+    ? focusables.findIndex(field => field.$el?.contains(active))
+    : -1;
+  focusables[(currentIndex + 1) % focusables.length]?.focus();
+};
+
 const toggleMode = () => {
   editMode.value = editMode.value === 'edit' ? 'view' : 'edit';
 };
@@ -226,7 +250,7 @@ const reset = () => {
 };
 
 // Exposed so the page's toolbar and error-simulator panel can drive this form.
-defineExpose({ vals, errors, editMode, reset, toggleMode, setErrors, setEditMode });
+defineExpose({ vals, errors, editMode, reset, toggleMode, setErrors, setEditMode, focusNext });
 </script>
 
 <style scoped>

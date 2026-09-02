@@ -10,8 +10,8 @@
         <div v-if="schemeKey != 'url'" class="form-control" :class="{ 'is-invalid': field.hasError }" :disabled="disabled" @click="toggleOpenSearch">
           {{ displayValue }}
         </div>
-        <input v-if="schemeKey == 'url'" type="text" class="form-control" :class="{ 'is-invalid': field.hasError }" :disabled="disabled" placeholder="https://" v-model="aliasKey" />
-        <button v-if="schemeKey != 'url'" class="btn btn-outline-primary" type="button" :disabled="field.disabled" @click="toggleOpenSearch">
+        <input v-if="schemeKey == 'url'" ref="urlInputEle" :id="field.inputEleId" type="text" class="form-control" :class="{ 'is-invalid': field.hasError }" :disabled="disabled" placeholder="https://" v-model="aliasKey" />
+        <button v-if="schemeKey != 'url'" ref="searchButtonEle" class="btn btn-outline-primary" type="button" :disabled="field.disabled" @click="toggleOpenSearch">
           <i class="fas fa-search"></i>
         </button>
         <button v-if="aliasKey" class="btn btn-outline-danger" type="button" :disabled="field.disabled" @click="clearValue">
@@ -223,6 +223,18 @@ const clearValue = () => {
   }
   aliasKey.value = null;
 };
+
+// Which control takes focus depends on the scheme: the URL scheme renders a text input, every
+// other scheme renders a read-only display div (not focusable) alongside the search button, which
+// is the control the user needs in order to change the value. The two v-ifs are mutually
+// exclusive, so exactly one of these refs is ever set.
+const urlInputEle = ref<HTMLInputElement | null>(null);
+const searchButtonEle = ref<HTMLButtonElement | null>(null);
+const focus = () => {
+  (urlInputEle.value ?? searchButtonEle.value)?.focus();
+};
+
+defineExpose({ focus });
 
 const displayValue = computed((): string => {
   if (schemeKey.value == urlScheme.key) {

@@ -39,5 +39,8 @@ const emit = defineEmits<FieldEmitType<string> & EnterPressEmitType>();
 
 const propRefs = toRefs(props);
 
-const { modelValue, field, FieldWrapper } = useFormField<string>(coerceToString, emit, propRefs);
+const { modelValue, field, FieldWrapper, focus } = useFormField<string>(coerceToString, emit, propRefs);
+
+defineExpose({ focus });
+
 </script>

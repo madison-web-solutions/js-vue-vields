@@ -162,6 +162,15 @@ describe('DateTimeField', () => {
   });
 
   // Regression: the inner DateField/TimeField are bound with `v-model` to the local
+  // The component's own inputEleId sits on a hidden input which can't take focus, so focus() is
+  // delegated to the nested DateField.
+  test('focus() moves focus to the date sub-input', () => {
+    const wrapper = mount(DateTimeField, { attachTo: document.body });
+    (wrapper.vm as unknown as { focus: () => void }).focus();
+    expect(document.activeElement).toBe(dateInput(wrapper).element);
+    wrapper.unmount();
+  });
+
   // dateValue/timeValue refs. Those must stay owned-but-empty (`null`, not `undefined`) so the
   // keyless helpers never inherit DateTimeField's parent context and overwrite the whole parent
   // value with the date/time string. See the `dateValue`/`timeValue` note in DateTimeField.vue.

@@ -42,7 +42,7 @@ const coerceFn = (value: any): IdType => {
   return null;
 };
 
-const { modelValue, field, FieldWrapper } = useFormField<IdType>(coerceFn, emit, propRefs);
+const { modelValue, field, FieldWrapper, focus } = useFormField<IdType>(coerceFn, emit, propRefs);
 
 const { choicesNormalized, nullSelected, displayValue } = useHasChoicesSingle(modelValue, propRefs);
 
@@ -62,5 +62,7 @@ const change = (e: Event) => {
     modelValue.value = choicesNormalized.value[index - 1].key;
   }
 };
+
+defineExpose({ focus });
 
 </script>

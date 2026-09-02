@@ -33,7 +33,7 @@ const emit = defineEmits<FieldEmitType<boolean | null>>();
 
 const propRefs = toRefs(props);
 
-const { modelValue, field, FieldWrapper } = useFormField<boolean | null>(coerceToBoolean, emit, propRefs);
+const { modelValue, field, FieldWrapper, focus } = useFormField<boolean | null>(coerceToBoolean, emit, propRefs);
 
 const displayValue = computed((): string => {
   if (modelValue.value === true) {
@@ -44,4 +44,7 @@ const displayValue = computed((): string => {
   }
   return "";
 });
+
+defineExpose({ focus });
+
 </script>

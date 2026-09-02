@@ -64,7 +64,7 @@ const coerceToNumber = (value: unknown): number | null => {
   return null;
 };
 
-const { modelValue, field, FieldWrapper } = useFormField<number | null>(coerceToNumber, emit, propRefs);
+const { modelValue, field, FieldWrapper, focus } = useFormField<number | null>(coerceToNumber, emit, propRefs);
 
 const numberFormatter = computed((): Intl.NumberFormat => {
   if (currencyCode.value) {
@@ -120,5 +120,7 @@ const parsesTextFieldOptions: ParsesTextFieldOptions<number> = {
 };
 
 const { onFocus, onBlur, change, displayValue } = useParsesTextField<number>(modelValue, inputEle, parsesTextFieldOptions);
+
+defineExpose({ focus });
 
 </script>

@@ -46,7 +46,7 @@ const coerceFn = (value: unknown): string | null => {
   return value == null || value === "" ? null : String(value);
 };
 
-const { modelValue, field, FieldWrapper } = useFormField<string | null>(coerceFn, emit, propRefs);
+const { modelValue, field, FieldWrapper, focus } = useFormField<string | null>(coerceFn, emit, propRefs);
 
 const stepSeconds = computed((): number | undefined => {
   return props.step == null ? undefined : timeParse(props.step);
@@ -102,4 +102,7 @@ const { onFocus, onBlur, change, displayValue } = useParsesTextField<string>(
   inputEle,
   parsesTextFieldOptions,
 );
+
+defineExpose({ focus });
+
 </script>

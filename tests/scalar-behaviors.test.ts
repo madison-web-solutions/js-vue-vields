@@ -58,7 +58,7 @@ const fixtures: ScalarFixture[] = [
     extraProps: { choices: [{ key: 'a', label: 'A' }, { key: 'b', label: 'B' }] },
     // FieldWrapper label's `for` points to field.inputEleId, but radio inputs have IDs
     // field.inputEleId + choiceKey, so there is no single element that matches.
-    skipTests: ['label-for'],
+    skipTests: ['label-for', 'focus'],
   },
   {
     label: 'CustomRadioField',
@@ -67,7 +67,7 @@ const fixtures: ScalarFixture[] = [
     controlSel: '.vfm-custom-radio',
     extraProps: { choices: [{ key: 'a', label: 'A' }, { key: 'b', label: 'B' }] },
     // No single labelled input (no id on div), and div elements have no .disabled DOM property.
-    skipTests: ['label-for', 'disabled'],
+    skipTests: ['label-for', 'disabled', 'focus'],
   },
   {
     label: 'CustomSelectField',
@@ -75,7 +75,7 @@ const fixtures: ScalarFixture[] = [
     initialValue: null,
     controlSel: '.form-select',
     // No id on the trigger div, and div elements have no .disabled DOM property.
-    skipTests: ['label-for', 'disabled'],
+    skipTests: ['label-for', 'disabled', 'focus'],
   },
 ];
 
@@ -122,6 +122,21 @@ describe.each(fixtures)('$label', (f) => {
 
     await wrapper.setProps({ disabled: false });
     expect((wrapper.find(f.controlSel).element as HTMLInputElement).disabled).toBe(false);
+  });
+
+  // ─── Focus ────────────────────────────────────────────────────────────────
+
+  // Fields expose focus() so a caller holding a template ref can move focus to them (e.g. to the
+  // first field with a validation error). The choice fields which render one input per choice
+  // have no single element to focus, so they don't expose it.
+  test.skipIf(f.skipTests?.includes('focus'))('focus() moves focus to the control', () => {
+    const wrapper = mount(f.component, {
+      props: { modelValue: f.initialValue, ...f.extraProps },
+      attachTo: document.body,
+    });
+    (wrapper.vm as unknown as { focus: () => void }).focus();
+    expect(document.activeElement).toBe(wrapper.find(f.controlSel).element);
+    wrapper.unmount();
   });
 
   // ─── View mode ────────────────────────────────────────────────────────────

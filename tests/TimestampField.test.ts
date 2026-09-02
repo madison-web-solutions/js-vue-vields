@@ -197,4 +197,13 @@ describe('TimestampField', () => {
     expect(data.value).toMatchObject({ other: 'keep me' });
     expect(wrapper.emitted('update:modelValue')).toBeFalsy();
   });
+
+  // The component's own inputEleId sits on a hidden input which can't take focus, so focus() is
+  // delegated to the nested DateField.
+  test('focus() moves focus to the date sub-input', () => {
+    const wrapper = mount(TimestampField, { attachTo: document.body });
+    (wrapper.vm as unknown as { focus: () => void }).focus();
+    expect(document.activeElement).toBe(dateInput(wrapper).element);
+    wrapper.unmount();
+  });
 });

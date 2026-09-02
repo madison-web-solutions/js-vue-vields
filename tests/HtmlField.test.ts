@@ -9,8 +9,9 @@ import injectionSymbols from '../src/lib/injection-symbols';
 // could we'd be testing CKEditor, not our wrapper. So we replace the whole `ckeditor5` module
 // with a fake editor that records the calls HtmlField makes. These tests verify our integration
 // contract: seeding initial data, the debounced change→emit, external value sync, the disabled
-// (read-only) toggle, and teardown. They assume CKEditor honours its documented API — if a future
-// version renames change:data / getData / setData, these mocks stay green while production breaks.
+// (read-only) toggle, focus, and teardown. They assume CKEditor honours its documented API — if a
+// future version renames change:data / getData / setData, these mocks stay green while production
+// breaks.
 
 const ckState = vi.hoisted(() => ({ instances: [] as any[] }));
 
@@ -28,6 +29,7 @@ vi.mock('ckeditor5', () => {
         },
       },
     };
+    editing = { view: { focus: vi.fn() } };
     setData(s: string) { this.data = s; }
     getData() { return this.data; }
     enableReadOnlyMode(lock: symbol) { this.readOnlyLocks.add(lock); }
@@ -61,11 +63,19 @@ import HtmlField from '../src/components/HtmlField.vue';
 const lastEditor = () => ckState.instances[ckState.instances.length - 1];
 
 describe('HtmlField', () => {
+  // jsdom has no layout engine, so Element.prototype.scrollIntoView is not implemented. Stub it
+  // for every test — HtmlField.focus() calls it unconditionally.
+  const realScrollIntoView = Element.prototype.scrollIntoView;
+
   beforeEach(() => {
     ckState.instances.length = 0;
+    Element.prototype.scrollIntoView = vi.fn();
     vi.useFakeTimers();
   });
-  afterEach(() => { vi.useRealTimers(); });
+  afterEach(() => {
+    Element.prototype.scrollIntoView = realScrollIntoView;
+    vi.useRealTimers();
+  });
 
   test('view mode renders the HTML value and creates no editor', () => {
     const editMode = ref<EditMode>('view');
@@ -165,6 +175,35 @@ describe('HtmlField', () => {
     wrapper.unmount();
     await flushPromises();
     expect(editor.destroyed).toBe(true);
+  });
+
+  // CKEditor focuses its editable with { preventScroll: true } and then writes back every
+  // ancestor's scroll position, so HtmlField.focus() has to scroll the container itself. The order
+  // matters and is the whole point of this test: under Bootstrap's `scroll-behavior: smooth` an
+  // instant-return scrollIntoView() has not moved anything yet, so scrolling first would let
+  // CKEditor write the stale position straight back and cancel the scroll. Focus first, scroll
+  // last.
+  test('focus() focuses the editor, then scrolls the container into view', async () => {
+    const calls: string[] = [];
+    const scrollIntoView = vi.mocked(Element.prototype.scrollIntoView);
+    scrollIntoView.mockImplementation(() => { calls.push('scroll'); });
+
+    const wrapper = mount(HtmlField, { props: { modelValue: '<p>x</p>' } });
+    await flushPromises();
+    lastEditor().editing.view.focus.mockImplementation(() => { calls.push('focus'); });
+
+    (wrapper.vm as unknown as { focus: () => void }).focus();
+
+    expect(scrollIntoView).toHaveBeenCalledTimes(1);
+    expect(scrollIntoView.mock.instances[0]).toBe(wrapper.find('.vfm-html-field').element);
+    expect(lastEditor().editing.view.focus).toHaveBeenCalledTimes(1);
+    expect(calls).toEqual(['focus', 'scroll']);
+  });
+
+  test('focus() before the editor has been created does not throw', () => {
+    // ClassicEditor.create resolves asynchronously — focus() may land first.
+    const wrapper = mount(HtmlField, { props: { modelValue: '' } });
+    expect(() => (wrapper.vm as unknown as { focus: () => void }).focus()).not.toThrow();
   });
 
   test('renders the label and applies is-invalid on error', async () => {

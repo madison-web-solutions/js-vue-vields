@@ -15,6 +15,17 @@
           {{ form?.editMode === 'edit' ? 'View mode' : 'Edit mode' }}
         </button>
         <button type="button" class="btn btn-sm btn-outline-danger" @click="resetVals">Reset</button>
+        <!-- mousedown.prevent stops the button taking focus itself, so focusNext() can still see
+             which field the user was in. Without it document.activeElement is always this button
+             and every click restarts from the first field. -->
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-primary"
+          @mousedown.prevent
+          @click="form?.focusNext()"
+        >
+          Focus next field
+        </button>
       </div>
     </template>
 

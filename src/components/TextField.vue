@@ -46,7 +46,7 @@ const propRefs = toRefs(props);
 
 const inputEle = ref<HTMLInputElement | null>(null);
 
-const { modelValue, field, FieldWrapper } = useFormField<string>(coerceToString, emit, propRefs);
+const { modelValue, field, FieldWrapper, focus } = useFormField<string>(coerceToString, emit, propRefs);
 const { remainingChars, showRemainingChars } = useHasMaxChars(modelValue, propRefs);
 
 // Work around a Firefox autofill issue: when Firefox autofills this field on page load it writes
@@ -73,5 +73,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => clearTimeout(reconcileTimer));
+
+defineExpose({ focus });
 
 </script>

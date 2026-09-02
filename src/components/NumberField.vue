@@ -48,7 +48,7 @@ const emit = defineEmits<FieldEmitType<number | null> & EnterPressEmitType>();
 
 const propRefs = toRefs(props);
 
-const { modelValue, field, FieldWrapper } = useFormField<number | null>(coerceToNumber, emit, propRefs);
+const { modelValue, field, FieldWrapper, focus } = useFormField<number | null>(coerceToNumber, emit, propRefs);
 
 const myStep = computed((): number | undefined => {
   if (props.step == null) {
@@ -117,5 +117,7 @@ const parsesTextFieldOptions: ParsesTextFieldOptions<number> = {
 };
 
 const { onFocus, onBlur, change, displayValue } = useParsesTextField<number>(modelValue, inputEle, parsesTextFieldOptions);
+
+defineExpose({ focus });
 
 </script>

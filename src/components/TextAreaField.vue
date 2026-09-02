@@ -37,6 +37,9 @@ const propRefs = toRefs(props);
 
 const rows = getConfigRef('textArea.numRows', propRefs.rows);
 
-const { modelValue, field, FieldWrapper } = useFormField<string>(coerceToString, emit, propRefs);
+const { modelValue, field, FieldWrapper, focus } = useFormField<string>(coerceToString, emit, propRefs);
 const { remainingChars, showRemainingChars } = useHasMaxChars(modelValue, propRefs);
+
+defineExpose({ focus });
+
 </script>

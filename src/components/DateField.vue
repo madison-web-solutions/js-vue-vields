@@ -49,7 +49,7 @@ const coerceFn = (value: any): string | null => {
   return ymdToFormat(String(value), "Y-m-d") || null;
 };
 
-const { modelValue, field, FieldWrapper } = useFormField<string | null>(coerceFn, emit, propRefs);
+const { modelValue, field, FieldWrapper, focus } = useFormField<string | null>(coerceFn, emit, propRefs);
 
 const todayUtc: Date = ((): Date => {
   const now: Date = new Date();
@@ -141,5 +141,7 @@ const myPlaceholder = computed((): string => {
 const displayValue = computed((): string => {
   return ymdToFormat(modelValue.value, displayFormat.value) ?? "";
 });
+
+defineExpose({ focus });
 
 </script>

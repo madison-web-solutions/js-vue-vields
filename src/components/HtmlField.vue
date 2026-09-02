@@ -223,4 +223,20 @@ onBeforeUnmount(async () => {
   await destroyEditor();
 });
 
+// CKEditor focuses its editable with { preventScroll: true } and then writes back the scroll
+// position of every ancestor, so unlike a native input it never brings itself into view. Hence
+// the explicit scroll.
+//
+// The scroll must come AFTER the focus. Bootstrap sets `scroll-behavior: smooth` on :root, which
+// makes scrollIntoView() animate: it returns having moved nothing yet. Scrolling first therefore
+// lets CKEditor snapshot the pre-scroll position and write it straight back, cancelling the
+// animation in flight — the caret lands correctly but the page never moves. Focusing first leaves
+// our scroll as the last word.
+const focus = () => {
+  editor?.editing.view.focus();
+  editorContainerEle.value?.scrollIntoView({ block: "nearest", inline: "nearest" });
+};
+
+defineExpose({ focus });
+
 </script>

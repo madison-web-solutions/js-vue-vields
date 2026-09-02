@@ -124,7 +124,10 @@ const maxTimeHis = computed((): string | undefined => {
   }
 });
 
-//const firstField = ref<InstanceType<typeof DateField> | null>(null);
-//const focus = () => firstField.value?.focus();
-//defineExpose({ focus });
+// The field's own inputEleId is on a hidden input, so focus is delegated to the first of the
+// two sub-fields the user actually types into.
+const firstField = ref<InstanceType<typeof DateField> | null>(null);
+const focus = () => firstField.value?.focus();
+
+defineExpose({ focus });
 </script>

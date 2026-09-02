@@ -100,6 +100,15 @@ const useFormField = <ValueType extends FormValue>(
 
   const inputEleId = useId();
 
+  // Move keyboard focus to this field's input element. Fields expose this via defineExpose, so a
+  // caller holding a template ref can focus a field (e.g. the first one with a validation error);
+  // the browser scrolls the element into view as part of focusing it. Fields whose input can't be
+  // reached by inputEleId — a hidden value input backing a pair of sub-fields, or a third party
+  // editor — override this with their own implementation.
+  const focus = () => {
+    document.getElementById(inputEleId)?.focus();
+  };
+
   const FieldWrapper = inject(injectionSymbols.fieldWrapperComponent, undefined) || StandardFieldWrapper;
 
   const field = computed((): FieldState<ValueType> => {
@@ -129,6 +138,7 @@ const useFormField = <ValueType extends FormValue>(
     errors,
     field,
     FieldWrapper,
+    focus,
   };
 };
 
