@@ -82,6 +82,20 @@ describe('HtmlField', () => {
     expect(ckState.instances.length).toBe(0);
   });
 
+  test('view mode shows the noValueLabel instead of an empty card when the value is empty', () => {
+    const Parent = defineComponent({
+      components: { HtmlField },
+      setup() {
+        provide(injectionSymbols.editMode, ref<EditMode>('view'));
+        return { value: ref('') };
+      },
+      template: '<HtmlField v-model="value" />',
+    });
+    const wrapper = mount(Parent);
+    expect(wrapper.find('.card').exists()).toBe(false);
+    expect(wrapper.find('.vfm-no-value').text()).toBe('(none)');
+  });
+
   test('edit mode creates an editor seeded with the initial value', async () => {
     mount(HtmlField, { props: { modelValue: '<p>Initial</p>' } });
     await flushPromises();

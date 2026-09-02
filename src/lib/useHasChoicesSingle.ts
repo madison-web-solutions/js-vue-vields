@@ -26,7 +26,7 @@ export default function useHasChoicesSingle (modelValue: Ref<string | number | n
     if (currentChoice.value) {
       return currentChoice.value.label;
     } else {
-      return String(modelValue.value);
+      return modelValue.value == null ? "" : String(modelValue.value);
     }
   });
 

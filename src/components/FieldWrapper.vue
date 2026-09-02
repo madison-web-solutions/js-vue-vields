@@ -15,7 +15,8 @@
       </div>
     </slot>
     <div v-if="field.editMode == 'view'">
-      <slot name="viewMode">
+      <span v-if="field.isEmpty" class="text-muted vfm-no-value">{{ noValueLabel }}</span>
+      <slot v-else name="viewMode">
         <slot name="input"></slot>
       </slot>
     </div>
@@ -25,10 +26,13 @@
 
 <script setup lang="ts" generic="ValueType extends FormValue">
 import type { FieldState, FormValue } from "../types";
+import { getConfigRef } from "../lib/config";
 
 const props = defineProps<{
   field: FieldState<ValueType>,
   inputWrapperCssClass?: string | string[] | object,
 }>();
+
+const noValueLabel = getConfigRef('noValueLabel');
 
 </script>

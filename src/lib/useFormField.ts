@@ -5,10 +5,24 @@ import useExtendsPath from "./useExtendsPath";
 import { useFieldBinding, formValueStrategy, formErrorsStrategy } from "./context";
 import StandardFieldWrapper from "../components/FieldWrapper.vue";
 
+// Default test for whether a field has no value (FieldWrapper shows the configured noValueLabel
+// in view mode when this is true). Applied to the coerced value, so a field whose coerce function
+// never yields one of these (e.g. Checkbox → boolean) is never empty. Plain objects are not empty:
+// a compound renders its children, which report their own emptiness.
+const isEmpty = (val: unknown): boolean => {
+  return val == null || val === "" || (Array.isArray(val) && val.length === 0);
+};
+
+export type UseFormFieldOptions<ValueType> = {
+  // Override the default emptiness test for this field
+  isEmpty?: (val: ValueType) => boolean;
+};
+
 const useFormField = <ValueType extends FormValue>(
   valueCoerceFn: (val: unknown) => ValueType,
   emit: FieldEmitType<ValueType>,
-  propRefs: RefsOf<FieldProps>
+  propRefs: RefsOf<FieldProps>,
+  opts?: UseFormFieldOptions<ValueType>
 ) => {
   const name = computed((): string | undefined => {
     return propRefs?.name?.value;
@@ -98,6 +112,7 @@ const useFormField = <ValueType extends FormValue>(
         myErrors: myErrors.value,
         hasError: hasError.value,
         editMode: editMode.value,
+        isEmpty: (opts?.isEmpty ?? isEmpty)(modelValue.value),
         inputEleId: inputEleId,
 
         label: propRefs.label?.value,

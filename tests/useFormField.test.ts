@@ -16,9 +16,12 @@
 // a path-contributing wrapper use CompoundField instead.
 
 import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
-import { defineComponent, nextTick, ref } from 'vue';
+import { defineComponent, h, nextTick, ref, toRefs } from 'vue';
 import { mount } from '@vue/test-utils';
-import type { MessageBag } from '../src/types';
+import type { FieldEmitType, FieldProps, FormValue, MessageBag, RefsOf } from '../src/types';
+import useFormField from '../src/lib/useFormField';
+import type { UseFormFieldOptions } from '../src/lib/useFormField';
+import { coerceToFormValue } from '../src/lib/type-utils';
 import FieldGroup from '../src/components/FieldGroup.vue';
 import CompoundField from '../src/components/CompoundField.vue';
 import TextField from '../src/components/TextField.vue';
@@ -273,4 +276,46 @@ describe('lens-only fields (no v-model) behave exactly as before', () => {
     expect(outer.value).toEqual({ foo: 'changed' });
   });
 
+});
+
+// ─── field.isEmpty ───────────────────────────────────────────────────────────
+//
+// FieldWrapper uses field.isEmpty to decide whether to show the noValueLabel in view mode.
+// The default test runs on the coerced value; a field can supply its own via the options.
+
+describe('field.isEmpty', () => {
+  // A minimal field that coerces nothing and just prints its emptiness
+  const makeProbe = (opts?: UseFormFieldOptions<FormValue>) => defineComponent({
+    props: { modelValue: { type: null, default: undefined } },
+    emits: ['update:modelValue', 'update:errors'],
+    setup(props, { emit }) {
+      const { field } = useFormField<FormValue>(
+        coerceToFormValue,
+        emit as FieldEmitType<FormValue>,
+        toRefs(props) as RefsOf<FieldProps>,
+        opts,
+      );
+      return () => h('span', field.value.isEmpty ? 'EMPTY' : 'FULL');
+    },
+  });
+
+  test.each([
+    { label: 'null',         value: null,  expected: 'EMPTY' },
+    { label: 'empty string', value: '',    expected: 'EMPTY' },
+    { label: 'empty array',  value: [],    expected: 'EMPTY' },
+    { label: 'zero',         value: 0,     expected: 'FULL'  },
+    { label: 'false',        value: false, expected: 'FULL'  },
+    { label: 'a string',     value: 'x',   expected: 'FULL'  },
+    { label: 'an array',     value: ['x'], expected: 'FULL'  },
+    { label: 'an object',    value: {},    expected: 'FULL'  },
+  ])('$label is $expected by default', ({ value, expected }) => {
+    const wrapper = mount(makeProbe(), { props: { modelValue: value } });
+    expect(wrapper.text()).toBe(expected);
+  });
+
+  test('an isEmpty option replaces the default test', () => {
+    const Probe = makeProbe({ isEmpty: (val) => val === 'nothing' });
+    expect(mount(Probe, { props: { modelValue: 'nothing' } }).text()).toBe('EMPTY');
+    expect(mount(Probe, { props: { modelValue: '' } }).text()).toBe('FULL');
+  });
 });

@@ -53,25 +53,23 @@
     </template>
 
     <template #viewMode>
-      <ul v-if="tokens.length" class="vfm-file-upload-list">
+      <ul class="vfm-file-upload-list">
         <li v-for="(token, index) in tokens" :key="token + ':' + index" class="vfm-file-upload-item">
           <a v-if="downloadUrl(token)" :href="downloadUrl(token)!" target="_blank" rel="noopener">{{ infoFor(token)?.name ?? token }}</a>
           <span v-else>{{ infoFor(token)?.name ?? token }}</span>
         </li>
       </ul>
-      <span v-else>{{ config.noValueLabel }}</span>
     </template>
   </FieldWrapper>
 </template>
 
 <script setup lang="ts">
-import type { FieldProps, FieldEmitType, UploadedFileInfo, Config } from "../types";
+import type { FieldProps, FieldEmitType, UploadedFileInfo } from "../types";
 import { ref, computed, toRefs, inject, reactive, onBeforeUnmount } from "vue";
 import useFormField from "../lib/useFormField";
 import injectionSymbols from "../lib/injection-symbols";
 import { createUploadedFileCache, cacheFile } from "../lib/uploadedFileCache";
 import { reindexErrors } from "../lib/message-bag";
-import { defaultConfig } from "../lib/config";
 import Icon from "./Icon.vue";
 
 type ValueType = string | string[] | null;
@@ -101,8 +99,6 @@ const mode = computed((): "inline" | "upload" => props.mode ?? "inline");
 
 const cache = inject(injectionSymbols.uploadedFileCache, undefined) ?? createUploadedFileCache();
 const uploadProvider = inject(injectionSymbols.uploadProvider, undefined);
-const configRef = inject(injectionSymbols.config, undefined);
-const config = computed((): Config => configRef?.value ?? defaultConfig);
 
 const infoFor = (token: string): UploadedFileInfo | undefined => {
   return cache.get(token)?.info;

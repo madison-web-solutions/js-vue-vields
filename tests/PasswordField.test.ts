@@ -81,6 +81,20 @@ describe('PasswordField', () => {
     expect(wrapper.text()).toContain('****');
   });
 
+  test('view mode shows the noValueLabel rather than asterisks when empty', () => {
+    const Parent = defineComponent({
+      components: { PasswordField },
+      setup() {
+        provide(injectionSymbols.editMode, ref<EditMode>('view'));
+        return { value: ref('') };
+      },
+      template: '<PasswordField v-model="value" />',
+    });
+    const wrapper = mount(Parent);
+    expect(wrapper.text()).not.toContain('*');
+    expect(wrapper.find('.vfm-no-value').text()).toBe('(none)');
+  });
+
   test('emits enterPress when Enter is pressed', async () => {
     const wrapper = mount(PasswordField, { props: { modelValue: 'secret' } });
     await wrapper.find('input').trigger('keydown.enter');

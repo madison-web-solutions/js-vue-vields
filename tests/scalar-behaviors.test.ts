@@ -40,7 +40,8 @@ type ScalarFixture = {
 const fixtures: ScalarFixture[] = [
   { label: 'TextField',     component: TextField,     initialValue: 'test',       controlSel: 'input'    },
   { label: 'TextAreaField', component: TextAreaField, initialValue: 'test',       controlSel: 'textarea' },
-  { label: 'CheckboxField', component: CheckboxField, initialValue: false,        controlSel: 'input'    },
+  // Checkbox coerces null to false, so it is never "empty" — it shows its falseLabel instead.
+  { label: 'CheckboxField', component: CheckboxField, initialValue: false,        controlSel: 'input', skipTests: ['no-value'] },
   { label: 'NumberField',   component: NumberField,   initialValue: 42,           controlSel: 'input'    },
   { label: 'CurrencyField', component: CurrencyField, initialValue: 1250,         controlSel: 'input'    },
   { label: 'TimeField',     component: TimeField,     initialValue: '14:30',      controlSel: 'input'    },
@@ -136,5 +137,35 @@ describe.each(fixtures)('$label', (f) => {
     });
     const wrapper = mount(Parent);
     expect(wrapper.find(f.controlSel).exists()).toBe(false);
+  });
+
+  test.skipIf(f.skipTests?.includes('no-value'))('view mode shows the muted noValueLabel for an empty value', () => {
+    const Parent = defineComponent({
+      components: { Field: f.component },
+      setup() {
+        provide(injectionSymbols.editMode, ref<EditMode>('view'));
+        return { value: ref(null) };
+      },
+      template: '<Field v-model="value" />',
+    });
+    const wrapper = mount(Parent);
+    const placeholder = wrapper.find('.vfm-no-value');
+    expect(placeholder.exists()).toBe(true);
+    expect(placeholder.classes()).toContain('text-muted');
+    expect(placeholder.text()).toBe('(none)');
+  });
+
+  test('view mode does not show the noValueLabel for a real value', () => {
+    const Parent = defineComponent({
+      components: { Field: f.component },
+      setup() {
+        provide(injectionSymbols.editMode, ref<EditMode>('view'));
+        return { value: ref(f.initialValue ?? 'a') };
+      },
+      template: '<Field v-model="value" v-bind="extraProps" />',
+      data: () => ({ extraProps: f.extraProps ?? {} }),
+    });
+    const wrapper = mount(Parent);
+    expect(wrapper.find('.vfm-no-value').exists()).toBe(false);
   });
 });

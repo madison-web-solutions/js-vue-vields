@@ -261,6 +261,7 @@ export type FieldState<ValueType extends FormValue> = {
   myErrors: string[],
   hasError: boolean,
   editMode: EditMode,
+  isEmpty: boolean,
   inputEleId: string,
 
   label: string|undefined,

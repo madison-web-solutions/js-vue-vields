@@ -87,6 +87,7 @@ import { provideFormValues, provideFormValuesAt } from "./lib/context";
 // Core field composables. These are the building blocks the shipped fields are made from, and
 // are exported so consumers can author their own field / repeater / choice / container variants.
 import useFormField from "./lib/useFormField";
+export type { UseFormFieldOptions } from "./lib/useFormField";
 import useHasMaxChars from "./lib/useHasMaxChars";
 import useHasChoices from "./lib/useHasChoices";
 import useHasChoicesSingle from "./lib/useHasChoicesSingle";

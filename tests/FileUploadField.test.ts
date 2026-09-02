@@ -1,7 +1,7 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import { mount, flushPromises } from '@vue/test-utils';
 import { defineComponent, h, provide, ref } from 'vue';
-import type { MessageBag, UploadProvider, UploadedFileCache } from '../src/types';
+import type { EditMode, MessageBag, UploadProvider, UploadedFileCache } from '../src/types';
 import { lastEmittedValue } from './utils';
 import injectionSymbols from '../src/lib/injection-symbols';
 import { createUploadedFileCache } from '../src/lib/uploadedFileCache';
@@ -43,6 +43,27 @@ const mountField = (props: Record<string, unknown> = {}, provideExtra: Record<sy
 beforeEach(() => {
   cache = createUploadedFileCache();
   vi.clearAllMocks();
+});
+
+describe('FileUploadField — view mode', () => {
+  const viewMode = () => ({ [injectionSymbols.editMode as symbol]: ref<EditMode>('view') });
+
+  test('shows the noValueLabel when there is no file', () => {
+    const w = mountField({ modelValue: null }, viewMode());
+    expect(w.find('.vfm-no-value').text()).toBe('(none)');
+    expect(w.find('.vfm-file-upload-list').exists()).toBe(false);
+  });
+
+  test('shows the noValueLabel when the multiple-file list is empty', () => {
+    const w = mountField({ modelValue: [], multiple: true }, viewMode());
+    expect(w.find('.vfm-no-value').text()).toBe('(none)');
+  });
+
+  test('lists the file, not the noValueLabel, when there is one', () => {
+    const w = mountField({ modelValue: 'tok_1' }, viewMode());
+    expect(w.find('.vfm-no-value').exists()).toBe(false);
+    expect(w.find('.vfm-file-upload-item').text()).toBe('tok_1');
+  });
 });
 
 describe('FileUploadField — inline mode', () => {

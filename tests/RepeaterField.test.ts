@@ -6,10 +6,25 @@
 // error routing through those chains.
 
 import { describe, test, expect } from 'vitest';
-import { nextTick } from 'vue';
+import { nextTick, ref } from 'vue';
+import type { EditMode } from '../src/types';
 import { mountSimpleRepeater, mountCompoundRepeater } from './repeater-utils';
 
 describe('RepeaterField', () => {
+
+  // ─── Empty value in view mode ────────────────────────────────────────────
+
+  test('view mode shows the noValueLabel when the array is empty', () => {
+    const { wrapper } = mountSimpleRepeater([], {}, ref<EditMode>('view'));
+    expect(wrapper.find('.vfm-no-value').text()).toBe('(none)');
+    expect(wrapper.find('.vfm-repeater').exists()).toBe(false);
+  });
+
+  test('view mode renders the rows, not the noValueLabel, when the array has items', () => {
+    const { wrapper } = mountSimpleRepeater(['alpha'], {}, ref<EditMode>('view'));
+    expect(wrapper.find('.vfm-no-value').exists()).toBe(false);
+    expect(wrapper.text()).toContain('alpha');
+  });
 
   // ─── IndexedLens value chain (simple mode) ───────────────────────────────
   //

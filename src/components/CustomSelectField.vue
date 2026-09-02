@@ -22,12 +22,7 @@
       </div>
     </template>
     <template #viewMode>
-      <div v-if="nullSelected">
-        <slot name="nullSelected"><span class="text-muted">{{ placeholder || nbsp }}</span></slot>
-      </div>
-      <div v-if="currentChoice">
-        <slot :choice="currentChoice" editMode="view">{{ currentChoice.label }}</slot>
-      </div>
+      <slot v-if="currentChoice" :choice="currentChoice" editMode="view">{{ currentChoice.label }}</slot>
     </template>
   </FieldWrapper>
 </template>

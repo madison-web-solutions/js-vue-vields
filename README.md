@@ -34,6 +34,8 @@ const opts: VueFieldsMsPluginOptions = {
 app.use(vueFieldsMsPlugin, opts);
 ```
 
+In view mode (`<FieldGroup editMode="view">`), a field with no value renders the configurable `config.noValueLabel` (default `(none)`) as `<span class="text-muted vfm-no-value">` in place of its value. This is handled centrally by the field wrapper, driven by `field.isEmpty` — a custom `fieldWrapperComponent` should check that flag to keep the same behaviour.
+
 **2. Import the styles** (Bootstrap-based SCSS):
 
 ```scss

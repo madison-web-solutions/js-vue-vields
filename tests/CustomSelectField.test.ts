@@ -102,6 +102,20 @@ describe('CustomSelectField', () => {
     expect(wrapper.text()).toContain('Green');
   });
 
+  test('view mode shows the noValueLabel (not the placeholder) when nothing is selected', () => {
+    const Parent = defineComponent({
+      components: { CustomSelectField },
+      setup() {
+        provide(injectionSymbols.editMode, ref<EditMode>('view'));
+        return { value: ref(null), choices: TEST_CHOICES };
+      },
+      template: '<CustomSelectField v-model="value" :choices="choices" placeholder="Pick one" />',
+    });
+    const wrapper = mount(Parent);
+    expect(wrapper.find('.vfm-no-value').text()).toBe('(none)');
+    expect(wrapper.text()).not.toContain('Pick one');
+  });
+
   test('drops upward when there is not enough room below the trigger', async () => {
     const originalInnerHeight = Object.getOwnPropertyDescriptor(window, 'innerHeight');
     Object.defineProperty(window, 'innerHeight', { configurable: true, value: 750 });

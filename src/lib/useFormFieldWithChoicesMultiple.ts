@@ -33,7 +33,12 @@ export default function useFormFieldWithChoicesMultiple(
     }
   };
 
-  const { modelValue, errors, field, FieldWrapper } = useFormField<KeyListFormValue | BooleansMapFormValue>(coerceFn, emit, propRefs);
+  // Empty when no choice is on, whichever shape the value takes
+  const isEmpty = (value: KeyListFormValue | BooleansMapFormValue): boolean => {
+    return coerceToKeyListFormValue(value).length === 0;
+  };
+
+  const { modelValue, errors, field, FieldWrapper } = useFormField<KeyListFormValue | BooleansMapFormValue>(coerceFn, emit, propRefs, { isEmpty });
 
   const toggle = (key: string | number): void => {
     if (valueIs.value == "array") {

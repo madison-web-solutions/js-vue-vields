@@ -121,6 +121,23 @@ describe('CheckboxesField', () => {
     expect(wrapper.text()).not.toContain('Yes');
   });
 
+  test.each([
+    { valueIs: 'array',  value: [] },
+    { valueIs: 'object', value: { a: false, b: false } },
+  ])('view mode shows the noValueLabel when nothing is selected (valueIs: $valueIs)', ({ valueIs, value }) => {
+    const Parent = defineComponent({
+      components: { CheckboxesField },
+      setup() {
+        provide(injectionSymbols.editMode, ref<EditMode>('view'));
+        return { value: ref(value), choices: TEST_CHOICES, valueIs };
+      },
+      template: '<CheckboxesField v-model="value" :choices="choices" :valueIs="valueIs" />',
+    });
+    const wrapper = mount(Parent);
+    expect(wrapper.find('.vfm-no-value').text()).toBe('(none)');
+    expect(wrapper.text()).not.toContain('Alpha');
+  });
+
   test('choices from provider in directory mode', async () => {
     const mockGetAll = vi.fn().mockResolvedValue({ status: 'found', resource: TEST_CHOICES });
     const mockProvider: ChoicesProvider = { getAll: mockGetAll, search: vi.fn(), lookup: vi.fn() };

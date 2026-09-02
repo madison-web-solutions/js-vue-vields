@@ -134,6 +134,22 @@ describe.each(fixtures)('$label', (f) => {
     });
     const wrapper = mount(Parent);
     expect(wrapper.text()).toContain('Green');
+    expect(wrapper.find('.vfm-no-value').exists()).toBe(false);
+  });
+
+  test('view mode shows the noValueLabel (never the string "null") when nothing is selected', () => {
+    const Parent = defineComponent({
+      components: { Field: f.component },
+      setup() {
+        provide(injectionSymbols.editMode, ref<EditMode>('view'));
+        return { value: ref(null) };
+      },
+      template: '<Field v-model="value" :choices="choices" />',
+      data: () => ({ choices: TEST_CHOICES }),
+    });
+    const wrapper = mount(Parent);
+    expect(wrapper.find('.vfm-no-value').text()).toBe('(none)');
+    expect(wrapper.text()).not.toContain('null');
   });
 
   test('errors mark the control as invalid', async () => {

@@ -1,7 +1,7 @@
 import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
 import { mount, flushPromises } from '@vue/test-utils';
 import { ref } from 'vue';
-import type { Choosable, ChoicesProvider, FormValue, MessageBag } from '../src/types';
+import type { Choosable, ChoicesProvider, EditMode, FormValue, MessageBag } from '../src/types';
 import { lastEmittedValue, settle } from './utils';
 import injectionSymbols from '../src/lib/injection-symbols';
 import TokensField from '../src/components/TokensField.vue';
@@ -47,6 +47,24 @@ describe('TokensField — non-searchable', () => {
     });
     expect(tokens(wrapper).length).toBe(2);
     expect(tokenLabels(wrapper)).toEqual(['Red', 'Green']);
+  });
+
+  test('view mode shows the noValueLabel when there are no tokens', () => {
+    const wrapper = mount(TokensField, {
+      props: { modelValue: [], choices: TEST_CHOICES, searchable: false },
+      global: { provide: { [injectionSymbols.editMode as symbol]: ref<EditMode>('view') } },
+    });
+    expect(wrapper.find('.vfm-no-value').text()).toBe('(none)');
+    expect(wrapper.find('.vfm-tokens-list').exists()).toBe(false);
+  });
+
+  test('view mode lists the tokens, not the noValueLabel, when there are some', () => {
+    const wrapper = mount(TokensField, {
+      props: { modelValue: ['red'], choices: TEST_CHOICES, searchable: false },
+      global: { provide: { [injectionSymbols.editMode as symbol]: ref<EditMode>('view') } },
+    });
+    expect(wrapper.find('.vfm-no-value').exists()).toBe(false);
+    expect(tokenLabels(wrapper)).toEqual(['Red']);
   });
 
   test('selecting a choice from the dropdown adds it and emits the updated array', async () => {
