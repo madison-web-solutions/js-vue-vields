@@ -44,6 +44,7 @@ const fixtures: ScalarFixture[] = [
   { label: 'CheckboxField', component: CheckboxField, initialValue: false,        controlSel: 'input', skipTests: ['no-value'] },
   { label: 'NumberField',   component: NumberField,   initialValue: 42,           controlSel: 'input'    },
   { label: 'CurrencyField', component: CurrencyField, initialValue: 1250,         controlSel: 'input'    },
+  { label: 'CurrencyField (major-unit)', component: CurrencyField, initialValue: 12.5, controlSel: 'input', extraProps: { denomination: 'major-unit' } },
   { label: 'TimeField',     component: TimeField,     initialValue: '14:30',      controlSel: 'input'    },
   { label: 'ToggleField',   component: ToggleField,   initialValue: false,        controlSel: 'input'    },
   { label: 'DateField',     component: DateField,     initialValue: '2024-01-15', controlSel: 'input'    },

@@ -307,6 +307,10 @@ export type ParsesTextFieldOptions<T> = {
   formatForEditing?: (val: T) => string;
 };
 
+// Whether a CurrencyField's model value is an integer in the currency's minor unit
+// (pence/cents, the default) or a float in the major unit (pounds/dollars).
+export type CurrencyDenomination = "minor-unit" | "major-unit";
+
 export type Config = {
   noValueLabel: string;
   "textArea.numRows": number;
@@ -315,6 +319,7 @@ export type Config = {
   "timestamp.displayFormat": string;
   "currency.currencyCode": string | null;
   "currency.showCurrency": boolean;
+  "currency.denomination": CurrencyDenomination;
   'html.subSuperScript': boolean;
   'html.code': boolean;
   'html.tables': boolean;

@@ -51,6 +51,7 @@ import type {
   // Config / plugin
   Config,
   ConfigKey,
+  CurrencyDenomination,
   VueFieldsMsPluginOptions,
 } from "./types";
 
@@ -193,6 +194,7 @@ export type {
   // Config / plugin
   Config,
   ConfigKey,
+  CurrencyDenomination,
   VueFieldsMsPluginOptions,
 };
 

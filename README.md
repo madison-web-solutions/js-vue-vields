@@ -28,6 +28,7 @@ const opts: VueFieldsMsPluginOptions = {
   config: {                   // optional defaults
     'textArea.numRows': 4,
     'currency.currencyCode': 'GBP',
+    'currency.denomination': 'minor-unit', // or 'major-unit' (see below)
   },
 };
 
@@ -35,6 +36,8 @@ app.use(vueFieldsMsPlugin, opts);
 ```
 
 In view mode (`<FieldGroup editMode="view">`), a field with no value renders the configurable `config.noValueLabel` (default `(none)`) as `<span class="text-muted vfm-no-value">` in place of its value. This is handled centrally by the field wrapper, driven by `field.isEmpty` — a custom `fieldWrapperComponent` should check that flag to keep the same behaviour.
+
+`CurrencyField` models its value as an integer in the currency's minor unit by default (`'minor-unit'`: £12.50 is `1250`), which avoids float rounding errors. Set `config['currency.denomination']` to `'major-unit'` to model it as a float in the major unit instead (`12.5`); the `denomination` prop overrides this per field. `min`, `max` and `step` follow the model's denomination, and `step` should be a multiple of the minor unit. A major-unit value with more decimals than the currency supports is displayed rounded but is not modified until the user edits it, and changing the denomination at runtime does not convert an existing value.
 
 **2. Import the styles** (Bootstrap-based SCSS):
 

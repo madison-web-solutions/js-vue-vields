@@ -11,6 +11,7 @@ export const defaultConfig: Config = {
   "timestamp.displayFormat": "d/m/Y H:i",
   "currency.currencyCode": null,
   "currency.showCurrency": false,
+  "currency.denomination": "minor-unit",
   "html.subSuperScript": false,
   "html.code": false,
   "html.tables": false,

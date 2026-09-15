@@ -17,6 +17,7 @@
         <NumberField :ref="collectFocusable" name="number" label="NumberField" class="mb-3" />
         <NumberField :ref="collectFocusable" name="numberRange" label="NumberField (min/max)" :min="0" :max="100" class="mb-3" />
         <CurrencyField :ref="collectFocusable" name="currency" label="CurrencyField" class="mb-3" />
+        <CurrencyField :ref="collectFocusable" name="currencyMajor" label="CurrencyField (major-unit)" denomination="major-unit" class="mb-3" />
       </div>
     </div>
 
@@ -158,6 +159,7 @@ const makeSeed = (): Record<string, unknown> => ({
   number: 42,
   numberRange: null,
   currency: null,
+  currencyMajor: null,
   date: null,
   time: null,
   dateTime: null,

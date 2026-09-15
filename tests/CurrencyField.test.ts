@@ -4,9 +4,11 @@ import { defineComponent, nextTick, provide, ref } from 'vue';
 import { lastEmittedValue, settle } from './utils';
 import type { EditMode } from '../src/types';
 import injectionSymbols from '../src/lib/injection-symbols';
+import { defaultConfig } from '../src/lib/config';
 import CurrencyField from '../src/components/CurrencyField.vue';
 
-// CurrencyField stores values in minor units (e.g. cents): £12.50 → 1250, 1 KWD → 1000.
+// By default CurrencyField stores values in minor units (e.g. cents): £12.50 → 1250, 1 KWD → 1000.
+// With denomination 'major-unit' (prop or config) it stores floats in major units: £12.50 → 12.5.
 describe('CurrencyField', () => {
   test('renders a text input', () => {
     const wrapper = mount(CurrencyField);
@@ -58,6 +60,14 @@ describe('CurrencyField', () => {
     await wrapper.find('input').setValue('£12.50');
     await settle();
     expect(lastEmittedValue(wrapper)).toBe(1250);
+  });
+
+  // 1.005 * 100 is 100.49999999999999 in IEEE-754; the conversion guard must still round it up.
+  test('rounds half-minor-unit input up despite float artefacts', async () => {
+    const wrapper = mount(CurrencyField, { props: { modelValue: null } });
+    await wrapper.find('input').setValue('1.005');
+    await settle();
+    expect(lastEmittedValue(wrapper)).toBe(101);
   });
 
   test('clamps to max (in minor units)', async () => {
@@ -145,5 +155,171 @@ describe('CurrencyField', () => {
     const wrapper = mount(CurrencyField, { props: { modelValue: 1250 } });
     await wrapper.find('input').trigger('keydown.enter');
     expect(wrapper.emitted('enterPress')).toBeTruthy();
+  });
+
+  describe('major-unit denomination', () => {
+    const major = { denomination: 'major-unit' as const };
+    const inputValue = (wrapper: ReturnType<typeof mount>): string => {
+      return (wrapper.find('input').element as HTMLInputElement).value;
+    };
+
+    test('emits a major-unit float when user enters a decimal amount', async () => {
+      const wrapper = mount(CurrencyField, { props: { modelValue: null, ...major } });
+      await wrapper.find('input').setValue('12.50');
+      await settle();
+      expect(lastEmittedValue(wrapper)).toBe(12.5);
+    });
+
+    test('strips leading currency symbols from input', async () => {
+      const wrapper = mount(CurrencyField, { props: { modelValue: null, ...major } });
+      await wrapper.find('input').setValue('£1.15');
+      await settle();
+      expect(lastEmittedValue(wrapper)).toBe(1.15);
+    });
+
+    // 1.15 * 100 is 114.99999999999999 in IEEE-754: the emitted value must be exactly 1.15, not 1.14.
+    test('emits an exact float with no rounding artefacts', async () => {
+      const wrapper = mount(CurrencyField, { props: { modelValue: null, ...major } });
+      await wrapper.find('input').setValue('1.15');
+      await settle();
+      expect(lastEmittedValue(wrapper)).toBe(1.15);
+    });
+
+    test('rounds input to the currency precision', async () => {
+      const wrapper = mount(CurrencyField, { props: { modelValue: null, ...major } });
+      await wrapper.find('input').setValue('1.005');
+      await settle();
+      expect(lastEmittedValue(wrapper)).toBe(1.01);
+    });
+
+    test('handles negative amounts', async () => {
+      const wrapper = mount(CurrencyField, { props: { modelValue: null, ...major } });
+      await wrapper.find('input').setValue('-1.15');
+      await settle();
+      expect(lastEmittedValue(wrapper)).toBe(-1.15);
+    });
+
+    test('handles zero', async () => {
+      const wrapper = mount(CurrencyField, { props: { modelValue: null, ...major } });
+      await wrapper.find('input').setValue('0');
+      await settle();
+      expect(lastEmittedValue(wrapper)).toBe(0);
+    });
+
+    test('emits null when input is cleared', async () => {
+      const wrapper = mount(CurrencyField, { props: { modelValue: 12.5, ...major } });
+      await wrapper.find('input').setValue('');
+      await settle();
+      expect(lastEmittedValue(wrapper)).toBeNull();
+    });
+
+    test('emits null for non-numeric input', async () => {
+      const wrapper = mount(CurrencyField, { props: { modelValue: 12.5, ...major } });
+      await wrapper.find('input').setValue('abc');
+      await settle();
+      expect(lastEmittedValue(wrapper)).toBeNull();
+    });
+
+    test('focused display shows the raw major-unit value', async () => {
+      const wrapper = mount(CurrencyField, { props: { modelValue: 12.5, ...major } });
+      await wrapper.find('input').trigger('focus');
+      expect(inputValue(wrapper)).toBe('12.5');
+    });
+
+    test('focused display of a whole amount has no trailing decimals', async () => {
+      const wrapper = mount(CurrencyField, { props: { modelValue: 20, ...major } });
+      await wrapper.find('input').trigger('focus');
+      expect(inputValue(wrapper)).toBe('20');
+    });
+
+    test('a value with excess precision is displayed rounded but not re-emitted', async () => {
+      const wrapper = mount(CurrencyField, { props: { modelValue: 12.345, ...major } });
+      await wrapper.find('input').trigger('focus');
+      expect(inputValue(wrapper)).toBe('12.35');
+      expect(wrapper.emitted('update:modelValue')).toBeUndefined();
+    });
+
+    test('clamps to max (in major units)', async () => {
+      const wrapper = mount(CurrencyField, { props: { modelValue: null, max: 5, ...major } });
+      await wrapper.find('input').setValue('10.00');
+      await settle();
+      expect(lastEmittedValue(wrapper)).toBe(5);
+    });
+
+    test('clamps to min (in major units)', async () => {
+      const wrapper = mount(CurrencyField, { props: { modelValue: null, min: 1, ...major } });
+      await wrapper.find('input').setValue('0.50');
+      await settle();
+      expect(lastEmittedValue(wrapper)).toBe(1);
+    });
+
+    test('rounds to step (in major units) without float artefacts', async () => {
+      const wrapper = mount(CurrencyField, { props: { modelValue: null, step: 0.05, ...major } });
+      await wrapper.find('input').setValue('1.13');
+      await settle();
+      expect(lastEmittedValue(wrapper)).toBe(1.15);
+    });
+
+    test('3-decimal currency (KWD): entering 1.5 emits 1.5', async () => {
+      const wrapper = mount(CurrencyField, { props: { modelValue: null, currencyCode: 'KWD', ...major } });
+      await wrapper.find('input').setValue('1.5');
+      await settle();
+      expect(lastEmittedValue(wrapper)).toBe(1.5);
+    });
+
+    test('3-decimal currency (KWD): input is rounded to 3 decimals', async () => {
+      const wrapper = mount(CurrencyField, { props: { modelValue: null, currencyCode: 'KWD', ...major } });
+      await wrapper.find('input').setValue('1.2345');
+      await settle();
+      expect(lastEmittedValue(wrapper)).toBe(1.235);
+    });
+
+    test('3-decimal currency (KWD): focused display shows the raw major-unit value', async () => {
+      const wrapper = mount(CurrencyField, { props: { modelValue: 12.5, currencyCode: 'KWD', ...major } });
+      await wrapper.find('input').trigger('focus');
+      expect(inputValue(wrapper)).toBe('12.5');
+    });
+
+    test('renders the formatted value in view mode', () => {
+      const editMode = ref<EditMode>('view');
+      const Parent = defineComponent({
+        components: { CurrencyField },
+        setup() {
+          provide(injectionSymbols.editMode, editMode);
+          return { value: ref(12.5) };
+        },
+        template: '<CurrencyField v-model="value" currencyCode="GBP" denomination="major-unit" />',
+      });
+      const wrapper = mount(Parent);
+      expect(wrapper.find('input').exists()).toBe(false);
+      expect(wrapper.text()).toContain('12.50');
+    });
+
+    const mountWithConfig = (denomination: 'minor-unit' | 'major-unit', propDenomination?: 'minor-unit' | 'major-unit') => {
+      const Parent = defineComponent({
+        components: { CurrencyField },
+        props: { propDenomination: { type: String, default: undefined } },
+        setup() {
+          provide(injectionSymbols.config, ref({ ...defaultConfig, 'currency.denomination': denomination }));
+          return { value: ref<number | null>(null) };
+        },
+        template: '<CurrencyField v-model="value" :denomination="propDenomination" />',
+      });
+      return mount(Parent, { props: { propDenomination } });
+    };
+
+    test('denomination can be set via the injected config', async () => {
+      const wrapper = mountWithConfig('major-unit');
+      await wrapper.find('input').setValue('12.50');
+      await settle();
+      expect(wrapper.findComponent(CurrencyField).emitted('update:modelValue')?.at(-1)?.[0]).toBe(12.5);
+    });
+
+    test('the denomination prop overrides the injected config', async () => {
+      const wrapper = mountWithConfig('major-unit', 'minor-unit');
+      await wrapper.find('input').setValue('12.50');
+      await settle();
+      expect(wrapper.findComponent(CurrencyField).emitted('update:modelValue')?.at(-1)?.[0]).toBe(1250);
+    });
   });
 });

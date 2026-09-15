@@ -12,6 +12,7 @@ describe('getConfigValue', () => {
   test('falls back to the default when the key is absent or config is undefined', () => {
     expect(getConfigValue({}, 'textArea.numRows')).toBe(4); // default
     expect(getConfigValue(undefined, 'noValueLabel')).toBe('(none)'); // default
+    expect(getConfigValue(undefined, 'currency.denomination')).toBe('minor-unit'); // default
   });
 
   test('a present key wins even when its value is falsy', () => {
