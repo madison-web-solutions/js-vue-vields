@@ -157,6 +157,23 @@ describe('CurrencyField', () => {
     expect(wrapper.emitted('enterPress')).toBeTruthy();
   });
 
+  // Amounts are displayed with the locale's group separator, so the same text must be
+  // accepted back - otherwise parsing stops at the separator and "12,345.67" becomes 12.
+  test('accepts input containing group separators', async () => {
+    const wrapper = mount(CurrencyField, { props: { modelValue: null } });
+    await wrapper.find('input').setValue(new Intl.NumberFormat().format(12345.67));
+    await settle();
+    expect(lastEmittedValue(wrapper)).toBe(1234567);
+  });
+
+  test('round-trips its own displayed value', async () => {
+    const wrapper = mount(CurrencyField, { props: { modelValue: 1234567 } });
+    const input = wrapper.find('input');
+    await input.setValue((input.element as HTMLInputElement).value);
+    await settle();
+    expect(lastEmittedValue(wrapper)).toBe(1234567);
+  });
+
   describe('major-unit denomination', () => {
     const major = { denomination: 'major-unit' as const };
     const inputValue = (wrapper: ReturnType<typeof mount>): string => {

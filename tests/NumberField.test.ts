@@ -156,6 +156,23 @@ describe('NumberField', () => {
     expect(wrapper.text()).toContain('99');
   });
 
+  // Values are displayed with the locale's group separator, so the same text must be
+  // accepted back - otherwise parsing stops at the separator and "10,000" becomes 10.
+  test('accepts input containing group separators', async () => {
+    const wrapper = mount(NumberField, { props: { modelValue: null } });
+    await wrapper.find('input').setValue(new Intl.NumberFormat().format(10000));
+    await settle();
+    expect(lastEmittedValue(wrapper)).toBe(10000);
+  });
+
+  test('round-trips its own displayed value', async () => {
+    const wrapper = mount(NumberField, { props: { modelValue: 1234567.5 } });
+    const input = wrapper.find('input');
+    await input.setValue((input.element as HTMLInputElement).value);
+    await settle();
+    expect(lastEmittedValue(wrapper)).toBe(1234567.5);
+  });
+
   test('emits enterPress when Enter is pressed', async () => {
     const wrapper = mount(NumberField, { props: { modelValue: 42 } });
     await wrapper.find('input').trigger('keydown.enter');

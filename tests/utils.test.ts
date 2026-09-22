@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest';
-import { clamp, startCase } from '../src/lib/utils';
+import { clamp, parseLocaleFloat, startCase } from '../src/lib/utils';
 import { reindexErrors } from '../src/lib/message-bag';
 import { valueAtPath } from '../src/lib/type-utils';
 
@@ -36,6 +36,35 @@ describe('reindexErrors', () => {
 
   test('reindexes a bare index key with no sub-path', () => {
     expect(reindexErrors({ '2': ['e'] }, (i) => i * 10)).toEqual({ '20': ['e'] });
+  });
+});
+
+describe('parseLocaleFloat', () => {
+  // The expected input strings are built from the runtime locale's own formatter, so these
+  // assertions hold whichever locale the test process happens to run under.
+  const format = (num: number): string => new Intl.NumberFormat().format(num);
+
+  test('parses a plain number', () => {
+    expect(parseLocaleFloat('10000')).toBe(10000);
+    expect(parseLocaleFloat('-42')).toBe(-42);
+  });
+
+  test('parses a number containing group separators', () => {
+    expect(parseLocaleFloat(format(10000))).toBe(10000);
+    expect(parseLocaleFloat(format(-1234567))).toBe(-1234567);
+  });
+
+  test('parses a number containing group and decimal separators', () => {
+    expect(parseLocaleFloat(format(10000.5))).toBe(10000.5);
+  });
+
+  test('uses the separators of the supplied formatter', () => {
+    const de = new Intl.NumberFormat('de-DE');
+    expect(parseLocaleFloat('10.000,5', de)).toBe(10000.5);
+  });
+
+  test('returns NaN for text containing no number', () => {
+    expect(parseLocaleFloat('abc')).toBeNaN();
   });
 });
 

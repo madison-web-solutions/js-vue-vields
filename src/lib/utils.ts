@@ -85,3 +85,24 @@ export const pickPropsFor = (
   }
   return out;
 };
+
+/**
+ * Parse a number from text that may carry the group and decimal separators used when the
+ * number was displayed - so a field which shows "10,000" accepts "10,000" back rather than
+ * truncating it at the comma. The separators are read from `formatter` (defaulting to the
+ * runtime locale's decimal format) rather than hard-coded, because "10,000.5" and
+ * "10.000,5" are the same number in different locales.
+ * Returns NaN if the text does not contain a number, as parseFloat does.
+ */
+export const parseLocaleFloat = (text: string, formatter?: Intl.NumberFormat): number => {
+  const parts = (formatter ?? new Intl.NumberFormat()).formatToParts(12345.6);
+  const group = parts.find((part) => part.type === "group")?.value;
+  const decimal = parts.find((part) => part.type === "decimal")?.value;
+  if (group != null && group !== "") {
+    text = text.split(group).join("");
+  }
+  if (decimal != null && decimal !== "" && decimal !== ".") {
+    text = text.split(decimal).join(".");
+  }
+  return parseFloat(text);
+};

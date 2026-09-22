@@ -31,6 +31,7 @@ import { computed, ref, toRefs } from "vue";
 import { coerceToNumber } from "../lib/type-utils";
 import useFormField from "../lib/useFormField";
 import useParsesTextField from "../lib/useParsesTextField";
+import { parseLocaleFloat } from "../lib/utils";
 
 const props = defineProps<FieldProps & {
   max?: number,
@@ -77,9 +78,13 @@ const localeStringOpts = computed((): Intl.NumberFormatOptions => {
   return opts;
 });
 
+const numberFormatter = computed((): Intl.NumberFormat => {
+  return new Intl.NumberFormat(undefined, localeStringOpts.value);
+});
+
 const parsesTextFieldOptions: ParsesTextFieldOptions<number> = {
   coerceNotEmpty: (textInput: string): number | undefined => {
-    const num = parseFloat(textInput);
+    const num = parseLocaleFloat(textInput, numberFormatter.value);
     return isFinite(num) ? num : undefined;
   },
   clamp: (num: number): number => {
@@ -103,7 +108,7 @@ const parsesTextFieldOptions: ParsesTextFieldOptions<number> = {
     if (props.customDisplayValue != null) {
       return props.customDisplayValue;
     }
-    return num.toLocaleString(undefined, localeStringOpts.value);
+    return numberFormatter.value.format(num);
   },
   formatNullForReading: (): string => {
     if (props.customDisplayValue != null) {

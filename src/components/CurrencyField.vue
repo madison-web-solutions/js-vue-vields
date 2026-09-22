@@ -33,6 +33,7 @@ import { computed, ref, toRefs } from "vue";
 import { coerceToNumber } from "../lib/type-utils";
 import useFormField from "../lib/useFormField";
 import useParsesTextField from "../lib/useParsesTextField";
+import { parseLocaleFloat } from "../lib/utils";
 import { getConfigRef } from "../lib/config";
 
 const props = withDefaults(defineProps<FieldProps & {
@@ -103,7 +104,7 @@ const fromMinor = (amountInMinorUnits: number): number => {
 const parsesTextFieldOptions: ParsesTextFieldOptions<number> = {
   coerceNotEmpty: (textInput: string): number | undefined => {
     textInput = textInput.replace(/^[^-0-9]+/, "");
-    const amountInMajorUnits = parseFloat(textInput);
+    const amountInMajorUnits = parseLocaleFloat(textInput, numberFormatter.value);
     if (!isFinite(amountInMajorUnits)) {
       return undefined;
     }
