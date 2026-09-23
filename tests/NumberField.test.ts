@@ -2,8 +2,9 @@ import { describe, test, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { defineComponent, nextTick, provide, ref } from 'vue';
 import { lastEmittedValue, settle } from './utils';
-import type { EditMode } from '../src/types';
+import type { Config, EditMode } from '../src/types';
 import injectionSymbols from '../src/lib/injection-symbols';
+import { defaultConfig } from '../src/lib/config';
 import NumberField from '../src/components/NumberField.vue';
 
 describe('NumberField', () => {
@@ -171,6 +172,79 @@ describe('NumberField', () => {
     await input.setValue((input.element as HTMLInputElement).value);
     await settle();
     expect(lastEmittedValue(wrapper)).toBe(1234567.5);
+  });
+
+  // The k/m shorthand is opt-in via config only: a bare "m" is a plausible typo, so
+  // multiplying by a million must never happen unless the consumer asked for it.
+  describe('magnitude suffixes', () => {
+    const mountWithSuffixes = () => {
+      const config = ref<Config>({ ...defaultConfig, parseMagnitudeSuffixes: true });
+      return mount(NumberField, {
+        props: { modelValue: null },
+        global: { provide: { [injectionSymbols.config as symbol]: config } },
+      });
+    };
+
+    test('are off by default, so a suffix is ignored', async () => {
+      const wrapper = mount(NumberField, { props: { modelValue: null } });
+      await wrapper.find('input').setValue('2k');
+      await settle();
+      expect(lastEmittedValue(wrapper)).toBe(2);
+    });
+
+    test('are applied when enabled by the injected config', async () => {
+      const wrapper = mountWithSuffixes();
+      await wrapper.find('input').setValue('1.5M');
+      await settle();
+      expect(lastEmittedValue(wrapper)).toBe(1500000);
+    });
+
+    test('are clamped like any other value', async () => {
+      const config = ref<Config>({ ...defaultConfig, parseMagnitudeSuffixes: true });
+      const wrapper = mount(NumberField, {
+        props: { modelValue: null, max: 500 },
+        global: { provide: { [injectionSymbols.config as symbol]: config } },
+      });
+      await wrapper.find('input').setValue('2k');
+      await settle();
+      expect(lastEmittedValue(wrapper)).toBe(500);
+    });
+  });
+
+  describe('unit', () => {
+    const mountInViewMode = (props: Record<string, unknown>) => {
+      return mount(NumberField, {
+        props,
+        global: { provide: { [injectionSymbols.editMode as symbol]: ref<EditMode>('view') } },
+      });
+    };
+
+    test('is rendered beside the input in edit mode', () => {
+      const wrapper = mount(NumberField, { props: { modelValue: 10000, unit: 'kg' } });
+      expect(wrapper.find('.input-group-text').text()).toBe('kg');
+    });
+
+    test('is shown alongside the value in view mode', () => {
+      const wrapper = mountInViewMode({ modelValue: 10000, unit: 'kg' });
+      expect(wrapper.text()).toContain(`${new Intl.NumberFormat().format(10000)} kg`);
+    });
+
+    test('is omitted in view mode when no unit is set', () => {
+      const wrapper = mountInViewMode({ modelValue: 10000 });
+      expect(wrapper.text().trim()).toBe(new Intl.NumberFormat().format(10000));
+    });
+
+    // customDisplayValue replaces the whole display, so the unit is not appended to it.
+    test('is not appended to a customDisplayValue', () => {
+      const wrapper = mountInViewMode({ modelValue: 10000, unit: 'kg', customDisplayValue: 'Unlimited' });
+      expect(wrapper.text().trim()).toBe('Unlimited');
+    });
+
+    // The wrapper renders noValueLabel for an empty field, so the viewMode slot never runs.
+    test('is not shown for an empty value in view mode', () => {
+      const wrapper = mountInViewMode({ modelValue: null, unit: 'kg' });
+      expect(wrapper.text()).not.toContain('kg');
+    });
   });
 
   test('emits enterPress when Enter is pressed', async () => {

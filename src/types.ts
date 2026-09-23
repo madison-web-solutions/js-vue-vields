@@ -313,6 +313,9 @@ export type CurrencyDenomination = "minor-unit" | "major-unit";
 
 export type Config = {
   noValueLabel: string;
+  // Opt-in shorthand for numeric text input: a trailing k or m multiplies what precedes it,
+  // so "2k" is entered as 2000. Applies to NumberField and CurrencyField.
+  parseMagnitudeSuffixes: boolean;
   "textArea.numRows": number;
   "date.displayFormat": string;
   "dateTime.displayFormat": string;

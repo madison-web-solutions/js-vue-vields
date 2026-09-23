@@ -56,6 +56,7 @@ const propRefs = toRefs(props);
 const showCurrency = getConfigRef("currency.showCurrency", propRefs.showCurrency);
 const currencyCode = getConfigRef("currency.currencyCode", propRefs.currencyCode);
 const denomination = getConfigRef("currency.denomination", propRefs.denomination);
+const parseMagnitudeSuffixes = getConfigRef("parseMagnitudeSuffixes");
 
 const { modelValue, field, FieldWrapper, focus } = useFormField<number | null>(coerceToNumber, emit, propRefs);
 
@@ -104,7 +105,7 @@ const fromMinor = (amountInMinorUnits: number): number => {
 const parsesTextFieldOptions: ParsesTextFieldOptions<number> = {
   coerceNotEmpty: (textInput: string): number | undefined => {
     textInput = textInput.replace(/^[^-0-9]+/, "");
-    const amountInMajorUnits = parseLocaleFloat(textInput, numberFormatter.value);
+    const amountInMajorUnits = parseLocaleFloat(textInput, { formatter: numberFormatter.value, parseMagnitudeSuffixes: parseMagnitudeSuffixes.value });
     if (!isFinite(amountInMajorUnits)) {
       return undefined;
     }

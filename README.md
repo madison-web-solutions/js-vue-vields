@@ -39,6 +39,8 @@ In view mode (`<FieldGroup editMode="view">`), a field with no value renders the
 
 `CurrencyField` models its value as an integer in the currency's minor unit by default (`'minor-unit'`: £12.50 is `1250`), which avoids float rounding errors. Set `config['currency.denomination']` to `'major-unit'` to model it as a float in the major unit instead (`12.5`); the `denomination` prop overrides this per field. `min`, `max` and `step` follow the model's denomination, and `step` should be a multiple of the minor unit. A major-unit value with more decimals than the currency supports is displayed rounded but is not modified until the user edits it, and changing the denomination at runtime does not convert an existing value.
 
+`NumberField` and `CurrencyField` accept back the numbers they display, so a value shown as `10,000` can be typed or pasted in as-is; the group and decimal separators are taken from the runtime locale, not hard-coded. Setting `config.parseMagnitudeSuffixes` (default `false`) additionally lets a user type a trailing `k` or `m` as shorthand, so `2k` enters 2000 and `1.5m` enters 1500000. It is off by default because a stray `m` would otherwise silently multiply the value by a million, and it is a global setting rather than a per-field prop. `NumberField`'s `unit` prop is rendered beside the input in edit mode and after the value in view mode.
+
 **2. Import the styles** (Bootstrap-based SCSS):
 
 ```scss

@@ -60,7 +60,35 @@ describe('parseLocaleFloat', () => {
 
   test('uses the separators of the supplied formatter', () => {
     const de = new Intl.NumberFormat('de-DE');
-    expect(parseLocaleFloat('10.000,5', de)).toBe(10000.5);
+    expect(parseLocaleFloat('10.000,5', { formatter: de })).toBe(10000.5);
+  });
+
+  test('ignores magnitude suffixes unless they are enabled', () => {
+    expect(parseLocaleFloat('2k')).toBe(2);
+    expect(parseLocaleFloat('2k', { parseMagnitudeSuffixes: false })).toBe(2);
+  });
+
+  test('applies magnitude suffixes when enabled', () => {
+    const opts = { parseMagnitudeSuffixes: true };
+    expect(parseLocaleFloat('2k', opts)).toBe(2000);
+    expect(parseLocaleFloat('2M', opts)).toBe(2000000);
+    expect(parseLocaleFloat('1.5m', opts)).toBe(1500000);
+    expect(parseLocaleFloat('-2.5k', opts)).toBe(-2500);
+  });
+
+  // k and m are the only shorthands; anything else is left to parseFloat to stop at.
+  test('does not treat other trailing letters as magnitudes', () => {
+    const opts = { parseMagnitudeSuffixes: true };
+    expect(parseLocaleFloat('2b', opts)).toBe(2);
+    expect(parseLocaleFloat('2t', opts)).toBe(2);
+  });
+
+  test('applies a magnitude suffix on top of group separators', () => {
+    expect(parseLocaleFloat(format(1200) + 'k', { parseMagnitudeSuffixes: true })).toBe(1200000);
+  });
+
+  test('returns NaN for a magnitude suffix with no number', () => {
+    expect(parseLocaleFloat('k', { parseMagnitudeSuffixes: true })).toBeNaN();
   });
 
   test('returns NaN for text containing no number', () => {

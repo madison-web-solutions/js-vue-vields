@@ -19,6 +19,7 @@ const vfmOpts: VueFieldsMsPluginOptions = {
     'currency.currencyCode': 'GBP',
     'currency.showCurrency': false,
     'media.supportCropCenter': true,
+    parseMagnitudeSuffixes: true,
   },
 }
 

@@ -2,7 +2,7 @@ import { describe, test, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { defineComponent, nextTick, provide, ref } from 'vue';
 import { lastEmittedValue, settle } from './utils';
-import type { EditMode } from '../src/types';
+import type { Config, EditMode } from '../src/types';
 import injectionSymbols from '../src/lib/injection-symbols';
 import { defaultConfig } from '../src/lib/config';
 import CurrencyField from '../src/components/CurrencyField.vue';
@@ -172,6 +172,44 @@ describe('CurrencyField', () => {
     await input.setValue((input.element as HTMLInputElement).value);
     await settle();
     expect(lastEmittedValue(wrapper)).toBe(1234567);
+  });
+
+  describe('magnitude suffixes', () => {
+    const mountWithSuffixes = (props: Record<string, unknown>) => {
+      const config = ref<Config>({ ...defaultConfig, parseMagnitudeSuffixes: true });
+      return mount(CurrencyField, {
+        props,
+        global: { provide: { [injectionSymbols.config as symbol]: config } },
+      });
+    };
+
+    test('are off by default, so a suffix is ignored', async () => {
+      const wrapper = mount(CurrencyField, { props: { modelValue: null } });
+      await wrapper.find('input').setValue('2k');
+      await settle();
+      expect(lastEmittedValue(wrapper)).toBe(200);
+    });
+
+    test('are applied when enabled by config, in the currency major unit', async () => {
+      const wrapper = mountWithSuffixes({ modelValue: null });
+      await wrapper.find('input').setValue('2k');
+      await settle();
+      expect(lastEmittedValue(wrapper)).toBe(200000);
+    });
+
+    test('are applied after the currency symbol is stripped', async () => {
+      const wrapper = mountWithSuffixes({ modelValue: null, currencyCode: 'GBP' });
+      await wrapper.find('input').setValue('£2k');
+      await settle();
+      expect(lastEmittedValue(wrapper)).toBe(200000);
+    });
+
+    test('are applied in major-unit denomination too', async () => {
+      const wrapper = mountWithSuffixes({ modelValue: null, denomination: 'major-unit' as const });
+      await wrapper.find('input').setValue('2k');
+      await settle();
+      expect(lastEmittedValue(wrapper)).toBe(2000);
+    });
   });
 
   describe('major-unit denomination', () => {

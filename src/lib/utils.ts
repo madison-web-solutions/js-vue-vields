@@ -86,16 +86,31 @@ export const pickPropsFor = (
   return out;
 };
 
+// Shorthand magnitudes a user may type in place of trailing zeros. Opt-in per field or via
+// the `parseMagnitudeSuffixes` config key, because a bare "m" is a plausible typo and silently
+// multiplying by a million would be worse than rejecting the input.
+const MAGNITUDE_SUFFIXES: Record<string, number> = {
+  k: 1e3,
+  m: 1e6,
+};
+
+export type ParseLocaleFloatOptions = {
+  formatter?: Intl.NumberFormat | undefined,
+  parseMagnitudeSuffixes?: boolean | undefined,
+};
+
 /**
  * Parse a number from text that may carry the group and decimal separators used when the
  * number was displayed - so a field which shows "10,000" accepts "10,000" back rather than
- * truncating it at the comma. The separators are read from `formatter` (defaulting to the
- * runtime locale's decimal format) rather than hard-coded, because "10,000.5" and
+ * truncating it at the comma. The separators are read from `opts.formatter` (defaulting to
+ * the runtime locale's decimal format) rather than hard-coded, because "10,000.5" and
  * "10.000,5" are the same number in different locales.
+ * With `opts.parseMagnitudeSuffixes`, a trailing k or m (either case) multiplies the number
+ * by a thousand or a million, so "2k" parses as 2000.
  * Returns NaN if the text does not contain a number, as parseFloat does.
  */
-export const parseLocaleFloat = (text: string, formatter?: Intl.NumberFormat): number => {
-  const parts = (formatter ?? new Intl.NumberFormat()).formatToParts(12345.6);
+export const parseLocaleFloat = (text: string, opts: ParseLocaleFloatOptions = {}): number => {
+  const parts = (opts.formatter ?? new Intl.NumberFormat()).formatToParts(12345.6);
   const group = parts.find((part) => part.type === "group")?.value;
   const decimal = parts.find((part) => part.type === "decimal")?.value;
   if (group != null && group !== "") {
@@ -104,5 +119,18 @@ export const parseLocaleFloat = (text: string, formatter?: Intl.NumberFormat): n
   if (decimal != null && decimal !== "" && decimal !== ".") {
     text = text.split(decimal).join(".");
   }
-  return parseFloat(text);
+  let multiplier = 1;
+  if (opts.parseMagnitudeSuffixes) {
+    const suffixMultiplier = MAGNITUDE_SUFFIXES[text.slice(-1).toLowerCase()];
+    if (suffixMultiplier != null) {
+      multiplier = suffixMultiplier;
+      text = text.slice(0, -1);
+    }
+  }
+  const num = parseFloat(text);
+  if (multiplier === 1) {
+    return num;
+  }
+  // toFixed clears the artefacts multiplication introduces - 1.005 * 1e3 is 1004.9999999999999
+  return Number((num * multiplier).toFixed(6));
 };

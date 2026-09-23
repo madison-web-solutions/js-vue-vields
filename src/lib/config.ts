@@ -5,6 +5,7 @@ import injectionSymbols from "./injection-symbols";
 
 export const defaultConfig: Config = {
   noValueLabel: "(none)",
+  parseMagnitudeSuffixes: false,
   "textArea.numRows": 4,
   "date.displayFormat": "d/m/Y",
   "dateTime.displayFormat": "d/m/Y H:i",

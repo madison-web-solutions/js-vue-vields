@@ -21,7 +21,7 @@
         <span v-if="unit" class="input-group-text">{{ unit }}</span>
       </div>
     </template>
-    <template #viewMode>{{ displayValue }}</template>
+    <template #viewMode>{{ viewModeDisplayValue }}</template>
   </FieldWrapper>
 </template>
 
@@ -32,6 +32,7 @@ import { coerceToNumber } from "../lib/type-utils";
 import useFormField from "../lib/useFormField";
 import useParsesTextField from "../lib/useParsesTextField";
 import { parseLocaleFloat } from "../lib/utils";
+import { getConfigRef } from "../lib/config";
 
 const props = defineProps<FieldProps & {
   max?: number,
@@ -48,6 +49,8 @@ const inputEle = ref<HTMLInputElement | null>(null);
 const emit = defineEmits<FieldEmitType<number | null> & EnterPressEmitType>();
 
 const propRefs = toRefs(props);
+
+const parseMagnitudeSuffixes = getConfigRef("parseMagnitudeSuffixes");
 
 const { modelValue, field, FieldWrapper, focus } = useFormField<number | null>(coerceToNumber, emit, propRefs);
 
@@ -84,7 +87,7 @@ const numberFormatter = computed((): Intl.NumberFormat => {
 
 const parsesTextFieldOptions: ParsesTextFieldOptions<number> = {
   coerceNotEmpty: (textInput: string): number | undefined => {
-    const num = parseLocaleFloat(textInput, numberFormatter.value);
+    const num = parseLocaleFloat(textInput, { formatter: numberFormatter.value, parseMagnitudeSuffixes: parseMagnitudeSuffixes.value });
     return isFinite(num) ? num : undefined;
   },
   clamp: (num: number): number => {
@@ -122,6 +125,15 @@ const parsesTextFieldOptions: ParsesTextFieldOptions<number> = {
 };
 
 const { onFocus, onBlur, change, displayValue } = useParsesTextField<number>(modelValue, inputEle, parsesTextFieldOptions);
+
+// Edit mode renders the unit beside the input, so view mode shows it alongside the value too.
+// customDisplayValue replaces the whole display, so it is left as the consumer wrote it.
+const viewModeDisplayValue = computed((): string => {
+  if (props.unit && props.customDisplayValue == null) {
+    return `${displayValue.value} ${props.unit}`;
+  }
+  return displayValue.value;
+});
 
 defineExpose({ focus });
 
