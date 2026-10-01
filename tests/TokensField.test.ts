@@ -159,6 +159,31 @@ describe('TokensField — searchable', () => {
     expect(tokenLabels(wrapper)).toEqual(['Red']);
   });
 
+  test('selecting a search result adds the token and leaves the search box empty', async () => {
+    // lookup resolves slowly, as a real server would, so that it lands after the 10ms temp reset
+    let resolveLookup: (result: unknown) => void = () => {};
+    mockLookup.mockReturnValue(new Promise((resolve) => { resolveLookup = resolve; }));
+    (mockProvider.search as ReturnType<typeof vi.fn>).mockResolvedValue({
+      page: 1, hasMore: false, suggestions: [{ key: 'red', label: 'Red' }],
+    });
+    const wrapper = mountSearchable({ modelValue: [] });
+    await wrapper.find('.btn-outline-primary').trigger('click');
+    await wrapper.find('input[type="text"]').setValue('red');
+    vi.advanceTimersByTime(300);
+    await flushPromises();
+    await wrapper.find('.list-group-item').trigger('click');
+    await settle();
+    expect(lastEmittedValue(wrapper)).toEqual(['red']);
+    // temp is reset after 10ms, then the slow lookup for 'red' resolves
+    vi.advanceTimersByTime(20);
+    await flushPromises();
+    resolveLookup({ status: 'found', resource: { key: 'red', label: 'Red' } });
+    await flushPromises();
+    // The token list shows the new token, but the search box must be empty again
+    expect(wrapper.find('.vfm-tokens-input .form-control').text()).toBe('Search');
+    expect(wrapper.find('.vfm-tokens-input .btn-outline-danger').exists()).toBe(false);
+  });
+
   test('clicking the delete button removes a searchable token', async () => {
     mockLookup.mockResolvedValue({ status: 'found', resource: { key: 'red', label: 'Red' } });
     const wrapper = mountSearchable({ modelValue: ['red'] });

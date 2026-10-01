@@ -77,13 +77,21 @@ const provider = inject(injectionSymbols.choicesProvider, undefined);
 
 const currentItem = ref<Choosable | null>(null);
 
-watchEffect(async () => {
+// Look up the Choosable for the current value so its label can be displayed. The lookup is
+// async, so if the value changes again before it resolves (e.g. TokensField selects a key and
+// then immediately clears it) the earlier result must be discarded - otherwise it would
+// overwrite the display with an item that is no longer the current value.
+watchEffect(async (onCleanup) => {
+  let stale = false;
+  onCleanup(() => {
+    stale = true;
+  });
   currentItem.value = null;
   if (props.directory == null || provider == null || modelValue.value == null) {
     return;
   }
   const searchResult = await provider.lookup(props.directory, modelValue.value, props.extraParams);
-  if (searchResult.status == "found") {
+  if (!stale && searchResult.status == "found") {
     currentItem.value = searchResult.resource;
   }
 });

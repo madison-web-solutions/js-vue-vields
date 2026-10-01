@@ -104,6 +104,20 @@ describe('SearchField', () => {
     expect(wrapper.find('.btn-link').exists()).toBe(false);
   });
 
+  // Regression: the lookup is async. If the value is cleared before the lookup for the previous
+  // value resolves, the stale result must not repopulate the display box.
+  test('a lookup that resolves after the value is cleared does not repopulate the display', async () => {
+    let resolveLookup: (result: unknown) => void = () => {};
+    mockLookup.mockReturnValue(new Promise((resolve) => { resolveLookup = resolve; }));
+    const wrapper = mountWithProvider({ modelValue: 'red' });
+    await flushPromises();
+    await wrapper.setProps({ modelValue: null });
+    await flushPromises();
+    resolveLookup({ status: 'found', resource: { key: 'red', label: 'Red' } });
+    await flushPromises();
+    expect(wrapper.find('.form-control').text()).not.toContain('Red');
+  });
+
   test('view mode shows the label from lookup', async () => {
     mockLookup.mockResolvedValue({ status: 'found', resource: { key: 'red', label: 'Red' } });
     const editMode = ref<EditMode>('view');

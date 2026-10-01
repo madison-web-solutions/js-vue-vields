@@ -1,6 +1,11 @@
 $custom-select-bg: #fff !default;
 $custom-select-hover-bg: $gray-200 !default;
 
+// Minimum width of each column when CheckboxesField has the `columns` prop set. On narrow
+// screens the browser drops columns so each remains at least this wide.
+$checkboxes-column-min-width: 10rem !default;
+$checkboxes-column-gap: $spacer !default;
+
 $repeater-row-spacing: $spacer !default;
 $repeater-move-indicator-size: 4px !default;
 $repeater-move-indicator-color: $primary !default;

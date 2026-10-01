@@ -87,6 +87,40 @@ describe('CheckboxesField', () => {
     expect(withInline.find('.me-3').exists()).toBe(true);
   });
 
+  test('columns prop lays the choices out in a column container with column-count set', () => {
+    const wrapper = mount(CheckboxesField, { props: { choices: TEST_CHOICES, columns: 3 } });
+    const cols = wrapper.find('.vfm-checkboxes-columns');
+    expect(cols.exists()).toBe(true);
+    expect((cols.element as HTMLElement).style.columnCount).toBe('3');
+    expect(cols.findAll('.vfm-checkboxes-item').length).toBe(3);
+  });
+
+  test('columns of 1 or undefined does not use the column layout', () => {
+    expect(mount(CheckboxesField, { props: { choices: TEST_CHOICES } }).find('.vfm-checkboxes-columns').exists()).toBe(false);
+    expect(mount(CheckboxesField, { props: { choices: TEST_CHOICES, columns: 1 } }).find('.vfm-checkboxes-columns').exists()).toBe(false);
+  });
+
+  test('columns takes precedence over inline', () => {
+    const wrapper = mount(CheckboxesField, { props: { choices: TEST_CHOICES, columns: 2, inline: true } });
+    expect(wrapper.find('.vfm-checkboxes-columns').exists()).toBe(true);
+    expect(wrapper.find('.d-flex').exists()).toBe(false);
+    expect(wrapper.find('.me-3').exists()).toBe(false);
+  });
+
+  test('columns also applies to the view mode list', () => {
+    const Parent = defineComponent({
+      components: { CheckboxesField },
+      setup() {
+        provide(injectionSymbols.editMode, ref<EditMode>('view'));
+        return { value: ref(['a']), choices: TEST_CHOICES };
+      },
+      template: '<CheckboxesField v-model="value" :choices="choices" :columns="2" />',
+    });
+    const wrapper = mount(Parent);
+    expect(wrapper.find('.vfm-checkboxes-columns').exists()).toBe(true);
+    expect(wrapper.text()).toContain('Yes');
+  });
+
   test('view mode shows each choice label with Yes / No', () => {
     const editMode = ref<EditMode>('view');
     const Parent = defineComponent({
@@ -119,6 +153,75 @@ describe('CheckboxesField', () => {
     expect(wrapper.text()).toContain('On');
     expect(wrapper.text()).toContain('Off');
     expect(wrapper.text()).not.toContain('Yes');
+  });
+
+  test.each([
+    { valueIs: 'array',  value: ['c', 'a'] },
+    { valueIs: 'object', value: { a: true, b: false, c: true } },
+  ])('viewModeDisplay="selected" shows only the selected choices as tokens, in choices order (valueIs: $valueIs)', ({ valueIs, value }) => {
+    const Parent = defineComponent({
+      components: { CheckboxesField },
+      setup() {
+        provide(injectionSymbols.editMode, ref<EditMode>('view'));
+        return { value: ref(value), choices: TEST_CHOICES, valueIs };
+      },
+      template: '<CheckboxesField v-model="value" :choices="choices" :valueIs="valueIs" viewModeDisplay="selected" />',
+    });
+    const wrapper = mount(Parent);
+    expect(wrapper.findAll('.vfm-token-content').map((el) => el.text().trim())).toEqual(['Alpha', 'Gamma']);
+    expect(wrapper.text()).not.toContain('Beta');
+    expect(wrapper.text()).not.toContain('Yes');
+    expect(wrapper.text()).not.toContain('No');
+  });
+
+  test('viewModeDisplay="selected" renders the label slot for each token', () => {
+    const Parent = defineComponent({
+      components: { CheckboxesField },
+      setup() {
+        provide(injectionSymbols.editMode, ref<EditMode>('view'));
+        return { value: ref(['b']), choices: TEST_CHOICES };
+      },
+      template: `<CheckboxesField v-model="value" :choices="choices" viewModeDisplay="selected">
+        <template #label="{ choice }">[{{ choice.key }}] {{ choice.label }}</template>
+      </CheckboxesField>`,
+    });
+    const wrapper = mount(Parent);
+    expect(wrapper.find('.vfm-token-content').text()).toBe('[b] Beta');
+  });
+
+  test('viewModeDisplay="selected" still shows the noValueLabel when nothing is selected', () => {
+    const Parent = defineComponent({
+      components: { CheckboxesField },
+      setup() {
+        provide(injectionSymbols.editMode, ref<EditMode>('view'));
+        return { value: ref([]), choices: TEST_CHOICES };
+      },
+      template: '<CheckboxesField v-model="value" :choices="choices" viewModeDisplay="selected" />',
+    });
+    const wrapper = mount(Parent);
+    expect(wrapper.find('.vfm-no-value').text()).toBe('(none)');
+    expect(wrapper.find('.vfm-token').exists()).toBe(false);
+  });
+
+  test('viewModeDisplay="all" is the same as the default (every choice with Yes / No)', () => {
+    const Parent = defineComponent({
+      components: { CheckboxesField },
+      setup() {
+        provide(injectionSymbols.editMode, ref<EditMode>('view'));
+        return { value: ref(['a']), choices: TEST_CHOICES };
+      },
+      template: '<CheckboxesField v-model="value" :choices="choices" viewModeDisplay="all" />',
+    });
+    const wrapper = mount(Parent);
+    expect(wrapper.find('.vfm-token').exists()).toBe(false);
+    expect(wrapper.text()).toContain('Beta');
+    expect(wrapper.text()).toContain('No');
+  });
+
+  test('viewModeDisplay="selected" has no effect in edit mode', () => {
+    const wrapper = mount(CheckboxesField, { props: { modelValue: ['a'], choices: TEST_CHOICES, viewModeDisplay: 'selected' } });
+    expect(checkboxes(wrapper).length).toBe(3);
+    expect(wrapper.find('.vfm-token').exists()).toBe(false);
   });
 
   test.each([

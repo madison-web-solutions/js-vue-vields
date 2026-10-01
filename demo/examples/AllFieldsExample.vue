@@ -61,6 +61,7 @@
         </CustomRadioField>
         <CheckboxesField name="checkboxes" label="CheckboxesField (array value)" :choices="colourChoices" class="mb-3" />
         <CheckboxesField name="checkboxesMap" label="CheckboxesField (booleans-map value)" valueIs="object" :choices="colourChoices" class="mb-3" />
+        <CheckboxesField name="checkboxesColumns" label="CheckboxesField (long list: 3 columns, view mode lists selected only)" :choices="countryChoices" :columns="3" viewModeDisplay="selected" class="mb-3" />
         <TokensField name="tokensStatic" label="TokensField (static)" :choices="colourChoices" class="mb-3" />
         <TokensField name="tokensDir" label="TokensField (searchable, directory)" directory="categories" :searchable="true" class="mb-3" />
         <SearchField name="search" label="SearchField (searchable, directory)" directory="categories" class="mb-3" />
@@ -174,6 +175,7 @@ const makeSeed = (): Record<string, unknown> => ({
   customRadio: 'pro',
   checkboxes: ['green', 'blue'],
   checkboxesMap: { red: true, green: false, blue: true, yellow: false, purple: false },
+  checkboxesColumns: ['france', 'japan', 'united-kingdom'],
   tokensStatic: ['red', 'blue'],
   tokensDir: [1, 3],
   search: null,
@@ -203,6 +205,14 @@ const colourChoices: Choosable[] = [
   { key: 'yellow', label: 'Yellow' },
   { key: 'purple', label: 'Purple' },
 ]
+
+// A long list, to exercise the `columns` and `viewModeDisplay` props
+const countryChoices: Choosable[] = [
+  'Argentina', 'Australia', 'Austria', 'Belgium', 'Brazil', 'Canada', 'Chile', 'China', 'Denmark', 'Egypt',
+  'Finland', 'France', 'Germany', 'Greece', 'India', 'Ireland', 'Italy', 'Japan', 'Mexico', 'Netherlands',
+  'New Zealand', 'Norway', 'Poland', 'Portugal', 'South Africa', 'Spain', 'Sweden', 'Switzerland',
+  'United Kingdom', 'United States',
+].map((label) => ({ key: label.toLowerCase().replace(/ /g, '-'), label }))
 
 const planChoices: Choosable[] = [
   { key: 'basic', label: 'Basic' },

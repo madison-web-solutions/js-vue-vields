@@ -10,3 +10,16 @@
     outline-offset: 0.375rem;
   }
 }
+
+// Multi-column layout for CheckboxesField's `columns` prop. The column count is set inline from
+// the prop and acts as a maximum; column-width is the minimum, so the browser uses fewer
+// columns when there isn't room for them all. Items are kept whole so a checkbox and its
+// label (or error message) never split across two columns.
+.vfm-checkboxes-columns {
+  column-width: $checkboxes-column-min-width;
+  column-gap: $checkboxes-column-gap;
+
+  > .vfm-checkboxes-item {
+    break-inside: avoid;
+  }
+}
